@@ -1,8 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { thunk } from 'redux-thunk';
 
+function eventsReducer(state = [], action) {
+    switch(action.type) {
+        default:
+            return state;
+    }
+}
+
 const reducers = combineReducers({
-    // Add your reducers here
+    events: eventsReducer
 });
 
 export const buildStore = (initialState) => {
