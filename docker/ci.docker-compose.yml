@@ -25,7 +25,7 @@ services:
     command: --mysql-native-password=ON
     restart: always
     ports:
-      - '3306:3306'
+      - '3307:3306'
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: petadoption
@@ -34,5 +34,5 @@ services:
 volumes:
   mysql-data:
 
-# Note: we are taking advantage of the Docker network that is automatically created so
-# that these containers are able to communicate with each other.
+    # Note: we are taking advantage of the Docker network that is automatically created so
+    # that these containers are able to communicate with each other.
