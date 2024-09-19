@@ -38,6 +38,8 @@ export default function HomePage() {
           <Typography variant='body1' color='text.secondary'>Some Basic Project Scaffolding (add more pages here as they are created):</Typography>
 
           <Stack direction="column" >
+            <Button variant='contained' onClick={()=>router.push("/login")} sx={{ width: 200 }}>Login</Button>
+            <Button variant='contained' onClick={()=>router.push("/register")} sx={{ width: 200 }}>Register</Button>
             <Button variant='contained' onClick={()=>router.push(`/profile/${userId}`)} sx={{ width: 200 }}>Profile</Button>
             <Button variant='contained' onClick={()=>router.push("/pets")} sx={{ width: 200 }}>Pets</Button>
           </Stack>
