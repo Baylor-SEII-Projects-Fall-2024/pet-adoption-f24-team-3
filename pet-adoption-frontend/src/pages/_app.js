@@ -8,6 +8,8 @@ import { CssBaseline } from '@mui/material';
 import { PetAdoptionThemeProvider } from '@/utils/theme';
 import { buildStore } from '@/utils/redux';
 
+import HeaderBar from '@/components/HeaderBar';
+
 import '@/styles/globals.css'
 
 // Initialize Redux
@@ -26,7 +28,7 @@ export default function App({ Component, pageProps }) {
         <PetAdoptionThemeProvider>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-
+          <HeaderBar />
           <Component {...pageProps} />
         </PetAdoptionThemeProvider>
       </AppCacheProvider>

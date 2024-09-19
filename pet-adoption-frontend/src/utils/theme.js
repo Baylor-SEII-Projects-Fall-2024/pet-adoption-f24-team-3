@@ -33,12 +33,26 @@ const themeOptions = {
                 },
             },
         },
-    }
+    },
+    palette: {
+        primary: {
+            light: '#F8F7FF',
+            main: '#9381FF',
+            dark: '#9381FF',
+            contrastText: '#B9B8FF',
+        },
+        secondary: {
+            light: 'red',
+            main: 'blue',
+            dark: 'orange',
+            contrastText: 'purple',
+        },
+    },
 };
 
 export const theme = createTheme(themeOptions);
 
-export const PetAdoptionThemeProvider = ({children}) => {
+export const PetAdoptionThemeProvider = ({ children }) => {
     return (
         <ThemeProvider theme={theme}>
             {children}
