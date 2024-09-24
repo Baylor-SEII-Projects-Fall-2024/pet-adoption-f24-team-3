@@ -17,7 +17,7 @@ export default function ViewPetPage() {
         <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
           <Card sx={{ width: 600 }} elevation={4}>
             <CardContent>
-              <Typography variant='h3' align='center'>View Pet - {petId}</Typography>
+              <Typography variant='h3' align='center'>View Pet Page - Pet {petId}</Typography>
               <Typography variant='body1' color='text.secondary'>This is where a user will be able to view all their profile details and preferences.</Typography>
             </CardContent>
           </Card>
