@@ -41,7 +41,7 @@ export default function HomePage() {
             <Button variant='contained' onClick={()=>router.push("/login")} sx={{ width: 200 }}>Login</Button>
             <Button variant='contained' onClick={()=>router.push("/register")} sx={{ width: 200 }}>Register</Button>
             <Button variant='contained' onClick={()=>router.push(`/profile/${userId}`)} sx={{ width: 200 }}>Profile</Button>
-            {/* <Button variant='contained' onClick={()=>router.push("/pets")} sx={{ width: 200 }}>Pets</Button> */}
+            <Button variant='contained' onClick={()=>router.push("/pets")} sx={{ width: 200 }}>Pets</Button>
             <Button variant='contained' onClick={()=>router.push("/events")} sx={{ width: 200 }}>Events</Button>
             <Button variant='contained' onClick={()=>router.push("/centers")} sx={{ width: 200 }}>Centers</Button>
 
