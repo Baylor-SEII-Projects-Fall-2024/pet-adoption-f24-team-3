@@ -4,6 +4,7 @@
 #
 # Modified:       09/24/2024
 #   - File header added
+#   - Add ickoxii/cicd-init for testing
 # Modified:       09/17/2024
 #   - Copied from template actions yml file
 #   - Changed to docker/ci.docker-compose.yml file
