@@ -12,7 +12,6 @@ import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 
 export default function PetsPage() {
   const router = useRouter();
-  // const { userId } = router.query; //get user ID from the routing
 
   return (
     <>
@@ -30,10 +29,9 @@ export default function PetsPage() {
           </Card>
           <Stack direction="column">
             <Button variant='contained' onClick={() => router.push(`/pets/new`)} sx={{ width: 200 }}>New Pet</Button>
-            {/*
-            <Button variant='contained' onClick={() => router.push(`/profile/${userId}/preferences`)} sx={{ width: 200 }}>Edit Preferences</Button>
+            <Button variant='contained' onClick={() => router.push(`/pets/MrMeow/`)} sx={{ width: 200 }}>Mr. Meow</Button>
             <Button variant='contained' onClick={() => router.push('/')} sx={{ width: 200 }}>Return Home</Button>
-            */}
+
           </Stack>
         </Stack>
       </main>
