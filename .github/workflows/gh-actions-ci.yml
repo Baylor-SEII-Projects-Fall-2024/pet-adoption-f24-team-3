@@ -1,3 +1,13 @@
+# File: .github/workflows/gh-actions-ci.yml
+# Author: Icko Iben
+# Date Created: 09/17/2024
+#
+# Modified:       09/24/2024
+#   - File header added
+# Modified:       09/17/2024
+#   - Copied from template actions yml file
+#   - Changed to docker/ci.docker-compose.yml file
+#
 # Deploy to Google CloudRun
 # https://github.com/actions/starter-workflows/blob/main/deployments/google-cloudrun-docker.yml
 #
