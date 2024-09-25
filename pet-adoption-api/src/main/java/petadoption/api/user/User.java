@@ -14,13 +14,6 @@ import lombok.Setter;
 public class User {
     public static final String TABLE_NAME = "USERS";
 
-//    @Id
-//    @GeneratedValue(generator = TABLE_NAME + "_GENERATOR")
-//    @SequenceGenerator(
-//            name = TABLE_NAME + "_GENERATOR",
-//            sequenceName = TABLE_NAME + "_SEQUENCE"
-//    )
-//    @Column(name = "USER_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -38,29 +31,3 @@ public class User {
     String profilePicPath;
 
 }
-
-//@Data
-//@Entity
-//@Getter
-//@Setter
-//@Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "user_type") // Discriminator column for identifying the type of user
-//public class User {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    @Column(name = "EMAIL_ADDRESS")
-//    String emailAddress;
-//
-//    @Column(name = "PASSWORD")
-//    String password;
-//
-//    @Column(name = "USER_TYPE")
-//    String userType;
-//
-//    @Column(name = "PROFILE_PIC_PATH")
-//    String profilePicPath;
-//
-//}
