@@ -19,18 +19,18 @@ import java.util.Objects;
 public class AdoptionCenter extends User{
 
     @Column(name = "CENTER_NAME")
-    String name;
+    private String name;
     @Column(name = "ADDRESS")
-    String address;
+    private String address;
     @Column(name = "CITY")
-    String city;
+    private String city;
     @Column(name = "STATE")
-    String state;
+    private String state;
     @Column(name = "ZIP_CODE")
-    String zipCode;
+    private String zipCode;
     @Column(name = "DESCRIPTION")
-    String description;
+    private String description;
     @Column(name = "BANNER_PIC_PATH")
-    String bannerPicPath;
+    private String bannerPicPath;
 
 }

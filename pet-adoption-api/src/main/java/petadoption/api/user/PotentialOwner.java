@@ -19,5 +19,6 @@ public class PotentialOwner extends User{
     String nameFirst;
     @Column(name = "NAME_LAST")
     String nameLast;
+
 }
 
