@@ -25,7 +25,7 @@ public class AnimalController {
     public Animal findAnimalBy(@PathVariable Long id) {
         var animal = animalService.findAnimal(id).orElse(null);
         if (animal == null) {
-            log.warn("User not found");
+            log.warn("Animal not found");
         }
         return animal;
     }
