@@ -51,6 +51,9 @@ public class Animal {
     @Column(name = "SIZE")
     private AnimalSize size;
 
+    @Column (name = "AGE_CLASS")
+    private  AnimalAgeClass ageClass;
+
     @Column(name = "HEIGHT")
     private Integer height;
 

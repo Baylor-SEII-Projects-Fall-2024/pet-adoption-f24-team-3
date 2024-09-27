@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import petadoption.api.preferences.Preference;
 
 @Data
 @Entity
@@ -19,6 +20,10 @@ public class PotentialOwner extends User{
     String nameFirst;
     @Column(name = "NAME_LAST")
     String nameLast;
+
+    @OneToOne
+    @JoinColumn(name = "PREFERENCE_ID")
+    Preference preference;
 
 }
 
