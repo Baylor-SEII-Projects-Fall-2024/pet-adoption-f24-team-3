@@ -14,6 +14,7 @@ import java.util.Optional;
 @Log4j2
 @Service
 public class UserService {
+    // Inject repositories and password encoder
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,18 +33,21 @@ public class UserService {
     public Optional<User> findUserByEmail(String userEmail){return userRepository.findUserByEmailAddress(userEmail);}
 
     public boolean registerUser(UserDto userDto) {
+        // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
+        // Set user info
         User user = new User();
         user.setEmailAddress(userDto.getEmailAddress());
         user.setPassword(encodedPassword);
 
-        // Checks for existing users with the same email address
+        // Check for existing users with the same email address
         if (userRepository.findUserByEmailAddress(user.getEmailAddress()).isPresent()) {
-            log.warn("Duplicate user attempt for email {}", user.getEmailAddress());
+            log.warn("Duplicate user attempt for email: {}", user.getEmailAddress());
             return false;
         }
 
+        // Save the user to the database
         User savedUser = userRepository.save(user);
 
         // Return status of registration
@@ -71,7 +75,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // USED TO CLEAR TABLE
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
     @Transactional
     public void clearData() {
         userRepository.deleteAll();
