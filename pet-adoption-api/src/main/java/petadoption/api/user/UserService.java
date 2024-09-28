@@ -1,8 +1,8 @@
 package petadoption.api.user;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import petadoption.api.user.dtos.LoginDto;
@@ -38,6 +38,12 @@ public class UserService {
         user.setEmailAddress(userDto.getEmailAddress());
         user.setPassword(encodedPassword);
 
+        // Checks for existing users with the same email address
+        if (userRepository.findUserByEmailAddress(user.getEmailAddress()).isPresent()) {
+            log.warn("Duplicate user attempt for email {}", user.getEmailAddress());
+            return false;
+        }
+
         User savedUser = userRepository.save(user);
 
         // Return status of registration
@@ -46,11 +52,11 @@ public class UserService {
 
     public boolean loginUser(LoginDto loginDto) {
         // See if there is a user under the email provided
-        var userOptional = findUserByEmail(loginDto.getEmail());
+        var userOptional = findUserByEmail(loginDto.getEmailAddress());
 
         // If user not found, return false and log it
         if (userOptional.isEmpty()) {
-            log.warn("Username not found for login: {}", loginDto.getEmail());
+            log.warn("Username not found for login: {}", loginDto.getEmailAddress());
             return false;
         }
 
@@ -64,4 +70,11 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
+
+    // USED TO CLEAR TABLE
+    @Transactional
+    public void clearData() {
+        userRepository.deleteAll();
+    }
+
 }
