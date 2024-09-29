@@ -31,23 +31,39 @@ const themeOptions = {
                 outlinedSecondary: {
                     border: '2px solid'
                 },
+                containedPrimary: {
+                    backgroundColor: '#a3b18a',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#8e9d72', // Slightly darker green for hover
+                    },
+                  },
+                  containedSecondary: {
+                    backgroundColor: '#c5a5bf',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#af8ba5',
+                    },
+                },
             },
         },
     },
     palette: {
         primary: {
-            light: '#C5A5BF',
-            main: '#A77EA8',
-            dark: '#5C4E7F',
-            contrastText: '#344e41',
+          main: '#a3b18a', // Soft green
         },
         secondary: {
-            light: '#eaf2d7',
-            main: '#a3b18a',
-            dark: '#588157',
-            contrastText: '#252832',
+          main: '#c5a5bf', // Light lavender
         },
-    },
+        background: {
+            default: '#f0e6d6', // Light beige for the background
+            paper: '#fafafa',   // Very light grey for card/paper backgrounds
+        },
+        text: {
+            primary: '#333333', // Dark grey for primary text
+            secondary: '#666666', // Lighter grey for secondary text
+        },
+    }
 };
 
 export const theme = createTheme(themeOptions);
