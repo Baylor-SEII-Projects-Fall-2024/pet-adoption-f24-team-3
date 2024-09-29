@@ -16,18 +16,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    protected Long id;
 
     @Column(name = "EMAIL_ADDRESS")
-    String emailAddress;
+    protected String emailAddress;
 
     @Column(name = "PASSWORD")
-    String password;
+    protected String password;
 
     @Column(name = "ACCOUNT_TYPE")
-    String accountType;
+    protected String accountType;
 
     @Column(name = "PROFILE_PIC_PATH")
-    String profilePicPath;
+    protected String profilePicPath;
 
 }

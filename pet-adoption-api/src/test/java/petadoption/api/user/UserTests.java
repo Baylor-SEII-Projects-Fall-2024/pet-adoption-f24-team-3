@@ -11,8 +11,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("testdb")  // make these tests use the H2 in-memory DB instead of your actual DB
-@Transactional             // make these tests revert their DB changes after the test is complete
+@ActiveProfiles("testdb") // make these tests use the H2 in-memory DB instead of your actual DB
+@Transactional // make these tests revert their DB changes after the test is complete
 public class UserTests {
     @Autowired
     private UserService userService;
@@ -20,7 +20,7 @@ public class UserTests {
     @Test
     void testUserCreate() {
         User newUser = new User();
-        newUser.userType = "PETOWNER";
+        newUser.accountType = "PETOWNER";
         newUser.emailAddress = "example@example.com";
         newUser.password = "password";
 
@@ -31,7 +31,7 @@ public class UserTests {
         assertTrue(foundUserOpt.isPresent());
         User foundUser = foundUserOpt.get();
 
-        assertEquals(newUser.userType, foundUser.userType);
+        assertEquals(newUser.accountType, foundUser.accountType);
         assertEquals(newUser.emailAddress, foundUser.emailAddress);
         assertEquals(newUser.password, foundUser.password);
     }
