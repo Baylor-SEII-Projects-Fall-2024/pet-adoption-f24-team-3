@@ -77,6 +77,8 @@ export default function RegisterOwnerPage() {
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange}/>
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange}/>
                     <Button type='submit' variant='contained' color='primary'>Register</Button>
+                    <Button variant='contained' onClick={()=>router.push("/register")}>Back</Button>
+
 
                 </form>
             </Paper>
