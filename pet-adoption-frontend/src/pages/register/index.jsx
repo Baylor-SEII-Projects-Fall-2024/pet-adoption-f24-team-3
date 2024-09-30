@@ -26,6 +26,7 @@ export default function RegisterPage() {
                         <Typography variant='h3' align='center'>Register Page</Typography>
                         <Typography variant='body1' color='text.secondary'>This is where a User, either owner or center, can register a new account.</Typography>
                         <Button variant='contained' onClick={()=>router.push("/register/owner")} sx={{ width: 200 }}>Pet Owner</Button>
+                        <Button variant='contained' onClick={()=>router.push("/register/center")} sx={{ width: 200 }}>Adoption Center</Button>
 
                     </CardContent>
                 </Card>
