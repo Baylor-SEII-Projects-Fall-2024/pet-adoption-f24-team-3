@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.UserDto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -71,12 +73,22 @@ public class UserController {
         return (PotentialOwner) userService.saveUser(owner);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody UserDto userDto) {
         boolean isRegistered = userService.registerUser(userDto);
-        return isRegistered
-                ? ResponseEntity.ok("User registered successfully!")
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed.");
+//        return isRegistered
+//                ? ResponseEntity.ok("User registered successfully!")
+//                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed.");
+        Map<String, String> response = new HashMap<>();
+
+        if (isRegistered) {
+            response.put("message", "User registered successfully!");
+            return ResponseEntity.ok(response); // Return success message as JSON
+        } else {
+            response.put("message", "Registration failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
     }
 
     @PostMapping("/login")
