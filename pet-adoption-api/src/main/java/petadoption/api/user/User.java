@@ -30,4 +30,5 @@ public class User {
     @Column(name = "PROFILE_PIC_PATH")
     protected String profilePicPath;
 
+
 }

@@ -2,14 +2,24 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { thunk } from 'redux-thunk';
 
 function eventsReducer(state = [], action) {
-    switch(action.type) {
+    switch (action.type) {
+        default:
+            return state;
+    }
+}
+
+function userReducer(state = { userId: null }, action) {
+    switch (action.type) {
+        case 'SET_USER_ID':
+            return { ...state, userId: action.payload };
         default:
             return state;
     }
 }
 
 const reducers = combineReducers({
-    events: eventsReducer
+    events: eventsReducer,
+    user: userReducer
 });
 
 export const buildStore = (initialState) => {
