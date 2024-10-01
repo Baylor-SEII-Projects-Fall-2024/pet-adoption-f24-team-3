@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import Head from 'next/head';
 import { useRouter } from "next/navigation";
-import { Grid, Paper, Avatar, Typography, TextField, Button, useScrollTrigger } from '@mui/material'
-//import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
 
 export default function RegisterCenterPage() {
     const router = useRouter();
