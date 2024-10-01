@@ -41,12 +41,6 @@ function MainApp({ Component, pageProps }) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (userId === null) {
-  //     router.push('/login');
-  //   }
-  // }, [userId, router]);
-
   // Client-side redirection check
   React.useEffect(() => {
     const handleRouteChange = (url) => {
@@ -85,31 +79,31 @@ function MainApp({ Component, pageProps }) {
 }
 
 
-PetApp.getInitialProps = async (appContext) => {
-  // Step 1: Get the initial props for the app component.
-  const appProps = await App.getInitialProps(appContext);
+// PetApp.getInitialProps = async (appContext) => {
+//   // Step 1: Get the initial props for the app component.
+//   const appProps = await App.getInitialProps(appContext);
 
-  // Step 2: Destructure appContext to access context properties.
-  const { ctx } = appContext;
-  const { res, pathname } = ctx;
+//   // Step 2: Destructure appContext to access context properties.
+//   const { ctx } = appContext;
+//   const { res, pathname } = ctx;
 
-  // Debugging output
-  console.log('Current pathname:', pathname);
-  console.log("Res:", res);
+//   // Debugging output
+//   console.log('Current pathname:', pathname);
+//   console.log("Res:", res);
 
-  // Step 3: Skip redirection for the home page ('/').
-  if (safePaths.find(p => p === pathname)) {
-    return { ...appProps };
-  }
+//   // Step 3: Skip redirection for the home page ('/').
+//   if (safePaths.find(p => p === pathname)) {
+//     return { ...appProps };
+//   }
 
-  // Step 4: Redirect to login for all other pages.
-  if (res) {
-    console.warn("Redirecting to login");
-    res.writeHead(302, { Location: '/login' });
-    res.end();
-  }
+//   // Step 4: Redirect to login for all other pages.
+//   if (res) {
+//     console.warn("Redirecting to login");
+//     res.writeHead(302, { Location: '/login' });
+//     res.end();
+//   }
 
-  return { ...appProps };
-}
+//   return { ...appProps };
+// }
 
 export default PetApp;

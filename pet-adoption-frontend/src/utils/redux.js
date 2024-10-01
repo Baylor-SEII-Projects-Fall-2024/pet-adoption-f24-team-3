@@ -10,8 +10,8 @@ function eventsReducer(state = [], action) {
 
 const SET_CURRENT_USER_ID = 'SET_CURRENT_USER_ID';
 
-const setCurrentUserId = (userId) => ({
-    type: SET_USER_ID,
+export const setCurrentUserId = (userId) => ({
+    type: SET_CURRENT_USER_ID,
     payload: userId,
 });
 
