@@ -64,6 +64,7 @@ public class UserController {
         return center;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/centers")
     public AdoptionCenter saveAdoptionCenter(@RequestBody AdoptionCenter center) {
         return (AdoptionCenter) userService.saveUser(center);
