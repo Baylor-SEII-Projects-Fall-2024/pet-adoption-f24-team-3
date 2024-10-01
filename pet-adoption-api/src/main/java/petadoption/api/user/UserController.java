@@ -93,12 +93,15 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
-        boolean isAuthenticated = userService.loginUser(loginDto);
-        return isAuthenticated
-                ? ResponseEntity.ok("Login successful!")
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+    public ResponseEntity<Map<String, Long>> loginUser(@RequestBody LoginDto loginDto) {
+        Map<String, Long> response = userService.loginUser(loginDto);
+        if(response.get("userid") != null && response.get("userid") > 0){
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 
 }
