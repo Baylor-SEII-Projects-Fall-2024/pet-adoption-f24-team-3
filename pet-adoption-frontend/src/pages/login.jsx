@@ -29,7 +29,7 @@ export default function LoginPage() {
                 body: JSON.stringify({
                     emailAddress: formData.email,
                     password: formData.password,
-                    accountType: formData.accountType,
+                    // accountType: formData.accountType,
                     profilePicPath: null
                 })
             });
@@ -68,7 +68,7 @@ export default function LoginPage() {
                         </CardContent>
                     </Card>
                     <form onSubmit={handleSubmit}>
-
+{/* 
                     <div>
                         <input type="radio" id="Owner" name="accountType" value="Owner" checked />
                         <label for="Owner">Pet Owner</label>
@@ -77,7 +77,7 @@ export default function LoginPage() {
                     <div>
                         <input type="radio" id="Center" name="accountType" value="Center" />
                         <label for="Center">Adoption Center</label>
-                    </div>
+                    </div> */}
 
                     <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange}/>
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange}/>
