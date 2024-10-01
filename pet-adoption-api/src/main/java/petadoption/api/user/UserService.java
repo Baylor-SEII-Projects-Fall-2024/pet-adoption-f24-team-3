@@ -9,6 +9,8 @@ import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.UserDto;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Log4j2
@@ -54,21 +56,29 @@ public class UserService {
         return savedUser.getId() != null;
     }
 
-    public boolean loginUser(LoginDto loginDto) {
+    public Map<String, Long> loginUser(LoginDto loginDto) {
         // See if there is a user under the email provided
         var userOptional = findUserByEmail(loginDto.getEmailAddress());
-
         // If user not found, return false and log it
         if (userOptional.isEmpty()) {
             log.warn("Username not found for login: {}", loginDto.getEmailAddress());
-            return false;
+            return new HashMap<String, Long>(){
+                {put("Email does not exist", -1L);}
+            };
         }
 
         // Extract user from optional
         User user = userOptional.get();
 
         // Compare encoded password with the one provided
-        return passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
+        if(! passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            return new HashMap<String, Long>(){
+                {put("Invalid password", -1L);}
+            };
+        }
+        return new HashMap<String, Long>(){
+            {put("userid", user.id);}
+        };
     }
 
     public User saveUser(User user) {

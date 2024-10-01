@@ -6,8 +6,9 @@ import styles from '@/styles/Home.module.css'
 
 export default function HomePage() {
   const router = useRouter();
+  const { userId } = router.query; //get user ID from the routing
 
-  const userId = "12345"
+  // const userId = "12345"
 
   const onButtonPress = () => {
     alert('You pressed a button!');

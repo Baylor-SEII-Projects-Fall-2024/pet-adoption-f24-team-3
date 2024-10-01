@@ -37,35 +37,21 @@ export default function LoginPage() {
         const result = await response.json();
 
         if(response.ok){
-            alert("Login Successfull!");
+            // alert("Login Successfull!");
             // router.push("/profile");
-            router.push(`/profile/${userId}`);
+            router.push(`/profile/${result.userid}`);
         }else{
-            alert(`Login failed: ${result.message}`);
+            let elm = document.getElementById("errorLabel");
+            elm.innerHTML=`${Object.keys(result)[0]}`;
+            elm.style="color: red;"
+            // alert(`Login failed! ${Object.keys(result)[0]}`);
+            
         }
     } catch(error){
         console.error("Error: ", error);
         alert("An error occured during login.");
     }
     };
-    // const testEndpoint = () => {
-    //     // const url = `http://localhost:8080/login`; //Just specific for this test endpoint
-    //     const url = `http://localhost:8080/login`; //Just specific for this test endpoint
-
-    //     fetch(url)
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 throw new Error("Network response was not ok");
-    //             }
-                
-    //             return response.text(); //Just using plain text for this simple test
-    //         })
-    //         .then(data => {
-    //             setTestShow(data);
-    //             router.push(`/profile/${userId}`)
-    //         })
-    //         .catch(error => console.error("Error fetching test data:", error));
-    // };
 
     return (
         <>
@@ -78,7 +64,7 @@ export default function LoginPage() {
                     <Card sx={{ width: 600 }} elevation={4}>
                         <CardContent>
                             <Typography variant='h3' align='center'>Login Page</Typography>
-                            <Typography variant='body1' color='text.secondary'>This is where a User, either owner or center, can login.</Typography>
+                            <Typography variant='body1' align='center' color='text.secondary'>Welcome back! Fill in the information below to log in</Typography>
                         </CardContent>
                     </Card>
                     <form onSubmit={handleSubmit}>
@@ -100,6 +86,7 @@ export default function LoginPage() {
 
 
                     </form>
+                    <label id="errorLabel"></label>
                     {/* <Typography variant='body1' color='text.prima'>{testShow}</Typography> */}
                 </Stack>
 
