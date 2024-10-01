@@ -54,21 +54,23 @@ public class UserService {
         return savedUser.getId() != null;
     }
 
-    public boolean loginUser(LoginDto loginDto) {
+    public long loginUser(LoginDto loginDto) {
         // See if there is a user under the email provided
         var userOptional = findUserByEmail(loginDto.getEmailAddress());
-
         // If user not found, return false and log it
         if (userOptional.isEmpty()) {
             log.warn("Username not found for login: {}", loginDto.getEmailAddress());
-            return false;
+            return -1;
         }
 
         // Extract user from optional
         User user = userOptional.get();
 
         // Compare encoded password with the one provided
-        return passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
+        if(! passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            return -1;
+        }
+        return user.id;
     }
 
     public User saveUser(User user) {
