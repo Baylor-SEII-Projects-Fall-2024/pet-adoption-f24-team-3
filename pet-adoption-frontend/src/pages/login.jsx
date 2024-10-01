@@ -42,7 +42,7 @@ export default function LoginPage() {
             router.push(`/profile/${result.userid}`);
         }else{
             let elm = document.getElementById("errorLabel");
-            elm.innerHTML=`${Object.keys(result)[0]}`;
+            elm.innerHTML="Invalid credentials!";
             elm.style="color: red;"
             // alert(`Login failed! ${Object.keys(result)[0]}`);
             
