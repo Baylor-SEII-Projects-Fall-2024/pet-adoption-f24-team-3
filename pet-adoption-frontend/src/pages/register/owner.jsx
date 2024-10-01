@@ -33,16 +33,18 @@ export default function RegisterOwnerPage() {
         }
 
         try{
-            const response = await fetch("http://localhost:8080/api/register", {
+            const response = await fetch("http://localhost:8080/api/owners", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
+                    accountType: "Owner",
                     emailAddress: formData.email,
                     password: formData.password,
-                    accountType: "Owner",
-                    profilePicPath: null
+                    profilePicPath: null,
+                    nameFirst: formData.firstName,
+                    nameLast: formData.lastName
                 })
             });
 
