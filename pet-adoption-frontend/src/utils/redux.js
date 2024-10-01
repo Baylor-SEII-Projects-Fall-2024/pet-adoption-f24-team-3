@@ -8,9 +8,16 @@ function eventsReducer(state = [], action) {
     }
 }
 
+const SET_CURRENT_USER_ID = 'SET_CURRENT_USER_ID';
+
+const setCurrentUserId = (userId) => ({
+    type: SET_USER_ID,
+    payload: userId,
+});
+
 function currentUserReducer(state = { currentUserId: null }, action) {
     switch (action.type) {
-        case 'SET_CURRENT_USER_ID':
+        case SET_CURRENT_USER_ID:
             return { ...state, currentUserId: action.payload };
         default:
             return state;
