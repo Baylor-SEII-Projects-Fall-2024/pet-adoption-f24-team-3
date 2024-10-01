@@ -38,7 +38,7 @@ function PetApp({ Component, pageProps }) {
 
 function MainApp({ Component, pageProps }) {
 
-  const userId = useSelector((state) => state.user.userId);
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const router = useRouter();
 
   // useEffect(() => {
@@ -52,7 +52,7 @@ function MainApp({ Component, pageProps }) {
     const handleRouteChange = (url) => {
       // Check the new URL after a navigation
       console.log('Navigating to:', url);
-      if (userId == null && !safePaths.find(u => u === url)) {
+      if (currentUserId == null && !safePaths.find(u => u === url)) {
         console.log('Redirecting to /login from:', url);
         router.push('/login');
       }

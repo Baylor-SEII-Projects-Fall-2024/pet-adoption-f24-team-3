@@ -8,10 +8,10 @@ function eventsReducer(state = [], action) {
     }
 }
 
-function userReducer(state = { userId: null }, action) {
+function currentUserReducer(state = { currentUserId: null }, action) {
     switch (action.type) {
-        case 'SET_USER_ID':
-            return { ...state, userId: action.payload };
+        case 'SET_CURRENT_USER_ID':
+            return { ...state, currentUserId: action.payload };
         default:
             return state;
     }
@@ -19,7 +19,7 @@ function userReducer(state = { userId: null }, action) {
 
 const reducers = combineReducers({
     events: eventsReducer,
-    user: userReducer
+    currentUser: currentUserReducer
 });
 
 export const buildStore = (initialState) => {
