@@ -29,6 +29,26 @@ export default function RegisterCenterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const emptyFields = Object.keys(formData).filter(key => !formData[key]);
+
+        if (emptyFields.length > 0) {
+            const emptyFieldNames = emptyFields.map(field => {
+                switch(field) {
+                    case 'centerName': return 'Center Name';
+                    case 'email': return 'Email';
+                    case 'address': return 'Address';
+                    case 'city': return 'City';
+                    case 'state': return 'State';
+                    case 'zip': return 'Zip Code';
+                    case 'password': return 'Password';
+                    case 'confirmPassword': return 'Confirm Password';
+                    default: return field;
+                }
+            });
+            alert(`Please fill in the following fields: ${emptyFieldNames.join(', ')}`);
+            return;
+        }
+
         if(formData.password != formData.confirmPassword){
             alert("Passwords do not match!");
             return;

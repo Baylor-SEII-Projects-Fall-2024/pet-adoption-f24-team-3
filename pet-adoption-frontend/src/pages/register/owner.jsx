@@ -27,10 +27,29 @@ export default function RegisterOwnerPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const emptyFields = Object.keys(formData).filter(key => !formData[key]);
+
+        if (emptyFields.length > 0) {
+            const emptyFieldNames = emptyFields.map(field => {
+                switch(field) {
+                    case 'firstName': return 'First Name';
+                    case 'lastName': return 'Last Name';
+                    case 'email': return 'Email';
+                    case 'username': return 'Username';
+                    case 'password': return 'Password';
+                    case 'confirmPassword': return 'Confirm Password';
+                    default: return field;
+                }
+            });
+            alert(`Please fill in the following fields: ${emptyFieldNames.join(', ')}`);
+            return;
+        }
+
         if(formData.password != formData.confirmPassword){
             alert("Passwords do not match!");
             return;
         }
+
 
         try{
             const response = await fetch("http://localhost:8080/api/owners", {
