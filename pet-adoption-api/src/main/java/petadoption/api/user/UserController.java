@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
+import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.dtos.UserDto;
 
 import java.util.HashMap;
@@ -66,26 +68,27 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/centers")
-    public AdoptionCenter saveAdoptionCenter(@RequestBody AdoptionCenter center) {
-        return (AdoptionCenter) userService.saveUser(center);
-    }
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/owners")
-    public PotentialOwner savePotentialOwner(@RequestBody PotentialOwner owner) {
-        return (PotentialOwner) userService.saveUser(owner);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerUser(@RequestBody UserDto userDto) {
-        boolean isRegistered = userService.registerUser(userDto);
-//        return isRegistered
-//                ? ResponseEntity.ok("User registered successfully!")
-//                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed.");
+    public ResponseEntity<Map<String, String>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
+        boolean isRegistered = userService.registerCenter(centerDto);
         Map<String, String> response = new HashMap<>();
 
         if (isRegistered) {
-            response.put("message", "User registered successfully!");
+            response.put("message", "Center registered successfully!");
+            return ResponseEntity.ok(response); // Return success message as JSON
+        } else {
+            response.put("message", "Registration failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/owners")
+    public ResponseEntity<Map<String, String>> savePotentialOwner(@RequestBody OwnerDto ownerDto) {
+        boolean isRegistered = userService.registerOwner(ownerDto);
+        Map<String, String> response = new HashMap<>();
+
+        if (isRegistered) {
+            response.put("message", "Owner registered successfully!");
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Registration failed.");
