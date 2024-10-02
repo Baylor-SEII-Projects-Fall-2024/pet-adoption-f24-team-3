@@ -5,7 +5,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
+import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.dtos.UserDto;
 
 import java.util.List;
@@ -32,26 +34,69 @@ public class UserService {
     public Optional<PotentialOwner> findPotentialOwner(Long userId) {return potentialOwnerRepository.findById(userId);}
     public Optional<User> findUserByEmail(String userEmail){return userRepository.findUserByEmailAddress(userEmail);}
 
-    public boolean registerUser(UserDto userDto) {
+    public boolean registerOwner(OwnerDto ownerDto) {
         // Encode password using BCrypt
-        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
 
-        // Set user info
-        User user = new User();
-        user.setEmailAddress(userDto.getEmailAddress());
-        user.setPassword(encodedPassword);
+        // Set PotentialOwner info
+        PotentialOwner potentialOwner = getPotentialOwner(ownerDto, encodedPassword);
 
         // Check for existing users with the same email address
-        if (userRepository.findUserByEmailAddress(user.getEmailAddress()).isPresent()) {
-            log.warn("Duplicate user attempt for email: {}", user.getEmailAddress());
+        if (potentialOwnerRepository.findPotentialOwnerByEmailAddress(potentialOwner.getEmailAddress()).isPresent()) {
+            log.warn("Duplicate owner attempt for email: {}", potentialOwner.getEmailAddress());
             return false;
         }
 
         // Save the user to the database
-        User savedUser = userRepository.save(user);
+        PotentialOwner savedUser = potentialOwnerRepository.save(potentialOwner);
 
         // Return status of registration
         return savedUser.getId() != null;
+    }
+
+    private static PotentialOwner getPotentialOwner(OwnerDto ownerDto, String encodedPassword) {
+        PotentialOwner potentialOwner = new PotentialOwner();
+        potentialOwner.setEmailAddress(ownerDto.getEmailAddress());
+        potentialOwner.setPassword(encodedPassword);
+        potentialOwner.setProfilePicPath(ownerDto.getProfilePicPath());
+        potentialOwner.setAccountType(ownerDto.getAccountType());
+        potentialOwner.setNameFirst(ownerDto.getNameFirst());
+        potentialOwner.setNameFirst(ownerDto.getNameLast());
+        return potentialOwner;
+    }
+
+    public boolean registerCenter(CenterDto centerDto) {
+        // Encode password using BCrypt
+        String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
+
+        // Set user info
+        AdoptionCenter adoptionCenter = getAdoptionCenter(centerDto, encodedPassword);
+
+        // Check for existing users with the same email address
+        if (adoptionCenterRepository.findAdoptionCenterByEmailAddress(adoptionCenter.getEmailAddress()).isPresent()) {
+            log.warn("Duplicate center attempt for email: {}", adoptionCenter.getEmailAddress());
+            return false;
+        }
+
+        // Save the user to the database
+        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
+
+        // Return status of registration
+        return savedUser.getId() != null;
+    }
+
+    private static AdoptionCenter getAdoptionCenter(CenterDto centerDto, String encodedPassword) {
+        AdoptionCenter adoptionCenter = new AdoptionCenter();
+        adoptionCenter.setEmailAddress(centerDto.getEmailAddress());
+        adoptionCenter.setPassword(encodedPassword);
+        adoptionCenter.setAccountType(centerDto.getAccountType());
+        adoptionCenter.setProfilePicPath(centerDto.getProfilePicPath());
+        adoptionCenter.setName(centerDto.getName());
+        adoptionCenter.setAddress(centerDto.getAddress());
+        adoptionCenter.setCity(centerDto.getCity());
+        adoptionCenter.setState(centerDto.getState());
+        adoptionCenter.setZipCode(centerDto.getZipCode());
+        return adoptionCenter;
     }
 
     public long loginUser(LoginDto loginDto) {
