@@ -1,13 +1,14 @@
-import React, {useState} from "react";
-import Head from 'next/head';
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
+import { Grid, Paper, Typography, TextField, Button } from '@mui/material'
+import userService from "@/utils/services/userService";
 
 export default function RegisterOwnerPage() {
     const router = useRouter();
+    const { registerOwner } = userService();
 
-    const paperStyle={padding: '30px 20px', width:300, margin:"20px auto"}
-    const headerStyle={margin:0}
+    const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
+    const headerStyle = { margin: 0 }
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -19,8 +20,8 @@ export default function RegisterOwnerPage() {
     });
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData(prevState => ({...prevState, [name]: value}));
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
@@ -30,7 +31,7 @@ export default function RegisterOwnerPage() {
 
         if (emptyFields.length > 0) {
             const emptyFieldNames = emptyFields.map(field => {
-                switch(field) {
+                switch (field) {
                     case 'firstName': return 'First Name';
                     case 'lastName': return 'Last Name';
                     case 'email': return 'Email';
@@ -44,40 +45,23 @@ export default function RegisterOwnerPage() {
             return;
         }
 
-        if(formData.password != formData.confirmPassword){
+        if (formData.password != formData.confirmPassword) {
             alert("Passwords do not match!");
             return;
         }
 
 
-        try{
-            const response = await fetch("http://localhost:8080/api/owners", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    accountType: "Owner",
-                    emailAddress: formData.email,
-                    password: formData.password,
-                    profilePicPath: null,
-                    nameFirst: formData.firstName,
-                    nameLast: formData.lastName
-                })
-            });
-
-        const result = await response.json();
-
-        if(response.ok){
-            alert("Registration Successfull!");
-            //router.push("/login");
-        }else{
-            alert(`Registration failed: ${result.message}`);
+        try {
+            await registerOwner(formData)
+                .then((result) => {
+                    if (result !== null) {
+                        router.push(`/profile/${result.userid}`);
+                    }
+                });
+        } catch (error) {
+            console.error("Error: ", error);
+            alert("An error occured during registration.");
         }
-    } catch(error){
-        console.error("Error: ", error);
-        alert("An error occured during registration.");
-    }
     };
 
 
@@ -85,19 +69,19 @@ export default function RegisterOwnerPage() {
         <Grid>
             <Paper elevation={20} style={paperStyle}>
                 <Grid align='center'>
-                    
+
                     <h2 style={headerStyle}>Register</h2>
                     <Typography variant="caption">Please fill this form to create an account!</Typography>
                 </Grid>
                 <form onSubmit={handleSubmit}>
-                    <TextField fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange}/>
-                    <TextField fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange}/>
-                    <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange}/>
-                    <TextField fullWidth label='Username' name="username" size="small" margin="dense" value={formData.username} onChange={handleChange}/>
-                    <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange}/>
-                    <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange}/>
+                    <TextField fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
+                    <TextField fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
+                    <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
+                    <TextField fullWidth label='Username' name="username" size="small" margin="dense" value={formData.username} onChange={handleChange} />
+                    <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
+                    <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
                     <Button type='submit' variant='contained' color='primary'>Register</Button>
-                    <Button variant='contained' onClick={()=>router.push("/register")}>Back</Button>
+                    <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
 
 
                 </form>

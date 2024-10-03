@@ -1,14 +1,13 @@
 import React from 'react';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material'
 import styles from '@/styles/Home.module.css'
 
 export default function HomePage() {
   const router = useRouter();
-  const { userId } = router.query; //get user ID from the routing
-
-  // const userId = "12345"
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
   const onButtonPress = () => {
     alert('You pressed a button!');
@@ -39,12 +38,12 @@ export default function HomePage() {
           <Typography variant='body1' color='text.secondary'>Some Basic Project Scaffolding (add more pages here as they are created):</Typography>
 
           <Stack direction="column" >
-            <Button variant='contained' onClick={()=>router.push("/login")} sx={{ width: 200 }}>Login</Button>
-            <Button variant='contained' onClick={()=>router.push("/register")} sx={{ width: 200 }}>Register</Button>
-            <Button variant='contained' onClick={()=>router.push(`/profile/${userId}`)} sx={{ width: 200 }}>Profile</Button>
-            <Button variant='contained' onClick={()=>router.push("/pets")} sx={{ width: 200 }}>Pets</Button>
-            <Button variant='contained' onClick={()=>router.push("/events")} sx={{ width: 200 }}>Events</Button>
-            <Button variant='contained' onClick={()=>router.push("/centers")} sx={{ width: 200 }}>Centers</Button>
+            <Button variant='contained' onClick={() => router.push("/login")} sx={{ width: 200 }}>Login</Button>
+            <Button variant='contained' onClick={() => router.push("/register")} sx={{ width: 200 }}>Register</Button>
+            <Button variant='contained' onClick={() => router.push(`/profile/${currentUserId}`)} sx={{ width: 200 }}>Profile</Button>
+            <Button variant='contained' onClick={() => router.push("/pets")} sx={{ width: 200 }}>Pets</Button>
+            <Button variant='contained' onClick={() => router.push("/events")} sx={{ width: 200 }}>Events</Button>
+            <Button variant='contained' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Centers</Button>
 
           </Stack>
         </Stack>

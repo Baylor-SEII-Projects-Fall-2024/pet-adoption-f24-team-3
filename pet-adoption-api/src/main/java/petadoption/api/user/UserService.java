@@ -34,7 +34,7 @@ public class UserService {
     public Optional<PotentialOwner> findPotentialOwner(Long userId) {return potentialOwnerRepository.findById(userId);}
     public Optional<User> findUserByEmail(String userEmail){return userRepository.findUserByEmailAddress(userEmail);}
 
-    public boolean registerOwner(OwnerDto ownerDto) {
+    public Long registerOwner(OwnerDto ownerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
 
@@ -44,14 +44,14 @@ public class UserService {
         // Check for existing users with the same email address
         if (potentialOwnerRepository.findPotentialOwnerByEmailAddress(potentialOwner.getEmailAddress()).isPresent()) {
             log.warn("Duplicate owner attempt for email: {}", potentialOwner.getEmailAddress());
-            return false;
+            return null;
         }
 
         // Save the user to the database
         PotentialOwner savedUser = potentialOwnerRepository.save(potentialOwner);
 
         // Return status of registration
-        return savedUser.getId() != null;
+        return savedUser.getId();
     }
 
     private static PotentialOwner getPotentialOwner(OwnerDto ownerDto, String encodedPassword) {
@@ -61,11 +61,11 @@ public class UserService {
         potentialOwner.setProfilePicPath(ownerDto.getProfilePicPath());
         potentialOwner.setAccountType(ownerDto.getAccountType());
         potentialOwner.setNameFirst(ownerDto.getNameFirst());
-        potentialOwner.setNameFirst(ownerDto.getNameLast());
+        potentialOwner.setNameLast(ownerDto.getNameLast());
         return potentialOwner;
     }
 
-    public boolean registerCenter(CenterDto centerDto) {
+    public Long registerCenter(CenterDto centerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
 
@@ -75,14 +75,14 @@ public class UserService {
         // Check for existing users with the same email address
         if (adoptionCenterRepository.findAdoptionCenterByEmailAddress(adoptionCenter.getEmailAddress()).isPresent()) {
             log.warn("Duplicate center attempt for email: {}", adoptionCenter.getEmailAddress());
-            return false;
+            return null;
         }
 
         // Save the user to the database
         AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
 
         // Return status of registration
-        return savedUser.getId() != null;
+        return savedUser.getId();
     }
 
     private static AdoptionCenter getAdoptionCenter(CenterDto centerDto, String encodedPassword) {
