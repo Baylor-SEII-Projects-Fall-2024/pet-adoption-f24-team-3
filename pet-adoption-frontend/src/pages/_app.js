@@ -59,7 +59,7 @@ function MainApp({ Component, pageProps }) {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange);
     };
-  }, [router]);
+  }, [router, currentUserId]);
 
   return (
     <AppCacheProvider>

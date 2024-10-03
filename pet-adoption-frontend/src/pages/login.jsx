@@ -4,32 +4,34 @@ import { useRouter } from "next/router";
 import { Button, Card, CardContent, Stack, Typography, TextField } from '@mui/material'
 import { useState } from "react";
 import userService from "@/utils/services/userService";
-import { useDispatch } from 'react-redux';
-import { setCurrentUserId } from '@/utils/redux';
+import { useSelector } from 'react-redux';
 
 export default function LoginPage() {
     const router = useRouter();
-    const dispatch = useDispatch();
     const { validateLogin } = userService();
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
     const [formData, setFormData] = useState({
-        email: "",
-        password: ""
+        email: "owner@owner",
+        password: "123"
     });
+
+    //handle what happens on sumbmit. Does not reroute on success.
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             await validateLogin(formData.email, formData.password)
                 .then((userId) => {
+                    //if user id is not null, that is handled in the hook below
                     if (userId !== null) {
-
                         router.push(`/profile/${userId}`);
-                    } else {
+                    }
+                    else {
                         let elm = document.getElementById("errorLabel");
                         elm.innerHTML = "Invalid credentials!";
                         elm.style = "color: red;"

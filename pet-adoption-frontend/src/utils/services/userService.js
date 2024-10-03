@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 
 
@@ -6,7 +6,7 @@ import { setCurrentUserId } from '@/utils/redux';
 
 const userService = () => {
     const dispatch = useDispatch();
-
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
@@ -20,22 +20,21 @@ const userService = () => {
                 password: password,
             })
         });
-        dispatch(setCurrentUserId(1));
         const result = await response.json();
-        console.log(result);
+        console.log("USER ID:", result.userid);
+
         if (response.ok) {
-            //dispatch(setCurrentUserId(result.userId));
-            saveCurrentUserToRedux(result.userId);
+            //dispatch(setCurrentUserId(result.userid));
+            saveCurrentUserToRedux(result.userid);
             return result.userid;
         } else {
             return null;
         }
     };
 
-
-    const saveCurrentUserToRedux = (userId) => {
-        console.log("Dispatching ", userId);
-        //dispatch(setCurrentUserId(userId));
+    //fetch a few
+    const saveCurrentUserToRedux = (userid) => {
+        dispatch(setCurrentUserId(userid));
     };
 
     return {
