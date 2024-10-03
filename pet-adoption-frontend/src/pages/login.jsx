@@ -14,8 +14,8 @@ export default function LoginPage() {
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
     const [formData, setFormData] = useState({
-        email: "owner@owner",
-        password: "123"
+        email: "",
+        password: ""
     });
 
     //handle what happens on sumbmit. Does not reroute on success.
