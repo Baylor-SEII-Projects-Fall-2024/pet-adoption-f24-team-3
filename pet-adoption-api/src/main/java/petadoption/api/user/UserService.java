@@ -61,7 +61,7 @@ public class UserService {
         potentialOwner.setProfilePicPath(ownerDto.getProfilePicPath());
         potentialOwner.setAccountType(ownerDto.getAccountType());
         potentialOwner.setNameFirst(ownerDto.getNameFirst());
-        potentialOwner.setNameFirst(ownerDto.getNameLast());
+        potentialOwner.setNameLast(ownerDto.getNameLast());
         return potentialOwner;
     }
 
