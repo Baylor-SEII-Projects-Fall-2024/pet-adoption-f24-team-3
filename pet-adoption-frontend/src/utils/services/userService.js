@@ -113,7 +113,7 @@ const userService = () => {
 
     };
 
-    const logout = () => {
+    const logOut = () => {
         dispatch(setCurrentUserId(null));
         dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: null });
         dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: null });
