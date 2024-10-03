@@ -24,10 +24,10 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            await validateLogin(formData.email, formData.password, dispatch)
+            await validateLogin(formData.email, formData.password)
                 .then((userId) => {
                     if (userId !== null) {
-                        dispatch(setCurrentUserId(userId));
+
                         router.push(`/profile/${userId}`);
                     } else {
                         let elm = document.getElementById("errorLabel");
