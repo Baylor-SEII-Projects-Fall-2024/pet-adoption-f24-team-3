@@ -4,12 +4,12 @@ import { setCurrentUserId } from '@/utils/redux';
 
 
 
-const UserService = () => {
-    //const //dispatch = useDispatch();
+const userService = () => {
+    // const dispatch = useDispatch();
 
 
-    //validates the user login. Returns the user ID if successful, null otherwise
-    const validateLogin = async (email, password) => {
+    //  validates the user login.Returns the user ID if successful, null otherwise
+    const validateLogin = async (email, password, dispatch) => {
         const response = await fetch("http://localhost:8080/api/login", {
             method: "POST",
             headers: {
@@ -22,21 +22,25 @@ const UserService = () => {
         });
 
         const result = await response.json();
+        console.log(result);
         if (response.ok) {
-            //   this.saveCurrentUserToRedux(result.userId);
+            dispatch(setCurrentUserId(result.userId));
+            //saveCurrentUserToRedux(result.userId);
             return result.userid;
         } else {
             return null;
         }
     };
 
-    // async saveCurrentUserToRedux(userId) {
-    //     this.dispatch(setCurrentUserId(userId));
-    // };
+
+    const saveCurrentUserToRedux = async (userId) => {
+        console.log("Dispatching ", userId);
+        dispatch(setCurrentUserId(userId));
+    };
 
     return {
         validateLogin,
     };
 
 };
-export default UserService;
+export default userService;

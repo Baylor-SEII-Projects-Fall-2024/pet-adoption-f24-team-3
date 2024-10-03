@@ -3,11 +3,14 @@ import Head from 'next/head';
 import { useRouter } from "next/router";
 import { Button, Card, CardContent, Stack, Typography, TextField } from '@mui/material'
 import { useState } from "react";
-import { useServices } from "@/utils/services/serviceProvider";
+import userService from "@/utils/services/userService";
+import { useDispatch } from 'react-redux';
+import { setCurrentUserId } from '@/utils/redux';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { userService } = useServices;
+    const dispatch = useDispatch();
+    const { validateLogin } = userService();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,9 +24,10 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            await userService.validateLogin(formData.email, formData.password)
+            await validateLogin(formData.email, formData.password, dispatch)
                 .then((userId) => {
                     if (userId !== null) {
+                        dispatch(setCurrentUserId(userId));
                         router.push(`/profile/${userId}`);
                     } else {
                         let elm = document.getElementById("errorLabel");

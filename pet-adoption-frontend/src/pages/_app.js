@@ -9,7 +9,6 @@ import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
 import { CssBaseline } from '@mui/material';
 
 import { PetAdoptionThemeProvider } from '@/utils/theme';
-import { ServicesProvider } from '@/utils/services/serviceProvider';
 import { buildStore } from '@/utils/redux';
 
 import HeaderBar from '@/components/HeaderBar';
@@ -64,19 +63,17 @@ function MainApp({ Component, pageProps }) {
 
   return (
     <AppCacheProvider>
-      <ServicesProvider>
-        <Head>
-          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-          <link rel='icon' href='/favicon.ico' />
-        </Head>
+      <Head>
+        <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
 
-        <PetAdoptionThemeProvider>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <HeaderBar currentUserId={currentUserId} />
-          <Component {...pageProps} />
-        </PetAdoptionThemeProvider>
-      </ServicesProvider>
+      <PetAdoptionThemeProvider>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
+        <HeaderBar currentUserId={currentUserId} />
+        <Component {...pageProps} />
+      </PetAdoptionThemeProvider>
     </AppCacheProvider>
   );
 }
