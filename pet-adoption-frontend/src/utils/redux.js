@@ -8,17 +8,23 @@ function eventsReducer(state = [], action) {
     }
 }
 
-const SET_CURRENT_USER_ID = 'SET_CURRENT_USER_ID';
 
 export const setCurrentUserId = (userId) => ({
-    type: SET_CURRENT_USER_ID,
+    type: 'SET_CURRENT_USER_ID',
     payload: userId,
 });
 
+
 function currentUserReducer(state = { currentUserId: null }, action) {
     switch (action.type) {
-        case SET_CURRENT_USER_ID:
+        case 'SET_CURRENT_USER_ID':
             return { ...state, currentUserId: action.payload };
+        case 'SET_CURRENT_USER_FULL_NAME':
+            return { ...state, currentUserFullName: action.payload };
+        case 'SET_CURRENT_USER_TYPE':
+            return { ...state, currentUserType: action.payload };
+        case 'SET_CURRENT_USER_PROFILE_PIC_PATH':
+            return { ...state, currentUserProfilePicPath: action.payload };
         default:
             return state;
     }

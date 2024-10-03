@@ -4,12 +4,10 @@ import { useRouter } from "next/router";
 import { Button, Card, CardContent, Stack, Typography, TextField } from '@mui/material'
 import { useState } from "react";
 import userService from "@/utils/services/userService";
-import { useSelector } from 'react-redux';
 
 export default function LoginPage() {
     const router = useRouter();
     const { validateLogin } = userService();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

@@ -1,17 +1,21 @@
 import React from "react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import { Button, AppBar, Container, Typography, Toolbar } from '@mui/material'
 
 export default function HeaderBar(props) {
     const router = useRouter();
+
     console.log(props);
-    const currentUserId = props?.currentUserId | null;
+
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    const currentUserFullName = useSelector((state) => state.currentUser.currentUserFullName);
 
     const displayCurrentUser = () => {
         if (currentUserId) {
             return (
                 <div>
-                    <Typography>Welcome, {currentUserId}</Typography>
+                    <Typography>Welcome, {currentUserFullName}</Typography>
                     <Button variant='contained' color="secondary" onClick={() => router.push(`/profile/${currentUserId}`)} sx={{ width: 200 }}>Profile</Button>
                 </div>
             );

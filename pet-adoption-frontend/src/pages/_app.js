@@ -71,7 +71,7 @@ function MainApp({ Component, pageProps }) {
       <PetAdoptionThemeProvider>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <HeaderBar currentUserId={currentUserId} />
+        <HeaderBar />
         <Component {...pageProps} />
       </PetAdoptionThemeProvider>
     </AppCacheProvider>

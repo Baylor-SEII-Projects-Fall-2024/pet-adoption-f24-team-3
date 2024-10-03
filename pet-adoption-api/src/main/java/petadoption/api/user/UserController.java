@@ -10,6 +10,7 @@ import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.dtos.UserDto;
+import petadoption.api.user.responseObjects.SessionUserDataResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,30 @@ public class UserController {
             log.warn("User not found");
         }
         return user;
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/users/{id}/sessionData")
+    public SessionUserDataResponse getUserSessionData(@PathVariable Long id) {
+        var user = userService.findUser(id).orElse(null);
+
+        if (user == null) {
+            log.warn("User not found");
+            return null;
+        }
+
+        SessionUserDataResponse sessionUser = new SessionUserDataResponse();
+        sessionUser.userId = user.getId();
+        sessionUser.accountType=user.getAccountType();
+        sessionUser.profilePicPath=user.getProfilePicPath();
+        if(user instanceof  PotentialOwner){
+            sessionUser.userFullName=((PotentialOwner) user).nameFirst + " " + ((PotentialOwner) user).nameLast;
+        }
+        else if(user instanceof  AdoptionCenter){
+            sessionUser.userFullName=((AdoptionCenter) user).getName();
+        }
+
+        return sessionUser;
     }
 
     @GetMapping("users/{email}")
@@ -68,12 +93,12 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/centers")
-    public ResponseEntity<Map<String, String>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
-        boolean isRegistered = userService.registerCenter(centerDto);
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
+        Long newUserId = userService.registerCenter(centerDto);
+        Map<String, Object>  response = new HashMap<>();
 
-        if (isRegistered) {
-            response.put("message", "Center registered successfully!");
+        if (newUserId!=null) {
+            response.put("userid", newUserId);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Registration failed.");
@@ -83,12 +108,12 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/owners")
-    public ResponseEntity<Map<String, String>> savePotentialOwner(@RequestBody OwnerDto ownerDto) {
-        boolean isRegistered = userService.registerOwner(ownerDto);
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> savePotentialOwner(@RequestBody OwnerDto ownerDto) {
+        Long newOwnerId = userService.registerOwner(ownerDto);
+        Map<String, Object> response = new HashMap<>();
 
-        if (isRegistered) {
-            response.put("message", "Owner registered successfully!");
+        if (newOwnerId != null) {
+            response.put("userid",newOwnerId);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Registration failed.");
