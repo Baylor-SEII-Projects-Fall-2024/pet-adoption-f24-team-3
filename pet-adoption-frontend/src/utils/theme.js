@@ -35,14 +35,14 @@ const themeOptions = {
                     backgroundColor: '#a3b18a',
                     color: '#fff',
                     '&:hover': {
-                      backgroundColor: '#8e9d72', // Slightly darker green for hover
+                        backgroundColor: '#8e9d72', // Slightly darker green for hover
                     },
-                  },
-                  containedSecondary: {
+                },
+                containedSecondary: {
                     backgroundColor: '#c5a5bf',
                     color: '#fff',
                     '&:hover': {
-                      backgroundColor: '#af8ba5',
+                        backgroundColor: '#af8ba5',
                     },
                 },
             },
@@ -50,10 +50,10 @@ const themeOptions = {
     },
     palette: {
         primary: {
-          main: '#a3b18a', // Soft green
+            main: '#a3b18a', // Soft green
         },
         secondary: {
-          main: '#c5a5bf', // Light lavender
+            main: '#c5a5bf', // Light lavender
         },
         background: {
             default: '#f0e6d6', // Light beige for the background
