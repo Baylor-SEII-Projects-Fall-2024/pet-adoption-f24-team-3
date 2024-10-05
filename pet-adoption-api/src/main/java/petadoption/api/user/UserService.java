@@ -117,6 +117,26 @@ public class UserService {
         return adoptionCenter;
     }
 
+    public Long updateAdoptionCenter(CenterDto centerDto, Long centerID){
+        AdoptionCenter updateCenter = adoptionCenterRepository.findById(centerID)
+                .orElseThrow(() -> new EntityNotFoundException("Adoption center not found with ID: " + centerID));
+
+        if (centerDto.getPassword() != null && !centerDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
+            updateCenter.setPassword(encodedPassword);
+        }
+        updateCenter.setAccountType(centerDto.getAccountType());
+        updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
+        updateCenter.setName(centerDto.getName());
+        updateCenter.setAddress(centerDto.getAddress());
+        updateCenter.setCity(centerDto.getCity());
+        updateCenter.setState(centerDto.getState());
+        updateCenter.setZipCode(centerDto.getZipCode());
+        updateCenter.setEmailAddress(centerDto.getEmailAddress());
+
+        return adoptionCenterRepository.save(updateCenter).getId();
+    }
+
     public long loginUser(LoginDto loginDto) {
         // See if there is a user under the email provided
         var userOptional = findUserByEmail(loginDto.getEmailAddress());
