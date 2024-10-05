@@ -1,5 +1,6 @@
 package petadoption.api.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,23 @@ public class UserService {
         potentialOwner.setNameFirst(ownerDto.getNameFirst());
         potentialOwner.setNameLast(ownerDto.getNameLast());
         return potentialOwner;
+    }
+
+    public Long updatePotentialOwner(OwnerDto ownerDto, Long ownerID) {
+        PotentialOwner updateOwner = potentialOwnerRepository.findById(ownerID)
+                .orElseThrow(() -> new EntityNotFoundException("Potential owner not found with ID: " + ownerID));
+
+        if (ownerDto.getPassword() != null && !ownerDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
+            updateOwner.setPassword(encodedPassword);
+        }
+        updateOwner.setEmailAddress(ownerDto.getEmailAddress());
+        updateOwner.setProfilePicPath(ownerDto.getProfilePicPath());
+        updateOwner.setAccountType(ownerDto.getAccountType());
+        updateOwner.setNameFirst(ownerDto.getNameFirst());
+        updateOwner.setNameLast(ownerDto.getNameLast());
+
+        return potentialOwnerRepository.save(updateOwner).getId();
     }
 
     public Long registerCenter(CenterDto centerDto) {
