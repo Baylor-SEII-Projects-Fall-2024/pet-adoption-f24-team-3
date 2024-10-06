@@ -120,11 +120,30 @@ const userService = () => {
         dispatch({ type: 'SET_CURRENT_USER_PROFILE_PIC_PATH', payload: null });
     };
 
+    const getUserInfo = async (userid) => {
+        const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        console.log("result:", result);
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Registration failed: ${result.message}`);
+            return null;
+        }
+    };
+
     return {
         validateLogin,
         registerCenter,
         registerOwner,
         logOut,
+        getUserInfo,
     };
 
 };
