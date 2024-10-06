@@ -70,6 +70,7 @@ public class UserTests {
         ownerDto.setNameFirst("New First");
         ownerDto.setNameLast("New Last");
 
+        assertNotEquals(potentialOwner.getEmailAddress(), ownerDto.getEmailAddress());
 
         Long newID = userService.updatePotentialOwner(ownerDto, id);
         assertNotNull(newID);
