@@ -1,5 +1,6 @@
 package petadoption.api.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,23 @@ public class UserService {
         return potentialOwner;
     }
 
+    public Long updatePotentialOwner(OwnerDto ownerDto, Long ownerID) {
+        PotentialOwner updateOwner = potentialOwnerRepository.findById(ownerID)
+                .orElseThrow(() -> new EntityNotFoundException("Potential owner not found with ID: " + ownerID));
+
+        if (ownerDto.getPassword() != null && !ownerDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
+            updateOwner.setPassword(encodedPassword);
+        }
+        updateOwner.setEmailAddress(ownerDto.getEmailAddress());
+        updateOwner.setProfilePicPath(ownerDto.getProfilePicPath());
+        updateOwner.setAccountType(ownerDto.getAccountType());
+        updateOwner.setNameFirst(ownerDto.getNameFirst());
+        updateOwner.setNameLast(ownerDto.getNameLast());
+
+        return potentialOwnerRepository.save(updateOwner).getId();
+    }
+
     public Long registerCenter(CenterDto centerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
@@ -97,6 +115,26 @@ public class UserService {
         adoptionCenter.setState(centerDto.getState());
         adoptionCenter.setZipCode(centerDto.getZipCode());
         return adoptionCenter;
+    }
+
+    public Long updateAdoptionCenter(CenterDto centerDto, Long centerID){
+        AdoptionCenter updateCenter = adoptionCenterRepository.findById(centerID)
+                .orElseThrow(() -> new EntityNotFoundException("Adoption center not found with ID: " + centerID));
+
+        if (centerDto.getPassword() != null && !centerDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
+            updateCenter.setPassword(encodedPassword);
+        }
+        updateCenter.setAccountType(centerDto.getAccountType());
+        updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
+        updateCenter.setName(centerDto.getName());
+        updateCenter.setAddress(centerDto.getAddress());
+        updateCenter.setCity(centerDto.getCity());
+        updateCenter.setState(centerDto.getState());
+        updateCenter.setZipCode(centerDto.getZipCode());
+        updateCenter.setEmailAddress(centerDto.getEmailAddress());
+
+        return adoptionCenterRepository.save(updateCenter).getId();
     }
 
     public long loginUser(LoginDto loginDto) {

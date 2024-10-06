@@ -135,4 +135,31 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/update/owner/{id}")
+    public ResponseEntity<Map<String, Object>> updateOwner(@RequestBody OwnerDto ownerDto, @PathVariable Long id) {
+        Long updatedOwner = userService.updatePotentialOwner(ownerDto, id);
+        Map<String, Object>  response = new HashMap<>();
+        if (updatedOwner!=null) {
+            response.put("userid", updatedOwner);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Update failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/update/center/{id}")
+    public ResponseEntity<Map<String, Object>> updateCenter(@RequestBody CenterDto centerDto, @PathVariable Long id) {
+        Long updatedOwner = userService.updateAdoptionCenter(centerDto, id);
+        Map<String, Object>  response = new HashMap<>();
+        if (updatedOwner!=null) {
+            response.put("userid", updatedOwner);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Update failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
+    }
 }
