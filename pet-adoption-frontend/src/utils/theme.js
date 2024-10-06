@@ -47,6 +47,14 @@ const themeOptions = {
                 },
             },
         },
+        MuiSvgIcon: {
+            styleOverrides: {
+                root: {
+                    marginRight: 5,
+                    marginLeft: 5,
+                },
+            },
+        },
     },
     palette: {
         primary: {
@@ -62,6 +70,8 @@ const themeOptions = {
         text: {
             primary: '#333333', // Dark grey for primary text
             secondary: '#666666', // Lighter grey for secondary text
+            white: '#fff',
+            darkColor: '#5F4B59', // dark purple for some occasional text
         },
     }
 };

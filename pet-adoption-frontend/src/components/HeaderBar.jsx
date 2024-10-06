@@ -9,11 +9,9 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { AccountBox, Logout, Pets, CalendarMonth, Cottage } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
-
-
-const settings = ['Profile', 'Logout'];
 
 
 export default function HeaderBar(props) {
@@ -30,30 +28,25 @@ export default function HeaderBar(props) {
     const pages = [
         {
             name: "Pets",
-            route: "/pets"
+            route: "/pets",
+            icon: <Pets />
         },
         {
             name: "Events",
-            route: "/events"
+            route: "/events",
+            icon: <CalendarMonth />
         },
         {
             name: "Adoption Centers",
-            route: "/centers"
+            route: "/centers",
+            icon: <Cottage />
         },
     ];
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
     };
 
     const handleCloseUserMenu = () => {
@@ -68,15 +61,34 @@ export default function HeaderBar(props) {
         }
     }
 
+    let styles = {
+        headerBox: {
+            display: { xs: 'none', md: 'flex' },
+            alignItems: "center"
+        },
+        leftBox: {
+            flexGrow: 1,
+            display: { xs: 'none', md: 'flex' },
+            alignItems: "center"
+        },
+        headerText: {
+            my: 2,
+            mx: 2,
+            fontSize: "1.1em",
+            display: 'flex',
+            color: 'white',
+        },
+    };
+
     const displayCurrentUser = () => {
         if (currentUserId) {
             return (
-                <Box sx={{ display: "flex", alignItems: "center " }}>
-                    <Typography>Welcome, {currentUserFullName}</Typography>
+                <Box sx={styles.headerBox}>
+                    <Typography sx={styles.headerText} color='text.white'>Welcome, {currentUserFullName}!</Typography>
                     <Tooltip title="View Profile">
                         <IconButton
                             onClick={handleOpenUserMenu}
-                            sx={{ p: 0 }}
+                            sx={{ p: 1 }}
                         >
                             <Avatar alt="Remy Sharp" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" />
                         </IconButton>
@@ -101,11 +113,13 @@ export default function HeaderBar(props) {
                             router.push(`/profile/${currentUserId}`);
                             handleCloseUserMenu();
                         }}>
+                            <AccountBox></AccountBox>
                             <Typography sx={{ textAlign: 'center' }}>Profile</Typography>
                         </MenuItem>
                         <MenuItem key={"logout"} onClick={() => {
                             logoutUser();
                         }}>
+                            <Logout></Logout>
                             <Typography sx={{ textAlign: 'center' }}>Log Out</Typography>
                         </MenuItem>
                     </Menu>
@@ -127,19 +141,19 @@ export default function HeaderBar(props) {
         <AppBar position="static">
             <Container maxWidth="x1">
                 <Toolbar disableGutters>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, alignItems: "center" }}>
+                    <Box sx={styles.leftBox}>
                         <Box
-                            sx={{ display: { xs: 'none', md: 'flex' }, alignItems: "center" }}
+                            sx={styles.headerBox}
                             onClick={() => router.push("/")}>
                             <Image
-                                src="/WOOF_Logo.jpg" // Since the image is in the public folder, use the root path
+                                src="/WOOF_Logo.png" // Since the image is in the public folder, use the root path
                                 alt="WOOF Logo"
-                                width={75}
-                                height={75}
+                                width={100}
+                                height={60}
                             />
                             <Typography
                                 variant='h3'
-                                color='text.secondary'
+                                color='text.darkColor'
                                 sx={{ marginLeft: "10px" }} >WOOF</Typography>
                         </Box>
 
@@ -147,7 +161,8 @@ export default function HeaderBar(props) {
                             <Button
                                 key={page.name}
                                 onClick={() => router.push(page.route)}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                sx={styles.headerText}
+                                startIcon={page.icon}
                             >
                                 {page.name}
                             </Button>
