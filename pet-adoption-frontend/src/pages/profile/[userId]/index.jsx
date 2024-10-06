@@ -8,12 +8,13 @@ import userService from '@/utils/services/userService';
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
-  const currentUserId = useSelector(state => state.currentUser.currentUserId);
+  const currentUserId = useSelector(state => state.currentUser.currentUserId); // get the current session user
   const { getUserInfo } = userService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch user info when page renders
   useEffect(() => {
     if (userId) {
       const fetchUserInfo = async () => {
@@ -29,10 +30,17 @@ export default function ProfilePage() {
           setLoading(false);
         }
       };
-
       fetchUserInfo();
     }
   }, [userId, router]);
+
+  const handleEditInfoClick = () => {
+    router.push(`/profile/${userId}/edit`);
+  };
+
+  const handleEditPreferencesClick = () => {
+    router.push(`/profile/${userId}/preferences`);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -44,12 +52,19 @@ export default function ProfilePage() {
         alignItems: 'center',
         minHeight: '100vh',
         flexDirection: 'column',
+        gap: 2,
       }}
     >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}>
       <Card sx={{ 
         minWidth: 275, 
         mb: 3,
         mt: 3,
+        mr: 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -79,31 +94,35 @@ export default function ProfilePage() {
           src={userInfo && userInfo.profilePicPath ? userInfo.profilePicPath : ''}
         />
       </Card>
-      <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        padding: 2
-      }}>
-      <Card sx={{ mb: 2, mr: 2}}>
+      <Card sx={{ mb: 3, mt: 3}}>
         <CardContent>
-          <Typography mb='2' variant="h5">User Info</Typography>
+          <Typography mb={2} variant="h5">User Info</Typography>
           {userInfo && (
             <Stack spacing={3}>
               <Typography>First Name: {userInfo.nameFirst}</Typography>
               <Typography>Last Name: {userInfo.nameLast}</Typography>
               <Typography>Email: {userInfo.emailAddress}</Typography>
+              {String(userId) === String(currentUserId) && (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                  <Button 
+                    variant="contained" 
+                    color="secondary"
+                    sx={{ padding: '12px 12px', fontSize: '16px', minWidth: '200px' }}
+                    onClick={handleEditInfoClick}
+                  >
+                  Edit Info
+                  </Button>
+                </Box>)}
             </Stack>
           )}
         </CardContent>
       </Card>
+      </Box>
       <Card>
         <CardContent>
           <Typography mb={2} variant="h5">Preferences</Typography>
           {userInfo && userInfo.preference && (
-            <Grid container spacing={2}>
+            <Grid container spacing={2.5}>
             <Grid item xs={12} sm={6}>
               <Typography>City: {userInfo.preference.city}</Typography>
             </Grid>
@@ -120,16 +139,26 @@ export default function ProfilePage() {
               <Typography>Size: {userInfo.preference.size}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography>Sex: {userInfo.preference.sex}</Typography>
+              <Typography>Sex: {/*userInfo.preference.sex*/}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography>Age: {userInfo.preference.ageClass}</Typography>
             </Grid>
           </Grid>
           )}
+          {String(userId) === String(currentUserId) && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button 
+            variant="contained" 
+            color="primary"
+            sx={{ padding: '12px 12px', fontSize: '16px', minWidth: '200px' }}
+            onClick={handleEditPreferencesClick}
+            >
+            Adjust Preferences
+            </Button>
+          </Box>)}
         </CardContent>
       </Card>
-      </Box>
     </Box>
   );
 }
