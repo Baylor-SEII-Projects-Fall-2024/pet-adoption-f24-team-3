@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { Button, Card, CardContent, Stack, Typography, Avatar, Box} from '@mui/material';
-import { deepOrange } from '@mui/material/colors';
+import { Button, Card, CardContent, Stack, Typography, Avatar, Box, Grid} from '@mui/material';
 import userService from '@/utils/services/userService';
 
 export default function ProfilePage() {
@@ -49,14 +48,26 @@ export default function ProfilePage() {
     >
       <Card sx={{ 
         minWidth: 275, 
-        mb: 2,
+        mb: 3,
         mt: 3,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 2
+        padding: 2,
+        paddingBottom: 4
         }}>
+        <CardContent>
+        <Typography 
+          variant="h3" 
+          component="div"
+          sx={{
+            wordBreak: 'break-word',
+            whiteSpace: 'normal'
+          }}>
+          {userInfo.nameFirst} {userInfo.nameLast}'s Profile
+        </Typography>
+        </CardContent>
         <Avatar
           sx={{ 
             bgcolor: '#a3b18a',
@@ -67,26 +78,58 @@ export default function ProfilePage() {
           alt={userInfo ? `${userInfo.nameFirst} ${userInfo.nameLast}` : 'User Avatar'}
           src={userInfo && userInfo.profilePicPath ? userInfo.profilePicPath : ''}
         />
-        <CardContent>
-        <Typography variant="h5" component="div">
-          {userInfo.nameFirst} {userInfo.nameLast}
-        </Typography>
-        </CardContent>
-
       </Card>
-      <Card>
+      <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        padding: 2
+      }}>
+      <Card sx={{ mb: 2, mr: 2}}>
         <CardContent>
-          <Typography mb='2' variant="h5">User Profile</Typography>
+          <Typography mb='2' variant="h5">User Info</Typography>
           {userInfo && (
             <Stack spacing={3}>
               <Typography>First Name: {userInfo.nameFirst}</Typography>
               <Typography>Last Name: {userInfo.nameLast}</Typography>
               <Typography>Email: {userInfo.emailAddress}</Typography>
-              {/* Add more user info fields as needed */}
             </Stack>
           )}
         </CardContent>
       </Card>
+      <Card>
+        <CardContent>
+          <Typography mb={2} variant="h5">Preferences</Typography>
+          {userInfo && userInfo.preference && (
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Typography>City: {userInfo.preference.city}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>State: {userInfo.preference.state}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>Species: {userInfo.preference.species}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>Breed: {userInfo.preference.breed}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>Size: {userInfo.preference.size}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>Sex: {userInfo.preference.sex}</Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography>Age: {userInfo.preference.ageClass}</Typography>
+            </Grid>
+          </Grid>
+          )}
+        </CardContent>
+      </Card>
+      </Box>
     </Box>
   );
 }
