@@ -24,8 +24,7 @@ export default function ProfilePage() {
             setUserInfo(result);
           } 
         } catch (error) {
-          console.error("Error: ", error);
-          setError("An error occurred during fetching user information");
+          setError(`User information could not be found for user ${userId}`);
         } finally {
           setLoading(false);
         }
@@ -42,8 +41,47 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
+      <Card sx={{ minWidth: 275, mb: 2 }}>
+        <CardContent>
+          <Typography variant="h5" component="div">
+            Loading...
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+
+  if (error) return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
+      <Card sx={{ minWidth: 275, mb: 2 }}>
+        <CardContent>
+          <Typography variant="h5" component="div" color="error">
+            {error}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 
   return (
     <Box
