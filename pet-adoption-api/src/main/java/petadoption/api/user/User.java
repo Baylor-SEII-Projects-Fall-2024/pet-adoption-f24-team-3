@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED) // Strategy for inheritance
 @DiscriminatorColumn(name = "user_type") // Discriminator column to identify the type of user
+//@Table(name = "`user`") Used this for testing
 public class User {
     public static final String TABLE_NAME = "USERS";
 
