@@ -210,9 +210,16 @@
     "prop-types" "^15.8.1"
 
 "@mui/core-downloads-tracker@^5.16.7":
-  "integrity" "sha512-RtsCt4Geed2/v74sbihWzzRs+HsIQCfclHeORh5Ynu2fS4icIKozcSubwuG7vtzq2uW3fOR1zITSP84TNt2GoQ=="
-  "resolved" "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.16.7.tgz"
-  "version" "5.16.7"
+  version "5.16.7"
+  resolved "https://registry.npmjs.org/@mui/core-downloads-tracker/-/core-downloads-tracker-5.16.7.tgz"
+  integrity sha512-RtsCt4Geed2/v74sbihWzzRs+HsIQCfclHeORh5Ynu2fS4icIKozcSubwuG7vtzq2uW3fOR1zITSP84TNt2GoQ==
+
+"@mui/icons-material@^5.16.7":
+  version "5.16.7"
+  resolved "https://registry.npmjs.org/@mui/icons-material/-/icons-material-5.16.7.tgz"
+  integrity sha512-UrGwDJCXEszbDI7yV047BYU5A28eGJ79keTCP4cc74WyncuVrnurlmIRxaHL8YK+LI1Kzq+/JM52IAkNnv4u+Q==
+  dependencies:
+    "@babel/runtime" "^7.23.9"
 
 "@mui/material-nextjs@^5.15.3":
   "integrity" "sha512-4JkJ/w3XY8nvGQzGAr9v8SDlAfvo/nDxm6/hh9KPhTnkUdyQTZc8uSOOO1o30z12XzMdQ0NRivQTZGcK8sFk8g=="
@@ -789,14 +796,14 @@
     "@mui/material" "^5.16.7"
     "@mui/material-nextjs" "^5.15.3"
     "@reduxjs/toolkit" "^2.0.1"
-    "axios" "^1.7.3"
-    "next" "^14.2.14"
-    "pet-adoption-frontend" "file:"
-    "react" "^18"
-    "react-dom" "^18"
-    "react-redux" "^9.0.4"
-    "redux-thunk" "^3.1.0"
-    "yarn" "^1.22.22"
+    axios "^1.7.3"
+    next "^14.2.14"
+    pet-adoption-frontend "file:"
+    react "^18"
+    react-dom "^18"
+    react-redux "^9.0.4"
+    redux-thunk "^3.1.0"
+    yarn "^1.22.22"
 
 "picocolors@^1.0.0":
   "integrity" "sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ=="

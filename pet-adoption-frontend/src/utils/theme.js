@@ -35,25 +35,33 @@ const themeOptions = {
                     backgroundColor: '#a3b18a',
                     color: '#fff',
                     '&:hover': {
-                      backgroundColor: '#8e9d72', // Slightly darker green for hover
+                        backgroundColor: '#8e9d72', // Slightly darker green for hover
                     },
-                  },
-                  containedSecondary: {
+                },
+                containedSecondary: {
                     backgroundColor: '#c5a5bf',
                     color: '#fff',
                     '&:hover': {
-                      backgroundColor: '#af8ba5',
+                        backgroundColor: '#af8ba5',
                     },
+                },
+            },
+        },
+        MuiSvgIcon: {
+            styleOverrides: {
+                root: {
+                    marginRight: 5,
+                    marginLeft: 5,
                 },
             },
         },
     },
     palette: {
         primary: {
-          main: '#a3b18a', // Soft green
+            main: '#a3b18a', // Soft green
         },
         secondary: {
-          main: '#c5a5bf', // Light lavender
+            main: '#c5a5bf', // Light lavender
         },
         background: {
             default: '#f0e6d6', // Light beige for the background
@@ -62,6 +70,8 @@ const themeOptions = {
         text: {
             primary: '#333333', // Dark grey for primary text
             secondary: '#666666', // Lighter grey for secondary text
+            white: '#fff',
+            darkColor: '#5F4B59', // dark purple for some occasional text
         },
     }
 };

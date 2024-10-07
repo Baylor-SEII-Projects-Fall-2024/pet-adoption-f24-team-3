@@ -14,6 +14,7 @@ import { buildStore } from '@/utils/redux';
 import HeaderBar from '@/components/HeaderBar';
 
 import '@/styles/globals.css'
+import Footer from '@/components/Footer';
 
 // Initialize Redux
 let initialState = {};
@@ -72,9 +73,12 @@ function MainApp({ Component, pageProps }) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <HeaderBar />
-        <Component {...pageProps} />
+        <div style={{ minHeight: "90vh" }}>
+          <Component {...pageProps} />
+        </div>
+        <Footer />
       </PetAdoptionThemeProvider>
-    </AppCacheProvider>
+    </AppCacheProvider >
   );
 }
 
