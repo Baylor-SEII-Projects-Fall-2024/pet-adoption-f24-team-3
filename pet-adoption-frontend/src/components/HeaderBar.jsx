@@ -71,6 +71,11 @@ export default function HeaderBar(props) {
             display: { xs: 'none', md: 'flex' },
             alignItems: "center"
         },
+        clickBox: {
+            display: { xs: 'none', md: 'flex' },
+            alignItems: "center",
+            cursor: "pointer"
+        },
         headerText: {
             my: 2,
             mx: 2,
@@ -143,7 +148,7 @@ export default function HeaderBar(props) {
                 <Toolbar disableGutters>
                     <Box sx={styles.leftBox}>
                         <Box
-                            sx={styles.headerBox}
+                            sx={styles.clickBox}
                             onClick={() => router.push("/")}>
                             <Image
                                 src="/WOOF_Logo.png" // Since the image is in the public folder, use the root path
@@ -173,6 +178,6 @@ export default function HeaderBar(props) {
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 }
