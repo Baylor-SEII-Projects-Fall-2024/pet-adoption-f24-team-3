@@ -72,6 +72,7 @@ public class UserController {
     }
 
     //restrict search to owners
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/owners/{id}")
     public PotentialOwner findPotentialOwnerById(@PathVariable Long id) {
         var potentialOwner = userService.findPotentialOwner(id).orElse(null);
