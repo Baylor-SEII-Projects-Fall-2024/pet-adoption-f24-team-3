@@ -129,7 +129,6 @@ const userService = () => {
         });
 
         const result = await response.json();
-        //console.log("result:", result);
         if (response.ok) {
             return result;
         } else {
