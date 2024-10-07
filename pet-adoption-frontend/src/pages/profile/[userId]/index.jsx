@@ -41,7 +41,7 @@ export default function ProfilePage() {
       };
       fetchUserInfo();
     }
-  }, [userId, router]);
+  }, [userId]); // rerender if userId changes
 
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
