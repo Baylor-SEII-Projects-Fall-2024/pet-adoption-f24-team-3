@@ -4,6 +4,10 @@
 /build
 /target
 /node_modules
+/caches/
+/daemon/
+/native/
+/wrapper/
 .DS_Store
 
 .editorconfig
