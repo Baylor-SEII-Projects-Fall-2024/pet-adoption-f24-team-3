@@ -11,10 +11,10 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { getUserInfo } = userService();
+  const { updateOwner, getUserInfo } = userService();
+
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
-  const { updateOwner } = userService();
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     accountType: "Owner",
@@ -98,10 +98,10 @@ return (
           <Stack direction="column" >
             <Card sx={{ minWidth:"60vw", p:"15px" }} >
             <form onSubmit={handleSubmit}>
-              <TextField fullWidth label='Email' name="emailAddress" size="small" margin="dense" value={formData.emailAddress} onChange={handleChange} />
+              <TextField required fullWidth label='Email' name="emailAddress" size="small" margin="dense" value={formData.emailAddress} onChange={handleChange} />
               <TextField fullWidth label='First Name' name="nameFirst" size="small" margin="dense" value={formData.nameFirst} onChange={handleChange} />
-              <TextField fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleChange} />
-              <Button type='Save' variant='contained' color='primary'>Save</Button>
+              <TextField required fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleChange} />
+              <Button type='submit' variant='contained' color='primary'>Save</Button>
               
             </form>
             <label id="errorLabel"></label>
