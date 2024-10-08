@@ -1,20 +1,19 @@
 import React from 'react';
 import Head from 'next/head';
-import App from 'next/app';
 
 import { Provider as ReduxProvider, useSelector } from 'react-redux';
 import { useRouter } from "next/router";
-
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
 import { CssBaseline } from '@mui/material';
-
 import { PetAdoptionThemeProvider } from '@/utils/theme';
 import { buildStore } from '@/utils/redux';
 
-import HeaderBar from '@/components/HeaderBar';
 
 import '@/styles/globals.css'
+
+import HeaderBar from '@/components/HeaderBar';
 import Footer from '@/components/Footer';
+import userService from '@/utils/services/userService';
 
 // Initialize Redux
 let initialState = {};
@@ -25,9 +24,9 @@ const safePaths = [
   '/login',
   '/register',
   '/register/owner',
-  '/register/center',
-
+  '/register/center'
 ];
+
 
 function PetApp({ Component, pageProps }) {
   return (
@@ -42,14 +41,28 @@ function MainApp({ Component, pageProps }) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const router = useRouter();
 
+  const { authenticateFromCookie } = userService();
+
+  React.useEffect(() => {
+    async function checkCookies() {
+      await authenticateFromCookie()
+        .then((result) => {
+          if (result == false) {
+            const url = window.location.pathname;
+            redirectRestrictedPaths(url);
+          }
+        });
+    }
+    checkCookies();
+  }, []);
+
+
   // Client-side redirection check
   React.useEffect(() => {
     const handleRouteChange = (url) => {
       // Check the new URL after a navigation
-      console.log('Navigating to:', url);
-      if (currentUserId == null && !safePaths.find(u => u === url)) {
-        console.log('Redirecting to /login from:', url);
-        router.push('/login');
+      if (currentUserId == null) {
+        redirectRestrictedPaths(url);
       }
     };
 
@@ -61,6 +74,13 @@ function MainApp({ Component, pageProps }) {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [router, currentUserId]);
+
+
+  const redirectRestrictedPaths = (url) => {
+    if (!safePaths.find(u => u === url)) {
+      router.push('/login');
+    }
+  }
 
   return (
     <AppCacheProvider>
@@ -81,33 +101,5 @@ function MainApp({ Component, pageProps }) {
     </AppCacheProvider >
   );
 }
-
-
-// PetApp.getInitialProps = async (appContext) => {
-//   // Step 1: Get the initial props for the app component.
-//   const appProps = await App.getInitialProps(appContext);
-
-//   // Step 2: Destructure appContext to access context properties.
-//   const { ctx } = appContext;
-//   const { res, pathname } = ctx;
-
-//   // Debugging output
-//   console.log('Current pathname:', pathname);
-//   console.log("Res:", res);
-
-//   // Step 3: Skip redirection for the home page ('/').
-//   if (safePaths.find(p => p === pathname)) {
-//     return { ...appProps };
-//   }
-
-//   // Step 4: Redirect to login for all other pages.
-//   if (res) {
-//     console.warn("Redirecting to login");
-//     res.writeHead(302, { Location: '/login' });
-//     res.end();
-//   }
-
-//   return { ...appProps };
-// }
 
 export default PetApp;
