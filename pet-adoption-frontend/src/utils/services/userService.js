@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
-
-
-
+import Cookies from 'js-cookie';
 
 const userService = () => {
     const dispatch = useDispatch();
@@ -24,11 +22,14 @@ const userService = () => {
 
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
+            setAuthenticationCookies(result.userid);
+
             return result.userid;
         } else {
             return null;
         }
     };
+
 
     // registers and logs in a new center
     const registerCenter = async (formData) => {
@@ -53,9 +54,9 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
+            setAuthenticationCookies(result.userid);
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -80,9 +81,9 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
+            setAuthenticationCookies(result.userid);
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -102,7 +103,6 @@ const userService = () => {
         });
 
         const result = await getSessionUserData.json();
-        console.log("SESSION DATA:", result);
         if (getSessionUserData.ok) {
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
             dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.userType });
@@ -113,11 +113,37 @@ const userService = () => {
 
     };
 
+    const setAuthenticationCookies = async (userid) => {
+        // TODO: Add API request to generate authentication token
+        Cookies.set('userId', userid, { expires: 100 });
+        Cookies.set('authenticationToken', 1, { expires: 100 });
+    }
+
+    // validates the user using user id and authentication token stored in cookie
+    const authenticateFromCookie = async () => {
+        const userIdCookie = Cookies.get('userId');
+        const authTokenCookie = Cookies.get('authenticationToken');
+
+        //TODO: Add API request to verify Auth Token
+        if (userIdCookie && authTokenCookie) {
+            saveCurrentUserToRedux(userIdCookie);
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+
+
     const logOut = () => {
+        //remove from redux
         dispatch(setCurrentUserId(null));
         dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: null });
         dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: null });
         dispatch({ type: 'SET_CURRENT_USER_PROFILE_PIC_PATH', payload: null });
+        //remove cookies
+        Cookies.remove("userId");
+        Cookies.remove("authenticationToken");
     };
 
     const getUserInfo = async (userid) => {
@@ -171,7 +197,8 @@ const userService = () => {
         registerOwner,
         logOut,
         getUserInfo,
-        updateOwner
+        updateOwner,
+        authenticateFromCookie,
     };
 
 };
