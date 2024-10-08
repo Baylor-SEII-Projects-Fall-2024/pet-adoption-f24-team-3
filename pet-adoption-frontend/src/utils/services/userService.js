@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
-import { ElevatorSharp } from '@mui/icons-material';
-
 
 const userService = () => {
     const dispatch = useDispatch();
@@ -56,7 +54,6 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
             setAuthenticationCookies(result.userid);
@@ -84,7 +81,6 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
             setAuthenticationCookies(result.userid);
@@ -107,7 +103,6 @@ const userService = () => {
         });
 
         const result = await getSessionUserData.json();
-        console.log("SESSION DATA:", result);
         if (getSessionUserData.ok) {
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
             dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.userType });

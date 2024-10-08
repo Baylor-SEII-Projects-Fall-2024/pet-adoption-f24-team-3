@@ -17,13 +17,8 @@ import userService from "@/utils/services/userService";
 export default function HeaderBar(props) {
     const router = useRouter();
     const { logOut } = userService();
-
-    console.log(props);
-
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currentUserFullName = useSelector((state) => state.currentUser.currentUserFullName);
-
-
 
     const pages = [
         {
