@@ -2,12 +2,10 @@ import React from 'react';
 import Head from 'next/head';
 import App from 'next/app';
 
-import { Provider as ReduxProvider, useSelector } from 'react-redux';
+import { Provider as ReduxProvider, useDispatch, useSelector } from 'react-redux';
 import { useRouter } from "next/router";
-
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
 import { CssBaseline } from '@mui/material';
-
 import { PetAdoptionThemeProvider } from '@/utils/theme';
 import { buildStore } from '@/utils/redux';
 
@@ -15,6 +13,8 @@ import HeaderBar from '@/components/HeaderBar';
 
 import '@/styles/globals.css'
 import Footer from '@/components/Footer';
+
+import userService from '@/utils/services/userService';
 
 // Initialize Redux
 let initialState = {};
@@ -26,8 +26,9 @@ const safePaths = [
   '/register',
   '/register/owner',
   '/register/center',
-
+  '/profile/1'
 ];
+
 
 function PetApp({ Component, pageProps }) {
   return (
@@ -42,14 +43,32 @@ function MainApp({ Component, pageProps }) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const router = useRouter();
 
+  const { authenticateFromCookie } = userService();
+
+  React.useEffect(() => {
+    async function checkCookies() {
+      console.warn("Session Start, getting cookies");
+      await authenticateFromCookie()
+        .then((result) => {
+          if (result == false) {
+            const url = window.location.pathname;
+            console.log("URL:", url)
+            redirectRestrictedPaths(url);
+          }
+
+        });
+    }
+    checkCookies();
+  }, []);
+
+
   // Client-side redirection check
   React.useEffect(() => {
     const handleRouteChange = (url) => {
       // Check the new URL after a navigation
       console.log('Navigating to:', url);
-      if (currentUserId == null && !safePaths.find(u => u === url)) {
-        console.log('Redirecting to /login from:', url);
-        router.push('/login');
+      if (currentUserId == null) {
+        redirectRestrictedPaths(url);
       }
     };
 
@@ -61,6 +80,14 @@ function MainApp({ Component, pageProps }) {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [router, currentUserId]);
+
+
+  const redirectRestrictedPaths = (url) => {
+    if (!safePaths.find(u => u === url)) {
+      console.log('Redirecting to /login from:', url);
+      router.push('/login');
+    }
+  }
 
   return (
     <AppCacheProvider>
@@ -95,8 +122,9 @@ function MainApp({ Component, pageProps }) {
 //   console.log('Current pathname:', pathname);
 //   console.log("Res:", res);
 
+
 //   // Step 3: Skip redirection for the home page ('/').
-//   if (safePaths.find(p => p === pathname)) {
+//   if (userIdCookie || safePaths.find(p => p === pathname)) {
 //     return { ...appProps };
 //   }
 

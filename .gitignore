@@ -4,10 +4,10 @@
 /build
 /target
 /node_modules
-/caches/
-/daemon/
-/native/
-/wrapper/
+pet-adoption-api/caches/
+pet-adoption-api/daemon/
+pet-adoption-api/native/
+pet-adoption-api/wrapper/
 .DS_Store
 
 .editorconfig
