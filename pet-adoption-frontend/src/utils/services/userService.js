@@ -158,10 +158,38 @@ const userService = () => {
         if (response.ok) {
             return result;
         } else {
-            alert(`Registration failed: ${result.message}`);
+            alert(`Get info failed: ${result.message}`);
             return null;
         }
     };
+
+    const updateOwner = async (formData, userid) => {
+        const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                accountType: "Owner",
+                emailAddress: formData.emailAddress,
+                password: formData.password,
+                profilePicPath: null,
+                nameFirst: formData.nameFirst,
+                nameLast: formData.nameLast
+            })
+        });
+
+        const result = await response.json();
+        console.log("result:", result);
+        if (response.ok) {
+            saveCurrentUserToRedux(result.userid);
+            return result;
+        } else {
+            alert(`Update failed: ${result.message}`);
+            return null;
+        }
+    };
+
 
     return {
         validateLogin,
@@ -169,6 +197,7 @@ const userService = () => {
         registerOwner,
         logOut,
         getUserInfo,
+        updateOwner,
         authenticateFromCookie,
     };
 
