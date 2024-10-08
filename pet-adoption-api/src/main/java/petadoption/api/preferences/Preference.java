@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import petadoption.api.animal.AnimalAgeClass;
+import petadoption.api.animal.AnimalSex;
 import petadoption.api.animal.AnimalSize;
 
 
@@ -31,7 +32,7 @@ public class Preference {
     private String breed;
 
     @Column(name = "SEX")
-    private Boolean sex;
+    private AnimalSex sex;
 
     @Column(name = "AGE_CLASS")
     private AnimalAgeClass ageClass;
