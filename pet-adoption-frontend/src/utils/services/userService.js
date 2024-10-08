@@ -114,6 +114,7 @@ const userService = () => {
     };
 
     const setAuthenticationCookies = async (userid) => {
+        // TODO: Add API request to generate authentication token
         Cookies.set('userId', userid, { expires: 100 });
         Cookies.set('authenticationToken', 1, { expires: 100 });
     }

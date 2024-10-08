@@ -24,8 +24,7 @@ const safePaths = [
   '/login',
   '/register',
   '/register/owner',
-  '/register/center',
-  '/profile/1'
+  '/register/center'
 ];
 
 
@@ -52,7 +51,6 @@ function MainApp({ Component, pageProps }) {
             const url = window.location.pathname;
             redirectRestrictedPaths(url);
           }
-
         });
     }
     checkCookies();
