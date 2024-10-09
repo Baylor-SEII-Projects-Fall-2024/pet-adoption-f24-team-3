@@ -30,6 +30,10 @@ public class AnimalController {
         return animal;
     }
 
+    @CrossOrigin(origins = "https://localhost:3000")
+    @GetMapping("animals/center/{id}")
+    public List<Animal> findAnimalsByCenter(@PathVariable Long id) { return animalService.findAnimalsByCenterId(id); }
+
     @PostMapping("/animals/")
     public Animal saveAnimal(@RequestBody Animal animal) {
         return animalService.saveAnimal(animal);

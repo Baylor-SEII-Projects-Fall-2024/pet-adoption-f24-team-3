@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Box, Tabs, Tab, Typography, Card, CardContent } from "@mui/material";
+import userService from "@/utils/services/userService";
 
 // Custom TabPanel component
 function TabPanel(props) {
@@ -22,6 +23,7 @@ function TabPanel(props) {
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; //get user ID from the routing
+  const { getCenterAnimals } = userService();
 
   const [value, setValue] = React.useState("one");
 

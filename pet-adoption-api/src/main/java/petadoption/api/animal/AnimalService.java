@@ -18,4 +18,5 @@ public class AnimalService {
     public Animal saveAnimal(Animal animal) {
         return animalRepository.save(animal);
     }
+    public List<Animal> findAnimalsByCenterId(Long centerId) { return animalRepository.findAnimalsByCenterId(centerId); }
 }
