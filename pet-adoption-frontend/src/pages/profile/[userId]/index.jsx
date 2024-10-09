@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { getUserInfo } = userService();
+  const { getOwnerInfo } = userService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,7 +27,7 @@ export default function ProfilePage() {
     if (userId) {
       const fetchUserInfo = async () => {
         try {
-          const result = await getUserInfo(userId);
+          const result = await getOwnerInfo(userId);
           if (result !== null) {
             setUserInfo(result);
           }

@@ -147,7 +147,7 @@ const userService = () => {
         Cookies.remove("authenticationToken");
     };
 
-    const getUserInfo = async (userid) => {
+    const getOwnerInfo = async (userid) => {
         const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
             method: "GET",
             headers: {
@@ -163,6 +163,24 @@ const userService = () => {
             return null;
         }
     };
+
+    const getCenterInfo = async (centerId) => {
+        const response = await fetch(`http://localhost:8080/api/centers/${centerId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get center info failed: ${result.message}`);
+            return null;
+        }
+    }
 
     const updateOwner = async (formData, userid) => {
         const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
@@ -232,7 +250,8 @@ const userService = () => {
         registerCenter,
         registerOwner,
         logOut,
-        getUserInfo,
+        getOwnerInfo,
+        getCenterInfo,
         updateOwner,
         authenticateFromCookie,
         getCenterAnimals,

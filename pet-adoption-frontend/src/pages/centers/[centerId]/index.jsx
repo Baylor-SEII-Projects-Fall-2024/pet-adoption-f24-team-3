@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Box,
   Tabs,
@@ -124,7 +125,8 @@ function PetsAndEventsTabs(props) {
 export default function ProfilePage() {
   const router = useRouter();
   const { centerId } = router.query; //get user ID from the routing
-  const { getCenterAnimals, getCenterEvents } = userService();
+  const { getCenterInfo, getCenterAnimals, getCenterEvents } = userService();
+  const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
   const [events, setEvents] = useState(null);
   const [error, setError] = useState(null);
@@ -134,8 +136,12 @@ export default function ProfilePage() {
     if (centerId) {
       const fetchCenterInfo = async () => {
         try {
+          const centerResult = await getCenterInfo(centerId);
           const animalsResult = await getCenterAnimals(centerId);
           const eventsResult = await getCenterEvents(centerId);
+          if (centerResult !== null) {
+            setCenterInfo(centerResult);
+          }
           if (animalsResult !== null) {
             setPets(animalsResult);
           }
@@ -205,13 +211,19 @@ export default function ProfilePage() {
   }
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div">
-            Centers Banner
-          </Typography>
-        </Toolbar>
+    <Box sx={{ width: "100%", padding: 0 }}>
+      <AppBar
+        position="static"
+        sx={{
+          width: "100%",
+          padding: 0,
+        }}
+      >
+        <img
+          src="/defaults/tracy1.jpg"
+          alt="Center Banner"
+          style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
+        />
       </AppBar>
       <PetsAndEventsTabs pets={pets} events={events}></PetsAndEventsTabs>
     </Box>
