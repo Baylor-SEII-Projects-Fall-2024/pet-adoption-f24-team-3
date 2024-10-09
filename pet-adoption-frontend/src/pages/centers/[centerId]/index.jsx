@@ -31,8 +31,9 @@ function TabPanel(props) {
 export default function ProfilePage() {
   const router = useRouter();
   const { centerId } = router.query; //get user ID from the routing
-  const { getCenterAnimals } = userService();
+  const { getCenterAnimals, getCenterEvents } = userService();
   const [pets, setPets] = useState(null);
+  const [events, setEvents] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,21 +41,25 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (centerId) {
-      const fetchPets = async () => {
+      const fetchCenterInfo = async () => {
         try {
-          const result = await getCenterAnimals(centerId);
-          if (result !== null) {
-            setPets(result);
+          const animalsResult = await getCenterAnimals(centerId);
+          const eventsResult = await getCenterEvents(centerId);
+          if (animalsResult !== null) {
+            setPets(animalsResult);
+          }
+          if (eventsResult !== null) {
+            setEvents(eventsResult);
           }
         } catch (error) {
-          setError(
-            `Pet information could not be found for center id ${centerId}`
-          );
+          console.log(error);
+          setError(`Error getting information for center id ${centerId}`);
         } finally {
           setLoading(false);
         }
       };
-      fetchPets();
+
+      fetchCenterInfo();
     }
   }, [centerId]);
 
@@ -123,8 +128,36 @@ export default function ProfilePage() {
         <Tab value="two" label="Pets" />
       </Tabs>
       <TabPanel value={value} index="one">
-        {/* Content for Events */}
-        <Typography>Events content goes here.</Typography>
+        {/* Content for events */}
+        {events.map((event) => (
+          <Card key={event.id} sx={{ marginBottom: 2 }}>
+            <CardContent>
+              <Typography variant="h5">{event.name}</Typography>
+              <Typography variant="body1" color="textSecondary">
+                {event.description}
+              </Typography>
+              {Object.entries(event).map(([key, value]) => {
+                if (
+                  key !== "name" &&
+                  key !== "description" &&
+                  key !== "datePosted"
+                ) {
+                  return (
+                    <Typography key={key} variant="body2" color="textSecondary">
+                      {`${camelCaseToReadable(key)}: ${
+                        ["datePosted", "dateStart", "dateEnd"].includes(key)
+                          ? format(new Date(value), "MMMM dd, yyyy")
+                          : value === null
+                          ? "N/A"
+                          : value
+                      }`}
+                    </Typography>
+                  );
+                }
+              })}
+            </CardContent>
+          </Card>
+        ))}
       </TabPanel>
       <TabPanel value={value} index="two">
         {/* Content for Pets */}

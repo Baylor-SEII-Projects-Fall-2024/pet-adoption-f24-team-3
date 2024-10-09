@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
+//import { headers } from 'next/headers';
 
 const userService = () => {
     const dispatch = useDispatch();
@@ -208,6 +209,23 @@ const userService = () => {
         }
     }
 
+    const getCenterEvents = async (centerId) => {
+        const response = await fetch(`http://localhost:8080/api/events/center/${centerId}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Getting events failed ${result.message}`);
+            return null;
+        }
+    }
+
 
     return {
         validateLogin,
@@ -218,6 +236,7 @@ const userService = () => {
         updateOwner,
         authenticateFromCookie,
         getCenterAnimals,
+        getCenterEvents,
     };
 
 };
