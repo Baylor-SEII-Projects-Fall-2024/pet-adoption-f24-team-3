@@ -37,6 +37,7 @@ function TabPanel(props) {
   );
 }
 
+// Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
   const { pets, events } = props;
   const [value, setValue] = useState("one");
@@ -153,7 +154,7 @@ export default function ProfilePage() {
     }
   }, [centerId]);
 
-  if (loading)
+  if (loading) {
     return (
       // Create flex box to contain all components
       <Box
@@ -176,8 +177,9 @@ export default function ProfilePage() {
         </Card>
       </Box>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       // Create flex box to contain all components
       <Box
@@ -200,6 +202,7 @@ export default function ProfilePage() {
         </Card>
       </Box>
     );
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
