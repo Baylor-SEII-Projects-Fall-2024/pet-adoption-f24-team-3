@@ -74,11 +74,22 @@ public class UserService {
             String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
             updateOwner.setPassword(encodedPassword);
         }
-        updateOwner.setEmailAddress(ownerDto.getEmailAddress());
-        updateOwner.setProfilePicPath(ownerDto.getProfilePicPath());
-        updateOwner.setAccountType(ownerDto.getAccountType());
-        updateOwner.setNameFirst(ownerDto.getNameFirst());
-        updateOwner.setNameLast(ownerDto.getNameLast());
+        if(ownerDto.getEmailAddress() != null && !ownerDto.getEmailAddress().isEmpty()) {
+            updateOwner.setEmailAddress(ownerDto.getEmailAddress());
+        }
+        if(ownerDto.getProfilePicPath() != null && !ownerDto.getProfilePicPath().isEmpty()) {
+            updateOwner.setProfilePicPath(ownerDto.getProfilePicPath());
+        }
+        if(ownerDto.getAccountType() != null && !ownerDto.getAccountType().isEmpty()) {
+            updateOwner.setAccountType(ownerDto.getAccountType());
+        }
+        if(ownerDto.getNameFirst() != null && !ownerDto.getNameFirst().isEmpty()) {
+            updateOwner.setNameFirst(ownerDto.getNameFirst());
+        }
+        if(ownerDto.getNameLast() != null && !ownerDto.getNameLast().isEmpty()) {
+            updateOwner.setNameLast(ownerDto.getNameLast());
+
+        }
 
         return potentialOwnerRepository.save(updateOwner).getId();
     }
