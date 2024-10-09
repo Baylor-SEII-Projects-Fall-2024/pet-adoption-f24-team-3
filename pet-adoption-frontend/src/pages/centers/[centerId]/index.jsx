@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Box, Tabs, Tab, Typography, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Card,
+  CardContent,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
 import userService from "@/utils/services/userService";
 import { format } from "date-fns";
 
@@ -28,95 +37,14 @@ function TabPanel(props) {
   );
 }
 
-export default function ProfilePage() {
-  const router = useRouter();
-  const { centerId } = router.query; //get user ID from the routing
-  const { getCenterAnimals, getCenterEvents } = userService();
-  const [pets, setPets] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
+function PetsAndEventsTabs(props) {
+  const { pets, events } = props;
   const [value, setValue] = useState("one");
-
-  useEffect(() => {
-    if (centerId) {
-      const fetchCenterInfo = async () => {
-        try {
-          const animalsResult = await getCenterAnimals(centerId);
-          const eventsResult = await getCenterEvents(centerId);
-          if (animalsResult !== null) {
-            setPets(animalsResult);
-          }
-          if (eventsResult !== null) {
-            setEvents(eventsResult);
-          }
-        } catch (error) {
-          console.log(error);
-          setError(`Error getting information for center id ${centerId}`);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchCenterInfo();
-    }
-  }, [centerId]);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  if (loading)
-    return (
-      // Create flex box to contain all components
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {/* Create loading card */}
-        <Card sx={{ minWidth: 275, mb: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              Loading...
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-
-  if (error)
-    return (
-      // Create flex box to contain all components
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {/* Create error card */}
-        <Card sx={{ minWidth: 275, mb: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div" color="error">
-              {error}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-
   return (
-    <Box sx={{ width: "100%" }}>
+    <>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -188,6 +116,101 @@ export default function ProfilePage() {
           </Card>
         ))}
       </TabPanel>
+    </>
+  );
+}
+
+export default function ProfilePage() {
+  const router = useRouter();
+  const { centerId } = router.query; //get user ID from the routing
+  const { getCenterAnimals, getCenterEvents } = userService();
+  const [pets, setPets] = useState(null);
+  const [events, setEvents] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (centerId) {
+      const fetchCenterInfo = async () => {
+        try {
+          const animalsResult = await getCenterAnimals(centerId);
+          const eventsResult = await getCenterEvents(centerId);
+          if (animalsResult !== null) {
+            setPets(animalsResult);
+          }
+          if (eventsResult !== null) {
+            setEvents(eventsResult);
+          }
+        } catch (error) {
+          console.log(error);
+          setError(`Error getting information for center id ${centerId}`);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCenterInfo();
+    }
+  }, [centerId]);
+
+  if (loading)
+    return (
+      // Create flex box to contain all components
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        {/* Create loading card */}
+        <Card sx={{ minWidth: 275, mb: 2 }}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              Loading...
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+
+  if (error)
+    return (
+      // Create flex box to contain all components
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        {/* Create error card */}
+        <Card sx={{ minWidth: 275, mb: 2 }}>
+          <CardContent>
+            <Typography variant="h5" component="div" color="error">
+              {error}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+
+  return (
+    <Box sx={{ width: "100%" }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div">
+            Centers Banner
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <PetsAndEventsTabs pets={pets} events={events}></PetsAndEventsTabs>
     </Box>
   );
 }
