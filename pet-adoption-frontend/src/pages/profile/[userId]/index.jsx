@@ -226,7 +226,7 @@ export default function ProfilePage() {
                 <Typography>Size: {userInfo.preference.size}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>Sex: {/*userInfo.preference.sex*/}</Typography>
+                <Typography>Sex: {userInfo.preference.sex}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography>Age: {userInfo.preference.ageClass}</Typography>

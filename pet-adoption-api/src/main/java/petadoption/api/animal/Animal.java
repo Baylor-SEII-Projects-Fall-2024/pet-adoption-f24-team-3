@@ -40,7 +40,7 @@ public class Animal {
     private String breed;
 
     @Column(name = "SEX")
-    private boolean sex;
+    private AnimalSex sex;
 
     @Column(name = "PIC_PATH")
     private String picPath;
