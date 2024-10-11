@@ -6,45 +6,95 @@ const imageService = () => {
     const dispatch = useDispatch();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
-
-
-    // registers and logs in a new center
-    const uploadProfilePic = async (formData) => {
-        const response = await fetch("http://localhost:8080/api/centers", {
+    // uploads a profile picture. Returns True or error
+    const uploadProfilePic = async (imageFile, userId) => {
+        const formData = new FormData();
+        formData.append("imageFile", imageFile);
+        const response = await fetch(`http://localhost:8080/api/images/users/${userId}/profile`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                //dont need to set for form data    
             },
-            body: JSON.stringify({
-                accountType: "Center",
-                emailAddress: formData.email,
-                password: formData.password,
-                profilePicPath: null,
-                name: formData.centerName,
-                address: formData.address,
-                city: formData.city,
-                state: formData.state,
-                zipCode: formData.zip,
-                description: "A safe haven for homeless pets",
-                bannerPicPath: null
-            })
+            body: formData
         });
 
         const result = await response.json();
         if (response.ok) {
-            saveCurrentUserToRedux(result.userid);
-            setAuthenticationCookies(result.userid);
             return result;
         } else {
-            alert(`Registration failed: ${result.message}`);
+            alert(`Profile Picture upload failed: ${result.message}`);
             return null;
         }
     };
 
+    // uploads a center banner picture. Returns True or error
+    const uploadCenterBanner = async (imageFile, userId) => {
+        const formData = new FormData();
+        formData.append("imageFile", imageFile);
+        const response = await fetch(`http://localhost:8080/api/images/users/${userId}/banner`, {
+            method: "POST",
+            headers: {
+                //dont need to set for form data    
+            },
+            body: formData
+        });
 
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Adoption Center Banner upload failed: ${result.message}`);
+            return null;
+        }
+    };
+
+    // uploads an animal picture. Returns True or error
+    const uploadAnimalPicture = async (imageFile, petId) => {
+        const formData = new FormData();
+        formData.append("imageFile", imageFile);
+        const response = await fetch(`http://localhost:8080/api/images/pets/${petId}`, {
+            method: "POST",
+            headers: {
+                //dont need to set for form data    
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Pet Image upload failed: ${result.message}`);
+            return null;
+        }
+    };
+
+    // uploads an event thumbnail. Returns True or error
+    const uploadEventThumbnail = async (imageFile, eventId) => {
+        const formData = new FormData();
+        formData.append("imageFile", imageFile);
+        const response = await fetch(`http://localhost:8080/api/images/events/${eventId}`, {
+            method: "POST",
+            headers: {
+                //dont need to set for form data    
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Event Thumbnail upload failed: ${result.message}`);
+            return null;
+        }
+    };
 
     return {
         uploadProfilePic,
+        uploadCenterBanner,
+        uploadAnimalPicture,
+        uploadEventThumbnail,
     };
 
 };

@@ -72,6 +72,8 @@ const themeOptions = {
             secondary: '#666666', // Lighter grey for secondary text
             white: '#fff',
             darkColor: '#5F4B59', // dark purple for some occasional text
+            success: '#00780a', //bright green for success
+            error: '#ff0000'  //red for error
         },
     }
 };

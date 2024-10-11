@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Paper, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
+import imageService from "@/utils/services/imageService";
 
 export default function RegisterOwnerPage() {
     const router = useRouter();
     const { registerOwner } = userService();
+    const { uploadProfilePic } = imageService();
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
+    const [profileImage, setProfileImage] = useState(null);
+    const [isUploading, setIsUploading] = useState(null);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -23,6 +27,9 @@ export default function RegisterOwnerPage() {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
+    const handleProfileImageUpload = (e) => {
+        setProfileImage(e.target.files[0]);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,9 +59,14 @@ export default function RegisterOwnerPage() {
 
 
         try {
+            setIsUploading(true);
             await registerOwner(formData)
-                .then((result) => {
+                .then(async (result) => {
                     if (result !== null) {
+                        if (profileImage != null) {
+                            await uploadProfilePic(profileImage, result.userid);
+                        }
+                        setIsUploading(false);
                         router.push(`/profile/${result.userid}`);
                     }
                 });
@@ -80,7 +92,14 @@ export default function RegisterOwnerPage() {
                     <TextField fullWidth label='Username' name="username" size="small" margin="dense" value={formData.username} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
-                    <Button type='submit' variant='contained' color='primary'>Register</Button>
+                    <TextField type="file" label='Profile Picture' name="profilePicture" size="small" margin="dense" InputLabelProps={{ shrink: true }} onChange={handleProfileImageUpload} />
+
+
+                    {isUploading ?
+                        <Typography> Creating Account...</Typography>
+                        :
+                        <Button type='submit' variant='contained' color='primary'>Register</Button>
+                    }
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
 
 

@@ -16,6 +16,7 @@ spring:
       password: password
   servlet:
     multipart:
+      enabled: true
       max-file-size: 20MB    # Maximum size of a single uploaded file
       max-request-size: 20MB # Maximum total request size (including all files and form data)
 upload:

@@ -1,6 +1,7 @@
 package petadoption.api.images;
 
 
+import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,7 @@ import java.nio.file.Paths;
 
 @Log4j2
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/images")
 public class ImageController {
     @Autowired
@@ -42,13 +44,20 @@ public class ImageController {
             throw new Exception("User not found!");
         }
 
-        Path filePath = Paths.get(user.getProfilePicPath());
-        byte[] pictureFile =  Files.readAllBytes(filePath);
+        try{
+            Path filePath = Paths.get(user.getProfilePicPath());
+            byte[] pictureFile =  Files.readAllBytes(filePath);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
-        return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+        }
+        catch (NullPointerException e){
+            log.error("null pointer exception:"+ e.getMessage());
+            return null;
+        }
+
     }
 
     @GetMapping("/users/{userId}/banner")
@@ -59,14 +68,19 @@ public class ImageController {
         if(user == null){
             throw new Exception("Center not found!");
         }
+        try{
+            Path filePath = Paths.get(user.getBannerPicPath());
+            byte[] pictureFile =  Files.readAllBytes(filePath);
 
-        Path filePath = Paths.get(user.getBannerPicPath());
-        byte[] pictureFile =  Files.readAllBytes(filePath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
-
-        return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+        }
+        catch (NullPointerException e){
+            log.error("null pointer exception:"+ e.getMessage());
+            return null;
+        }
     }
 
     @GetMapping("/animals/{animalId}")
@@ -77,14 +91,19 @@ public class ImageController {
         if(animal == null){
             throw new Exception("Animal not found!");
         }
+        try{
+            Path filePath = Paths.get(animal.getPicPath());
+            byte[] pictureFile =  Files.readAllBytes(filePath);
 
-        Path filePath = Paths.get(animal.getPicPath());
-        byte[] pictureFile =  Files.readAllBytes(filePath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
-
-        return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+        }
+        catch (NullPointerException e){
+            log.error("null pointer exception:"+ e.getMessage());
+            return null;
+        }
     }
 
     @GetMapping("/events/{eventId}")
@@ -95,14 +114,19 @@ public class ImageController {
         if(event == null){
             throw new Exception("Event not found!");
         }
+        try{
+            Path filePath = Paths.get(event.getThumbnailPath());
+            byte[] pictureFile =  Files.readAllBytes(filePath);
 
-        Path filePath = Paths.get(event.getThumbnailPath());
-        byte[] pictureFile =  Files.readAllBytes(filePath);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
-
-        return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+        }
+        catch (NullPointerException e){
+            log.error("null pointer exception:"+ e.getMessage());
+            return null;
+        }
     }
 
 
