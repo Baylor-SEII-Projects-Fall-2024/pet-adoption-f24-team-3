@@ -144,7 +144,14 @@ export default function EditProfilePage() {
                   <TextField required fullWidth label='Email' name="emailAddress" size="small" margin="dense" value={formData.emailAddress} onChange={handleFormChange} />
                   <TextField fullWidth label='First Name' name="nameFirst" size="small" margin="dense" value={formData.nameFirst} onChange={handleFormChange} />
                   <TextField required fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleFormChange} />
-                  <TextField type="file" label='Profile Picture' name="profilePicture" size="small" margin="dense" InputLabelProps={{ shrink: true }} onChange={handleImageUpload} />
+                  <TextField
+                    type="file"
+                    label='Profile Picture'
+                    name="profilePicture"
+                    size="small" margin="dense"
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                    onChange={handleImageUpload} />
 
                   {profileImage &&
                     <img src={imagePreview} style={{ maxWidth: "200px", margin: "10px" }} />

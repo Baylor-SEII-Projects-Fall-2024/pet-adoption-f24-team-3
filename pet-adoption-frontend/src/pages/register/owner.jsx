@@ -92,7 +92,14 @@ export default function RegisterOwnerPage() {
                     <TextField fullWidth label='Username' name="username" size="small" margin="dense" value={formData.username} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
-                    <TextField type="file" label='Profile Picture' name="profilePicture" size="small" margin="dense" InputLabelProps={{ shrink: true }} onChange={handleProfileImageUpload} />
+                    <TextField
+                        type="file"
+                        label='Profile Picture'
+                        name="profilePicture"
+                        size="small" margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                        onChange={handleProfileImageUpload} />
 
 
                     {isUploading ?

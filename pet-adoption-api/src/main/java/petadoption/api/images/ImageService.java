@@ -87,13 +87,6 @@ public class ImageService {
         Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return filePath;
-//        // Save metadata to the database
-//        ImageFile imageFile = new ImageFile();
-//        imageFile.setFilename(filename);
-//        imageFile.setFileUrl("/files/" + filename);
-//        imageFile.setUploadDirectory(uploadDirectory);
-//
-//        return imageFileRepository.save(imageFile);
     }
 
 
