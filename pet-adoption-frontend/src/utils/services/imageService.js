@@ -52,7 +52,7 @@ const imageService = () => {
     const uploadAnimalPicture = async (imageFile, petId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
-        const response = await fetch(`http://localhost:8080/api/images/pets/${petId}`, {
+        const response = await fetch(`http://localhost:8080/api/images/animals/${petId}`, {
             method: "POST",
             headers: {
                 //dont need to set for form data    
