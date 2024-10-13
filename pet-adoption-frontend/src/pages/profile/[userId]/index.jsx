@@ -16,7 +16,11 @@ import userService from "@/utils/services/userService";
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
-  const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const currentUserId = useSelector((state) =>
+    state.currentUser.currentUserId !== null
+      ? state.currentUser.currentUser
+      : null
+  ); // get the current session user
   const { getOwnerInfo } = userService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +29,7 @@ export default function ProfilePage() {
   // Fetch user info when page renders
   useEffect(() => {
     if (userId) {
-      const fetchUserInfo = async () => {
+      const fetchOwnerInfo = async () => {
         try {
           const result = await getOwnerInfo(userId);
           if (result !== null) {
@@ -39,7 +43,7 @@ export default function ProfilePage() {
           setLoading(false);
         }
       };
-      fetchUserInfo();
+      fetchOwnerInfo();
     }
   }, [userId]); // rerender if userId changes
 

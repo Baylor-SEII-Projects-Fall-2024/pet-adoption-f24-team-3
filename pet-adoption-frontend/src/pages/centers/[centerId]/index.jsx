@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { makeStyles } from "@material-ui/core/styles";
+import { useSelector } from "react-redux";
 import {
   Box,
   Tabs,
@@ -9,7 +9,8 @@ import {
   Card,
   CardContent,
   AppBar,
-  Toolbar,
+  Avatar,
+  Stack,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
 import { format } from "date-fns";
@@ -123,8 +124,14 @@ function PetsAndEventsTabs(props) {
 }
 
 export default function ProfilePage() {
+  const NUM_PROPS_NOT_DISPLAYED = 4;
   const router = useRouter();
   const { centerId } = router.query; //get user ID from the routing
+  const currentUserId = useSelector((state) =>
+    state.currentUser.currentUserId !== null
+      ? state.currentUser.currentUser
+      : null
+  ); // get the current session user
   const { getCenterInfo, getCenterAnimals, getCenterEvents } = userService();
   const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
@@ -225,6 +232,112 @@ export default function ProfilePage() {
           style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
         />
       </AppBar>
+      {/* Create flex box to contain Avatar and User Info cards */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {/* Create card to display users name and avatar */}
+        <Card
+          sx={{
+            minWidth: 275,
+            mb: 3,
+            mt: 3,
+            mr: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 2,
+            paddingBottom: 4,
+          }}
+        >
+          {/* Display users name */}
+          <CardContent>
+            <Typography
+              variant="h3"
+              component="div"
+              sx={{
+                wordBreak: "break-word", // wrap should overflow occur
+                whiteSpace: "normal",
+              }}
+            >
+              {centerInfo.name}
+            </Typography>
+          </CardContent>
+          {/* Display centers avatar */}
+          <Avatar
+            sx={{
+              bgcolor: "#a3b18a",
+              width: 175,
+              height: 175,
+              border: "2px solid #000",
+            }}
+            alt="Center Avatar"
+            src=""
+          />
+          {/* Create card to display center Info */}
+        </Card>
+        <Card sx={{ mb: 3, mt: 3 }}>
+          <CardContent>
+            {/* Title */}
+            <Typography mb={2} variant="h5">
+              Center Info
+            </Typography>
+            {/* Info and conditional edit button */}
+            {centerInfo && (
+              <Stack
+                spacing={
+                  Object.keys(centerInfo).length - NUM_PROPS_NOT_DISPLAYED
+                }
+              >
+                {Object.entries(centerInfo).map(([key, value]) => {
+                  if (
+                    key !== "bannerPicPath" &&
+                    key !== "profilePicPath" &&
+                    key !== "name" &&
+                    key !== "password" &&
+                    key !== "id"
+                  ) {
+                    return (
+                      <Typography
+                        key={key}
+                        variant="body2"
+                        color="textSecondary"
+                      >
+                        {`${camelCaseToReadable(key)}: ${
+                          value === null ? "N/A" : value
+                        }`}
+                      </Typography>
+                    );
+                  }
+                })}
+                {/* Display edit button if user is viewing their own page */}
+                {String(centerId) === String(currentUserId) && (
+                  <Box
+                    sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={{
+                        padding: "12px 12px",
+                        fontSize: "16px",
+                        minWidth: "200px",
+                      }}
+                      onClick={handleEditInfoClick}
+                    >
+                      Edit Info
+                    </Button>
+                  </Box>
+                )}
+              </Stack>
+            )}
+          </CardContent>
+        </Card>
+      </Box>
       <PetsAndEventsTabs pets={pets} events={events}></PetsAndEventsTabs>
     </Box>
   );
