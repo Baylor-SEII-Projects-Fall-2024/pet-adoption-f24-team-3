@@ -147,6 +147,23 @@ const userService = () => {
         Cookies.remove("authenticationToken");
     };
 
+    const getUserInfo = async (userId) => {
+        const response = await fetch(`http://localhost:8080/api/users/?id=${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get info failed: ${result.message}`);
+            return null;
+        }
+    };
+
     const getOwnerInfo = async (userid) => {
         const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
             method: "GET",
@@ -250,6 +267,7 @@ const userService = () => {
         registerCenter,
         registerOwner,
         logOut,
+        getUserInfo,
         getOwnerInfo,
         getCenterInfo,
         updateOwner,

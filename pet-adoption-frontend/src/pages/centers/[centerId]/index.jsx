@@ -68,6 +68,7 @@ export default function ProfilePage() {
       ? state.currentUser.currentUser
       : null
   ); // get the current session user
+  console.log(currentUserId);
   const { getCenterInfo, getCenterAnimals, getCenterEvents } = userService();
   const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
@@ -154,7 +155,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <Box sx={{ width: "100%", padding: 0 }}>
+    <Box sx={{ width: "100%", padding: 0, minWidth: 275 }}>
       <AppBar
         position="static"
         sx={{

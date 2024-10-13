@@ -21,7 +21,7 @@ export default function ProfilePage() {
       ? state.currentUser.currentUser
       : null
   ); // get the current session user
-  const { getOwnerInfo } = userService();
+  const { getOwnerInfo, getUserInfo } = userService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,6 +29,15 @@ export default function ProfilePage() {
   // Fetch user info when page renders
   useEffect(() => {
     if (userId) {
+      const fetchUserType = async () => {
+        const result = await getUserInfo(userId);
+        if (result !== null) {
+          console.log(result);
+          if (result.accountType == "Center") {
+            router.push(`/centers/${userId}`);
+          }
+        }
+      };
       const fetchOwnerInfo = async () => {
         try {
           const result = await getOwnerInfo(userId);
@@ -43,6 +52,7 @@ export default function ProfilePage() {
           setLoading(false);
         }
       };
+      fetchUserType();
       fetchOwnerInfo();
     }
   }, [userId]); // rerender if userId changes
