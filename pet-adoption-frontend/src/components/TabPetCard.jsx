@@ -28,6 +28,10 @@ export default function TabPetCard(props) {
     setExpanded(!expanded);
   };
 
+  const handleEditClick = () => {
+    // TODO
+  };
+
   return (
     <Box>
       <Card
@@ -49,8 +53,8 @@ export default function TabPetCard(props) {
             <Avatar
               variant="rounded"
               sx={{
-                width: "90%",
-                height: "90%",
+                width: "70%",
+                height: "70%",
                 border: "2px solid #000",
                 mt: 1,
                 mb: 1,
@@ -63,9 +67,19 @@ export default function TabPetCard(props) {
             <Typography align="center" variant="body1" color="textSecondary">
               {pet.description}
             </Typography>
-            <Button onClick={handleExpandClick}>
-              {expanded ? "Less" : "More"}
-            </Button>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Button color="secondary" onClick={handleExpandClick}>
+                {expanded ? "Less" : "More"}
+              </Button>
+              <Button color="primary" onClick={handleEditClick}>
+                Edit
+              </Button>
+            </Box>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
               <Box>
                 {Object.entries(pet).map(([key, value]) => {
