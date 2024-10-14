@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   AppBar,
+  Grid,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
 import CenterProfileCard from "@/components/CenterProfileCard";
@@ -42,24 +43,19 @@ function PetsAndEventsTabs(props) {
         ))}
       </TabPanel>
       <TabPanel value={value} index="two">
-        {/* Content for Pets */}
-        {pets.map((pet) => (
-          <TabPetCard pet={pet} key={pet.id} />
-        ))}
+        <Grid container spacing={2}>
+          {pets.map((pet) => (
+            <Grid item xs={12} sm={6} md={4} key={pet.id}>
+              <TabPetCard pet={pet} />
+            </Grid>
+          ))}
+        </Grid>
       </TabPanel>
     </>
   );
 }
 
 export default function ProfilePage() {
-  const propsNotInInfo = [
-    "bannerPicPath",
-    "profilePicPath",
-    "name",
-    "password",
-    "id",
-    "description",
-  ];
   const router = useRouter();
   const { centerId } = router.query; //get user ID from the routing
   const currentUserId = useSelector((state) =>
@@ -73,10 +69,6 @@ export default function ProfilePage() {
   const [events, setEvents] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const handleEditInfoClick = () => {
-    router.push(`/profile/${userId}/edit`);
-  };
 
   useEffect(() => {
     if (centerId) {
@@ -166,19 +158,21 @@ export default function ProfilePage() {
         }}
       >
         <img
-          src="/defaults/tracy1.jpg"
+          src={
+            centerInfo.bannerPicPath
+              ? centerInfo.bannerPicPath
+              : "/defaults/banner.png"
+          }
           alt="Center Banner"
           style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
         />
       </AppBar>
       <CenterProfileCard
         centerInfo={centerInfo}
-        propsNotInInfo={propsNotInInfo}
         centerId={centerId}
         currentUserId={currentUserId}
       />
-
-      <PetsAndEventsTabs pets={pets} events={events}></PetsAndEventsTabs>
+      <PetsAndEventsTabs pets={pets} events={events} />
     </Box>
   );
 }

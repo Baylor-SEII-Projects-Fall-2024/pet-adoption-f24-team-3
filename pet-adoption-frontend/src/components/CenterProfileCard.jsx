@@ -11,7 +11,15 @@ import {
 import formatter from "@/utils/formatter";
 
 export default function CenterProfileCard(props) {
-  const { centerInfo, propsNotInInfo, centerId, currentUserId } = props;
+  const propsNotInInfo = [
+    "bannerPicPath",
+    "profilePicPath",
+    "name",
+    "password",
+    "id",
+    "description",
+  ];
+  const { centerInfo, centerId, currentUserId } = props;
   const { camelCaseToReadable } = formatter();
 
   const handleEditInfoClick = () => {
