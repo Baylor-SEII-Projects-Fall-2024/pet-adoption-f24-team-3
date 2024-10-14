@@ -49,21 +49,6 @@ export default function CenterProfileCard(props) {
             gap: 8,
           }}
         >
-          {/* Display edit button if user is viewing their own page */}
-          {String(centerId) === String(currentUserId) && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{
-                padding: "12px 12px",
-                fontSize: "14px",
-                minWidth: "150px",
-              }}
-              onClick={handleEditInfoClick}
-            >
-              Edit Info
-            </Button>
-          )}
           {/* Flex box containing profile info and center avatar */}
           <Box
             sx={{
@@ -126,6 +111,21 @@ export default function CenterProfileCard(props) {
               )}
             </CardContent>
           </Box>
+          {/* Display edit button if user is viewing their own page */}
+          {String(centerId) === String(currentUserId) && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{
+                padding: "12px 12px",
+                fontSize: "14px",
+                minWidth: "150px",
+              }}
+              onClick={handleEditInfoClick}
+            >
+              Edit Info
+            </Button>
+          )}
         </Box>
 
         <Box

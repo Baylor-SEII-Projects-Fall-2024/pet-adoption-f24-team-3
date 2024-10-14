@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import userService from "@/utils/services/userService";
 import CenterProfileCard from "@/components/CenterProfileCard";
-import TabEventCard from "@/components/TabEventCard";
-import TabPetCard from "@/components/TabPetCard";
+import EventCard from "@/components/EventCard";
+import PetCard from "@/components/PetCard";
 import TabPanel from "@/components/TabPanel";
 
 // Renders the pets and events tabs
@@ -25,7 +25,11 @@ function PetsAndEventsTabs(props) {
     setValue(newValue);
   };
   return (
-    <>
+    <Box
+      sx={{
+        margin: 3,
+      }}
+    >
       <Tabs
         value={value}
         onChange={handleChange}
@@ -37,21 +41,24 @@ function PetsAndEventsTabs(props) {
         <Tab value="two" label="Pets" />
       </Tabs>
       <TabPanel value={value} index="one">
-        {/* Content for events */}
-        {events.map((event) => (
-          <TabEventCard event={event} key={event.id} />
-        ))}
-      </TabPanel>
-      <TabPanel value={value} index="two">
-        <Grid container spacing={2}>
-          {pets.map((pet) => (
-            <Grid item xs={12} sm={6} md={4} key={pet.id}>
-              <TabPetCard pet={pet} />
+        <Grid container spacing={5}>
+          {events.map((event) => (
+            <Grid item xs={11} sm={5} md={3} key={event.id}>
+              <EventCard event={event} />
             </Grid>
           ))}
         </Grid>
       </TabPanel>
-    </>
+      <TabPanel value={value} index="two">
+        <Grid container spacing={5}>
+          {pets.map((pet) => (
+            <Grid item xs={11} sm={5} md={3} key={pet.id}>
+              <PetCard pet={pet} />
+            </Grid>
+          ))}
+        </Grid>
+      </TabPanel>
+    </Box>
   );
 }
 
