@@ -29,33 +29,32 @@ export default function ProfilePage() {
   // Fetch user info when page renders
   useEffect(() => {
     if (userId) {
-      const fetchUserType = async () => {
-        const result = await getUserInfo(userId);
-        if (result !== null) {
-          console.log(result);
-          if (result.accountType == "Center") {
-            router.push(`/centers/${userId}`);
-          }
-        }
-      };
-      const fetchOwnerInfo = async () => {
+      const fetchData = async () => {
         try {
-          const result = await getOwnerInfo(userId);
-          if (result !== null) {
-            setUserInfo(result);
+          // Fetch user type
+          const userTypeResult = await getUserInfo(userId);
+          if (userTypeResult.accountType === "Center") {
+            await router.push(`/centers/${userId}`);
+            return; // Exit early if redirected
           }
-          // Set error state if not ok
+
+          // Fetch owner info
+          const ownerInfoResult = await getOwnerInfo(userId);
+          if (ownerInfoResult !== null) {
+            setUserInfo(ownerInfoResult);
+          } else {
+            setError(`User information could not be found for user ${userId}`);
+          }
         } catch (error) {
-          setError(`User information could not be found for user ${userId}`);
-          // Revert loading state
+          setError(`An error occurred: ${error.message}`);
         } finally {
           setLoading(false);
         }
       };
-      fetchUserType();
-      fetchOwnerInfo();
+
+      fetchData();
     }
-  }, [userId]); // rerender if userId changes
+  }, [userId]); // Rerender if userId changes
 
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
