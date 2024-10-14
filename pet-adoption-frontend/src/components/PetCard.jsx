@@ -14,15 +14,6 @@ import { format } from "date-fns";
 
 export default function PetCard(props) {
   const { pet } = props;
-  const { camelCaseToReadable, formatSize } = formatter();
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  const handleEditClick = () => {
-    // TODO
-  };
 
   return (
     <Card

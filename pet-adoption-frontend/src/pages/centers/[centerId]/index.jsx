@@ -19,10 +19,18 @@ import TabPanel from "@/components/TabPanel";
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
-  const { pets, events } = props;
+  const { pets, events, router } = props;
   const [value, setValue] = useState("one");
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleEventClick = (eventId) => {
+    router.push(`/events/${eventId}`);
+  };
+
+  const handlePetClick = (petId) => {
+    router.push(`/pets/${petId}`);
   };
   return (
     <Box
@@ -44,7 +52,12 @@ function PetsAndEventsTabs(props) {
         <Grid container spacing={5}>
           {events.map((event) => (
             <Grid item xs={11} sm={5} md={3} key={event.id}>
-              <EventCard event={event} />
+              <Box
+                onClick={() => handleEventClick(event.id)}
+                sx={{ cursor: "pointer" }}
+              >
+                <EventCard event={event} />
+              </Box>
             </Grid>
           ))}
         </Grid>
@@ -53,7 +66,12 @@ function PetsAndEventsTabs(props) {
         <Grid container spacing={5}>
           {pets.map((pet) => (
             <Grid item xs={11} sm={5} md={3} key={pet.id}>
-              <PetCard pet={pet} />
+              <Box
+                onClick={() => handlePetClick(pet.id)}
+                sx={{ cursor: "pointer" }}
+              >
+                <PetCard pet={pet} />
+              </Box>
             </Grid>
           ))}
         </Grid>
@@ -179,7 +197,7 @@ export default function ProfilePage() {
         centerId={centerId}
         currentUserId={currentUserId}
       />
-      <PetsAndEventsTabs pets={pets} events={events} />
+      <PetsAndEventsTabs pets={pets} events={events} router={router} />
     </Box>
   );
 }
