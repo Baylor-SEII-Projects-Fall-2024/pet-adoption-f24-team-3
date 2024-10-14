@@ -35,7 +35,7 @@ export default function EventCard(props) {
               mb: 1,
             }}
             alt="Event Avatar"
-            src={"/defaults/pet.png"}
+            src={"/defaults/event.png"}
           />
         </Box>
         <Box>
