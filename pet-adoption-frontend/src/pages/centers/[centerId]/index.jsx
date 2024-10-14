@@ -80,7 +80,7 @@ function PetsAndEventsTabs(props) {
   );
 }
 
-export default function ProfilePage() {
+export default function CenterPage() {
   const router = useRouter();
   const { centerId } = router.query; //get user ID from the routing
   const currentUserId = useSelector((state) =>
