@@ -11,7 +11,6 @@ import {
   AppBar,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
-import { format } from "date-fns";
 import CenterProfileCard from "@/components/CenterProfileCard";
 import TabEventCard from "@/components/TabEventCard";
 import TabPetCard from "@/components/TabPetCard";
@@ -65,16 +64,19 @@ export default function ProfilePage() {
   const { centerId } = router.query; //get user ID from the routing
   const currentUserId = useSelector((state) =>
     state.currentUser.currentUserId !== null
-      ? state.currentUser.currentUser
+      ? state.currentUser.currentUserId
       : null
   ); // get the current session user
-  console.log(currentUserId);
   const { getCenterInfo, getCenterAnimals, getCenterEvents } = userService();
   const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
   const [events, setEvents] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleEditInfoClick = () => {
+    router.push(`/profile/${userId}/edit`);
+  };
 
   useEffect(() => {
     if (centerId) {

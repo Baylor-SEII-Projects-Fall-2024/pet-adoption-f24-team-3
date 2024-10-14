@@ -14,6 +14,10 @@ export default function CenterProfileCard(props) {
   const { centerInfo, propsNotInInfo, centerId, currentUserId } = props;
   const { camelCaseToReadable } = formatter();
 
+  const handleEditInfoClick = () => {
+    router.push(`/profile/${userId}/edit`);
+  };
+
   return (
     <Box>
       {/* Create card to display centers name and avatar */}
@@ -38,38 +42,27 @@ export default function CenterProfileCard(props) {
           }}
         >
           {/* Display edit button if user is viewing their own page */}
-          <Box>
-            {String(centerId) === String(currentUserId) && (
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    mt: 2,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    sx={{
-                      padding: "12px 12px",
-                      fontSize: "16px",
-                      minWidth: "200px",
-                    }}
-                    onClick={handleEditInfoClick}
-                  >
-                    Edit Info
-                  </Button>
-                </Box>
-              </Grid>
-            )}
-          </Box>
+          {String(centerId) === String(currentUserId) && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{
+                padding: "12px 12px",
+                fontSize: "14px",
+                minWidth: "150px",
+              }}
+              onClick={handleEditInfoClick}
+            >
+              Edit Info
+            </Button>
+          )}
           {/* Flex box containing profile info and center avatar */}
           <Box
             sx={{
               flexDirection: "column",
               display: "flex",
               alignItems: "center",
+              position: "relative",
             }}
           >
             {/* Display users name */}

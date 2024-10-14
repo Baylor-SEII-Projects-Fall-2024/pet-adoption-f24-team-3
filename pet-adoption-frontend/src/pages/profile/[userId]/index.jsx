@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) =>
     state.currentUser.currentUserId !== null
-      ? state.currentUser.currentUser
+      ? state.currentUser.currentUserId
       : null
   ); // get the current session user
   const { getOwnerInfo, getUserInfo } = userService();
