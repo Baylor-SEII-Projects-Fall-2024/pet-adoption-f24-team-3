@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useRouter } from "next/router";
 import {
   Card,
   Box,
@@ -19,11 +20,12 @@ export default function CenterProfileCard(props) {
     "id",
     "description",
   ];
+  const router = useRouter();
   const { centerInfo, centerId, currentUserId } = props;
   const { camelCaseToReadable } = formatter();
 
   const handleEditInfoClick = () => {
-    router.push(`/profile/${userId}/edit`);
+    router.push(`/centers/edit`);
   };
 
   return (

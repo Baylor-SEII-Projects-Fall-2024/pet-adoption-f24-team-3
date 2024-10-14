@@ -174,7 +174,7 @@ export default function CenterPage() {
   }
 
   return (
-    <Box sx={{ width: "100%", padding: 0, minWidth: 275 }}>
+    <Box sx={{ width: "100%", padding: 0 }}>
       <AppBar
         position="static"
         sx={{

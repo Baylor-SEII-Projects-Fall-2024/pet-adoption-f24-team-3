@@ -46,7 +46,7 @@ export default function ProfilePage() {
             setError(`User information could not be found for user ${userId}`);
           }
         } catch (error) {
-          setError(`An error occurred: ${error.message}`);
+          setError(`User information could not be found for user ${userId}`);
         } finally {
           setLoading(false);
         }
@@ -64,7 +64,7 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
-  if (loading)
+  if (loading && !userInfo && !error)
     return (
       // Create flex box to contain all components
       <Box
