@@ -4,8 +4,10 @@ package petadoption.api.images;
 import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +43,8 @@ public class ImageController {
         User user = userService.findUser(userId).orElse(null);
 
         if(user == null){
-            throw new Exception("User not found!");
+            log.error("User "+ userId + " not found!");
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
 
         try{
@@ -53,9 +56,11 @@ public class ImageController {
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
-        catch (NullPointerException e){
-            log.error("null pointer exception:"+ e.getMessage());
-            return null;
+        catch (NullPointerException e){//if here, the image was not found, return placeholder image
+            ClassPathResource resource = new ClassPathResource("placeholders/profile_picture.png");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
+                    .body(resource.getContentAsByteArray());
         }
 
     }
@@ -66,7 +71,8 @@ public class ImageController {
         AdoptionCenter user = userService.findAdoptionCenter(userId).orElse(null);
 
         if(user == null){
-            throw new Exception("Center not found!");
+            log.error("Adoption Center "+ userId + " not found!");
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
         try{
             Path filePath = Paths.get(user.getBannerPicPath());
@@ -78,8 +84,10 @@ public class ImageController {
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
         catch (NullPointerException e){
-            log.error("null pointer exception:"+ e.getMessage());
-            return null;
+            ClassPathResource resource = new ClassPathResource("placeholders/center_banner.png");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
+                    .body(resource.getContentAsByteArray());
         }
     }
 
@@ -89,7 +97,8 @@ public class ImageController {
         Animal animal = animalService.findAnimal(animalId).orElse(null);
 
         if(animal == null){
-            throw new Exception("Animal not found!");
+            log.error("Animal "+ animalId + " not found!");
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
         try{
             Path filePath = Paths.get(animal.getPicPath());
@@ -101,18 +110,21 @@ public class ImageController {
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
         catch (NullPointerException e){
-            log.error("null pointer exception:"+ e.getMessage());
-            return null;
+            ClassPathResource resource = new ClassPathResource("placeholders/animal.png");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
+                    .body(resource.getContentAsByteArray());
         }
     }
 
     @GetMapping("/events/{eventId}")
-    public ResponseEntity<byte[]> getEventThumbnail(@PathVariable Long eventID) throws Exception {
+    public ResponseEntity<byte[]> getEventThumbnail(@PathVariable Long eventId) throws Exception {
 
-        Event event = eventService.findEvent(eventID).orElse(null);
+        Event event = eventService.findEvent(eventId).orElse(null);
 
         if(event == null){
-            throw new Exception("Event not found!");
+            log.error("Event "+ eventId + " not found!");
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
         try{
             Path filePath = Paths.get(event.getThumbnailPath());
@@ -124,8 +136,10 @@ public class ImageController {
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
         catch (NullPointerException e){
-            log.error("null pointer exception:"+ e.getMessage());
-            return null;
+            ClassPathResource resource = new ClassPathResource("placeholders/event.png");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
+                    .body(resource.getContentAsByteArray());
         }
     }
 
