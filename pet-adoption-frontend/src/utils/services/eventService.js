@@ -64,7 +64,6 @@ const eventService = () => {
                 description: formData.description,
                 dateStart: formData.dateStart,
                 dateEnd: formData.dateEnd,
-                thumbnailPath: formData.thumbNail
             })
         });
 

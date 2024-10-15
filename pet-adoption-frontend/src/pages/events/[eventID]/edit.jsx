@@ -31,7 +31,6 @@ export default function EditEvent() {
         description: "",
         dateStart: null,
         dateEnd: null,
-        thumbnailPath: "no image",
     });
 
     const handleChange = (e) => {
