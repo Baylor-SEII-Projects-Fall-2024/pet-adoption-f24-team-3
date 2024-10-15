@@ -64,7 +64,7 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
-  if (loading && !userInfo && !error)
+  if ((loading || !userInfo) && !error)
     return (
       // Create flex box to contain all components
       <Box

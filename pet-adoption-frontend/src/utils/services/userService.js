@@ -103,7 +103,7 @@ const userService = () => {
         const result = await getSessionUserData.json();
         if (getSessionUserData.ok) {
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
-            dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.userType });
+            dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.accountType });
         } else {
             console.error("Error: Unable to fetch session data for user!")
         }
@@ -186,7 +186,6 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log(result);
         if (response.ok) {
             return result;
         } else {
@@ -211,7 +210,6 @@ const userService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             saveCurrentUserToRedux(result.userid);
             return result;

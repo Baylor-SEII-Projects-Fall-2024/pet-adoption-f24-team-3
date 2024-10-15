@@ -127,7 +127,7 @@ export default function CenterPage() {
     }
   }, [centerId]);
 
-  if (loading) {
+  if ((loading || !centerInfo) && !error) {
     return (
       // Create flex box to contain all components
       <Box
@@ -187,11 +187,7 @@ export default function CenterPage() {
         }}
       >
         <img
-          src={
-            centerInfo.bannerPicPath
-              ? centerInfo.bannerPicPath
-              : "/defaults/banner.png"
-          }
+          src={`http://localhost:8080/api/images/users/${centerId}/banner`}
           alt="Center Banner"
           style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
         />
