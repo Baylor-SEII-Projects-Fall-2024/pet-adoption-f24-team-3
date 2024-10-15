@@ -85,7 +85,7 @@ export default function HomePage() {
               <Typography variant='body1' color='text.secondary'>We collaborate with local adoption centers in your area to bring you the widest selection of pets. Find events happening at your local shelter, and join our mission to find every pet a loving home!</Typography>
               <Stack direction="row" sx={{ justifyContent: "center" }}>
                 <Button variant='contained' onClick={() => router.push("/events")} sx={{ width: 200 }}>Find Local Events</Button>
-                <Button variant='contained' color='secondary' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Find your Adopton Center</Button>
+                <Button variant='contained' color='secondary' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Find your Adoption Center</Button>
               </Stack>
             </CardContent>
           </Card>
