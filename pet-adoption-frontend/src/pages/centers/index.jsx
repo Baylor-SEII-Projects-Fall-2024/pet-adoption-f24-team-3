@@ -1,7 +1,7 @@
-import React from 'react';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography } from '@mui/material'
+import React from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -14,11 +14,15 @@ export default function ProfilePage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+        <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
           <Card sx={{ width: 600 }} elevation={4}>
             <CardContent>
-              <Typography variant='h3' align='center'>Centers Page {userId}</Typography>
-              <Typography variant='body1' color='text.secondary'>This is where a user will be able to view all centers</Typography>
+              <Typography variant="h3" align="center">
+                Centers Page {userId}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                This is where a user will be able to view all centers
+              </Typography>
             </CardContent>
           </Card>
         </Stack>

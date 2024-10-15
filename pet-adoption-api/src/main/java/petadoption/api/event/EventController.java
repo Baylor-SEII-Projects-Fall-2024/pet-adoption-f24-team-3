@@ -53,8 +53,8 @@ public class EventController {
     @PostMapping("/events/update/{eventId}")
     public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId, @RequestBody Event newEvent) {
         Long updatedEvent = eventService.updateEvent(newEvent, eventId);
-        Map<String, Object>  response = new HashMap<>();
-        if (updatedEvent!=null) {
+        Map<String, Object> response = new HashMap<>();
+        if (updatedEvent != null) {
             response.put("eventID", updatedEvent);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
@@ -62,4 +62,10 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
         }
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/events/center/{centerId}")
+    public List<Event> getEventsByCenterId(@PathVariable Long centerId) { return eventService.getEventsByCenterId(centerId); }
+
+
 }

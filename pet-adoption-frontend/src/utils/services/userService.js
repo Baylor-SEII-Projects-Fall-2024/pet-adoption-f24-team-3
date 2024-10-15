@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
+//import { headers } from 'next/headers';
 
 const userService = () => {
     const dispatch = useDispatch();
@@ -170,7 +171,24 @@ const userService = () => {
         Cookies.remove("authenticationToken");
     };
 
-    const getUserInfo = async (userid) => {
+    const getUserInfo = async (userId) => {
+        const response = await fetch(`http://localhost:8080/api/users/?id=${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get info failed: ${result.message}`);
+            return null;
+        }
+    };
+
+    const getOwnerInfo = async (userid) => {
         const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
             method: "GET",
             headers: {
@@ -186,6 +204,24 @@ const userService = () => {
             return null;
         }
     };
+
+    const getCenterInfo = async (centerId) => {
+        const response = await fetch(`http://localhost:8080/api/centers/${centerId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get center info failed: ${result.message}`);
+            return null;
+        }
+    }
 
     const updateOwner = async (formData, userid) => {
         const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
@@ -213,13 +249,14 @@ const userService = () => {
         }
     };
 
-
     return {
         validateLogin,
         registerCenter,
         registerOwner,
         logOut,
         getUserInfo,
+        getOwnerInfo,
+        getCenterInfo,
         updateOwner,
         authenticateFromCookie,
         createEvent,

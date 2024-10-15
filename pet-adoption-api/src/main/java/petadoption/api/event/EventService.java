@@ -26,5 +26,6 @@ public class EventService {
         newEvent.setDatePosted(getEvent.getDatePosted());
         return eventRepository.save(newEvent).getId();
     }
+    public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
 }
 
