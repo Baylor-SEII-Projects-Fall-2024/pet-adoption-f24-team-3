@@ -18,14 +18,13 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { updateOwner, getUserInfo } = userService();
+  const { updateOwner, getOwnerInfo } = userService();
   const { uploadProfilePic } = imageService();
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [formError, setFormError] = useState(null);
   const [formSuccess, setFormSuccess] = useState();
-  const [imageStatus, setImageStatus] = useState();
   const [formData, setFormData] = useState({
     accountType: "Owner",
     emailAddress: "",
@@ -50,9 +49,9 @@ export default function EditProfilePage() {
     e.preventDefault();
 
     try {
-      await updateOwner(formData, userId).then((userId) => {
+      await updateOwner(formData, profileImage, userId).then((result) => {
         //if user id is not null, that is handled in the hook below
-        if (userId !== null) {
+        if (result !== null) {
           setFormError(null);
           setFormSuccess("Profile Settings Saved!");
         } else {
@@ -65,22 +64,22 @@ export default function EditProfilePage() {
       setFormError("An error occured saving your data.");
     }
 
-    if (profileImage) {
-      try {
-        setImageStatus("Uploading profile picture...");
+    // if (profileImage) {
+    //   try {
+    //     setImageStatus("Uploading profile picture...");
 
-        await uploadProfilePic(profileImage, userId).then((result) => {
-          if (userId !== null) {
-            setImageStatus("Profile Picture Uploaded Successfully!");
-          } else {
-            setImageStatus("Error uploading profile picture!");
-          }
-        });
-      } catch (error) {
-        console.error("Error:", error);
-        setImageStatus("Error uploading profile picture!");
-      }
-    }
+    //     await uploadProfilePic(profileImage, userId).then((result) => {
+    //       if (result !== null) {
+    //         setImageStatus("Profile Picture Uploaded Successfully!");
+    //       } else {
+    //         setImageStatus("Error uploading profile picture!");
+    //       }
+    //     });
+    //   } catch (error) {
+    //     console.error("Error:", error);
+    //     setImageStatus("Error uploading profile picture!");
+    //   }
+    // }
   };
   useEffect(() => {
     if (userId && userId != currentUserId) {
@@ -107,6 +106,7 @@ export default function EditProfilePage() {
           }
           // Set error state if not ok
         } catch (error) {
+          console.error("Error fetching user data:", error);
           setFormError(
             `User information could not be found for user ${userId}`
           );
@@ -208,9 +208,6 @@ export default function EditProfilePage() {
                 )}
                 {formSuccess && (
                   <Typography color="success">{formSuccess}</Typography>
-                )}
-                {imageStatus && (
-                  <Typography color="secondary">{imageStatus}</Typography>
                 )}
               </Card>
             </Stack>
