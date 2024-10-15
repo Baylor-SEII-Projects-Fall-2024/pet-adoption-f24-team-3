@@ -12,8 +12,27 @@ import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 
 export default function PetsPage() {
   const router = useRouter();
-  // const { userId } = router.query; //get user ID from the routing
+  const { userId } = router.query; //get user ID from the routing
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const { updatePreferences, getPreferences } = userService();
 
+  const date = new Date().toJSON();
+
+  const [loading, setLoading] = useState(true);
+  const [preferences, setPreferences] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState();
+  const [formData, setFormData] = useState({
+    date: "",
+    species: "",
+    breed: "",
+    sex: "",
+    // furType: "",
+    age: "",
+    size: "",
+    city: "",
+    state: "",
+  });
   return (
     <>
       <Head>
