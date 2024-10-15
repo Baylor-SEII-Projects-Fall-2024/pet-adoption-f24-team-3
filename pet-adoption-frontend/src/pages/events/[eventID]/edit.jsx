@@ -7,6 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
+import imageService from "@/utils/services/imageService";
 
 export default function EditEvent() {
     const router = useRouter(); 

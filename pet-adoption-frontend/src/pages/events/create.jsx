@@ -8,16 +8,22 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
+import imageService from "@/utils/services/imageService";
+
 
 export default function CreateEventPage() {
     const router = useRouter();
     const { createEvent } = eventService();
+    const { uploadEventThumbnail } = imageService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currDate = new Date().toISOString();
-    const [value, setValue] = React.useState(dayjs(''));
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
+
+    const [thumbnailPath, setThumbnailPath] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+
 
     const [formData, setFormData] = useState({
         centerId: currentUserId,
@@ -26,7 +32,6 @@ export default function CreateEventPage() {
         description: "",
         dateStart: null,
         dateEnd: null,
-        thumbnailPath: "no image",
     });
 
     const handleChange = (e) => {
@@ -41,6 +46,10 @@ export default function CreateEventPage() {
         }));
     };
 
+    const handleThumbnailUpload = (e) => {
+        setThumbnailPath(e.target.files[0]);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -53,7 +62,6 @@ export default function CreateEventPage() {
                     case 'description': return 'Description';
                     case 'dateStart': return 'Start Date';
                     case 'dateEnd': return 'End Date';
-                    case 'thumbnailPath': return 'Thumbnail';
                     default: return field;
                 }
             });
@@ -62,9 +70,14 @@ export default function CreateEventPage() {
         }
 
         try {
+            setIsUploading(true);
             await createEvent(formData)
-                .then((result) => {
+                .then(async (result) => {
                     if (result !== null) {
+                        if (thumbnailPath != null){
+                            await uploadEventThumbnail(thumbnailPath, result.eventID);
+                        }
+                        setIsUploading(false);
                         alert("Event Created")
                         router.push("/events")
                     }
@@ -106,7 +119,21 @@ export default function CreateEventPage() {
                             />
                         </div>
                     </LocalizationProvider>
-                    <Button type='submit' variant='contained' color='primary'>Post</Button>
+                    <TextField
+                        type="file"
+                        label='Thumbnail Picture'
+                        name="thumbnailPath"
+                        size="small" margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                        onChange={handleThumbnailUpload} />
+                    
+                    {isUploading ?
+                        <Typography> Creating Event...</Typography>
+                        :
+                        <Button type='submit' variant='contained' color='primary'>Post</Button>
+
+                    }
                     <Button variant='contained' onClick={() => router.push("/events")}>Back</Button>
 
 
