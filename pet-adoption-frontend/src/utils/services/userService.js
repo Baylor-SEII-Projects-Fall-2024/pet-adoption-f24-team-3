@@ -229,7 +229,34 @@ const userService = () => {
             })
         });
 
-        const formResult = await response.json();
+        const result = await response.json();
+        if (response.ok) {
+            saveCurrentUserToRedux(result.userid);
+            return result;
+        } else {
+            alert(`Update failed: ${result.message}`);
+            return null;
+        }
+    };
+    const updateCenter = async (formData, userid) => {
+        const response = await fetch(`http://localhost:8080/api/update/center/${userid}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                accountType: "Center",
+                emailAddress: formData.emailAddress,
+                password: formData.password,
+                name: formData.name,
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode
+            })
+        });
+
+        const result = await response.json();
         if (response.ok) {
             saveCurrentUserToRedux(formResult.userid);
             let imageResult = true;
@@ -254,6 +281,7 @@ const userService = () => {
         getOwnerInfo,
         getCenterInfo,
         updateOwner,
+        updateCenter,
         authenticateFromCookie,
     };
 
