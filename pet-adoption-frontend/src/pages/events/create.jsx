@@ -76,8 +76,9 @@ export default function CreateEventPage() {
                     if (result !== null) {
                         if (thumbnailPath != null){
                             await uploadEventThumbnail(thumbnailPath, result.eventID);
-                            setIsUploading(false);
                         }
+                        setIsUploading(false);
+                        console.log(isUploading);
                         alert("Event Created")
                         router.push("/events")
                     }

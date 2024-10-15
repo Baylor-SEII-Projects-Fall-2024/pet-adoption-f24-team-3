@@ -231,7 +231,6 @@ const userService = () => {
         getCenterInfo,
         updateOwner,
         authenticateFromCookie,
-        createEvent,
     };
 
 };
