@@ -8,8 +8,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-
-
 export default function CreateEventPage() {
     const router = useRouter();
     const { createEvent } = userService();
@@ -88,7 +86,7 @@ export default function CreateEventPage() {
                 </Grid>
                 <form onSubmit={handleSubmit}>
                     <TextField fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
-                    <TextField fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
+                    <TextField multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
                     {/* <TextField fullWidth label='Start Date' name="address" size="small" margin="dense" value={formData.dateStart} onChange={handleChange} />
                     <TextField fullWidth label='End Date' name="city" size="small" margin="dense" value={formData.dateEnd} onChange={handleChange} /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
