@@ -27,8 +27,12 @@ public class EventController {
         return event;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/events/center/{centerId}")
+    public List<Event> getEventsByCenterId(@PathVariable Long centerId) { return eventService.getEventsByCenterId(centerId); }
+
     @PostMapping("/events/")
-    public Event saveEvent(@RequestBody Event animal) {
-        return eventService.saveEvent(animal);
+    public Event saveEvent(@RequestBody Event event) {
+        return eventService.saveEvent(event);
     }
 }

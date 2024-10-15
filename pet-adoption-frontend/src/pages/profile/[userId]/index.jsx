@@ -16,8 +16,12 @@ import userService from "@/utils/services/userService";
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
-  const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { getUserInfo } = userService();
+  const currentUserId = useSelector((state) =>
+    state.currentUser.currentUserId !== null
+      ? state.currentUser.currentUserId
+      : null
+  ); // get the current session user
+  const { getOwnerInfo, getUserInfo } = userService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,23 +29,32 @@ export default function ProfilePage() {
   // Fetch user info when page renders
   useEffect(() => {
     if (userId) {
-      const fetchUserInfo = async () => {
+      const fetchData = async () => {
         try {
-          const result = await getUserInfo(userId);
-          if (result !== null) {
-            setUserInfo(result);
+          // Fetch user type
+          const userTypeResult = await getUserInfo(userId);
+          if (userTypeResult.accountType === "Center") {
+            await router.push(`/centers/${userId}`);
+            return; // Exit early if redirected
           }
-          // Set error state if not ok
+
+          // Fetch owner info
+          const ownerInfoResult = await getOwnerInfo(userId);
+          if (ownerInfoResult !== null) {
+            setUserInfo(ownerInfoResult);
+          } else {
+            setError(`User information could not be found for user ${userId}`);
+          }
         } catch (error) {
           setError(`User information could not be found for user ${userId}`);
-          // Revert loading state
         } finally {
           setLoading(false);
         }
       };
-      fetchUserInfo();
+
+      fetchData();
     }
-  }, [userId]); // rerender if userId changes
+  }, [userId]); // Rerender if userId changes
 
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
@@ -51,7 +64,7 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
-  if (loading)
+  if (loading && !userInfo && !error)
     return (
       // Create flex box to contain all components
       <Box

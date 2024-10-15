@@ -28,9 +28,9 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    //will return all info regardless of type
-    @GetMapping("/users/{id}")
-    public User findUserById(@PathVariable Long id) {
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/users/")
+    public User findUserById(@RequestParam Long id) {
         var user = userService.findUser(id).orElse(null);
         if (user == null) {
             log.warn("User not found");
@@ -83,6 +83,7 @@ public class UserController {
     }
 
     //restrict search to centers
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/centers/{id}")
     public AdoptionCenter findCenterById(@PathVariable Long id) {
         var center = userService.findAdoptionCenter(id).orElse(null);

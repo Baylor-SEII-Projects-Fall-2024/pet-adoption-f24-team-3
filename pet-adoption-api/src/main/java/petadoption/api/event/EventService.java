@@ -18,5 +18,6 @@ public class EventService {
     public Event saveEvent(Event event) {
         return eventRepository.save(event);
     }
+    public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
 }
 
