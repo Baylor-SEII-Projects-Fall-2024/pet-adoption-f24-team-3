@@ -78,12 +78,16 @@ public class ImageController {
             Path filePath = Paths.get(user.getBannerPicPath());
             byte[] pictureFile =  Files.readAllBytes(filePath);
 
+            if(pictureFile.length<1){
+                throw new Exception("File is empty!");
+            }
+
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
-        catch (NullPointerException e){
+        catch (Exception e){
             ClassPathResource resource = new ClassPathResource("placeholders/center_banner.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type

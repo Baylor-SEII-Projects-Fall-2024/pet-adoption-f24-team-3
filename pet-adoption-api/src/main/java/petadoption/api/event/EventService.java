@@ -22,9 +22,11 @@ public class EventService {
 
     public Long updateEvent(Event newEvent, Long eventId) {
         Event getEvent = findEvent(eventId).orElseThrow(EntityNotFoundException::new);
-        newEvent.setId(eventId);
-        newEvent.setDatePosted(getEvent.getDatePosted());
-        return eventRepository.save(newEvent).getId();
+        getEvent.setName(newEvent.getName());
+        getEvent.setDescription(newEvent.getDescription());
+        getEvent.setDateStart(newEvent.getDateStart());
+        getEvent.setDateEnd(newEvent.getDateEnd());
+        return eventRepository.save(getEvent).getId();
     }
     public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
 }
