@@ -231,6 +231,12 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
+            if (profilePic != null) {
+                const profilePicResult = await uploadProfilePic(profilePic, userid);
+                if (!profilePicResult) {
+                    return null;
+                }
+            }
             saveCurrentUserToRedux(result.userid);
             return result;
         } else {
@@ -238,7 +244,7 @@ const userService = () => {
             return null;
         }
     };
-    const updateCenter = async (formData, userid) => {
+    const updateCenter = async (formData, profilePic, bannerPic, userid) => {
         const response = await fetch(`http://localhost:8080/api/update/center/${userid}`, {
             method: "POST",
             headers: {
@@ -249,6 +255,7 @@ const userService = () => {
                 emailAddress: formData.emailAddress,
                 password: formData.password,
                 name: formData.name,
+                description: formData.description,
                 address: formData.address,
                 city: formData.city,
                 state: formData.state,
@@ -258,14 +265,22 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
-            saveCurrentUserToRedux(formResult.userid);
-            let imageResult = true;
-            //if successful uploading the form, attempt to upload the image
+            saveCurrentUserToRedux(userid);
+            //try to upload banner and profile pic if they exist
             if (profilePic != null) {
-                imageResult = await uploadProfilePic(profilePic, userid);
+                const profilePicResult = await uploadProfilePic(profilePic, userid);
+                if (!profilePicResult) {
+                    return null;
+                }
+            }
+            if (bannerPic != null) {
+                const bannerPicResult = await uploadCenterBanner(bannerPic, userid);
+                if (!bannerPicResult) {
+                    return null;
+                }
             }
             //return wheter or not both were successful
-            return (formResult && imageResult);
+            return result;
         } else {
             alert(`Update failed: ${formResult.message}`);
             return null;
