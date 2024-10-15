@@ -95,7 +95,7 @@ export default function CenterProfileCard(props) {
                 mt: 2,
               }}
               alt="Center Avatar"
-              src=""
+              src={`http://localhost:8080/api/images/users/${centerId}/profile`}
             />
           </Box>
           <Box
@@ -114,9 +114,8 @@ export default function CenterProfileCard(props) {
                         return (
                           <Grid item xs={12} sm={4} md={4} key={key}>
                             <Typography variant="body1" color="textSecondary">
-                              {`${camelCaseToReadable(key)}: ${
-                                value === null ? "N/A" : value
-                              }`}
+                              {`${camelCaseToReadable(key)}: ${value === null ? "N/A" : value
+                                }`}
                             </Typography>
                           </Grid>
                         );

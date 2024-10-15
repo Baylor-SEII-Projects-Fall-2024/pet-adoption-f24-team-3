@@ -19,6 +19,7 @@ export default function HeaderBar(props) {
     const { logOut } = userService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currentUserFullName = useSelector((state) => state.currentUser.currentUserFullName);
+    const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
     const pages = [
         {
@@ -110,7 +111,11 @@ export default function HeaderBar(props) {
                         onClose={handleCloseUserMenu}
                     >
                         <MenuItem key={"profile"} onClick={() => {
-                            router.push(`/profile/${currentUserId}`);
+                            if (currentUserType == "Center") {
+                                router.push(`/centers/${currentUserId}`);
+                            } else {
+                                router.push(`/profile/${currentUserId}`);
+                            }
                             handleCloseUserMenu();
                         }}>
                             <AccountBox></AccountBox>
