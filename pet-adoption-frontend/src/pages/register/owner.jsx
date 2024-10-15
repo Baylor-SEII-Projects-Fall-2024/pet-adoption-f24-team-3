@@ -60,12 +60,9 @@ export default function RegisterOwnerPage() {
 
         try {
             setIsUploading(true);
-            await registerOwner(formData)
+            await registerOwner(formData, profileImage)
                 .then(async (result) => {
                     if (result !== null) {
-                        if (profileImage != null) {
-                            await uploadProfilePic(profileImage, result.userid);
-                        }
                         setIsUploading(false);
                         router.push(`/profile/${result.userid}`);
                     }

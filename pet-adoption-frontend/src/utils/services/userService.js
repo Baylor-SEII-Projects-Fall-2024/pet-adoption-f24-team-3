@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
+import imageService from './imageService';
 //import { headers } from 'next/headers';
 
 const userService = () => {
   const dispatch = useDispatch();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+  const { uploadProfilePic, uploadCenterBanner } = imageService();
 
   //  validates the user login.Returns the user ID if successful, null otherwise
   const validateLogin = async (email, password) => {
@@ -33,7 +35,7 @@ const userService = () => {
 
 
   // registers and logs in a new center
-  const registerCenter = async (formData) => {
+  const registerCenter = async (formData, profilePic, bannerPic) => {
     const response = await fetch("http://localhost:8080/api/centers", {
       method: "POST",
       headers: {
@@ -54,6 +56,18 @@ const userService = () => {
 
     const result = await response.json();
     if (response.ok) {
+      if (profilePic != null) {
+        const profilePicResult = await uploadProfilePic(profilePic, result.userid);
+        if (!profilePicResult) {
+          return null;
+        }
+      }
+      if (bannerPic != null) {
+        const bannerPicResult = await uploadCenterBanner(bannerPic, result.userid);
+        if (!bannerPicResult) {
+          return null;
+        }
+      }
       saveCurrentUserToRedux(result.userid);
       setAuthenticationCookies(result.userid);
       return result;
@@ -63,7 +77,7 @@ const userService = () => {
     }
   };
 
-  const registerOwner = async (formData) => {
+  const registerOwner = async (formData, profilePic) => {
     const response = await fetch("http://localhost:8080/api/owners", {
       method: "POST",
       headers: {
@@ -80,6 +94,12 @@ const userService = () => {
 
     const result = await response.json();
     if (response.ok) {
+      if (profilePic != null) {
+        const imageResult = await uploadProfilePic(profilePic, result.userid);
+        if (!imageResult) {
+          return null;
+        }
+      }
       saveCurrentUserToRedux(result.userid);
       setAuthenticationCookies(result.userid);
       return result;
@@ -131,7 +151,6 @@ const userService = () => {
     }
   };
 
-
   const logOut = () => {
     //remove from redux
     dispatch(setCurrentUserId(null));
@@ -141,6 +160,37 @@ const userService = () => {
     //remove cookies
     Cookies.remove("userId");
     Cookies.remove("authenticationToken");
+  };
+
+  const updateOwner = async (formData, profilePic, userid) => {
+    const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        accountType: "Owner",
+        emailAddress: formData.emailAddress,
+        password: formData.password,
+        nameFirst: formData.nameFirst,
+        nameLast: formData.nameLast
+      })
+    });
+
+    const formResult = await response.json();
+    if (response.ok) {
+      saveCurrentUserToRedux(formResult.userid);
+      let imageResult = true;
+      //if successful uploading the form, attempt to upload the image
+      if (profilePic != null) {
+        imageResult = await uploadProfilePic(profilePic, userid);
+      }
+      //return wheter or not both were successful
+      return (formResult && imageResult);
+    } else {
+      alert(`Update failed: ${formResult.message}`);
+      return null;
+    }
   };
 
   const getUserInfo = async (userId) => {
@@ -212,31 +262,6 @@ const userService = () => {
     }
   }
 
-  const updateOwner = async (formData, userid) => {
-    const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        accountType: "Owner",
-        emailAddress: formData.emailAddress,
-        password: formData.password,
-        nameFirst: formData.nameFirst,
-        nameLast: formData.nameLast
-      })
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-      saveCurrentUserToRedux(result.userid);
-      return result;
-    } else {
-      alert(`Update failed: ${result.message}`);
-      return null;
-    }
-  };
-
   const updatePreferences = async (formData, userid) => {
     const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
       method: "POST",
@@ -263,8 +288,6 @@ const userService = () => {
       return null;
     }
   };
-
-
 
   return {
     validateLogin,
