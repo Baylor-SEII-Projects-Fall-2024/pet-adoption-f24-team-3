@@ -66,13 +66,13 @@ export default function EditPreferencesPage() {
 
   useEffect(() => {
     if (userId && userId != currentUserId) {
-      // TODO: bad, should not allow other people to edit preferences
-      router.push(`/profile/${userId}/preferences`);
+      // If they try to access a different profile, route them back to theirs
+      router.push(`/profile/${currentUserId}/preferences`);
     }
     if (userId) {
-      const fetchUserInfo = async () => {
+      const fetchUserPreferences = async () => {
         try {
-          const result = await getOwnerInfo(userId);
+          const result = await getPreferences(userId);
           if (result !== null) {
             setPreferences(result);
             setFormData((prevState) => ({
@@ -117,7 +117,7 @@ export default function EditPreferencesPage() {
           setLoading(false);
         }
       };
-      fetchUserInfo();
+      fetchUserPreferences();
     }
   }, [userId]); // rerender if userId changes
 
@@ -170,8 +170,8 @@ export default function EditPreferencesPage() {
                       label="Pet Sex"
                       onChange={handleFormChange}
                     >
-                      <MenuItem value={"M"}>Male</MenuItem>
-                      <MenuItem value={"F"}>Female</MenuItem>
+                      <MenuItem value={"MALE"}>Male</MenuItem>
+                      <MenuItem value={"FEMALE"}>Female</MenuItem>
                     </Select>
                   </FormControl>
 
@@ -200,10 +200,10 @@ export default function EditPreferencesPage() {
                       label="Pet Age"
                       onChange={handleFormChange}
                     >
-                      <MenuItem value={"baby"}>Baby</MenuItem>
-                      <MenuItem value={"adolescent"}>Adolescent</MenuItem>
-                      <MenuItem value={"adult"}>Adult</MenuItem>
-                      <MenuItem value={"old"}>Close to Euthenasia</MenuItem>
+                      <MenuItem value={"BABY"}>Baby</MenuItem>
+                      <MenuItem value={"ADOLESCENT"}>Adolescent</MenuItem>
+                      <MenuItem value={"ADULT"}>Adult</MenuItem>
+                      <MenuItem value={"OLD"}>Close to Euthenasia</MenuItem>
                     </Select>
                   </FormControl>
 
@@ -216,11 +216,11 @@ export default function EditPreferencesPage() {
                       label="Pet Size"
                       onChange={handleFormChange}
                     >
-                      <MenuItem value={"xsmall"}>Extra Small</MenuItem>
-                      <MenuItem value={"small"}>Small</MenuItem>
-                      <MenuItem value={"medium"}>Medium</MenuItem>
-                      <MenuItem value={"large"}>Large</MenuItem>
-                      <MenuItem value={"xlarge"}>Extra Large</MenuItem>
+                      <MenuItem value={"EXTRA_SMALL"}>Extra Small</MenuItem>
+                      <MenuItem value={"SMALL"}>Small</MenuItem>
+                      <MenuItem value={"MEDIUM"}>Medium</MenuItem>
+                      <MenuItem value={"LARGE"}>Large</MenuItem>
+                      <MenuItem value={"EXTRA_LARGE"}>Extra Large</MenuItem>
                     </Select>
                   </FormControl>
 

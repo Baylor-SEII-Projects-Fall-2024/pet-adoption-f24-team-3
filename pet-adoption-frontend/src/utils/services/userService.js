@@ -161,7 +161,7 @@ const userService = () => {
   };
 
   const getPreferences = async (userId) => {
-    const response = await fetch(`http://localhost:8080/preferences/${userId}`, {
+    const response = await fetch(`http://localhost:8080/api/preferences/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -237,6 +237,7 @@ const userService = () => {
   };
 
   const updatePreferences = async (formData, userid) => {
+    //const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
     const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
       method: "POST",
       headers: {
@@ -246,7 +247,7 @@ const userService = () => {
         species: formData.species,
         breed: formData.breed,
         sex: formData.sex,
-        furType: formData.furType,
+        // furType: formData.furType,
         age: formData.age,
         size: formData.size,
         city: formData.city,

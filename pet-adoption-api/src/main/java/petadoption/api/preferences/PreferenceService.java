@@ -4,6 +4,7 @@ import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petadoption.api.user.PotentialOwner;
+import petadoption.api.user.User;
 import petadoption.api.user.UserService;
 import petadoption.api.user.dtos.PreferenceDto;
 
@@ -26,8 +27,21 @@ public class PreferenceService {
         return preferenceRepository.findByPotentialOwnerId(userId);
     }
 
-    public Long updatePreferences(PreferenceDto preferenceDto, Long userId) {
+    public Preference updatePreference(Preference preference, Long potentialOwnerId) throws Exception {
+        PotentialOwner owner = userService.findPotentialOwner(potentialOwnerId).orElse(null);
 
+        if(owner == null) {
+            throw new Exception("Owner Not Found");
+        }
+
+        preference.setPotentialOwnerId(owner.getId());
+
+        Preference updatePreference = preferenceRepository.save(preference); // should this be an update call?
+
+        owner.setPreference(updatePreference);
+        userService.saveUser(owner); // should we have an updateUser
+
+        return updatePreference;
     }
 
     public Preference savePreference(Long potentialOwnerId, Preference preference) throws Exception {
