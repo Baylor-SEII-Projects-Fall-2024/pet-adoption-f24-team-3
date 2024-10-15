@@ -63,23 +63,6 @@ export default function EditProfilePage() {
       console.error("Error: ", error);
       setFormError("An error occured saving your data.");
     }
-
-    // if (profileImage) {
-    //   try {
-    //     setImageStatus("Uploading profile picture...");
-
-    //     await uploadProfilePic(profileImage, userId).then((result) => {
-    //       if (result !== null) {
-    //         setImageStatus("Profile Picture Uploaded Successfully!");
-    //       } else {
-    //         setImageStatus("Error uploading profile picture!");
-    //       }
-    //     });
-    //   } catch (error) {
-    //     console.error("Error:", error);
-    //     setImageStatus("Error uploading profile picture!");
-    //   }
-    // }
   };
   useEffect(() => {
     if (userId && userId != currentUserId) {
