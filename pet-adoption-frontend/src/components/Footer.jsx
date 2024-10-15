@@ -27,7 +27,7 @@ export default function Footer(props) {
                     <Grid item xs={12}>
                         <Typography color="textSecondary" variant="subtitle2">
                             Sam Fries
-                            | Iko Iben
+                            | Icko Iben
                             | Brendon Newton
                             | Logan Rigdon
                             | August Rothpletz
