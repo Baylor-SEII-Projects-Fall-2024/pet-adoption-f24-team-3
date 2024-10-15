@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { Button, Card, CardContent, Stack, Typography } from '@mui/material'
+import { Button, Card, CardContent, Stack, Typography, Box } from '@mui/material'
 import styles from '@/styles/Home.module.css'
 
 export default function HomePage() {
@@ -20,34 +20,99 @@ export default function HomePage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
-          <Card sx={{ width: 600 }} elevation={4}>
+        <Stack alignItems='center' gap={2}>
+
+          <Box
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: "50vh"
+            }}
+          >
+            <img
+              style={{
+                width: "100vw",
+                height: "50vh",
+                objectFit: "cover",
+              }}
+              src={"homescreen_header.jpg"}
+            />
+            <Typography variant='h1' color='text.white'
+              sx={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                textAlign: "center",
+                textShadow: "#000 2px 1px 5px",
+              }}
+            >Find Your New Best Friend!</Typography>
+          </Box>
+
+          <Stack direction="column"
+            sx={{
+              mt: "30px",
+              mb: "30px",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+            }}>
+            <Typography variant='h2' align='center'>WOOF helps you find your ideal pet.</Typography>
+            <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend. <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
+            <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px" }}>Find Your Friend</Button>
+          </Stack>
+
+          <Card sx={{
+            width: "80%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            pt: "5px",
+            pb: "15px",
+          }} elevation={4}>
             <CardContent>
-              <Typography variant='h3' align='center'>Pet Adoption Fall 2024</Typography>
-              <Typography variant='body1' color='text.secondary'>This is your template project for the Fall 2024 Baylor Software Engineering II class project! See the README for insturctions on how to set this project up and run it locally.</Typography>
+              <img
+                style={{
+                  width: "60%",
+                  borderRadius: "2%",
+                  marginBottom: "10px",
+                }}
+                src={"homescreen_adopt.jpg"}
+              />
+              <Typography variant='h3' align='center'>Your local Adoption Centers. All in one place.</Typography>
+              <Typography variant='body1' color='text.secondary'>We collaborate with local adoption centers in your area to bring you the widest selection of pets. Find events happening at your local shelter, and join our mission to find every pet a loving home!</Typography>
+              <Stack direction="row" sx={{ justifyContent: "center" }}>
+                <Button variant='contained' onClick={() => router.push("/events")} sx={{ width: 200 }}>Find Local Events</Button>
+                <Button variant='contained' color='secondary' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Find your Adopton Center</Button>
+              </Stack>
             </CardContent>
           </Card>
-          <Stack direction="row">
-            {/* There are multiple ways to apply styling to Material UI components. One way is using the `sx` prop: */}
-            <Button variant='contained' onClick={onButtonPress} sx={{ width: 200 }}>I am a button</Button>
 
-            {/* Another way is by creating a dedicated CSS file and using the styles from there: */}
-            <Button variant='contained' color="secondary" onClick={onButtonPress} className={styles.wideButton}>I am a wider button</Button>
-          </Stack>
-
-          <Typography variant='body1' color='text.secondary'>Some Basic Project Scaffolding (add more pages here as they are created):</Typography>
-
-          <Stack direction="column" >
-            <Button variant='contained' onClick={() => router.push("/login")} sx={{ width: 200 }}>Login</Button>
-            <Button variant='contained' onClick={() => router.push("/register")} sx={{ width: 200 }}>Register</Button>
-            <Button variant='contained' onClick={() => router.push(`/profile/${currentUserId}`)} sx={{ width: 200 }}>Profile</Button>
-            <Button variant='contained' onClick={() => router.push("/pets")} sx={{ width: 200 }}>Pets</Button>
-            <Button variant='contained' onClick={() => router.push("/events")} sx={{ width: 200 }}>Events</Button>
-            <Button variant='contained' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Centers</Button>
-
+          <Stack direction="column"
+            sx={{
+              mt: "30px",
+              mb: "30px",
+              width: "70%",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+            }}>
+            <img
+              style={{
+                width: "70%",
+                borderRadius: "2%",
+                marginBottom: "10px",
+              }}
+              src={"homescreen_center.jpg"}
+            />
+            <Typography variant='h3' align='center'>Adoption Centers, Glad you're here!</Typography>
+            <Typography variant='body1' color='text.secondary'>Join WOOF today and gain access to a platform for advertising your pets and upcoming events like no other!</Typography>
+            <Button variant='contained' color='secondary' onClick={() => router.push("/register")} sx={{ width: 200 }}>Start Here!</Button>
           </Stack>
         </Stack>
-      </main>
+      </main >
     </>
   );
 }
