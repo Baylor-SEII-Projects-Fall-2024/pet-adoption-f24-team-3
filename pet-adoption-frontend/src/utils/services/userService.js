@@ -35,7 +35,7 @@ const userService = () => {
 
 
     // registers and logs in a new center
-    const registerCenter = async (formData) => {
+    const registerCenter = async (formData, profilePic, bannerPic) => {
         const response = await fetch("http://localhost:8080/api/centers", {
             method: "POST",
             headers: {
@@ -56,6 +56,18 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
+            if (profilePic != null) {
+                const profilePicResult = await uploadProfilePic(profilePic, result.userid);
+                if (!profilePicResult) {
+                    return null;
+                }
+            }
+            if (bannerPic != null) {
+                const bannerPicResult = await uploadCenterBanner(bannerPic, result.userid);
+                if (!bannerPicResult) {
+                    return null;
+                }
+            }
             saveCurrentUserToRedux(result.userid);
             setAuthenticationCookies(result.userid);
             return result;
@@ -65,7 +77,7 @@ const userService = () => {
         }
     };
 
-    const registerOwner = async (formData) => {
+    const registerOwner = async (formData, profilePic) => {
         const response = await fetch("http://localhost:8080/api/owners", {
             method: "POST",
             headers: {
@@ -82,6 +94,12 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
+            if (profilePic != null) {
+                const imageResult = await uploadProfilePic(profilePic, result.userid);
+                if (!imageResult) {
+                    return null;
+                }
+            }
             saveCurrentUserToRedux(result.userid);
             setAuthenticationCookies(result.userid);
             return result;
