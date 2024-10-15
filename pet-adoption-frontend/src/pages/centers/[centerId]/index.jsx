@@ -12,6 +12,8 @@ import {
   Grid,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
+import animalService from "@/utils/services/animalService";
+import eventService from "@/utils/services/eventService";
 import CenterProfileCard from "@/components/CenterProfileCard";
 import EventCard from "@/components/EventCard";
 import PetCard from "@/components/PetCard";
@@ -88,7 +90,9 @@ export default function CenterPage() {
       ? state.currentUser.currentUserId
       : null
   ); // get the current session user
-  const { getCenterInfo, getCenterAnimals, getCenterEvents } = userService();
+  const { getCenterInfo } = userService();
+  const { getCenterAnimals } = animalService();
+  const { getCenterEvents } = eventService();
   const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
   const [events, setEvents] = useState(null);
