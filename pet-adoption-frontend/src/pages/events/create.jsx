@@ -27,7 +27,7 @@ export default function CreateEventPage() {
         description: "",
         dateStart: null,
         dateEnd: null,
-        thumbnailPath: "",
+        thumbnailPath: "no image",
     });
 
     const handleChange = (e) => {
