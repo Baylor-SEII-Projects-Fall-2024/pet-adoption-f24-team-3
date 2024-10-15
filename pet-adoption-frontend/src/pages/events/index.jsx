@@ -14,6 +14,8 @@ export default function EventsPage() {
                 size="small"
             />
             <Button variant='contained' onClick={() => router.push(`/events/${document.getElementById('searchTxt').value}`)} sx={{ width: 200 }}>Find an event!</Button>
+            <Button variant='contained' onClick={() => router.push(`/events/create`)} sx={{ width: 200 }}>Create a New Event!</Button>
+
         </div>
     );
 }

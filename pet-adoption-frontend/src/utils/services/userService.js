@@ -91,6 +91,34 @@ const userService = () => {
         }
     };
 
+    const createEvent = async (formData) => {
+        const response = await fetch("http://localhost:8080/api/events", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                centerId: formData.centerId,
+                datePosted: formData.datePosted,
+                name: formData.name,
+                description: formData.description,
+                dateStart: formData.dateStart,
+                dateEnd: formData.dateEnd,
+                thumbnailPath: formData.thumbNail
+            })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            // saveCurrentUserToRedux(result.userid); Don't think these are needed
+            // setAuthenticationCookies(result.userid);
+            return result;
+        } else {
+            alert(`Event creation failed: ${result.message}`);
+            return null;
+        }
+    };
+
     //fetch a few pieces of user data to retain across the session for ease of access
     //also sets the user id in redux, which is needded to access restricted pages
     const saveCurrentUserToRedux = async (userid) => {
@@ -199,6 +227,7 @@ const userService = () => {
         getUserInfo,
         updateOwner,
         authenticateFromCookie,
+        createEvent,
     };
 
 };
