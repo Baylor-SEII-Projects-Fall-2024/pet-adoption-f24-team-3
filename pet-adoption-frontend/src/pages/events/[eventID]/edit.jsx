@@ -23,6 +23,7 @@ export default function EditEvent() {
     const [eventInfo, setEventInfo] = useState(null);
     const [error, setError] = useState(null);
 
+    const [thumbnailPath, setThumbnailPath] = useState(null);
     const [formData, setFormData] = useState({
         centerId: "",
         datePosted: null,
@@ -38,6 +39,10 @@ export default function EditEvent() {
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
+    const handleThumbnailUpload = (e) => {
+        setThumbnailPath(e.target.files[0]);
+    }
+
     const handleDateChange = (date, fieldName) => {
         setFormData(prevState => ({
             ...prevState,
@@ -50,7 +55,7 @@ export default function EditEvent() {
         e.preventDefault();
 
         try {
-            await updateEvent(formData, eventID)
+            await updateEvent(formData, thumbnailPath, eventID)
                 .then((eventID) => {
                     if (eventID !== null) {
                         let elm = document.getElementById("errorLabel");
@@ -129,6 +134,14 @@ export default function EditEvent() {
                                 />
                             </div>
                         </LocalizationProvider>
+                        <TextField
+                        type="file"
+                        label='Thumbnail Picture'
+                        name="thumbnailPath"
+                        size="small" margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                        onChange={handleThumbnailUpload} />
                     <Button type='submit' variant='contained' color='primary'>Save</Button>
                 </form>
                 <label id="errorLabel"></label>

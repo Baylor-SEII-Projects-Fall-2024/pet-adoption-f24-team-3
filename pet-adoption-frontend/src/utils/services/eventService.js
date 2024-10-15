@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentUserId } from '@/utils/redux';
+import imageService from './imageService';
 import Cookies from 'js-cookie';
 
 const eventService = () => {
-    const dispatch = useDispatch();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    const {uploadEventThumbnail} = imageService();
 
     const createEvent = async (formData, centerId) => {
         const response = await fetch("http://localhost:8080/api/events", {
@@ -52,7 +51,7 @@ const eventService = () => {
         }
     };
 
-    const updateEvent = async (formData, eventID) => {
+    const updateEvent = async (formData, thumbnail, eventID) => {
         const response = await fetch(`http://localhost:8080/api/events/update/${eventID}`, {
             method: "POST",
             headers: {
@@ -72,7 +71,12 @@ const eventService = () => {
         const result = await response.json();
         console.log("result:", result);
         if (response.ok) {
-            //saveCurrentUserToRedux(result.eventID);
+            if(thumbnail != null){
+                const thumbnailResult = await uploadEventThumbnail(thumbnail,eventID);
+                if(thumbnailResult == null){
+                    return null;
+                }
+            }
             return result;
         } else {
             alert(`Update failed: ${result.message}`);

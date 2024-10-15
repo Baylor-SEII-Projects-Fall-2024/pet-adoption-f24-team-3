@@ -28,9 +28,10 @@ export default function EventCard(props) {
           <img
             style={{
               width: "100%",
-              height: "auto",
+              maxHeight: "auto",
               borderRadius: "2%",
-
+              aspectRatio:1,
+              objectFit:"cover",
             }}
             alt="Event Thumbnail"
             src={`http://localhost:8080/api/images/events/${event.id}`}
