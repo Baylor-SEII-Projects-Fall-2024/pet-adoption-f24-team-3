@@ -28,23 +28,6 @@ public class PreferenceService {
         return preferenceRepository.findByPotentialOwnerId(userId);
     }
 
-    public Preference updatePreference(Preference preference, Long potentialOwnerId) throws Exception {
-        PotentialOwner owner = userService.findPotentialOwner(potentialOwnerId).orElse(null);
-
-        if(owner == null) {
-            throw new Exception("Owner Not Found");
-        }
-
-        preference.setPotentialOwnerId(owner.getId());
-
-        Preference updatePreference = preferenceRepository.save(preference); // should this be an update call?
-
-        owner.setPreference(updatePreference);
-        userService.saveUser(owner); // should we have an updateUser
-
-        return updatePreference;
-    }
-
     public Preference savePreference(Long potentialOwnerId, Preference preference) throws Exception {
         PotentialOwner owner = userService.findPotentialOwner(potentialOwnerId).orElse(null);
 

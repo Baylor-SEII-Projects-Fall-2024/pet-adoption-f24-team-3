@@ -31,7 +31,7 @@ export default function EditPreferencesPage() {
     species: "",
     breed: "",
     sex: "",
-    furType: "",
+    // furType: "",
     age: "",
     size: "",
     city: "",
@@ -41,6 +41,11 @@ export default function EditPreferencesPage() {
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSelectChange = (event, fieldName) => {
+    const { value } = event.target;
+    setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -168,13 +173,14 @@ export default function EditPreferencesPage() {
                       id="sex-select"
                       value={formData.sex}
                       label="Pet Sex"
-                      onChange={handleFormChange}
+                      onChange={(event) => handleSelectChange(event, 'sex')}
                     >
                       <MenuItem value={"MALE"}>Male</MenuItem>
                       <MenuItem value={"FEMALE"}>Female</MenuItem>
                     </Select>
                   </FormControl>
 
+                  {/*
                   <FormControl fullWidth>
                     <InputLabel id="pet-fur-select-label">Pet Fur Type</InputLabel>
                     <Select
@@ -190,6 +196,7 @@ export default function EditPreferencesPage() {
                       <MenuItem value={"hypo"}>Hypoallergenic</MenuItem>
                     </Select>
                   </FormControl>
+                  */}
 
                   <FormControl fullWidth>
                     <InputLabel id="age-select-label">Pet Age</InputLabel>
@@ -198,7 +205,7 @@ export default function EditPreferencesPage() {
                       id="age-select"
                       value={formData.age}
                       label="Pet Age"
-                      onChange={handleFormChange}
+                      onChange={(event) => handleSelectChange(event, 'age')}
                     >
                       <MenuItem value={"BABY"}>Baby</MenuItem>
                       <MenuItem value={"ADOLESCENT"}>Adolescent</MenuItem>
@@ -214,7 +221,7 @@ export default function EditPreferencesPage() {
                       id="breed-select"
                       value={formData.size}
                       label="Pet Size"
-                      onChange={handleFormChange}
+                      onChange={(event) => handleSelectChange(event, 'size')}
                     >
                       <MenuItem value={"EXTRA_SMALL"}>Extra Small</MenuItem>
                       <MenuItem value={"SMALL"}>Small</MenuItem>

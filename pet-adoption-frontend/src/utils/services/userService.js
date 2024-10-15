@@ -170,9 +170,10 @@ const userService = () => {
 
     const result = await response.json();
     if (response.ok) {
+      console.log(result);
       return result;
     } else {
-      alert(`Get info failed: ${result.message}`);
+      alert(`Get preferences failed: ${result.message}`);
       return null;
     }
   };
@@ -237,7 +238,6 @@ const userService = () => {
   };
 
   const updatePreferences = async (formData, userid) => {
-    //const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
     const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
       method: "POST",
       headers: {
@@ -248,7 +248,7 @@ const userService = () => {
         breed: formData.breed,
         sex: formData.sex,
         // furType: formData.furType,
-        age: formData.age,
+        ageClass: formData.age,
         size: formData.size,
         city: formData.city,
         state: formData.state
@@ -257,7 +257,6 @@ const userService = () => {
 
     const result = await response.json();
     if (response.ok) {
-      saveCurrentUserToRedux(result.userid);
       return result;
     } else {
       alert(`Update failed: ${result.message}`);
