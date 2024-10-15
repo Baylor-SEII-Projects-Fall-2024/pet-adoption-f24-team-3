@@ -18,11 +18,13 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/events/")
     public List<Event> findAllEvents() {
         return eventService.findAllEvents();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/events/{id}")
     public Event findEventBy(@PathVariable Long id) {
         var event = eventService.findEvent(id).orElse(null);
@@ -43,6 +45,20 @@ public class EventController {
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Event creation failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/events/update/{eventId}")
+    public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId, @RequestBody Event newEvent) {
+        Long updatedEvent = eventService.updateEvent(newEvent, eventId);
+        Map<String, Object>  response = new HashMap<>();
+        if (updatedEvent!=null) {
+            response.put("eventID", updatedEvent);
+            return ResponseEntity.ok(response); // Return success message as JSON
+        } else {
+            response.put("message", "Event update failed.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
         }
     }

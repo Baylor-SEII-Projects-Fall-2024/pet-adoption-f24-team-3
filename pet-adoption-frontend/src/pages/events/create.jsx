@@ -7,10 +7,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import eventService from "@/utils/services/eventService";
 
 export default function CreateEventPage() {
     const router = useRouter();
-    const { createEvent } = userService();
+    const { createEvent } = eventService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currDate = new Date().toISOString();
     const [value, setValue] = React.useState(dayjs(''));
