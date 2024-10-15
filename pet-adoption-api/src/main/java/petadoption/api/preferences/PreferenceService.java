@@ -1,5 +1,6 @@
 package petadoption.api.preferences;
 
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,11 @@ public class PreferenceService {
         userService.saveUser(owner);
 
         return savedPreference;
+    }
+
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        preferenceRepository.deleteAll();
     }
 }
