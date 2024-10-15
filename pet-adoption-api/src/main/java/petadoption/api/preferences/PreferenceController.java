@@ -30,6 +30,17 @@ public class PreferenceController {
         return preference;
     }
 
+    @PostMapping("/update/preferences/{userId}")
+    public Preference updatePreference(@PathVariable Long userId, @RequestBody Preference preference) throws Exception {
+        try {
+            return preferenceService.updatePreference(userId, preference);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                HttpStatus.I_AM_A_TEAPOT, "could not update preferences"
+            );
+        }
+    }
+
     @PostMapping("/preferences/{potentialOwnerId}")
     public Preference savePreference(@PathVariable Long potentialOwnerId, @RequestBody Preference preference) throws Exception {
         try{

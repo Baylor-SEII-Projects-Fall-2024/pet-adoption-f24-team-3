@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petadoption.api.user.PotentialOwner;
 import petadoption.api.user.UserService;
+import petadoption.api.user.dtos.PreferenceDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,11 @@ public class PreferenceService {
     public Optional<Preference> findPreferenceByOwnerId(Long userId) {
         return preferenceRepository.findByPotentialOwnerId(userId);
     }
+
+    public Long updatePreferences(PreferenceDto preferenceDto, Long userId) {
+
+    }
+
     public Preference savePreference(Long potentialOwnerId, Preference preference) throws Exception {
         PotentialOwner owner = userService.findPotentialOwner(potentialOwnerId).orElse(null);
 
