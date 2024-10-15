@@ -31,14 +31,56 @@ const themeOptions = {
                 outlinedSecondary: {
                     border: '2px solid'
                 },
+                containedPrimary: {
+                    backgroundColor: '#a3b18a',
+                    color: '#fff',
+                    '&:hover': {
+                        backgroundColor: '#8e9d72', // Slightly darker green for hover
+                    },
+                },
+                containedSecondary: {
+                    backgroundColor: '#c5a5bf',
+                    color: '#fff',
+                    '&:hover': {
+                        backgroundColor: '#af8ba5',
+                    },
+                },
             },
+        },
+        MuiSvgIcon: {
+            styleOverrides: {
+                root: {
+                    marginRight: 5,
+                    marginLeft: 5,
+                },
+            },
+        },
+    },
+    palette: {
+        primary: {
+            main: '#a3b18a', // Soft green
+        },
+        secondary: {
+            main: '#c5a5bf', // Light lavender
+        },
+        background: {
+            default: '#f0e6d6', // Light beige for the background
+            paper: '#fafafa',   // Very light grey for card/paper backgrounds
+        },
+        text: {
+            primary: '#333333', // Dark grey for primary text
+            secondary: '#666666', // Lighter grey for secondary text
+            white: '#fff',
+            darkColor: '#5F4B59', // dark purple for some occasional text
+            success: '#00780a', //bright green for success
+            error: '#ff0000'  //red for error
         },
     }
 };
 
 export const theme = createTheme(themeOptions);
 
-export const PetAdoptionThemeProvider = ({children}) => {
+export const PetAdoptionThemeProvider = ({ children }) => {
     return (
         <ThemeProvider theme={theme}>
             {children}
