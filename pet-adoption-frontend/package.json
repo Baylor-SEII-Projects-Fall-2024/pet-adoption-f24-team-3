@@ -20,10 +20,7 @@
     "@mui/x-date-pickers": "^7.20.0",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.7.3",
-<<<<<<< HEAD
     "dayjs": "^1.11.13",
-=======
->>>>>>> SamuelF2/AdoptionCenterEdit
     "js-cookie": "^3.0.5",
     "next": "^14.2.14",
     "pet-adoption-frontend": "file:",

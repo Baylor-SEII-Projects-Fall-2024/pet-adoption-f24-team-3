@@ -18,12 +18,7 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-<<<<<<< HEAD
-  const { updateOwner, getOwnerInfo } = userService();
-  const { uploadProfilePic } = imageService();
-=======
-  const { updateOwner, updateCenter, getUserInfo } = userService();
->>>>>>> SamuelF2/AdoptionCenterEdit
+  const { updateOwner, getUserInfo } = userService();
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
@@ -35,19 +30,9 @@ export default function EditProfilePage() {
     password: "",
     nameFirst: "",
     nameLast: "",
-<<<<<<< HEAD
   });
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState();
-=======
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: ""
-  });
-  
->>>>>>> SamuelF2/AdoptionCenterEdit
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +45,6 @@ export default function EditProfilePage() {
 
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
-<<<<<<< HEAD
     e.preventDefault();
 
     try {
@@ -75,28 +59,6 @@ export default function EditProfilePage() {
         }
       });
     } catch (error) {
-=======
-  e.preventDefault();
-
-  try {
-      await (userInfo.accountType=="Owner"?updateOwner(formData, userId):updateCenter(formData,userId))
-          .then((userId) => {
-              //if user id is not null, that is handled in the hook below
-              if (userId !== null) {
-                let elm = document.getElementById("errorLabel");
-                elm.innerHTML = "Profile Settings Saved!";
-                elm.style = "color: green;"
-              }
-              else {
-                let elm = document.getElementById("errorLabel");
-                elm.innerHTML = "An error occured, try again!";
-                elm.style = "color: red;"
-              }
-          })
-
-
-  } catch (error) {
->>>>>>> SamuelF2/AdoptionCenterEdit
       console.error("Error: ", error);
       setFormError("An error occured saving your data.");
     }
@@ -111,7 +73,6 @@ export default function EditProfilePage() {
           const result = await getOwnerInfo(userId);
           if (result !== null) {
             setUserInfo(result);
-<<<<<<< HEAD
             setFormData((prevState) => ({
               ...prevState,
               ["emailAddress"]: result.emailAddress,
@@ -124,23 +85,6 @@ export default function EditProfilePage() {
               ...prevState,
               ["nameLast"]: result.nameLast,
             }));
-=======
-
-            setFormData(prevState => ({ ...prevState, ["accountType"]: result.accountType }));
-            setFormData(prevState => ({ ...prevState, ["emailAddress"]: result.emailAddress }));
-            if(result.accountType=="Owner"){
-              setFormData(prevState => ({ ...prevState, ["nameFirst"]: result.nameFirst }));
-              setFormData(prevState => ({ ...prevState, ["nameLast"]: result.nameLast }));
-            }
-            else{
-              setFormData(prevState => ({ ...prevState, ["name"]: result.name }));
-              setFormData(prevState => ({ ...prevState, ["address"]: result.address }));
-              setFormData(prevState => ({ ...prevState, ["city"]: result.city }));
-              setFormData(prevState => ({ ...prevState, ["state"]: result.state }));
-              setFormData(prevState => ({ ...prevState, ["zipCode"]: result.zipCode }));
-
-            }
->>>>>>> SamuelF2/AdoptionCenterEdit
           }
           // Set error state if not ok
         } catch (error) {
@@ -155,7 +99,6 @@ export default function EditProfilePage() {
       fetchUserInfo();
     }
   }, [userId]); // rerender if userId changes
-<<<<<<< HEAD
 
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
@@ -163,41 +106,6 @@ export default function EditProfilePage() {
       setImagePreview(undefined);
       return;
     }
-=======
-if(!loading){
-return(
-    <>
-      <Head>
-        <title>Edit Profile Page</title>
-      </Head>
-
-      <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
-          <Card sx={{ width: 600 }} elevation={4}>
-            <CardContent> 
-              <Typography variant='h3' align='center'>Profile Settings</Typography>
-            </CardContent>
-          </Card>
-          <Stack direction="column" >
-            <Card sx={{ minWidth:"60vw", p:"15px" }} >
-            <form id="Form" onSubmit={handleSubmit}>
-              <TextField required fullWidth label='Email' name="emailAddress" size="small" margin="dense" value={formData.emailAddress} onChange={handleChange} />
-              {userInfo.accountType == "Owner"?
-                <><TextField fullWidth label='First Name' name="nameFirst" size="small" margin="dense" value={formData.nameFirst} onChange={handleChange} />
-                <TextField required fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleChange} /></>
-                :
-                <><TextField required fullWidth label='Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
-                <TextField required fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
-                <TextField required fullWidth label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
-                <TextField required fullWidth label='State' name="state" size="small" margin="dense" value={formData.state} onChange={handleChange} />
-                <TextField required fullWidth label='Zip Code' name="zipCode" size="small" margin="dense" value={formData.zipCode} onChange={handleChange} /></>
-                }
-
-              <Button type='submit' variant='contained' color='primary'>Save</Button>
-              
-            </form>
-            <label id="errorLabel"></label>
->>>>>>> SamuelF2/AdoptionCenterEdit
 
     const objectUrl = URL.createObjectURL(profileImage);
     setImagePreview(objectUrl);
@@ -286,17 +194,8 @@ return(
               </Card>
             </Stack>
           </Stack>
-<<<<<<< HEAD
         </main>
       </>
     );
   }
-=======
-        </Stack>
-      </main>
-
-    </>
-  );  
-} 
->>>>>>> SamuelF2/AdoptionCenterEdit
 }
