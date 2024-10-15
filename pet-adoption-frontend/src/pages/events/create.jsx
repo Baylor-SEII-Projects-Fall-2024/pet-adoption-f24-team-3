@@ -87,8 +87,6 @@ export default function CreateEventPage() {
                 <form onSubmit={handleSubmit}>
                     <TextField fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
                     <TextField multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
-                    {/* <TextField fullWidth label='Start Date' name="address" size="small" margin="dense" value={formData.dateStart} onChange={handleChange} />
-                    <TextField fullWidth label='End Date' name="city" size="small" margin="dense" value={formData.dateEnd} onChange={handleChange} /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div style={{ marginBottom: '8px', marginTop: '6px'}}>
                             <DatePicker
