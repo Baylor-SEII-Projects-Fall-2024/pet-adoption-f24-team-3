@@ -43,14 +43,12 @@ const userService = () => {
                 accountType: "Center",
                 emailAddress: formData.email,
                 password: formData.password,
-                profilePicPath: null,
                 name: formData.centerName,
                 address: formData.address,
                 city: formData.city,
                 state: formData.state,
                 zipCode: formData.zip,
                 description: "A safe haven for homeless pets",
-                bannerPicPath: null
             })
         });
 
@@ -75,7 +73,6 @@ const userService = () => {
                 accountType: "Owner",
                 emailAddress: formData.email,
                 password: formData.password,
-                profilePicPath: null,
                 nameFirst: formData.firstName,
                 nameLast: formData.lastName
             })
@@ -107,7 +104,6 @@ const userService = () => {
         if (getSessionUserData.ok) {
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
             dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.userType });
-            dispatch({ type: 'SET_CURRENT_USER_PROFILE_PIC_PATH', payload: result.profilePicPath });
         } else {
             console.error("Error: Unable to fetch session data for user!")
         }
@@ -209,7 +205,6 @@ const userService = () => {
                 accountType: "Owner",
                 emailAddress: formData.emailAddress,
                 password: formData.password,
-                profilePicPath: null,
                 nameFirst: formData.nameFirst,
                 nameLast: formData.nameLast
             })

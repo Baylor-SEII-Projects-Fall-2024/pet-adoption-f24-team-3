@@ -23,8 +23,6 @@ function currentUserReducer(state = { currentUserId: null }, action) {
             return { ...state, currentUserFullName: action.payload };
         case 'SET_CURRENT_USER_TYPE':
             return { ...state, currentUserType: action.payload };
-        case 'SET_CURRENT_USER_PROFILE_PIC_PATH':
-            return { ...state, currentUserProfilePicPath: action.payload };
         default:
             return state;
     }

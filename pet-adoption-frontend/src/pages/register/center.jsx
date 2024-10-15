@@ -2,14 +2,20 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
-
+import imageService from "@/utils/services/imageService";
 
 export default function RegisterCenterPage() {
     const router = useRouter();
     const { registerCenter } = userService();
+    const { uploadProfilePic, uploadCenterBanner } = imageService();
+
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
+
+    const [profileImage, setProfileImage] = useState(null);
+    const [bannerImage, setBannerImage] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     const [formData, setFormData] = useState({
         centerName: "",
@@ -26,6 +32,13 @@ export default function RegisterCenterPage() {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
+
+    const handleProfileImageUpload = (e) => {
+        setProfileImage(e.target.files[0]);
+    }
+    const handleBannerImageUpload = (e) => {
+        setBannerImage(e.target.files[0]);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,10 +69,18 @@ export default function RegisterCenterPage() {
         }
 
         try {
+            setIsUploading(true);
             await registerCenter(formData)
-                .then((result) => {
+                .then(async (result) => {
                     if (result !== null) {
-                        router.push(`/profile/${result.userid}`);
+                        if (profileImage != null) {
+                            await uploadProfilePic(profileImage, result.userid);
+                        }
+                        if (bannerImage != null) {
+                            await uploadCenterBanner(bannerImage, result.userid);
+                        }
+                        setIsUploading(false);
+                        router.push(`/`);
                     }
                 });
 
@@ -87,7 +108,29 @@ export default function RegisterCenterPage() {
                     <TextField fullWidth label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
-                    <Button type='submit' variant='contained' color='primary'>Register</Button>
+                    <TextField
+                        type="file"
+                        label='Profile Picture'
+                        name="profilePicture"
+                        size="small" margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                        onChange={handleProfileImageUpload} />
+                    <TextField
+                        type="file"
+                        label='Banner Image'
+                        name="bannerImage"
+                        size="small" margin="dense"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                        onChange={handleBannerImageUpload} />
+
+                    {isUploading ?
+                        <Typography> Creating Account...</Typography>
+                        :
+                        <Button type='submit' variant='contained' color='primary'>Register</Button>
+
+                    }
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
 
 

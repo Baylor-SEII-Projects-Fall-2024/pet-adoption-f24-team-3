@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import userService from "@/utils/services/userService";
 import {
   Button,
   Card,
@@ -11,31 +10,41 @@ import {
   TextField,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { UploadFile } from "@mui/icons-material";
-import { toFormData } from "axios";
+
+import userService from "@/utils/services/userService";
+import imageService from "@/utils/services/imageService";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { updateOwner, getOwnerInfo } = userService();
+  const { updateOwner, getUserInfo } = userService();
+  const { uploadProfilePic } = imageService();
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
-  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState();
+  const [imageStatus, setImageStatus] = useState();
   const [formData, setFormData] = useState({
     accountType: "Owner",
     emailAddress: "",
     password: "",
-    profilePicPath: null,
     nameFirst: "",
     nameLast: "",
   });
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState();
 
-  const handleChange = (e) => {
+  const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
+
+  const handleImageUpload = (e) => {
+    setProfileImage(e.target.files[0]);
+  };
+
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,18 +53,33 @@ export default function EditProfilePage() {
       await updateOwner(formData, userId).then((userId) => {
         //if user id is not null, that is handled in the hook below
         if (userId !== null) {
-          let elm = document.getElementById("errorLabel");
-          elm.innerHTML = "Profile Settings Saved!";
-          elm.style = "color: green;";
+          setFormError(null);
+          setFormSuccess("Profile Settings Saved!");
         } else {
-          let elm = document.getElementById("errorLabel");
-          elm.innerHTML = "An error occured, try again!";
-          elm.style = "color: red;";
+          setFormError("An error occured, try again!");
+          setFormSuccess(null);
         }
       });
     } catch (error) {
       console.error("Error: ", error);
-      alert("An error occured saving data.");
+      setFormError("An error occured saving your data.");
+    }
+
+    if (profileImage) {
+      try {
+        setImageStatus("Uploading profile picture...");
+
+        await uploadProfilePic(profileImage, userId).then((result) => {
+          if (userId !== null) {
+            setImageStatus("Profile Picture Uploaded Successfully!");
+          } else {
+            setImageStatus("Error uploading profile picture!");
+          }
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        setImageStatus("Error uploading profile picture!");
+      }
     }
   };
   useEffect(() => {
@@ -83,7 +107,9 @@ export default function EditProfilePage() {
           }
           // Set error state if not ok
         } catch (error) {
-          setError(`User information could not be found for user ${userId}`);
+          setFormError(
+            `User information could not be found for user ${userId}`
+          );
         } finally {
           setLoading(false);
         }
@@ -91,6 +117,21 @@ export default function EditProfilePage() {
       fetchUserInfo();
     }
   }, [userId]); // rerender if userId changes
+
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!profileImage) {
+      setImagePreview(undefined);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(profileImage);
+    setImagePreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [profileImage]);
+
   if (!loading) {
     return (
       <>
@@ -118,7 +159,7 @@ export default function EditProfilePage() {
                     size="small"
                     margin="dense"
                     value={formData.emailAddress}
-                    onChange={handleChange}
+                    onChange={handleFormChange}
                   />
                   <TextField
                     fullWidth
@@ -127,7 +168,7 @@ export default function EditProfilePage() {
                     size="small"
                     margin="dense"
                     value={formData.nameFirst}
-                    onChange={handleChange}
+                    onChange={handleFormChange}
                   />
                   <TextField
                     required
@@ -137,13 +178,40 @@ export default function EditProfilePage() {
                     size="small"
                     margin="dense"
                     value={formData.nameLast}
-                    onChange={handleChange}
+                    onChange={handleFormChange}
                   />
+                  <TextField
+                    type="file"
+                    label="Profile Picture"
+                    name="profilePicture"
+                    size="small"
+                    margin="dense"
+                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                    onChange={handleImageUpload}
+                  />
+
+                  {profileImage && (
+                    <img
+                      src={imagePreview}
+                      style={{ maxWidth: "200px", margin: "10px" }}
+                    />
+                  )}
+                  <br></br>
                   <Button type="submit" variant="contained" color="primary">
                     Save
                   </Button>
                 </form>
-                <label id="errorLabel"></label>
+
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}
+                {imageStatus && (
+                  <Typography color="secondary">{imageStatus}</Typography>
+                )}
               </Card>
             </Stack>
           </Stack>

@@ -171,9 +171,7 @@ export default function ProfilePage() {
                 ? `${userInfo.nameFirst} ${userInfo.nameLast}`
                 : "User Avatar"
             }
-            src={
-              userInfo && userInfo.profilePicPath ? userInfo.profilePicPath : ""
-            }
+            src={`http://localhost:8080/api/images/users/${userId}/profile`}
           />
           {/* Create card to display User Info */}
         </Card>

@@ -90,7 +90,7 @@ export default function HeaderBar(props) {
                             onClick={handleOpenUserMenu}
                             sx={{ p: 1 }}
                         >
-                            <Avatar alt="Remy Sharp" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" />
+                            <Avatar alt="Remy Sharp" src={`http://localhost:8080/api/images/users/${currentUserId}/profile`} />
                         </IconButton>
                     </Tooltip>
                     <Menu
