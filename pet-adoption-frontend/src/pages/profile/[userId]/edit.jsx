@@ -11,30 +11,36 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const { updateOwner, getUserInfo } = userService();
+  const { updateOwner, updateCenter, getUserInfo } = userService();
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    accountType: "Owner",
+    accountType: "",
     emailAddress: "",
     password: "",
     profilePicPath: null,
     nameFirst: "",
-    nameLast: ""
+    nameLast: "",
+    name: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: ""
   });
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
   //handle what happens on sumbmit. Does not reroute on success.
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-      await updateOwner(formData, userId)
+      await (userInfo.accountType=="Owner"?updateOwner(formData, userId):updateCenter(formData,userId))
           .then((userId) => {
               //if user id is not null, that is handled in the hook below
               if (userId !== null) {
@@ -65,24 +71,34 @@ const handleSubmit = async (e) => {
           const result = await getUserInfo(userId);
           if (result !== null) {
             setUserInfo(result);
+
+            setFormData(prevState => ({ ...prevState, ["accountType"]: result.accountType }));
             setFormData(prevState => ({ ...prevState, ["emailAddress"]: result.emailAddress }));
-            setFormData(prevState => ({ ...prevState, ["nameFirst"]: result.nameFirst }));
-            setFormData(prevState => ({ ...prevState, ["nameLast"]: result.nameLast }));
+            if(result.accountType=="Owner"){
+              setFormData(prevState => ({ ...prevState, ["nameFirst"]: result.nameFirst }));
+              setFormData(prevState => ({ ...prevState, ["nameLast"]: result.nameLast }));
+            }
+            else{
+              setFormData(prevState => ({ ...prevState, ["name"]: result.name }));
+              setFormData(prevState => ({ ...prevState, ["address"]: result.address }));
+              setFormData(prevState => ({ ...prevState, ["city"]: result.city }));
+              setFormData(prevState => ({ ...prevState, ["state"]: result.state }));
+              setFormData(prevState => ({ ...prevState, ["zipCode"]: result.zipCode }));
+
+            }
           }
           // Set error state if not ok
         } catch (error) {
           setError(`User information could not be found for user ${userId}`);
         } finally {
           setLoading(false);
-
-
         }
       };
       fetchUserInfo();
     }
   }, [userId]); // rerender if userId changes
 if(!loading){
-return (
+return(
     <>
       <Head>
         <title>Edit Profile Page</title>
@@ -97,10 +113,19 @@ return (
           </Card>
           <Stack direction="column" >
             <Card sx={{ minWidth:"60vw", p:"15px" }} >
-            <form onSubmit={handleSubmit}>
+            <form id="Form" onSubmit={handleSubmit}>
               <TextField required fullWidth label='Email' name="emailAddress" size="small" margin="dense" value={formData.emailAddress} onChange={handleChange} />
-              <TextField fullWidth label='First Name' name="nameFirst" size="small" margin="dense" value={formData.nameFirst} onChange={handleChange} />
-              <TextField required fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleChange} />
+              {userInfo.accountType == "Owner"?
+                <><TextField fullWidth label='First Name' name="nameFirst" size="small" margin="dense" value={formData.nameFirst} onChange={handleChange} />
+                <TextField required fullWidth label='Last Name' name="nameLast" size="small" margin="dense" value={formData.nameLast} onChange={handleChange} /></>
+                :
+                <><TextField required fullWidth label='Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
+                <TextField required fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
+                <TextField required fullWidth label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
+                <TextField required fullWidth label='State' name="state" size="small" margin="dense" value={formData.state} onChange={handleChange} />
+                <TextField required fullWidth label='Zip Code' name="zipCode" size="small" margin="dense" value={formData.zipCode} onChange={handleChange} /></>
+                }
+
               <Button type='submit' variant='contained' color='primary'>Save</Button>
               
             </form>
@@ -110,7 +135,8 @@ return (
           </Stack>
         </Stack>
       </main>
+
     </>
-  );
+  );  
 } 
 }

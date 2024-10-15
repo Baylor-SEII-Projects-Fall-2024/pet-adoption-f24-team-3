@@ -147,6 +147,7 @@ const userService = () => {
     };
 
     const getUserInfo = async (userid) => {
+        
         const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
             method: "GET",
             headers: {
@@ -179,6 +180,35 @@ const userService = () => {
             })
         });
 
+    const result = await response.json();
+        console.log("result:", result);
+        if (response.ok) {
+            saveCurrentUserToRedux(result.userid);
+            return result;
+        } else {
+            alert(`Update failed: ${result.message}`);
+            return null;
+        }
+    };
+    const updateCenter = async (formData, userid) => {
+        const response = await fetch(`http://localhost:8080/api/update/center/${userid}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                accountType: "Center",
+                emailAddress: formData.emailAddress,
+                password: formData.password,
+                profilePicPath: null,
+                name: formData.name,
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode
+            })
+        });
+
         const result = await response.json();
         console.log("result:", result);
         if (response.ok) {
@@ -191,6 +221,7 @@ const userService = () => {
     };
 
 
+
     return {
         validateLogin,
         registerCenter,
@@ -198,6 +229,7 @@ const userService = () => {
         logOut,
         getUserInfo,
         updateOwner,
+        updateCenter,
         authenticateFromCookie,
     };
 
