@@ -45,74 +45,10 @@ export default function CenterProfileCard(props) {
           sx={{
             display: "flex",
             flexDirection: "row",
-            mb: 4,
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 8,
+            justifyContent: "flex-end",
+            width: "100%",
           }}
         >
-          {/* Flex box containing profile info and center avatar */}
-          <Box
-            sx={{
-              flexDirection: "column",
-              display: "flex",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-            {/* Display users name */}
-            <CardContent>
-              <Typography
-                variant="h4"
-                align="center"
-                sx={{
-                  wordBreak: "break-word", // wrap should overflow occur
-                  whiteSpace: "normal",
-                }}
-              >
-                {centerInfo.name}
-              </Typography>
-            </CardContent>
-            {/* Display centers avatar */}
-            <Avatar
-              sx={{
-                bgcolor: "#a3b18a",
-                width: 175,
-                height: 175,
-                border: "2px solid #000",
-              }}
-              alt="Center Avatar"
-              src=""
-            />
-          </Box>
-          <Box
-            sx={{
-              mt: 8,
-            }}
-          >
-            <CardContent>
-              {/* Info and conditional edit button */}
-              {centerInfo && (
-                <>
-                  <Grid container spacing={2}>
-                    {Object.entries(centerInfo).map(([key, value]) => {
-                      if (!propsNotInInfo.includes(key)) {
-                        return (
-                          <Grid item xs={12} sm={6} key={key}>
-                            <Typography variant="body1" color="textSecondary">
-                              {`${camelCaseToReadable(key)}: ${
-                                value === null ? "N/A" : value
-                              }`}
-                            </Typography>
-                          </Grid>
-                        );
-                      }
-                    })}
-                  </Grid>
-                </>
-              )}
-            </CardContent>
-          </Box>
           {/* Display edit button if user is viewing their own page */}
           {String(centerId) === String(currentUserId) && (
             <Button
@@ -128,6 +64,69 @@ export default function CenterProfileCard(props) {
               Edit Info
             </Button>
           )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            mb: 4,
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Flex box containing profile info and center avatar */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "40%",
+            }}
+          >
+            <Typography variant="h4">{centerInfo.name}</Typography>
+            {/* Display centers avatar */}
+            <Avatar
+              sx={{
+                bgcolor: "#a3b18a",
+                width: 175,
+                height: 175,
+                border: "2px solid #000",
+                mt: 2,
+              }}
+              alt="Center Avatar"
+              src=""
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+            }}
+          >
+            <CardContent>
+              {/* Info */}
+              {centerInfo && (
+                <>
+                  <Grid container spacing={2}>
+                    {Object.entries(centerInfo).map(([key, value]) => {
+                      if (!propsNotInInfo.includes(key)) {
+                        return (
+                          <Grid item xs={12} sm={4} md={4} key={key}>
+                            <Typography variant="body1" color="textSecondary">
+                              {`${camelCaseToReadable(key)}: ${
+                                value === null ? "N/A" : value
+                              }`}
+                            </Typography>
+                          </Grid>
+                        );
+                      }
+                    })}
+                  </Grid>
+                </>
+              )}
+            </CardContent>
+          </Box>
         </Box>
 
         <Box
