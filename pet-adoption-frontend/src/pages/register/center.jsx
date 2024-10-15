@@ -70,15 +70,9 @@ export default function RegisterCenterPage() {
 
         try {
             setIsUploading(true);
-            await registerCenter(formData)
+            await registerCenter(formData, profileImage, bannerImage)
                 .then(async (result) => {
                     if (result !== null) {
-                        if (profileImage != null) {
-                            await uploadProfilePic(profileImage, result.userid);
-                        }
-                        if (bannerImage != null) {
-                            await uploadCenterBanner(bannerImage, result.userid);
-                        }
                         setIsUploading(false);
                         router.push(`/`);
                     }
