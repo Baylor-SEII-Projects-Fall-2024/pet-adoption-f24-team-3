@@ -20,6 +20,7 @@ name: Build & Deploy
 on:
   push:
     branches:
+      - ickoxii/cicd-init
       - main
   pull_request:
     branches:
@@ -38,9 +39,6 @@ jobs:
         # buildscripts, modify the corresponding files in the docker/ directory.
         #
         # You will need to point this command to the correct Docker Compose file.
-        #
-        # TODO: Do I use ci.docker-compose.yml or local.docker-compose.yml?
-        # -Icko
         run: |
           docker compose -f docker/ci.docker-compose.yml build
 
@@ -64,9 +62,6 @@ jobs:
         # manage a MYSQL server.
         #
         # You will need to point these commands to the correct Docker Compose file.
-        #
-        # TODO: Do I use ci.docker-compose.yml or local.docker-compose.yml?
-        # -Icko
         run: |
           docker compose -f docker/ci.docker-compose.yml down
           docker compose -f docker/ci.docker-compose.yml up -d --build
