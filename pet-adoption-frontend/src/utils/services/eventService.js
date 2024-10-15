@@ -6,14 +6,14 @@ const eventService = () => {
     const dispatch = useDispatch();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
-    const createEvent = async (formData) => {
+    const createEvent = async (formData, centerId) => {
         const response = await fetch("http://localhost:8080/api/events", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                centerId: formData.centerId,
+                centerId: centerId,
                 datePosted: formData.datePosted,
                 name: formData.name,
                 description: formData.description,
