@@ -9,7 +9,6 @@ const animalService = () => {
         });
 
         const result = await response.json();
-        console.log(result);
         if (response.ok) {
             return result;
         } else {
@@ -21,6 +20,6 @@ const animalService = () => {
     return {
         getCenterAnimals,
     };
-    
+
 };
 export default animalService;

@@ -27,23 +27,20 @@ export default function PetCard(props) {
       <CardContent>
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+            flex: 0.8,
+            width: "100%",
+            height: "300px",
           }}
         >
-          <Avatar
-            variant="rounded"
-            sx={{
+          <img
+            style={{
               width: "100%",
-              height: "100%",
-              border: "2px solid #000",
-              mt: 1,
-              mb: 1,
+              height: "auto",
+              borderRadius: "2%",
+
             }}
-            alt="Pet Avatar"
-            src={"/defaults/pet.png"}
+            alt="Pet Photo"
+            src={`http://localhost:8080/api/images/animals/${pet.id}`}
           />
         </Box>
         <Box>

@@ -14,34 +14,36 @@ export default function EventCard(props) {
         display: "flex",
         mb: 2,
         width: "100%",
+        height: "440px",
       }}
     >
       <CardContent>
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+            flex: 0.8,
+            width: "100%",
+            height: "300px",
           }}
         >
-          <Avatar
-            variant="rounded"
-            sx={{
+          <img
+            style={{
               width: "100%",
-              height: "100%",
-              border: "2px solid #000",
-              mt: 1,
-              mb: 1,
+              height: "auto",
+              borderRadius: "2%",
+
             }}
-            alt="Event Avatar"
-            src={"/defaults/event.png"}
+            alt="Event Thumbnail"
+            src={`http://localhost:8080/api/images/events/${event.id}`}
           />
         </Box>
-        <Box>
+        <Box
+          sx={{
+            flex: 0.2,
+          }}
+        >
           <Typography variant="h5">{event.name}</Typography>
           {format(new Date(event.dateStart), "MM dd yyyy") ===
-          format(new Date(event.dateEnd), "MM dd yyyy") ? (
+            format(new Date(event.dateEnd), "MM dd yyyy") ? (
             <>
               <Typography>
                 {format(new Date(event.dateStart), "MMM dd, yyyy")}
