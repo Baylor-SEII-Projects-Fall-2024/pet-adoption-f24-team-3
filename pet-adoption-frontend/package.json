@@ -20,6 +20,7 @@
     "@mui/x-date-pickers": "^7.20.0",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.7.3",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "next": "^14.2.14",
