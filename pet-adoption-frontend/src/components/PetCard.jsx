@@ -11,6 +11,8 @@ import {
   Button,
 } from "@mui/material";
 import { format } from "date-fns";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function PetCard(props) {
   const { pet } = props;
@@ -40,7 +42,7 @@ export default function PetCard(props) {
 
             }}
             alt="Pet Photo"
-            src={`http://localhost:8080/api/images/animals/${pet.id}`}
+            src={`${apiUrl}/api/images/animals/${pet.id}`}
           />
         </Box>
         <Box>

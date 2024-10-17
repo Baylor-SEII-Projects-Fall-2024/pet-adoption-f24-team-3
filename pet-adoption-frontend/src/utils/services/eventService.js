@@ -1,12 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 import imageService from './imageService';
-import Cookies from 'js-cookie';
 
 const eventService = () => {
-    const {uploadEventThumbnail} = imageService();
+    const { uploadEventThumbnail } = imageService();
 
     const createEvent = async (formData, centerId) => {
-        const response = await fetch("http://localhost:8080/api/events", {
+        const response = await fetch(`${apiUrl}/api/events`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -34,7 +33,7 @@ const eventService = () => {
     };
 
     const getEventInfo = async (eventID) => {
-        const response = await fetch(`http://localhost:8080/api/events/${eventID}`, {
+        const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -51,8 +50,9 @@ const eventService = () => {
         }
     };
 
+
     const updateEvent = async (formData, thumbnail, eventID) => {
-        const response = await fetch(`http://localhost:8080/api/events/update/${eventID}`, {
+        const response = await fetch(`${apiUrl}/api/events/update/${eventID}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,9 +70,9 @@ const eventService = () => {
         const result = await response.json();
         console.log("result:", result);
         if (response.ok) {
-            if(thumbnail != null){
-                const thumbnailResult = await uploadEventThumbnail(thumbnail,eventID);
-                if(thumbnailResult == null){
+            if (thumbnail != null) {
+                const thumbnailResult = await uploadEventThumbnail(thumbnail, eventID);
+                if (thumbnailResult == null) {
                     return null;
                 }
             }
@@ -84,7 +84,7 @@ const eventService = () => {
     };
 
     const getCenterEvents = async (centerId) => {
-        const response = await fetch(`http://localhost:8080/api/events/center/${centerId}`, {
+        const response = await fetch(`${apiUrl}/api/events/center/${centerId}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
