@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
-//import { headers } from 'next/headers';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = () => {
     const dispatch = useDispatch();
@@ -11,7 +11,7 @@ const userService = () => {
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
-        const response = await fetch("http://localhost:8080/api/login", {
+        const response = await fetch(`${apiUrl}/api/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -36,7 +36,7 @@ const userService = () => {
 
     // registers and logs in a new center
     const registerCenter = async (formData, profilePic, bannerPic) => {
-        const response = await fetch("http://localhost:8080/api/centers", {
+        const response = await fetch(`${apiUrl}/api/centers`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -78,7 +78,7 @@ const userService = () => {
     };
 
     const registerOwner = async (formData, profilePic) => {
-        const response = await fetch("http://localhost:8080/api/owners", {
+        const response = await fetch(`${apiUrl}/api/owners`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -113,7 +113,7 @@ const userService = () => {
     //also sets the user id in redux, which is needded to access restricted pages
     const saveCurrentUserToRedux = async (userid) => {
         dispatch(setCurrentUserId(userid));
-        const getSessionUserData = await fetch(`http://localhost:8080/api/users/${userid}/sessionData`, {
+        const getSessionUserData = await fetch(`${apiUrl}/api/users/${userid}/sessionData`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -164,7 +164,7 @@ const userService = () => {
     };
 
     const getUserInfo = async (userId) => {
-        const response = await fetch(`http://localhost:8080/api/users/?id=${userId}`, {
+        const response = await fetch(`${apiUrl}/api/users/?id=${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -181,7 +181,7 @@ const userService = () => {
     };
 
     const getOwnerInfo = async (userid) => {
-        const response = await fetch(`http://localhost:8080/api/owners/${userid}`, {
+        const response = await fetch(`${apiUrl}/api/owners/${userid}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -198,7 +198,7 @@ const userService = () => {
     };
 
     const getCenterInfo = async (centerId) => {
-        const response = await fetch(`http://localhost:8080/api/centers/${centerId}`, {
+        const response = await fetch(`${apiUrl}/api/centers/${centerId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -215,7 +215,7 @@ const userService = () => {
     }
 
     const updateOwner = async (formData, profilePic, userid) => {
-        const response = await fetch(`http://localhost:8080/api/update/owner/${userid}`, {
+        const response = await fetch(`${apiUrl}/api/update/owner/${userid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -245,7 +245,7 @@ const userService = () => {
         }
     };
     const updateCenter = async (formData, profilePic, bannerPic, userid) => {
-        const response = await fetch(`http://localhost:8080/api/update/center/${userid}`, {
+        const response = await fetch(`${apiUrl}/api/update/center/${userid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

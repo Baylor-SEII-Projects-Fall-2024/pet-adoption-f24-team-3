@@ -12,6 +12,8 @@ import {
   Grid,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -171,7 +173,7 @@ export default function ProfilePage() {
                 ? `${userInfo.nameFirst} ${userInfo.nameLast}`
                 : "User Avatar"
             }
-            src={`http://localhost:8080/api/images/users/${userId}/profile`}
+            src={`${apiUrl}/api/images/users/${userId}/profile`}
           />
           {/* Create card to display User Info */}
         </Card>

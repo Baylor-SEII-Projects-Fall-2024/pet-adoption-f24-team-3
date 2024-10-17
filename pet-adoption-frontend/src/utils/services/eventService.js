@@ -1,13 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentUserId } from '@/utils/redux';
-import Cookies from 'js-cookie';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 const eventService = () => {
-    const dispatch = useDispatch();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
     const createEvent = async (formData, centerId) => {
-        const response = await fetch("http://localhost:8080/api/events", {
+        const response = await fetch(`${apiUrl}/api/events`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -35,7 +32,7 @@ const eventService = () => {
     };
 
     const getEventInfo = async (eventID) => {
-        const response = await fetch(`http://localhost:8080/api/events/${eventID}`, {
+        const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -53,7 +50,7 @@ const eventService = () => {
     };
 
     const updateEvent = async (formData, eventID) => {
-        const response = await fetch(`http://localhost:8080/api/events/update/${eventID}`, {
+        const response = await fetch(`${apiUrl}/api/events/update/${eventID}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -81,7 +78,7 @@ const eventService = () => {
     };
 
     const getCenterEvents = async (centerId) => {
-        const response = await fetch(`http://localhost:8080/api/events/center/${centerId}`, {
+        const response = await fetch(`${apiUrl}/api/events/center/${centerId}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
