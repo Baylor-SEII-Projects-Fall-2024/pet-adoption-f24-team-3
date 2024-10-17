@@ -33,6 +33,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Clean
+        run: |
+          docker image prune -af
+          docker system prune -f
+
       - name: Build
         # This step builds both the frontend and backend docker images using
         # Docker Compose. To change how the images are built or their actual
