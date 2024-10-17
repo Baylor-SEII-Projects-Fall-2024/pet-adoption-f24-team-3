@@ -1,7 +1,8 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+import imageService from './imageService';
 
 const eventService = () => {
+    const { uploadEventThumbnail } = imageService();
 
     const createEvent = async (formData, centerId) => {
         const response = await fetch(`${apiUrl}/api/events`, {
@@ -49,7 +50,8 @@ const eventService = () => {
         }
     };
 
-    const updateEvent = async (formData, eventID) => {
+
+    const updateEvent = async (formData, thumbnail, eventID) => {
         const response = await fetch(`${apiUrl}/api/events/update/${eventID}`, {
             method: "POST",
             headers: {
@@ -62,14 +64,18 @@ const eventService = () => {
                 description: formData.description,
                 dateStart: formData.dateStart,
                 dateEnd: formData.dateEnd,
-                thumbnailPath: formData.thumbNail
             })
         });
 
         const result = await response.json();
         console.log("result:", result);
         if (response.ok) {
-            //saveCurrentUserToRedux(result.eventID);
+            if (thumbnail != null) {
+                const thumbnailResult = await uploadEventThumbnail(thumbnail, eventID);
+                if (thumbnailResult == null) {
+                    return null;
+                }
+            }
             return result;
         } else {
             alert(`Update failed: ${result.message}`);
