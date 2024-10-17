@@ -229,16 +229,58 @@ const userService = () => {
             })
         });
 
-        const formResult = await response.json();
+        const result = await response.json();
         if (response.ok) {
-            saveCurrentUserToRedux(formResult.userid);
-            let imageResult = true;
-            //if successful uploading the form, attempt to upload the image
             if (profilePic != null) {
-                imageResult = await uploadProfilePic(profilePic, userid);
+                const profilePicResult = await uploadProfilePic(profilePic, userid);
+                if (!profilePicResult) {
+                    return null;
+                }
+            }
+            saveCurrentUserToRedux(result.userid);
+            return result;
+        } else {
+            alert(`Update failed: ${result.message}`);
+            return null;
+        }
+    };
+    const updateCenter = async (formData, profilePic, bannerPic, userid) => {
+        const response = await fetch(`http://localhost:8080/api/update/center/${userid}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                accountType: "Center",
+                emailAddress: formData.emailAddress,
+                password: formData.password,
+                name: formData.name,
+                description: formData.description,
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
+                zipCode: formData.zipCode
+            })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            saveCurrentUserToRedux(userid);
+            //try to upload banner and profile pic if they exist
+            if (profilePic != null) {
+                const profilePicResult = await uploadProfilePic(profilePic, userid);
+                if (!profilePicResult) {
+                    return null;
+                }
+            }
+            if (bannerPic != null) {
+                const bannerPicResult = await uploadCenterBanner(bannerPic, userid);
+                if (!bannerPicResult) {
+                    return null;
+                }
             }
             //return wheter or not both were successful
-            return (formResult && imageResult);
+            return result;
         } else {
             alert(`Update failed: ${formResult.message}`);
             return null;
@@ -254,6 +296,7 @@ const userService = () => {
         getOwnerInfo,
         getCenterInfo,
         updateOwner,
+        updateCenter,
         authenticateFromCookie,
     };
 

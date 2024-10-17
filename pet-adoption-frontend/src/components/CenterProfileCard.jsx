@@ -25,7 +25,7 @@ export default function CenterProfileCard(props) {
   const { camelCaseToReadable } = formatter();
 
   const handleEditInfoClick = () => {
-    router.push(`/centers/edit`);
+    router.push(`/centers/${centerId}/edit`);
   };
 
   return (
