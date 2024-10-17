@@ -2,6 +2,7 @@ package petadoption.api.user.dtos;
 
 import lombok.Data;
 
+import lombok.EqualsAndHashCode;
 import petadoption.api.animal.AnimalAgeClass;
 import petadoption.api.animal.AnimalSex;
 import petadoption.api.animal.AnimalSize;

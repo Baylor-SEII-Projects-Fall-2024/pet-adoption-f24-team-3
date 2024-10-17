@@ -3,11 +3,16 @@ package petadoption.api.preferences;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import petadoption.api.user.dtos.PreferenceDto;
 
 @Log4j2
 @RestController
@@ -31,15 +36,17 @@ public class PreferenceController {
         return preference;
     }
 
-    @CrossOrigin("http://localhost:3000")
-    @PostMapping("/update/preferences/{potentialOwnerId}")
-    public Preference updatePreference(@PathVariable Long potentialOwnerId, @RequestBody Preference preference) throws Exception {
-        try {
-            return preferenceService.savePreference(potentialOwnerId, preference);
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "could not update preferences"
-            );
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/update/preferences/{id}")
+    public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody PreferenceDto preferenceDto, @PathVariable Long id) {
+        Long updatedOwner = preferenceService.updatePreference(preferenceDto, id);
+        Map<String, Object> response = new HashMap<>();
+        if (updatedOwner!=null) {
+            response.put("userid", updatedOwner);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Update preference failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
         }
     }
 
