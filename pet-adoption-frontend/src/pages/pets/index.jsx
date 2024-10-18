@@ -38,7 +38,6 @@ export default function PetsPage() {
         .then((result) => {
           if (result != null) {
             if (result.length < 1) {
-              console.log("Out of data!");
               setHasMore(false);
             } else {
               setAnimalData(result);
@@ -57,12 +56,10 @@ export default function PetsPage() {
 
   //get data after first call, called by infinite scroll
   const fetchMoreData = async () => {
-    console.log("Fetching more!", page);
     await getRecommendedAnimals(quantityPerPage, page)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {
-            console.log("Out of data!");
             setHasMore(false);
           } else {
             console.log(result.map(a => a.id));
@@ -72,7 +69,6 @@ export default function PetsPage() {
             let newData = [...new Set(dataCopy.concat(result))];
             setAnimalData(newData);
             setPage(currentPage => currentPage + 1);
-            console.log(`Added ${newData.length - dataCopy.length} items!`);
           }
         }
         else {
