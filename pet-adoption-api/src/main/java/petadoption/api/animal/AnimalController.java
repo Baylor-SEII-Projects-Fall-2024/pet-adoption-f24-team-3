@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/animals")
 public class AnimalController {
     @Autowired
     private AnimalService animalService;

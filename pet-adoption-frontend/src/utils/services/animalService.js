@@ -20,6 +20,23 @@ const animalService = () => {
         }
     }
 
+    const getAnimal = async (animalId) => {
+        const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Get animal failed: ${result.message}`);
+            return null;
+        }
+    };
+
     const getRecommendedAnimals = async (pageSize, pageNumber) => {
         const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: 'GET',
@@ -39,6 +56,7 @@ const animalService = () => {
 
     return {
         getCenterAnimals,
+        getAnimal,
         getRecommendedAnimals,
     };
 
