@@ -1,6 +1,8 @@
 package petadoption.api.animal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,4 +21,9 @@ public class AnimalService {
         return animalRepository.save(animal);
     }
     public List<Animal> findAnimalsByCenterId(Long centerId) { return animalRepository.findAnimalsByCenterId(centerId); }
+
+    public List<Animal> recommendAnimals(Integer pageSize, Integer pageNumber){
+        Pageable pagingRequest = PageRequest.of(pageNumber,pageSize);
+        return animalRepository.findAllByOrderByDatePostedDesc(pagingRequest);
+    }
 }
