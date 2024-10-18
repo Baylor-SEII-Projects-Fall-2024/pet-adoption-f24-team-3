@@ -10,7 +10,7 @@ pet-adoption-api/native/
 pet-adoption-api/wrapper/
 pet-adoption-api/.tmp/
 pet-adoption-api/uploads/
-.DS_Store
+**/.DS_Store
 
 .editorconfig
 **/Makefile
