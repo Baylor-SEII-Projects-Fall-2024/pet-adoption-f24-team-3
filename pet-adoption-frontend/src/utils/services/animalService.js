@@ -20,8 +20,26 @@ const animalService = () => {
         }
     }
 
+    const getAnimal = async (animalId) => {
+        const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Get animal failed: ${result.message}`);
+            return null;
+        }
+    };
+
     return {
         getCenterAnimals,
+        getAnimal,
     };
 
 };

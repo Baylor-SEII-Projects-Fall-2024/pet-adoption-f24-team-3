@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import formatter from "@/utils/formatter";
 import {
   Avatar,
   Card,
@@ -10,12 +9,13 @@ import {
   Collapse,
   Button,
 } from "@mui/material";
-import { format } from "date-fns";
+import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 export default function PetCard(props) {
   const { pet } = props;
+  const { formatSex } = formatter();
 
   return (
     <Card
@@ -37,9 +37,10 @@ export default function PetCard(props) {
           <img
             style={{
               width: "100%",
-              height: "auto",
+              maxHeight: "auto",
               borderRadius: "2%",
-
+              aspectRatio: 1,
+              objectFit: "cover",
             }}
             alt="Pet Photo"
             src={`${apiUrl}/api/images/animals/${pet.id}`}
@@ -50,7 +51,7 @@ export default function PetCard(props) {
             {pet.name}, {pet.age}
           </Typography>
           <Typography>
-            {pet.sex} {pet.breed}
+            {formatSex(pet.sex)} {pet.breed}
           </Typography>
         </Box>
       </CardContent>
