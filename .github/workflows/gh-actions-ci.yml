@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Clean
+      - name: Pre-Clean
         run: |
           docker image prune -af
           docker system prune -f
@@ -70,5 +70,8 @@ jobs:
         run: |
           docker compose -f docker/ci.docker-compose.yml down
           docker compose -f docker/ci.docker-compose.yml up -d --build
+
+      - name: Post-Clean
+        run: |
           docker image prune -af
           docker system prune -f
