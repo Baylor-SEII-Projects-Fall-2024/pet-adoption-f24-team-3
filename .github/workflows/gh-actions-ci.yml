@@ -20,7 +20,6 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - ickoxii/cicd-init
       - main
   pull_request:
     branches:
