@@ -35,7 +35,6 @@ jobs:
       - name: Pre-Clean
         run: |
           docker image prune -af
-          docker system prune -f
 
       - name: Build
         # This step builds both the frontend and backend docker images using
@@ -73,4 +72,3 @@ jobs:
       - name: Post-Clean
         run: |
           docker image prune -af
-          docker system prune -f
