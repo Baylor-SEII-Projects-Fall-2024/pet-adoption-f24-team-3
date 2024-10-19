@@ -1,14 +1,9 @@
-import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
-import formatter from "@/utils/formatter";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { format } from "date-fns";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
 export default function EventCard(props) {
-  const { camelCaseToReadable } = formatter();
   const { event } = props;
-  const attributesExcluded = ["name", "description", "datePosted"];
-  const dateAttributes = ["dateStart", "dateEnd"];
   return (
     <Card
       key={event.id}
@@ -32,8 +27,8 @@ export default function EventCard(props) {
               width: "100%",
               maxHeight: "auto",
               borderRadius: "2%",
-              aspectRatio:1,
-              objectFit:"cover",
+              aspectRatio: 1,
+              objectFit: "cover",
             }}
             alt="Event Thumbnail"
             src={`${apiUrl}/api/images/events/${event.id}`}
@@ -46,7 +41,7 @@ export default function EventCard(props) {
         >
           <Typography variant="h5">{event.name}</Typography>
           {format(new Date(event.dateStart), "MM dd yyyy") ===
-            format(new Date(event.dateEnd), "MM dd yyyy") ? (
+          format(new Date(event.dateEnd), "MM dd yyyy") ? (
             <>
               <Typography>
                 {format(new Date(event.dateStart), "MMM dd, yyyy")}
