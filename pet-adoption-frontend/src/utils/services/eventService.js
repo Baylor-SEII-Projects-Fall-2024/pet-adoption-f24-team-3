@@ -99,8 +99,8 @@ const eventService = () => {
         }
     };
 
-    const getScrollableEvents = async (pageSize, pageNumber) => {
-        const response = await fetch(`${apiUrl}/api/events/scroll?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
+    const getEventsByPage = async (pageSize, pageNumber) => {
+        const response = await fetch(`${apiUrl}/api/events/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -122,7 +122,7 @@ const eventService = () => {
         getEventInfo,
         updateEvent,
         getCenterEvents,
-        getScrollableEvents,
+        getEventsByPage,
     };
 
 };

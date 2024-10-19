@@ -20,6 +20,7 @@ export default function EventCard(props) {
             flex: 0.8,
             width: "100%",
             height: "300px",
+            overflow: "hidden",
           }}
         >
           <img

@@ -36,7 +36,7 @@ public class Event {
     private Date dateStart;
 
     @Column(name = "DATE_END")
-    private Date dateEnd;
+    private String dateEnd;
 
     @Column(name = "THUMBNAIL_PATH")
     private String thumbnailPath;

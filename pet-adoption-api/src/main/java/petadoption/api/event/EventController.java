@@ -5,27 +5,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.event.responseObjects.EventCardResponse;
 import petadoption.api.user.dtos.CenterDto;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/events")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
     @Autowired
     private EventService eventService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/")
+    @GetMapping("/")
     public List<Event> findAllEvents() {
         return eventService.findAllEvents();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/{id}")
+    @GetMapping("/{id}")
     public Event findEventBy(@PathVariable Long id) {
         var event = eventService.findEvent(id).orElse(null);
         if (event == null) {
@@ -34,8 +35,7 @@ public class EventController {
         return event;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/events")
+    @PostMapping("/")
     public ResponseEntity<Map<String, Object>> saveEvent(@RequestBody Event newEvent) {
         Long newEventId = eventService.saveEvent(newEvent);
         Map<String, Object>  response = new HashMap<>();
@@ -49,8 +49,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/events/update/{eventId}")
+    @PostMapping("/update/{eventId}")
     public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId, @RequestBody Event newEvent) {
         Long updatedEvent = eventService.updateEvent(newEvent, eventId);
         Map<String, Object> response = new HashMap<>();
@@ -63,9 +62,14 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/center/{centerId}")
+    @GetMapping("/center/{centerId}")
     public List<Event> getEventsByCenterId(@PathVariable Long centerId) { return eventService.getEventsByCenterId(centerId); }
+
+    @GetMapping("/paginated")
+    public List<EventCardResponse> findByPage(@RequestParam("pageSize") Integer pageSize, @RequestParam("pageNumber") Integer pageNumber) {
+        List<Event> events = eventService.paginateEvents(pageSize, pageNumber);
+        return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
+    }
 
 
 }

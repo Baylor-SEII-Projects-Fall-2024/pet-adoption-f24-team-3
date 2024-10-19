@@ -10,7 +10,7 @@ public class EventCardResponse {
     public String name;
     public Date datePosted;
     public Date dateStart;
-    public Date dateEnd;
+    public String dateEnd;
 
     public EventCardResponse(Event sourceEvent) {
         this.id = sourceEvent.getId();
