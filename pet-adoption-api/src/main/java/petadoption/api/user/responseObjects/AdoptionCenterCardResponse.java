@@ -1,15 +1,24 @@
 package petadoption.api.user.responseObjects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
 import petadoption.api.user.AdoptionCenter;
 
-public class CenterCardResponse {
-    Long id;
-    String name;
-    String address;
-    String state;
-    String city;
+@Getter
+public class AdoptionCenterCardResponse {
+    @JsonProperty
+    private Long id;
+    @JsonProperty
+    private String name;
+    @JsonProperty
+    private String address;
+    @JsonProperty
+    private String state;
+    @JsonProperty
+    private String city;
 
-    public CenterCardResponse(AdoptionCenter sourceCenter) {
+    public AdoptionCenterCardResponse(AdoptionCenter sourceCenter) {
         this.id = sourceCenter.getId();
         this.name = sourceCenter.getName();
         this.address = sourceCenter.getAddress();

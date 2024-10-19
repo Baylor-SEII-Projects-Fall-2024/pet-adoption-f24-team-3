@@ -1,7 +1,6 @@
 package petadoption.api.images;
 
 
-import aj.org.objectweb.asm.commons.TryCatchBlockSorter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -95,6 +94,34 @@ public class ImageController {
         }
     }
 
+    @GetMapping("/centers/{centerId}/card")
+    public ResponseEntity<byte[]> getCenterCardPic(@PathVariable Long centerId) throws Exception {
+
+        AdoptionCenter center = userService.findAdoptionCenter(centerId).orElse(null);
+
+        if (center == null){
+            log.error("Center "+ centerId + " not found!");
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            Path filePath = Paths.get(center.getProfilePicPath());
+            byte[] pictureFile =  Files.readAllBytes(filePath);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
+
+            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
+        }
+        catch (NullPointerException e){//if here, the image was not found, return placeholder image
+            ClassPathResource resource = new ClassPathResource("placeholders/center_card.png");
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
+                    .body(resource.getContentAsByteArray());
+        }
+
+    }
+
     @GetMapping("/animals/{animalId}")
     public ResponseEntity<byte[]> getAnimalPic(@PathVariable Long animalId) throws Exception {
 
@@ -149,7 +176,7 @@ public class ImageController {
 
 
     @PostMapping("/users/{userId}/profile")
-    public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
+    public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) {
         try{
             imageService.saveProfilePicture(imageFile,userId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -160,7 +187,7 @@ public class ImageController {
     }
 
     @PostMapping("/users/{userId}/banner")
-    public ResponseEntity<Object> uploadCenterBanner(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
+    public ResponseEntity<Object> uploadCenterBanner(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) {
         try{
             imageService.saveCenterBanner(imageFile,userId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -171,7 +198,7 @@ public class ImageController {
     }
 
     @PostMapping("/animals/{animalId}")
-    public ResponseEntity<Object> uploadAnimalPic(@PathVariable Long animalId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
+    public ResponseEntity<Object> uploadAnimalPic(@PathVariable Long animalId, @RequestParam("imageFile") MultipartFile imageFile) {
         try{
             imageService.saveAnimalPicture(imageFile,animalId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -182,7 +209,7 @@ public class ImageController {
     }
 
     @PostMapping("/events/{eventId}")
-    public ResponseEntity<Object> uploadEventThumbnail(@PathVariable Long eventId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
+    public ResponseEntity<Object> uploadEventThumbnail(@PathVariable Long eventId, @RequestParam("imageFile") MultipartFile imageFile) {
         try{
             imageService.saveEventThumbnail(imageFile,eventId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);

@@ -215,11 +215,11 @@ const userService = () => {
     }
 
     const getCentersByPage = async (pageSize, pageNumber) => {
-        const response = fetch(`${apiUrl}/centers/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
-            method: 'GET',
+        const response = await fetch(`${apiUrl}/api/centers/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         });
 
         const result = await response.json();

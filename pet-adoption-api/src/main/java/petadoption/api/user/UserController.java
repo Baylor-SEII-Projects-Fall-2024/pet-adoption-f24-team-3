@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
-import petadoption.api.user.dtos.UserDto;
-import petadoption.api.user.responseObjects.CenterCardResponse;
+import petadoption.api.user.responseObjects.AdoptionCenterCardResponse;
 import petadoption.api.user.responseObjects.SessionUserDataResponse;
 
 import java.util.HashMap;
@@ -93,9 +92,9 @@ public class UserController {
     }
 
     @GetMapping("/centers/paginated")
-    public List<CenterCardResponse> findCentersByPage(@RequestParam("pageSize") Integer pageSize, @RequestParam("pageNumber") Integer pageNumber) {
+    public List<AdoptionCenterCardResponse> findCentersByPage(@RequestParam("pageSize") Integer pageSize, @RequestParam("pageNumber") Integer pageNumber) {
         List<AdoptionCenter> centers = userService.paginateCenters(pageSize, pageNumber);
-        return centers.stream().map(CenterCardResponse::new).collect(Collectors.toList());
+        return centers.stream().map(AdoptionCenterCardResponse::new).collect(Collectors.toList());
     }
 
     @PostMapping("/centers")
