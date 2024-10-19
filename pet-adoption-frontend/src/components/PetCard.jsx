@@ -12,7 +12,6 @@ import {
 import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
 export default function PetCard(props) {
   const { pet } = props;
   const { formatSex } = formatter();
@@ -32,6 +31,7 @@ export default function PetCard(props) {
             flex: 0.8,
             width: "100%",
             height: "300px",
+            overflow: "hidden",
           }}
         >
           <img
