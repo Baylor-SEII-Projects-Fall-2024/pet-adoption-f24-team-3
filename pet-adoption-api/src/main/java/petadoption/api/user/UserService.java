@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import petadoption.api.user.dtos.CenterDto;
@@ -185,6 +187,11 @@ public class UserService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public List<AdoptionCenter> paginateCenters(Integer pageSize, Integer pageNumber) {
+        Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
+        return adoptionCenterRepository.findAll(pagingRequest).getContent();
     }
 
     // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController

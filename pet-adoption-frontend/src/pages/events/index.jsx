@@ -124,7 +124,7 @@ export default function EventsPage() {
               dataLength={eventData.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<Loading doneLoading={!hasMore} />}
+              loader={<Loading doneLoading={!hasMore} page={page} />}
             >
               <Grid container spacing={4} sx={{ minHeight: "50px" }}>
                 {eventData.map((event) => (

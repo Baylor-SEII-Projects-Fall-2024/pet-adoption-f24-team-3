@@ -214,6 +214,23 @@ const userService = () => {
         }
     }
 
+    const getCentersByPage = async (pageSize, pageNumber) => {
+        const response = fetch(`${apiUrl}/centers/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting centers failed ${result.message}`);
+            return null;
+        }
+    }
+
     const updateOwner = async (formData, profilePic, userid) => {
         const response = await fetch(`${apiUrl}/api/update/owner/${userid}`, {
             method: "POST",
@@ -295,6 +312,7 @@ const userService = () => {
         getUserInfo,
         getOwnerInfo,
         getCenterInfo,
+        getCentersByPage,
         updateOwner,
         updateCenter,
         authenticateFromCookie,
