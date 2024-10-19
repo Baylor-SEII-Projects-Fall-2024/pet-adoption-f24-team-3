@@ -27,7 +27,7 @@ const formatter = () => {
         switch (text) {
             case 'MALE':
                 return 'Male';
-            case 'Female':
+            case 'FEMALE':
                 return 'Female';
             case 'NEUTERED_MALE':
                 return 'Neutered Male';
