@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Button, Card, CardContent, Stack, Typography, Box } from '@mui/material'
 import eventService from '@/utils/services/eventService';
+import userService from '@/utils/services/userService';
 import { format } from 'date-fns';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -15,10 +16,12 @@ export default function ViewEventPage() {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
   const { getEventInfo } = eventService();
+  const { getCenterInfo } = userService();
 
   const [event, setEvent] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
+  const [adoptionCenter, setAdoptioneCenter] = React.useState(null);
 
   React.useEffect(() => {
     if (eventID) {
@@ -45,6 +48,28 @@ export default function ViewEventPage() {
       fetchEvent();
     }
   }, [eventID]);
+
+  React.useEffect(() => {
+    const fetchCenterInfo = async () => {
+      if (currentUserId) {
+        try {
+          const result = await getCenterInfo(currentUserId);
+          if (result != null) {
+            setAdoptioneCenter(result);
+          } else {
+            console.error(`Error loading center ${currentUserId}:`, result);
+            setIsError(true);
+          }
+        } catch (error) {
+          console.error(`Error loading center ${currentUserId}:`, error);
+          setIsError(true);
+        }
+      }
+    };
+  
+    fetchCenterInfo();
+  }, [currentUserId]);
+  
 
   if ((isLoading == true || !event) && !isError) {
     return (
@@ -107,6 +132,10 @@ export default function ViewEventPage() {
                   <table>
                     <tbody>
                       <tr>
+                        <td><Typography>Hosted By: </Typography></td>
+                        <td><Typography>{adoptionCenter.name}</Typography></td>
+                      </tr>
+                      <tr>
                         <td> <Typography>Dates:</Typography> </td>
                         <td>
                             {event.dateStart && event.dateEnd &&
@@ -134,7 +163,7 @@ export default function ViewEventPage() {
                   </table>
                 </Stack>
                 <Box>
-                  {currentUserId == event.centerId && (
+                  {currentUserId == event.currentUserId && (
                     <Button
                       variant='contained'
                       color="secondary"
