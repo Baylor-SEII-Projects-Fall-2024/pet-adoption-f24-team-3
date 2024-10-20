@@ -2,6 +2,8 @@ package petadoption.api.animal;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
 
@@ -46,5 +48,18 @@ public class AnimalController {
     @PostMapping("/")
     public Animal saveAnimal(@RequestBody Animal animal) {
         return animalService.saveAnimal(animal);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteAnimal(@PathVariable Long id) {
+        try{
+            animalService.deleteAnimal(id);
+            return new ResponseEntity<>(true,HttpStatus.OK);
+        }
+        catch (Exception e) {
+            log.error("Unable to delete Animal:" + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
