@@ -147,7 +147,6 @@ public class ImageController {
         }
     }
 
-
     @PostMapping("/users/{userId}/profile")
     public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
         try{
@@ -188,6 +187,47 @@ public class ImageController {
             return new ResponseEntity<>(true, HttpStatus.CREATED);
         }
         catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/users/{userId}/profile")
+    public ResponseEntity<Object> deleteProfilePic(@PathVariable Long userId){
+        try {
+            boolean result = imageService.deleteProfilePicture(userId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/users/{userId}/banner")
+    public ResponseEntity<Object> deleteBannerPic(@PathVariable Long userId){
+        try {
+            boolean result = imageService.deleteCenterBanner(userId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/animals/{animalId}")
+    public ResponseEntity<Object> deleteAnimalPic(@PathVariable Long animalId){
+        try {
+            boolean result = imageService.deleteAnimalPicture(animalId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/events/{eventId}")
+    public ResponseEntity<Object> deleteEventThumbnail(@PathVariable Long eventId){
+        try {
+            boolean result = imageService.deleteEventThumbnail(eventId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

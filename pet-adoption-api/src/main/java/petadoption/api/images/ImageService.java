@@ -44,6 +44,17 @@ public class ImageService {
         userService.saveUser(user);
     }
 
+    public boolean deleteProfilePicture(Long userId) throws  Exception{
+        User user = userService.findUser(userId).orElse(null);
+        if(user == null){
+            throw new Exception("User not found!");
+        }
+        String picPath = user.getProfilePicPath();
+        user.setProfilePicPath(null);
+        userService.saveUser(user);
+        return deleteImage(picPath);
+    }
+
     public void saveCenterBanner(MultipartFile imageFile, Long centerId) throws Exception {
         AdoptionCenter center = userService.findAdoptionCenter(centerId).orElse(null);
         if(center == null){
@@ -55,6 +66,16 @@ public class ImageService {
         userService.saveUser(center);
     }
 
+    public boolean deleteCenterBanner(Long userId) throws  Exception{
+        AdoptionCenter center = userService.findAdoptionCenter(userId).orElse(null);
+        if(center == null){
+            throw new Exception("User not found!");
+        }
+        String picPath = center.getBannerPicPath();
+        center.setBannerPicPath(null);
+        userService.saveUser(center);
+        return deleteImage(picPath);
+    }
     public void saveAnimalPicture(MultipartFile imageFile, Long animalId) throws Exception {
         Animal animal = animalService.findAnimal(animalId).orElse(null);
         if(animal == null){
@@ -65,7 +86,16 @@ public class ImageService {
 
         animalService.saveAnimal(animal);
     }
-
+    public boolean deleteAnimalPicture(Long animalId) throws  Exception{
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if(animal == null){
+            throw new Exception("Animal not found!");
+        }
+        String picPath = animal.getPicPath();
+        animal.setPicPath(null);
+        animalService.saveAnimal(animal);
+        return deleteImage(picPath);
+    }
     public void saveEventThumbnail(MultipartFile imageFile, Long eventId) throws Exception {
         Event event = eventService.findEvent(eventId).orElse(null);
         if(event == null){
@@ -76,6 +106,18 @@ public class ImageService {
 
         eventService.saveEvent(event);
     }
+    public boolean deleteEventThumbnail(Long eventId) throws  Exception{
+        Event event = eventService.findEvent(eventId).orElse(null);
+        if(event == null){
+            throw new Exception("Event not found!");
+        }
+        String picPath = event.getThumbnailPath();
+        event.setThumbnailPath(null);
+        eventService.saveEvent(event);
+        return deleteImage(picPath);
+    }
+
+
     private Path saveImage(MultipartFile imageFile,String directoryName, String fileName) throws IOException {
         Path filePath = Paths.get(uploadDirectory+ File.separator
                 + directoryName + File.separator + fileName);
@@ -89,6 +131,10 @@ public class ImageService {
         return filePath;
     }
 
+    private boolean deleteImage(String filePath){
+        File deletedFile = new File(filePath);
+        return deletedFile.delete();
+    }
 
 }
 
