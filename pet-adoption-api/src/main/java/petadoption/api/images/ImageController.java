@@ -94,34 +94,6 @@ public class ImageController {
         }
     }
 
-    @GetMapping("/centers/{centerId}/card")
-    public ResponseEntity<byte[]> getCenterCardPic(@PathVariable Long centerId) throws Exception {
-
-        AdoptionCenter center = userService.findAdoptionCenter(centerId).orElse(null);
-
-        if (center == null){
-            log.error("Center "+ centerId + " not found!");
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        }
-
-        try {
-            Path filePath = Paths.get(center.getProfilePicPath());
-            byte[] pictureFile =  Files.readAllBytes(filePath);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
-
-            return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
-        }
-        catch (NullPointerException e){//if here, the image was not found, return placeholder image
-            ClassPathResource resource = new ClassPathResource("placeholders/center_card.png");
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
-                    .body(resource.getContentAsByteArray());
-        }
-
-    }
-
     @GetMapping("/animals/{animalId}")
     public ResponseEntity<byte[]> getAnimalPic(@PathVariable Long animalId) throws Exception {
 

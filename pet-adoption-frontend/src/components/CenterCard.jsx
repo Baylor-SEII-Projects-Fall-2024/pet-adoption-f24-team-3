@@ -32,7 +32,7 @@ export default function CenterCard(props) {
               objectFit: "cover",
             }}
             alt="Center Photo"
-            src={`${apiUrl}/api/images/centers/${center.id}/card`}
+            src={`${apiUrl}/api/images/users/${center.id}/profile`}
           />
         </Box>
         <Box>
