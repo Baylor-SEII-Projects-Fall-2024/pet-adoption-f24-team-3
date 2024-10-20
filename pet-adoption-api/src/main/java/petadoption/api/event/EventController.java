@@ -13,19 +13,18 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/events")
 public class EventController {
     @Autowired
     private EventService eventService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/")
+    @GetMapping("/")
     public List<Event> findAllEvents() {
         return eventService.findAllEvents();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/{id}")
+    @GetMapping("/{id}")
     public Event findEventBy(@PathVariable Long id) {
         var event = eventService.findEvent(id).orElse(null);
         if (event == null) {
@@ -34,8 +33,7 @@ public class EventController {
         return event;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/events")
+    @PostMapping("/")
     public ResponseEntity<Map<String, Object>> saveEvent(@RequestBody Event newEvent) {
         Long newEventId = eventService.saveEvent(newEvent).getId();
         Map<String, Object>  response = new HashMap<>();
@@ -49,8 +47,7 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/events/update/{eventId}")
+    @PostMapping("/update/{eventId}")
     public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId, @RequestBody Event newEvent) {
         Long updatedEvent = eventService.updateEvent(newEvent, eventId);
         Map<String, Object> response = new HashMap<>();
@@ -63,9 +60,21 @@ public class EventController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/events/center/{centerId}")
+
+    @GetMapping("/center/{centerId}")
     public List<Event> getEventsByCenterId(@PathVariable Long centerId) { return eventService.getEventsByCenterId(centerId); }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
+        try{
+            eventService.deleteEvent(id);
+            return new ResponseEntity<>(true,HttpStatus.OK);
+        }
+        catch (Exception e) {
+            log.error("Unable to delete Event:" + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
