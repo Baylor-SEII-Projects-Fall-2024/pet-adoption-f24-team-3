@@ -16,7 +16,7 @@ export default function ViewEventPage() {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
   const { getEventInfo, deleteEvent } = eventService();
-  const { getCenterInfo } = userService();
+  const { getCenterDetails } = userService();
 
   const [event, setEvent] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -68,24 +68,24 @@ export default function ViewEventPage() {
 
   React.useEffect(() => {
     const fetchCenterInfo = async () => {
-      if (currentUserId) {
+      if (event) {
         try {
-          const result = await getCenterInfo(currentUserId);
+          const result = await getCenterDetails(event.centerId);
           if (result != null) {
             setAdoptionCenter(result);
           } else {
-            console.error(`Error loading center ${currentUserId}:`, result);
+            console.error(`Error loading center ${event.centerId}:`, result);
             setIsError(true);
           }
         } catch (error) {
-          console.error(`Error loading center ${currentUserId}:`, error);
+          console.error(`Error loading center ${event.centerId}:`, error);
           setIsError(true);
         }
       }
     };
 
     fetchCenterInfo();
-  }, [currentUserId]);
+  }, [event]);
 
 
   if ((isLoading == true || !event || !adoptionCenter) && !isError) {

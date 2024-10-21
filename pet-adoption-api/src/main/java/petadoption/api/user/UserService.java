@@ -11,7 +11,9 @@ import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.dtos.UserDto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
@@ -184,6 +186,17 @@ public class UserService {
             return -1;
         }
         return user.id;
+    }
+
+    public Map<String, Object> getCenterDetails(Long centerId){
+        Map<String, Object> details = new HashMap<>();
+        AdoptionCenter adoptionCenter = adoptionCenterRepository.findById(centerId).orElseThrow(()
+                -> new EntityNotFoundException("Adoption center not found with ID: " + centerId));
+        details.put("id", adoptionCenter.getId());
+        details.put("address", adoptionCenter.getAddress());
+        details.put("name", adoptionCenter.getName());
+
+        return details;
     }
 
     public User saveUser(User user) {
