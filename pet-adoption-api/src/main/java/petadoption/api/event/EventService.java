@@ -44,10 +44,10 @@ public class EventService {
         Event deletedEvent = eventRepository.findById(eventId).orElse(null);
         if(deletedEvent == null){
 
-            throw new Exception("Animal not found!");
+            throw new Exception("Event not found!");
         }
         if(deletedEvent.getThumbnailPath() !=null) {
-            imageService.deleteAnimalPicture(eventId);
+            imageService.deleteEventThumbnail(eventId);
         }
         eventRepository.delete(deletedEvent);
     }
