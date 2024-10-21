@@ -18,15 +18,14 @@ export default function EditProfilePage() {
     const router = useRouter();
     const { userId } = router.query; // get user ID from the routing
     const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-    const { updateOwner, getOwnerInfo } = userService();
-    const { uploadProfilePic } = imageService();
+    const { updateOwner, getUserInfo } = userService();
 
     const [loading, setLoading] = useState(true);
     const [userInfo, setUserInfo] = useState(null);
     const [formError, setFormError] = useState(null);
     const [formSuccess, setFormSuccess] = useState();
     const [formData, setFormData] = useState({
-        accountType: "Owner",
+        accountType: "",
         emailAddress: "",
         password: "",
         nameFirst: "",

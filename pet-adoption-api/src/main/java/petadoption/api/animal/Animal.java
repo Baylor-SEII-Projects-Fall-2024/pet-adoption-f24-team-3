@@ -55,9 +55,9 @@ public class Animal {
     private  AnimalAgeClass ageClass;
 
     @Column(name = "HEIGHT")
-    private Integer height;
+    private Double height;
 
     @Column(name = "WEIGHT")
-    private Integer weight;
+    private Double weight;
 
 }
