@@ -13,12 +13,29 @@ export default function ViewPetPage() {
   const { petId } = router.query; //get pet ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
-  const { getAnimal } = animalService();
+  const { getAnimal, deleteAnimal } = animalService();
   const { formatSize, formatSex } = formatter();
 
   const [animal, setAnimal] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
+
+  const onDeleteAnimal = async () => {
+    if (!animal) return;
+
+    if (window.confirm(`Are you sure you want to delete ${animal.name}? They will be gone forever...`)) {
+      await deleteAnimal(petId)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/pets`)
+          }
+          else console.error("There was an error deleting this animal!");
+        })
+        .catch((error) => {
+          console.error("There was an error deleting animal:", error);
+        });
+    }
+  }
 
   React.useEffect(() => {
     if (petId) {
@@ -101,7 +118,7 @@ export default function ViewPetPage() {
                   alt={`${animal.name}`}
                   style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
                 />
-                <Stack direction="column">
+                <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
                   <Typography variant='h3' >{animal.name}</Typography>
                   <br></br>
                   <table>
@@ -137,14 +154,19 @@ export default function ViewPetPage() {
                     </tbody>
                   </table>
                 </Stack>
-                <Box>
-                  {currentUserId == animal.centerId && (
+                {currentUserId == animal.centerId && (
+                  <Box
+                    sx={{ width: "150px", alignItems: "left" }}>
                     <Button
                       variant='contained'
                       color="secondary"
                       onClick={() => router.push(`/pets/${petId}/edit`)} sx={{ width: "150px" }}>Edit Pet</Button>
-                  )}
-                </Box>
+                    <Button
+                      variant='outlined'
+                      color="secondary"
+                      onClick={onDeleteAnimal} sx={{ width: "150px" }}>Delete Pet</Button>
+                  </Box>
+                )}
               </Stack>
               <Box
                 sx={{

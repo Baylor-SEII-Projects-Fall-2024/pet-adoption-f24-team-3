@@ -75,5 +75,17 @@ public class EventController {
         List<Event> events = eventService.paginateEvents(pageSize, pageNumber);
         return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
+        try{
+            eventService.deleteEvent(id);
+            return new ResponseEntity<>(true,HttpStatus.OK);
+        }
+        catch (Exception e) {
+            log.error("Unable to delete Event:" + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

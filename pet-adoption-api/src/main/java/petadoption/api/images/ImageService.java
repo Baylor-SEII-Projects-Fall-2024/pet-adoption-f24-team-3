@@ -133,6 +133,7 @@ public class ImageService {
 
     private boolean deleteImage(String filePath){
         File deletedFile = new File(filePath);
+        if(!deletedFile.exists()) return false;
         return deletedFile.delete();
     }
 

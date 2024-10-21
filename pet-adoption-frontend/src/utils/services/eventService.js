@@ -68,7 +68,6 @@ const eventService = () => {
         });
 
         const result = await response.json();
-        console.log("result:", result);
         if (response.ok) {
             if (thumbnail != null) {
                 const thumbnailResult = await uploadEventThumbnail(thumbnail, eventID);
@@ -79,6 +78,23 @@ const eventService = () => {
             return result;
         } else {
             alert(`Update failed: ${result.message}`);
+            return null;
+        }
+    };
+
+    const deleteEvent = async (eventID) => {
+        const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Delete Event failed: ${result.message}`);
             return null;
         }
     };
@@ -121,6 +137,7 @@ const eventService = () => {
         createEvent,
         getEventInfo,
         updateEvent,
+        deleteEvent,
         getCenterEvents,
         getEventsByPage,
     };
