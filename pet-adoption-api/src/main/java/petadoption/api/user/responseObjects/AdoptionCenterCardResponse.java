@@ -7,16 +7,14 @@ import petadoption.api.user.AdoptionCenter;
 
 @Getter
 public class AdoptionCenterCardResponse {
-    @JsonProperty
-    private Long id;
-    @JsonProperty
-    private String name;
-    @JsonProperty
-    private String address;
-    @JsonProperty
-    private String state;
-    @JsonProperty
-    private String city;
+    public Long id;
+    public String name;
+    public String address;
+    public String state;
+    public String city;
+    public String description;
+    public String zipCode;
+
 
     public AdoptionCenterCardResponse(AdoptionCenter sourceCenter) {
         this.id = sourceCenter.getId();
@@ -24,5 +22,7 @@ public class AdoptionCenterCardResponse {
         this.address = sourceCenter.getAddress();
         this.state = sourceCenter.getState();
         this.city = sourceCenter.getCity();
+        this.zipCode = sourceCenter.getZipCode();
+        this.description = sourceCenter.getDescription();
     }
 }

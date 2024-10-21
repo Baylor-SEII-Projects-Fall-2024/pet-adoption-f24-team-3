@@ -110,12 +110,14 @@ export default function CentersPage() {
               hasMore={hasMore}
               loader={<Loading doneLoading={!hasMore} page={page} />}
             >
-              <Grid container spacing={4} sx={{ minHeight: "50px" }}>
+              <Grid container spacing={2} sx={{ minHeight: "50px" }}>
                 {centerData.map((center) => (
-                  <Grid item xs={11} sm={5} md={3} key={center.id}>
+                  <Grid item xs={12} sm={12} md={12} key={center.id}>
                     <Box
                       onClick={() => router.push(`/centers/${center.id}`)}
-                      sx={{ cursor: "pointer" }}
+                      sx={{
+                        cursor: "pointer",
+                      }}
                     >
                       <CenterCard center={center} />
                     </Box>
