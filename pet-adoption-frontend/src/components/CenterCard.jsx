@@ -29,6 +29,7 @@ export default function CenterCard(props) {
               width: "100%",
               maxHeight: "100%",
               borderRadius: "2%",
+              aspectRatio: 1,
               objectFit: "cover",
             }}
             alt="Center Photo"

@@ -59,13 +59,15 @@ export default function PetsPage() {
 
   //get data after first call, called by infinite scroll
   const fetchMoreData = async () => {
+    if (animalData.length === 0) {
+      setPage(0);
+    }
     await getRecommendedAnimals(quantityPerPage, page)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {
             setHasMore(false);
           } else {
-            console.log(result.map((a) => a.id));
             //converting copy of data to a set, then setting that,
             //to make sure no duplicates are rendered
             let dataCopy = animalData;
@@ -130,7 +132,7 @@ export default function PetsPage() {
               dataLength={animalData.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<Loading doneLoading={!hasMore} />}
+              loader={<Loading doneLoading={!hasMore} page={page} />}
             >
               <Grid container spacing={4} sx={{ minHeight: "50px" }}>
                 {animalData.map((pet) => (

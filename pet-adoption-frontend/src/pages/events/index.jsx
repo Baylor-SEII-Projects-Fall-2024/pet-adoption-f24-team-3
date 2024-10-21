@@ -55,13 +55,15 @@ export default function EventsPage() {
   }, []);
 
   const fetchMoreData = async () => {
+    if (eventData.length === 0) {
+      setPage(0);
+    }
     await getEventsByPage(quantityPerPage, page)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {
             setHasMore(false);
           } else {
-            console.log(result.map((a) => a.id));
             let dataCopy = eventData;
             let newData = [...new Set(dataCopy.concat(result))];
             setEventData(newData);

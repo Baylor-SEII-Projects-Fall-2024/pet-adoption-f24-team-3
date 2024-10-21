@@ -16,7 +16,7 @@ import Loading from "@/components/Loading";
 import userService from "@/utils/services/userService";
 import CenterCard from "@/components/CenterCard";
 
-const quantityPerPage = 8;
+const quantityPerPage = 4;
 
 export default function CentersPage() {
   const router = useRouter();
@@ -54,15 +54,18 @@ export default function CentersPage() {
   }, []);
 
   const fetchMoreData = async () => {
+    if (centerData.length === 0) {
+      setPage(0);
+    }
+
     await getCentersByPage(quantityPerPage, page)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {
             setHasMore(false);
           } else {
-            console.log(result.map((a) => a.id));
-            let dataCopy = centerData;
-            let newData = [...new Set(dataCopy.concat(result))];
+            let dataCopy = [...centerData];
+            let newData = dataCopy.concat(result);
             setCenterData(newData);
             setPage((currentPage) => currentPage + 1);
           }
