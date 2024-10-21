@@ -194,6 +194,8 @@ public class UserService {
                 -> new EntityNotFoundException("Adoption center not found with ID: " + centerId));
         details.put("id", adoptionCenter.getId());
         details.put("address", adoptionCenter.getAddress());
+        details.put("city",adoptionCenter.getCity());
+        details.put("state",adoptionCenter.getState());
         details.put("name", adoptionCenter.getName());
 
         return details;

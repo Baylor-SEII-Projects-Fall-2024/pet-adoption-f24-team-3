@@ -150,7 +150,10 @@ export default function ViewEventPage() {
                     <tbody>
                       <tr>
                         <td><Typography>Hosted By: </Typography></td>
-                        <td><Typography>{adoptionCenter.name}</Typography></td>
+                        <td>
+                          <Typography>{adoptionCenter.name}</Typography>
+                          <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
+                        </td>
                       </tr>
                       <tr>
                         <td> <Typography>Dates:</Typography> </td>
