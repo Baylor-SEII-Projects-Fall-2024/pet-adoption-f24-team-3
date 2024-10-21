@@ -2,7 +2,10 @@ package petadoption.api.event;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import petadoption.api.animal.Animal;
+import petadoption.api.images.ImageService;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +14,14 @@ import java.util.Optional;
 public class EventService {
     @Autowired
     EventRepository eventRepository;
+
+    ImageService imageService;
+
+    //only creates the image service when it needs it - prevents cyclical loading
+    public EventService(@Lazy ImageService imageService) {
+        super();
+        this.imageService = imageService;
+    }
 
     public List<Event> findAllEvents(){ return eventRepository.findAll();}
     public Optional<Event> findEvent(Long eventId) {
@@ -29,5 +40,16 @@ public class EventService {
         return eventRepository.save(getEvent).getId();
     }
     public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
+    public void deleteEvent(Long eventId) throws Exception{
+        Event deletedEvent = eventRepository.findById(eventId).orElse(null);
+        if(deletedEvent == null){
+
+            throw new Exception("Event not found!");
+        }
+        if(deletedEvent.getThumbnailPath() !=null) {
+            imageService.deleteEventThumbnail(eventId);
+        }
+        eventRepository.delete(deletedEvent);
+    }
 }
 

@@ -15,13 +15,30 @@ export default function ViewEventPage() {
   const { eventID } = router.query;
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
-  const { getEventInfo } = eventService();
-  const { getCenterInfo } = userService();
+  const { getEventInfo, deleteEvent } = eventService();
+  const { getCenterDetails } = userService();
 
   const [event, setEvent] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
-  const [adoptionCenter, setAdoptioneCenter] = React.useState(null);
+  const [adoptionCenter, setAdoptionCenter] = React.useState(null);
+
+  const onDeleteEvent = async () => {
+    if (!event || !adoptionCenter) return;
+
+    if (window.confirm(`Are you sure you want to delete ${event.name}? It will be gone forever...`)) {
+      await deleteEvent(eventID)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/centers/${adoptionCenter.id}`)
+          }
+          else console.error("There was an error deleting event!");
+        })
+        .catch((error) => {
+          console.error("There was an error deleting event:", error);
+        });
+    }
+  }
 
   React.useEffect(() => {
     if (eventID) {
@@ -51,27 +68,27 @@ export default function ViewEventPage() {
 
   React.useEffect(() => {
     const fetchCenterInfo = async () => {
-      if (currentUserId) {
+      if (event) {
         try {
-          const result = await getCenterInfo(currentUserId);
+          const result = await getCenterDetails(event.centerId);
           if (result != null) {
-            setAdoptioneCenter(result);
+            setAdoptionCenter(result);
           } else {
-            console.error(`Error loading center ${currentUserId}:`, result);
+            console.error(`Error loading center ${event.centerId}:`, result);
             setIsError(true);
           }
         } catch (error) {
-          console.error(`Error loading center ${currentUserId}:`, error);
+          console.error(`Error loading center ${event.centerId}:`, error);
           setIsError(true);
         }
       }
     };
-  
-    fetchCenterInfo();
-  }, [currentUserId]);
-  
 
-  if ((isLoading == true || !event) && !isError) {
+    fetchCenterInfo();
+  }, [event]);
+
+
+  if ((isLoading == true || !event || !adoptionCenter) && !isError) {
     return (
       <>
         <Head>
@@ -126,36 +143,39 @@ export default function ViewEventPage() {
                   alt={`${event.name}`}
                   style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
                 />
-                <Stack direction="column">
+                <Stack Stack direction="column" sx={{ display: "flex", flex: 1 }}>
                   <Typography variant='h3' >{event.name}</Typography>
                   <br></br>
                   <table>
                     <tbody>
                       <tr>
                         <td><Typography>Hosted By: </Typography></td>
-                        <td><Typography>{adoptionCenter.name}</Typography></td>
+                        <td>
+                          <Typography>{adoptionCenter.name}</Typography>
+                          <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
+                        </td>
                       </tr>
                       <tr>
                         <td> <Typography>Dates:</Typography> </td>
                         <td>
-                            {event.dateStart && event.dateEnd &&
-                              (format(new Date(event.dateStart), "MM dd yyyy") ===
-                                format(new Date(event.dateEnd), "MM dd yyyy") ? (
-                                <>
-                                  <Typography>
-                                    {format(new Date(event.dateStart), "MMM dd, yyyy")}
-                                  </Typography>
-                                  <Typography>
-                                    {format(new Date(event.dateStart), "h:mm a")} -{" "}
-                                    {format(new Date(event.dateEnd), "h:mm a")}
-                                  </Typography>
-                                </>
-                              ) : (
+                          {event.dateStart && event.dateEnd &&
+                            (format(new Date(event.dateStart), "MM dd yyyy") ===
+                              format(new Date(event.dateEnd), "MM dd yyyy") ? (
+                              <>
                                 <Typography>
-                                  {format(new Date(event.dateStart), "MMM dd, yyyy")} -{" "}
-                                  {format(new Date(event.dateEnd), "MMM dd, yyyy")}
+                                  {format(new Date(event.dateStart), "MMM dd, yyyy")}
                                 </Typography>
-                              ))}
+                                <Typography>
+                                  {format(new Date(event.dateStart), "h:mm a")} -{" "}
+                                  {format(new Date(event.dateEnd), "h:mm a")}
+                                </Typography>
+                              </>
+                            ) : (
+                              <Typography>
+                                {format(new Date(event.dateStart), "MMM dd, yyyy")} -{" "}
+                                {format(new Date(event.dateEnd), "MMM dd, yyyy")}
+                              </Typography>
+                            ))}
                         </td>
 
                       </tr>
@@ -170,6 +190,19 @@ export default function ViewEventPage() {
                       onClick={() => router.push(`/events/${eventID}/edit`)} sx={{ width: "150px" }}>Edit Event</Button>
                   )}
                 </Box>
+                {currentUserId == event.centerId && (
+                  <Box
+                    sx={{ width: "150px" }}>
+                    <Button
+                      variant='contained'
+                      color="secondary"
+                      onClick={() => router.push(`/events/${eventID}/edit`)} sx={{ width: "150px" }}>Edit Event</Button>
+                    <Button
+                      variant='outlined'
+                      color="secondary"
+                      onClick={onDeleteEvent} sx={{ width: "150px" }}>Delete Event</Button>
+                  </Box>
+                )}
               </Stack>
               <Box
                 sx={{
@@ -186,7 +219,7 @@ export default function ViewEventPage() {
             </CardContent>
           </Card>
         </Stack>
-      </main>
+      </main >
     </>
   );
 }

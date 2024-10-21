@@ -10,6 +10,7 @@ import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -118,6 +119,26 @@ public class UserTests {
 
         assertTrue(passwordEncoder.matches(centerDto.getPassword(), foundUser.getPassword()));
 
+    }
+
+    @Test
+    void testGetCenterDetails(){
+        AdoptionCenter adoptionCenter = new AdoptionCenter();
+        adoptionCenter.accountType = "OWNER";
+        adoptionCenter.emailAddress = "example@example.com";
+        adoptionCenter.password = "password";
+        adoptionCenter.setAddress("Old Address");
+        adoptionCenter.setCity("Old City");
+        adoptionCenter.setState("Old State");
+        adoptionCenter.setZipCode("1234");
+        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
+        Long id = savedUser.id;
+
+        Map<String, Object> centerDetails = userService.getCenterDetails(id);
+        assertNotNull(centerDetails);
+        assertEquals(id, centerDetails.get("id"));
+        assertEquals(adoptionCenter.getAddress(), centerDetails.get("address"));
+        assertEquals(adoptionCenter.getName(), centerDetails.get("name"));
     }
 
     @Test

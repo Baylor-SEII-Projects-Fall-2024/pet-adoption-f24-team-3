@@ -11,7 +11,9 @@ import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.dtos.UserDto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
@@ -139,7 +141,7 @@ public class UserService {
         if(centerDto.getAccountType() != null && !centerDto.getAccountType().isEmpty()) {
             updateCenter.setAccountType(centerDto.getAccountType());
         }
-        if(centerDto.getProfilePicPath() != null && !centerDto.getProfilePicPath().isEmpty()) {
+        if(centerDto.getProfilePicPath() != null) {
             updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
         }
         if(centerDto.getName() != null && !centerDto.getName().isEmpty()) {
@@ -159,6 +161,9 @@ public class UserService {
         }
         if(centerDto.getEmailAddress() != null && !centerDto.getEmailAddress().isEmpty()) {
             updateCenter.setEmailAddress(centerDto.getEmailAddress());
+        }
+        if(centerDto.getDescription() != null && !centerDto.getDescription().isEmpty()){
+            updateCenter.setDescription(centerDto.getDescription());
         }
 
         return adoptionCenterRepository.save(updateCenter).getId();
@@ -181,6 +186,19 @@ public class UserService {
             return -1;
         }
         return user.id;
+    }
+
+    public Map<String, Object> getCenterDetails(Long centerId){
+        Map<String, Object> details = new HashMap<>();
+        AdoptionCenter adoptionCenter = adoptionCenterRepository.findById(centerId).orElseThrow(()
+                -> new EntityNotFoundException("Adoption center not found with ID: " + centerId));
+        details.put("id", adoptionCenter.getId());
+        details.put("address", adoptionCenter.getAddress());
+        details.put("city",adoptionCenter.getCity());
+        details.put("state",adoptionCenter.getState());
+        details.put("name", adoptionCenter.getName());
+
+        return details;
     }
 
     public User saveUser(User user) {

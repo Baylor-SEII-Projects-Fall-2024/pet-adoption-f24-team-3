@@ -164,4 +164,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
         }
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/centers/{id}/details")
+    public ResponseEntity<Map<String, Object>> getCenterDetails(@PathVariable Long id) {
+        Map<String, Object> response = userService.getCenterDetails(id);
+        if (response == null) {
+            log.warn("No center found for {}", id);
+        }
+        return ResponseEntity.ok(response);
+    }
 }
