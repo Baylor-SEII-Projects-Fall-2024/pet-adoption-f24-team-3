@@ -39,14 +39,15 @@ public class PreferenceController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/update/preferences/{id}")
     public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody PreferenceDto preferenceDto, @PathVariable Long id) {
-        Long updatedOwner = preferenceService.updatePreference(preferenceDto, id);
-        Map<String, Object> response = new HashMap<>();
-        if (updatedOwner!=null) {
-            response.put("userid", updatedOwner);
+        try {
+            Preference updatedPreference = preferenceService.updatePreference(id, preferenceDto);
+            Map<String, Object> response = new HashMap<>();
+            response.put("preference", updatedPreference);
             return ResponseEntity.ok(response);
-        } else {
-            response.put("message", "Update preference failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Update preference failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

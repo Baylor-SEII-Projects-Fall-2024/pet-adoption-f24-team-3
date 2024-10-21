@@ -243,6 +243,7 @@ const userService = () => {
             return null;
         }
     };
+
     const updateCenter = async (formData, profilePic, bannerPic, userid) => {
         const response = await fetch(`${apiUrl}/api/update/center/${userid}`, {
             method: "POST",
