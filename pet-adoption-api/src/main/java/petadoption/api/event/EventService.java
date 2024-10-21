@@ -18,8 +18,8 @@ public class EventService {
     public Optional<Event> findEvent(Long eventId) {
         return eventRepository.findById(eventId);
     }
-    public Long saveEvent(Event event) {
-        return eventRepository.save(event).getId();
+    public Event saveEvent(Event event) {
+        return eventRepository.save(event);
     }
 
     public Long updateEvent(Event newEvent, Long eventId) {

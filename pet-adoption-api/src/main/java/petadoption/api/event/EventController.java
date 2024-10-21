@@ -37,7 +37,7 @@ public class EventController {
 
     @PostMapping("/")
     public ResponseEntity<Map<String, Object>> saveEvent(@RequestBody Event newEvent) {
-        Long newEventId = eventService.saveEvent(newEvent);
+        Long newEventId = eventService.saveEvent(newEvent).getId();
         Map<String, Object>  response = new HashMap<>();
 
         if (newEventId!=null) {
