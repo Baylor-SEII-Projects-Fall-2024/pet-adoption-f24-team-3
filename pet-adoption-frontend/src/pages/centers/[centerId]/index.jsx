@@ -18,6 +18,7 @@ import CenterProfileCard from "@/components/CenterProfileCard";
 import EventCard from "@/components/EventCard";
 import PetCard from "@/components/PetCard";
 import TabPanel from "@/components/TabPanel";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
@@ -187,7 +188,7 @@ export default function CenterPage() {
         }}
       >
         <img
-          src={`http://localhost:8080/api/images/users/${centerId}/banner`}
+          src={`${apiUrl}/api/images/users/${centerId}/banner`}
           alt="Center Banner"
           style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
         />
