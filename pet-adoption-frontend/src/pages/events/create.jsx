@@ -16,6 +16,8 @@ export default function CreateEventPage() {
     const { createEvent } = eventService();
     const { uploadEventThumbnail } = imageService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    const currentUserType = useSelector((state) => state.currentUser.currentUserType);
+
     const currDate = new Date().toISOString();
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
@@ -26,13 +28,18 @@ export default function CreateEventPage() {
 
 
     const [formData, setFormData] = useState({
-        centerId: currentUserId,
         datePosted: currDate,
         name: "",
         description: "",
         dateStart: null,
         dateEnd: null,
     });
+
+    React.useEffect(() => {
+        if (currentUserType && currentUserType !== "Center") {
+            router.push("/events");
+        }
+    }, [currentUserType]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -71,10 +78,10 @@ export default function CreateEventPage() {
 
         try {
             setIsUploading(true);
-            await createEvent(formData)
+            await createEvent(formData, currentUserId)
                 .then(async (result) => {
                     if (result !== null) {
-                        if (thumbnailPath != null){
+                        if (thumbnailPath != null) {
                             await uploadEventThumbnail(thumbnailPath, result.eventID);
                         }
                         setIsUploading(false);
@@ -100,11 +107,12 @@ export default function CreateEventPage() {
                     <Typography variant="caption">Please fill this form to create a new event!</Typography>
                 </Grid>
                 <form onSubmit={handleSubmit}>
-                    <TextField fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
-                    <TextField multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
+                    <TextField required fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
+                    <TextField required multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <div style={{ marginBottom: '8px', marginTop: '6px'}}>
+                        <div style={{ marginBottom: '8px', marginTop: '6px' }}>
                             <DatePicker
+                                required
                                 label="Start Date"
                                 value={formData.dateStart ? dayjs(formData.dateStart) : null}
                                 onChange={(date) => handleDateChange(date, 'dateStart')}
@@ -113,6 +121,7 @@ export default function CreateEventPage() {
                         </div>
                         <div style={{ marginBottom: '8px' }}>
                             <DatePicker
+                                required
                                 label="End Date"
                                 value={formData.dateEnd ? dayjs(formData.dateEnd) : null}
                                 onChange={(date) => handleDateChange(date, 'dateEnd')}
@@ -128,7 +137,7 @@ export default function CreateEventPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleThumbnailUpload} />
-                    
+
                     {isUploading ?
                         <Typography> Creating Event...</Typography>
                         :

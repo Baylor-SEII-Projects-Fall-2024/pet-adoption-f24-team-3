@@ -1,6 +1,8 @@
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
 import formatter from "@/utils/formatter";
 import { format } from "date-fns";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function EventCard(props) {
   const { camelCaseToReadable } = formatter();
@@ -28,12 +30,13 @@ export default function EventCard(props) {
           <img
             style={{
               width: "100%",
-              height: "auto",
+              maxHeight: "auto",
               borderRadius: "2%",
-
+              aspectRatio:1,
+              objectFit:"cover",
             }}
             alt="Event Thumbnail"
-            src={`http://localhost:8080/api/images/events/${event.id}`}
+            src={`${apiUrl}/api/images/events/${event.id}`}
           />
         </Box>
         <Box
