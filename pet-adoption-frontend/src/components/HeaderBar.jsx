@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { AccountBox, Logout, Pets, CalendarMonth, Cottage } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 export default function HeaderBar(props) {
@@ -91,7 +92,7 @@ export default function HeaderBar(props) {
                             onClick={handleOpenUserMenu}
                             sx={{ p: 1 }}
                         >
-                            <Avatar alt="Remy Sharp" src={`http://localhost:8080/api/images/users/${currentUserId}/profile`} />
+                            <Avatar alt="Remy Sharp" src={`${apiUrl}/api/images/users/${currentUserId}/profile`} />
                         </IconButton>
                     </Tooltip>
                     <Menu

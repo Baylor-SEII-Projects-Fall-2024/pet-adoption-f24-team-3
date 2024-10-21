@@ -10,6 +10,8 @@ import {
   Avatar,
 } from "@mui/material";
 import formatter from "@/utils/formatter";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function CenterProfileCard(props) {
   const propsNotInInfo = [
@@ -25,7 +27,7 @@ export default function CenterProfileCard(props) {
   const { camelCaseToReadable } = formatter();
 
   const handleEditInfoClick = () => {
-    router.push(`/centers/edit`);
+    router.push(`/centers/${centerId}/edit`);
   };
 
   return (
@@ -95,7 +97,7 @@ export default function CenterProfileCard(props) {
                 mt: 2,
               }}
               alt="Center Avatar"
-              src={`http://localhost:8080/api/images/users/${centerId}/profile`}
+              src={`${apiUrl}/api/images/users/${centerId}/profile`}
             />
           </Box>
           <Box

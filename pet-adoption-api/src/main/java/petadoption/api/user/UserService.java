@@ -136,14 +136,33 @@ public class UserService {
             String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
             updateCenter.setPassword(encodedPassword);
         }
-        updateCenter.setAccountType(centerDto.getAccountType());
-        updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
-        updateCenter.setName(centerDto.getName());
-        updateCenter.setAddress(centerDto.getAddress());
-        updateCenter.setCity(centerDto.getCity());
-        updateCenter.setState(centerDto.getState());
-        updateCenter.setZipCode(centerDto.getZipCode());
-        updateCenter.setEmailAddress(centerDto.getEmailAddress());
+        if(centerDto.getAccountType() != null && !centerDto.getAccountType().isEmpty()) {
+            updateCenter.setAccountType(centerDto.getAccountType());
+        }
+        if(centerDto.getProfilePicPath() != null) {
+            updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
+        }
+        if(centerDto.getName() != null && !centerDto.getName().isEmpty()) {
+            updateCenter.setName(centerDto.getName());
+        }
+        if(centerDto.getAddress() != null && !centerDto.getAddress().isEmpty()) {
+            updateCenter.setAddress(centerDto.getAddress());
+        }
+        if(centerDto.getCity() != null && !centerDto.getCity().isEmpty()) {
+            updateCenter.setCity(centerDto.getCity());
+        }
+        if(centerDto.getState() != null && !centerDto.getState().isEmpty()) {
+            updateCenter.setState(centerDto.getState());
+        }
+        if(centerDto.getZipCode() != null && !centerDto.getZipCode().isEmpty()) {
+            updateCenter.setZipCode(centerDto.getZipCode());
+        }
+        if(centerDto.getEmailAddress() != null && !centerDto.getEmailAddress().isEmpty()) {
+            updateCenter.setEmailAddress(centerDto.getEmailAddress());
+        }
+        if(centerDto.getDescription() != null && !centerDto.getDescription().isEmpty()){
+            updateCenter.setDescription(centerDto.getDescription());
+        }
 
         return adoptionCenterRepository.save(updateCenter).getId();
     }

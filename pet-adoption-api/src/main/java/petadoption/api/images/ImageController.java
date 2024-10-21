@@ -78,12 +78,16 @@ public class ImageController {
             Path filePath = Paths.get(user.getBannerPicPath());
             byte[] pictureFile =  Files.readAllBytes(filePath);
 
+            if(pictureFile.length<1){
+                throw new Exception("File is empty!");
+            }
+
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
         }
-        catch (NullPointerException e){
+        catch (Exception e){
             ClassPathResource resource = new ClassPathResource("placeholders/center_banner.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
@@ -143,7 +147,6 @@ public class ImageController {
         }
     }
 
-
     @PostMapping("/users/{userId}/profile")
     public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) throws Exception {
         try{
@@ -184,6 +187,47 @@ public class ImageController {
             return new ResponseEntity<>(true, HttpStatus.CREATED);
         }
         catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/users/{userId}/profile")
+    public ResponseEntity<Object> deleteProfilePic(@PathVariable Long userId){
+        try {
+            boolean result = imageService.deleteProfilePicture(userId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/users/{userId}/banner")
+    public ResponseEntity<Object> deleteBannerPic(@PathVariable Long userId){
+        try {
+            boolean result = imageService.deleteCenterBanner(userId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/animals/{animalId}")
+    public ResponseEntity<Object> deleteAnimalPic(@PathVariable Long animalId){
+        try {
+            boolean result = imageService.deleteAnimalPicture(animalId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/events/{eventId}")
+    public ResponseEntity<Object> deleteEventThumbnail(@PathVariable Long eventId){
+        try {
+            boolean result = imageService.deleteEventThumbnail(eventId);
+            return new ResponseEntity<>(result,HttpStatus.OK);
+        }
+        catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

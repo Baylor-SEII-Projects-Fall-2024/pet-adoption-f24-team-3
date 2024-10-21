@@ -1,16 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentUserId } from '@/utils/redux';
-import Cookies from 'js-cookie';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const imageService = () => {
-    const dispatch = useDispatch();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
     // uploads a profile picture. Returns True or error
     const uploadProfilePic = async (imageFile, userId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
-        const response = await fetch(`http://localhost:8080/api/images/users/${userId}/profile`, {
+        const response = await fetch(`${apiUrl}/api/images/users/${userId}/profile`, {
             method: "POST",
             headers: {
                 //dont need to set for form data    
@@ -53,7 +49,7 @@ const imageService = () => {
     const uploadCenterBanner = async (imageFile, userId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
-        const response = await fetch(`http://localhost:8080/api/images/users/${userId}/banner`, {
+        const response = await fetch(`${apiUrl}/api/images/users/${userId}/banner`, {
             method: "POST",
             headers: {
                 //dont need to set for form data    
@@ -74,7 +70,7 @@ const imageService = () => {
     const uploadAnimalPicture = async (imageFile, petId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
-        const response = await fetch(`http://localhost:8080/api/images/animals/${petId}`, {
+        const response = await fetch(`${apiUrl}/api/images/animals/${petId}`, {
             method: "POST",
             headers: {
                 //dont need to set for form data    
@@ -95,7 +91,7 @@ const imageService = () => {
     const uploadEventThumbnail = async (imageFile, eventId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
-        const response = await fetch(`http://localhost:8080/api/images/events/${eventId}`, {
+        const response = await fetch(`${apiUrl}/api/images/events/${eventId}`, {
             method: "POST",
             headers: {
                 //dont need to set for form data    
