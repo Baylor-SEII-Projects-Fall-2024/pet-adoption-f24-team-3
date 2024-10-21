@@ -12,5 +12,6 @@ pet-adoption-api/.tmp/
 pet-adoption-api/uploads/
 **/.DS_Store
 
+.env.gcp
 .editorconfig
 **/Makefile
