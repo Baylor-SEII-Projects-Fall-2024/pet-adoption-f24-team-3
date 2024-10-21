@@ -141,7 +141,7 @@ public class UserService {
         if(centerDto.getAccountType() != null && !centerDto.getAccountType().isEmpty()) {
             updateCenter.setAccountType(centerDto.getAccountType());
         }
-        if(centerDto.getProfilePicPath() != null && !centerDto.getProfilePicPath().isEmpty()) {
+        if(centerDto.getProfilePicPath() != null) {
             updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
         }
         if(centerDto.getName() != null && !centerDto.getName().isEmpty()) {
@@ -161,6 +161,9 @@ public class UserService {
         }
         if(centerDto.getEmailAddress() != null && !centerDto.getEmailAddress().isEmpty()) {
             updateCenter.setEmailAddress(centerDto.getEmailAddress());
+        }
+        if(centerDto.getDescription() != null && !centerDto.getDescription().isEmpty()){
+            updateCenter.setDescription(centerDto.getDescription());
         }
 
         return adoptionCenterRepository.save(updateCenter).getId();
