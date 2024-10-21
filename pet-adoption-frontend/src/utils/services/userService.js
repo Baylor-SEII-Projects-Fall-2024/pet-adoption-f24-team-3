@@ -214,6 +214,23 @@ const userService = () => {
         }
     }
 
+    const getCenterDetails = async (centerId) => {
+        const response = await fetch(`${apiUrl}/api/centers/${centerId}/details`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get center details failed: ${result.message}`);
+            return null;
+        }
+    }
+
     const updateOwner = async (formData, profilePic, userid) => {
         const response = await fetch(`${apiUrl}/api/update/owner/${userid}`, {
             method: "POST",
@@ -298,6 +315,7 @@ const userService = () => {
         updateOwner,
         updateCenter,
         authenticateFromCookie,
+        getCenterDetails,
     };
 
 };
