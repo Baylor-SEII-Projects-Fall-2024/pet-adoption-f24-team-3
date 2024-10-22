@@ -59,9 +59,6 @@ public class AnimalService {
         if(newAnimal.getName() != null && !newAnimal.getName().isEmpty()) {
             animal.setName(newAnimal.getName());
         }
-        if(newAnimal.getPicPath() != null && !newAnimal.getPicPath().isEmpty()) {
-            animal.setPicPath(newAnimal.getPicPath());
-        }
         if(newAnimal.getAge() != null && newAnimal.getAge()>0){
             animal.setAge(newAnimal.getAge());
         }

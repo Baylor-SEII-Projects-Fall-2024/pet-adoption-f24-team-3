@@ -78,7 +78,6 @@ export default function EditPetPage() {
             setFormData(prevState => ({ ...prevState, ["breed"]: result.breed }));
             setFormData(prevState => ({ ...prevState, ["sex"]: result.sex }));
             setFormData(prevState => ({ ...prevState, ["description"]: result.description }));
-            setFormData(prevState => ({ ...prevState, ["picPath"]: result.picPath }));
             setFormData(prevState => ({ ...prevState, ["size"]: result.size }));
             setFormData(prevState => ({ ...prevState, ["ageClass"]: result.ageClass }));
             setFormData(prevState => ({ ...prevState, ["height"]: result.height }));
