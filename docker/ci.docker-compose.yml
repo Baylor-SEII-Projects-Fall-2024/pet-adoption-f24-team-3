@@ -25,10 +25,11 @@ services:
     command: --mysql-native-password=ON
     restart: always
     ports:
-      - '3307:3306'
+      - '3307:3307'
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: petadoption
+      MYSQL_TCP_PORT: 3307
     volumes:
       - mysql-data:/var/lib/mysql
 volumes:

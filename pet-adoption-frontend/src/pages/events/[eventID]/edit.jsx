@@ -4,10 +4,9 @@ import { Button, Grid, Paper, Card, CardContent, Stack, Typography, TextField } 
 import { useSelector } from "react-redux";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
-import imageService from "@/utils/services/imageService";
 
 export default function EditEvent() {
     const router = useRouter(); 
@@ -117,7 +116,7 @@ export default function EditEvent() {
                         <TextField multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div style={{ marginBottom: '8px', marginTop: '6px'}}>
-                                <DatePicker
+                                <DateTimePicker
                                     label="Start Date"
                                     value={formData.dateStart ? dayjs(formData.dateStart) : null}
                                     onChange={(date) => handleDateChange(date, 'dateStart')}
@@ -125,7 +124,7 @@ export default function EditEvent() {
                                 />
                             </div>
                             <div style={{ marginBottom: '8px' }}>
-                                <DatePicker
+                                <DateTimePicker
                                     label="End Date"
                                     value={formData.dateEnd ? dayjs(formData.dateEnd) : null}
                                     onChange={(date) => handleDateChange(date, 'dateEnd')}
