@@ -13,3 +13,4 @@ pet-adoption-api/uploads/
 .DS_Store
 
 .editorconfig
+**/Makefile

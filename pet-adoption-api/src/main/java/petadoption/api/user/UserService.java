@@ -8,9 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import petadoption.api.user.dtos.CenterDto;
-import petadoption.api.user.dtos.LoginDto;
-import petadoption.api.user.dtos.OwnerDto;
+import petadoption.api.user.dtos.*;
 
 import java.util.HashMap;
 import java.util.List;
