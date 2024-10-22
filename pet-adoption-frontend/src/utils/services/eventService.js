@@ -115,6 +115,23 @@ const eventService = () => {
         }
     };
 
+    const getEventsByPage = async (pageSize, pageNumber) => {
+        const response = await fetch(`${apiUrl}/api/events/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting events failed ${result.message}`);
+            return null;
+        }
+    }
+
 
     return {
         createEvent,
@@ -122,6 +139,7 @@ const eventService = () => {
         updateEvent,
         deleteEvent,
         getCenterEvents,
+        getEventsByPage,
     };
 
 };
