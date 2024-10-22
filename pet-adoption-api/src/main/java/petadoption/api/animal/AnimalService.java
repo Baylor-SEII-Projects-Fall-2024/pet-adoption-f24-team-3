@@ -53,17 +53,40 @@ public class AnimalService {
 
     public Long updateAnimal(Animal newAnimal, Long id) {
         Animal animal = findAnimal(id).orElseThrow(EntityNotFoundException::new);
-        animal.setName(newAnimal.getName());
-        animal.setPicPath(newAnimal.getPicPath());
-        animal.setAge(newAnimal.getAge());
-        animal.setSpecies(newAnimal.getSpecies());
-        animal.setBreed(newAnimal.getBreed());
-        animal.setSex(newAnimal.getSex());
-        animal.setWeight(newAnimal.getWeight());
-        animal.setHeight(newAnimal.getHeight());
-        animal.setAgeClass(newAnimal.getAgeClass());
-        animal.setDescription(newAnimal.getDescription());
-        animal.setSize(newAnimal.getSize());
+        if(newAnimal.getName() != null && !newAnimal.getName().isEmpty()) {
+            animal.setName(newAnimal.getName());
+        }
+        if(newAnimal.getPicPath() != null && !newAnimal.getPicPath().isEmpty()) {
+            animal.setPicPath(newAnimal.getPicPath());
+        }
+        if(newAnimal.getAge() != null && newAnimal.getAge()>0){
+            animal.setAge(newAnimal.getAge());
+        }
+        if(newAnimal.getSpecies() != null && !newAnimal.getSpecies().isEmpty()) {
+            animal.setSpecies(newAnimal.getSpecies());
+        }
+        if(newAnimal.getBreed() != null && !newAnimal.getBreed().isEmpty()) {
+            animal.setBreed(newAnimal.getBreed());
+        }
+        if(newAnimal.getSex() != null){
+            animal.setSex(newAnimal.getSex());
+        }
+        if(newAnimal.getWeight() != null && newAnimal.getWeight()>0){
+            animal.setWeight(newAnimal.getWeight());
+        }
+        if(newAnimal.getHeight() != null && newAnimal.getHeight()>0){
+            animal.setHeight(newAnimal.getHeight());
+        }
+        if(newAnimal.getAgeClass() != null){
+            animal.setAgeClass(newAnimal.getAgeClass());
+        }
+        if(newAnimal.getDescription() != null && !newAnimal.getDescription().isEmpty()) {
+            animal.setDescription(newAnimal.getDescription());
+        }
+        if(newAnimal.getSize() != null){
+            animal.setSize(newAnimal.getSize());
+        }
+
         return animalRepository.save(newAnimal).getId();
     }
 }
