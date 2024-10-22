@@ -43,7 +43,7 @@ public class EventsTest {
         try {
             eventService.deleteEvent(event.getId());
         } catch (Exception e) {
-            fail("Exception thrown");
+            fail("Exception thrown" + e.getMessage());
         }
         assertTrue(eventService.findEvent(event.getId()).isEmpty());
     }
@@ -55,7 +55,7 @@ public class EventsTest {
 
     @Test
     void testFindEventByCenterId(){
-        assertFalse(eventService.getEventsByCenterId(1L).isEmpty());
+        assertFalse(eventService.getEventsByCenterId(event.getCenterId()).isEmpty());
     }
 
     @Test
