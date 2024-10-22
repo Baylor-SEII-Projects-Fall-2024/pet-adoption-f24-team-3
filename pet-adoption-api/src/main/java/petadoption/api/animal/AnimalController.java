@@ -35,9 +35,9 @@ public class AnimalController {
         }
         return animal;
     }
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Map<String, Object>> updateAnimal(@RequestBody Animal animalDto, @PathVariable Long id) {
-        Long updatedPet = animalService.updateAnimal(animalDto, id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateAnimal(@RequestBody Animal animal, @PathVariable Long id) {
+        Long updatedPet = animalService.updateAnimal(animal, id);
         Map<String, Object>  response = new HashMap<>();
         if (updatedPet!=null) {
             response.put("petid", updatedPet);

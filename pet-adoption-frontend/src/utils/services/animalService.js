@@ -1,3 +1,4 @@
+import imageService from "./imageService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const { uploadAnimalPicture } = imageService();
@@ -71,11 +72,11 @@ const animalService = () => {
             return null;
         }
     }
-    const updatePet = async (formData, profilePic, petId) => {
-        const response = await fetch(`${apiUrl}/api/update/pet/${petId}`, {
-            method: "POST",
+    const updateAnimal = async (formData, animalPic, petId) => {
+        const response = await fetch(`${apiUrl}/api/animals/${petId}`, {
+            method: "PUT",
             headers: {
-                "Content-Type": "application/jsgiton"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 name: formData.name,
@@ -95,16 +96,16 @@ const animalService = () => {
         const result = await response.json();
         if (response.ok) {
             //try to upload banner and profile pic if they exist
-            if (profilePic != null) {
-                const profilePicResult = await uploadAnimalPicture(profilePic, petId);
-                if (!profilePicResult) {
+            if (animalPic != null) {
+                const picResult = await uploadAnimalPicture(animalPic, petId);
+                if (!picResult) {
                     return null;
                 }
             }
             //return wheter or not both were successful
             return result;
         } else {
-            alert(`Update failed: ${formResult.message}`);
+            alert(`Update failed: ${result.message}`);
             return null;
         }
     };
@@ -114,7 +115,7 @@ const animalService = () => {
         getAnimal,
         deleteAnimal,
         getRecommendedAnimals,
-        updatePet
+        updateAnimal,
     };
 
 };
