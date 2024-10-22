@@ -2,7 +2,6 @@ package petadoption.api.animal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,6 @@ import petadoption.api.images.ImageService;
 
 import java.util.List;
 import java.util.Optional;
-
-import petadoption.api.animal.dtos.AnimalDto;
 
 @Service
 public class AnimalService {
@@ -35,10 +32,6 @@ public class AnimalService {
 
     public Animal saveAnimal(Animal animal) {
         return animalRepository.save(animal);
-    }
-
-    public Animal saveAnimal(AnimalDto animal) {
-        return animalRepository.save(animal.toAnimal());
     }
 
     public List<Animal> findAnimalsByCenterId(Long centerId) {

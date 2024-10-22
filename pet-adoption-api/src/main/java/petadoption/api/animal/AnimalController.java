@@ -9,10 +9,6 @@ import petadoption.api.animal.responseObjects.AnimalCardResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.HashMap;
-
-import petadoption.api.animal.dtos.AnimalDto;
 
 @Log4j2
 @RestController
@@ -25,25 +21,7 @@ public class AnimalController {
     @GetMapping("/")
     public List<Animal> findAllAnimals() {
         return animalService.findAllAnimals();
-    }
-
-    @GetMapping("/animals")
-    public ResponseEntity<Map<String, Object>> createPetPost(@RequestBody AnimalDto animalDto) {
-        Animal newAnimal = new Animal();
-
-        Animal savedAnimal = animalService.saveAnimal(newAnimal);
-        Map<String, Object> response = new HashMap<>();
-
-        if (savedAnimal != null) {
-            response.put("animal id", savedAnimal.getId());
-            return ResponseEntity.ok(response); // Return success message as JSON
-        } else {
-            response.put("message", "Pet post creation failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
-        }
-
-    }
-
+    }   
     @GetMapping("/{id}")
     public Animal findAnimalBy(@PathVariable Long id) {
         var animal = animalService.findAnimal(id).orElse(null);

@@ -3,34 +3,35 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const animalService = () => {
 
-    const { uploadProfilePic } = imageService();
+    const { uploadAnimalPicture } = imageService();
 
-    const createPetPost = async (formData, petPic) => {
-        console.log(`Saving animal ${formData.petName}`)
-        console.log(`formData: ${formData}`)
-        const response = await fetch(`${apiUrl}/api/animals`, {
+    const createPet = async (formData, petPic) => {
+        const response = await fetch(`${apiUrl}/api/animals/`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 date: new Date().toJSON(),
-                petName: formData.petName,
+                name: formData.name,
                 species: formData.species,
                 breed: formData.breed,
                 sex: formData.sex,
                 age: formData.age,
+                ageClass: formData.ageClass,
                 size: formData.size,
-                city: formData.city,
-                state: formData.state,
+                height: formData.height,
+                weight: formData.weight,
+                description: formData.description,
+                centerId: formData.centerId,
             })
         });
 
         const result = await response.json();
         if (response.ok) {
-            if (profilePic != null) {
-                const profilePicResult = await uploadProfilePic(petPic, result.userid);
-                if (!profilePicResult) {
+            if (petPic != null) {
+                const picResult = await uploadAnimalPicture(petPic, result.id);
+                if (!picResult) {
                     return null;
                 }
             }
@@ -110,7 +111,7 @@ const animalService = () => {
     }
 
     return {
-        createPetPost,
+        createPet,
         getAnimal,
         getCenterAnimals,
         getAnimal,
