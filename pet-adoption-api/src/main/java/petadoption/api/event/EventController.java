@@ -5,16 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import petadoption.api.user.dtos.CenterDto;
+import petadoption.api.event.responseObjects.EventCardResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/events")
+@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
 public class EventController {
     @Autowired
     private EventService eventService;
@@ -36,19 +37,21 @@ public class EventController {
     @PostMapping("/")
     public ResponseEntity<Map<String, Object>> saveEvent(@RequestBody Event newEvent) {
         Long newEventId = eventService.saveEvent(newEvent).getId();
-        Map<String, Object>  response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
-        if (newEventId!=null) {
+        if (newEventId != null) {
             response.put("eventID", newEventId);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Event creation failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 
     @PostMapping("/update/{eventId}")
-    public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId, @RequestBody Event newEvent) {
+    public ResponseEntity<Map<String, Object>> updateEventInfo(@PathVariable Long eventId,
+            @RequestBody Event newEvent) {
         Long updatedEvent = eventService.updateEvent(newEvent, eventId);
         Map<String, Object> response = new HashMap<>();
         if (updatedEvent != null) {
@@ -56,14 +59,22 @@ public class EventController {
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Event update failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 
-
     @GetMapping("/center/{centerId}")
-    public List<Event> getEventsByCenterId(@PathVariable Long centerId) { return eventService.getEventsByCenterId(centerId); }
+    public List<Event> getEventsByCenterId(@PathVariable Long centerId) {
+        return eventService.getEventsByCenterId(centerId);
+    }
 
+    @GetMapping("/paginated")
+    public List<EventCardResponse> findByPage(@RequestParam("pageSize") Integer pageSize,
+            @RequestParam("pageNumber") Integer pageNumber) {
+        List<Event> events = eventService.paginateEvents(pageSize, pageNumber);
+        return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
         try{

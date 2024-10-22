@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
 public class TestController {
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/test")
     public String returnTestPoint(@RequestParam("username") String username) {
         return "I think your username, '" + username + "', is really cool!";

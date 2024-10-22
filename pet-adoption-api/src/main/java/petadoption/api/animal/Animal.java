@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import petadoption.api.user.AdoptionCenter;
 
 import java.util.Date;
 
@@ -20,8 +19,8 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name="CENTER_ID")
+
+    @Column(name = "CENTER_ID")
     private Long centerId;
 
     @Column(name = "DATE_POSTED")
@@ -51,8 +50,8 @@ public class Animal {
     @Column(name = "SIZE")
     private AnimalSize size;
 
-    @Column (name = "AGE_CLASS")
-    private  AnimalAgeClass ageClass;
+    @Column(name = "AGE_CLASS")
+    private AnimalAgeClass ageClass;
 
     @Column(name = "HEIGHT")
     private Double height;
