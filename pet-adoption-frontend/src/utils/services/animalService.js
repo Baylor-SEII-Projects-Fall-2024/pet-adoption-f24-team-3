@@ -1,9 +1,12 @@
 import imageService from './imageService';
+import { useSelector } from 'react-redux';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const animalService = () => {
 
     const { uploadAnimalPicture } = imageService();
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+
 
     const createPet = async (formData, petPic) => {
         const response = await fetch(`${apiUrl}/api/animals/`, {
@@ -23,7 +26,7 @@ const animalService = () => {
                 height: formData.height,
                 weight: formData.weight,
                 description: formData.description,
-                centerId: formData.centerId,
+                centerId: currentUserId,
             })
         });
 
