@@ -3,7 +3,6 @@ package petadoption.api.animal;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,17 +24,24 @@ public class AnimalService {
         this.imageService = imageService;
     }
 
-    public List<Animal> findAllAnimals(){ return animalRepository.findAll();}
+    public List<Animal> findAllAnimals() {
+        return animalRepository.findAll();
+    }
+
     public Optional<Animal> findAnimal(Long animalId) {
         return animalRepository.findById(animalId);
     }
+
     public Animal saveAnimal(Animal animal) {
         return animalRepository.save(animal);
     }
-    public List<Animal> findAnimalsByCenterId(Long centerId) { return animalRepository.findAnimalsByCenterId(centerId); }
 
-    public List<Animal> recommendAnimals(Integer pageSize, Integer pageNumber){
-        Pageable pagingRequest = PageRequest.of(pageNumber,pageSize);
+    public List<Animal> findAnimalsByCenterId(Long centerId) {
+        return animalRepository.findAnimalsByCenterId(centerId);
+    }
+
+    public List<Animal> recommendAnimals(Integer pageSize, Integer pageNumber) {
+        Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
         return animalRepository.findAll(pagingRequest).getContent();
     }
 
@@ -87,6 +93,6 @@ public class AnimalService {
             animal.setSize(newAnimal.getSize());
         }
 
-        return animalRepository.save(newAnimal).getId();
+        return animalRepository.save(animal).getId();
     }
 }
