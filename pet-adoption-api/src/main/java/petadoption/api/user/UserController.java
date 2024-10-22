@@ -1,6 +1,5 @@
 package petadoption.api.user;
 
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 public class UserController {
     @Autowired
     private UserService userService;
@@ -50,13 +49,12 @@ public class UserController {
 
         SessionUserDataResponse sessionUser = new SessionUserDataResponse();
         sessionUser.userId = user.getId();
-        sessionUser.accountType=user.getAccountType();
-        sessionUser.profilePicPath=user.getProfilePicPath();
-        if(user instanceof  PotentialOwner){
-            sessionUser.userFullName=((PotentialOwner) user).nameFirst + " " + ((PotentialOwner) user).nameLast;
-        }
-        else if(user instanceof  AdoptionCenter){
-            sessionUser.userFullName=((AdoptionCenter) user).getName();
+        sessionUser.accountType = user.getAccountType();
+        sessionUser.profilePicPath = user.getProfilePicPath();
+        if (user instanceof PotentialOwner) {
+            sessionUser.userFullName = ((PotentialOwner) user).nameFirst + " " + ((PotentialOwner) user).nameLast;
+        } else if (user instanceof AdoptionCenter) {
+            sessionUser.userFullName = ((AdoptionCenter) user).getName();
         }
 
         return sessionUser;
@@ -71,7 +69,7 @@ public class UserController {
         return user;
     }
 
-    //restrict search to owners
+    // restrict search to owners
     @GetMapping("/owners/{id}")
     public PotentialOwner findPotentialOwnerById(@PathVariable Long id) {
         var potentialOwner = userService.findPotentialOwner(id).orElse(null);
@@ -81,7 +79,7 @@ public class UserController {
         return potentialOwner;
     }
 
-    //restrict search to centers
+    // restrict search to centers
     @GetMapping("/centers/{id}")
     public AdoptionCenter findCenterById(@PathVariable Long id) {
         var center = userService.findAdoptionCenter(id).orElse(null);
@@ -92,7 +90,8 @@ public class UserController {
     }
 
     @GetMapping("/centers/paginated")
-    public List<AdoptionCenterCardResponse> findCentersByPage(@RequestParam("pageSize") Integer pageSize, @RequestParam("pageNumber") Integer pageNumber) {
+    public List<AdoptionCenterCardResponse> findCentersByPage(@RequestParam("pageSize") Integer pageSize,
+            @RequestParam("pageNumber") Integer pageNumber) {
         List<AdoptionCenter> centers = userService.paginateCenters(pageSize, pageNumber);
         return centers.stream().map(AdoptionCenterCardResponse::new).collect(Collectors.toList());
     }
@@ -100,14 +99,15 @@ public class UserController {
     @PostMapping("/centers")
     public ResponseEntity<Map<String, Object>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
         Long newUserId = userService.registerCenter(centerDto);
-        Map<String, Object>  response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
-        if (newUserId!=null) {
+        if (newUserId != null) {
             response.put("userid", newUserId);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 
@@ -117,11 +117,12 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
 
         if (newOwnerId != null) {
-            response.put("userid",newOwnerId);
+            response.put("userid", newOwnerId);
             return ResponseEntity.ok(response); // Return success message as JSON
         } else {
             response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 
@@ -129,10 +130,10 @@ public class UserController {
     public ResponseEntity<Map<String, Long>> loginUser(@RequestBody LoginDto loginDto) {
         Map<String, Long> response = new HashMap<>();
         long uid = userService.loginUser(loginDto);
-        if(uid > 0){
+        if (uid > 0) {
             response.put("userid", uid);
             return ResponseEntity.ok(response);
-        }else {
+        } else {
             response.put("message", -1L);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
@@ -141,26 +142,28 @@ public class UserController {
     @PostMapping("/update/owner/{id}")
     public ResponseEntity<Map<String, Object>> updateOwner(@RequestBody OwnerDto ownerDto, @PathVariable Long id) {
         Long updatedOwner = userService.updatePotentialOwner(ownerDto, id);
-        Map<String, Object>  response = new HashMap<>();
-        if (updatedOwner!=null) {
+        Map<String, Object> response = new HashMap<>();
+        if (updatedOwner != null) {
             response.put("userid", updatedOwner);
             return ResponseEntity.ok(response);
         } else {
             response.put("message", "Update failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 
     @PostMapping("/update/center/{id}")
     public ResponseEntity<Map<String, Object>> updateCenter(@RequestBody CenterDto centerDto, @PathVariable Long id) {
         Long updatedOwner = userService.updateAdoptionCenter(centerDto, id);
-        Map<String, Object>  response = new HashMap<>();
-        if (updatedOwner!=null) {
+        Map<String, Object> response = new HashMap<>();
+        if (updatedOwner != null) {
             response.put("userid", updatedOwner);
             return ResponseEntity.ok(response);
         } else {
             response.put("message", "Update failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
+                                                                                           // JSON
         }
     }
 

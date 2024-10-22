@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/animals")
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 public class AnimalController {
     @Autowired
     private AnimalService animalService;
@@ -52,11 +52,10 @@ public class AnimalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAnimal(@PathVariable Long id) {
-        try{
+        try {
             animalService.deleteAnimal(id);
-            return new ResponseEntity<>(true,HttpStatus.OK);
-        }
-        catch (Exception e) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
             log.error("Unable to delete Animal:" + e.getMessage());
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
