@@ -1,11 +1,13 @@
 package petadoption.api.animal;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import petadoption.api.event.Event;
 import petadoption.api.images.ImageService;
 
 import java.util.List;
@@ -54,5 +56,44 @@ public class AnimalService {
             imageService.deleteAnimalPicture(animalId);
         }
         animalRepository.delete(deletedAnimal);
+    }
+
+    public Long updateAnimal(Animal newAnimal, Long id) {
+        Animal animal = findAnimal(id).orElseThrow(EntityNotFoundException::new);
+        if(newAnimal.getCenterId() != null ) {
+            animal.setCenterId(newAnimal.getCenterId());
+        }
+        if(newAnimal.getName() != null && !newAnimal.getName().isEmpty()) {
+            animal.setName(newAnimal.getName());
+        }
+        if(newAnimal.getAge() != null && newAnimal.getAge()>0){
+            animal.setAge(newAnimal.getAge());
+        }
+        if(newAnimal.getSpecies() != null && !newAnimal.getSpecies().isEmpty()) {
+            animal.setSpecies(newAnimal.getSpecies());
+        }
+        if(newAnimal.getBreed() != null && !newAnimal.getBreed().isEmpty()) {
+            animal.setBreed(newAnimal.getBreed());
+        }
+        if(newAnimal.getSex() != null){
+            animal.setSex(newAnimal.getSex());
+        }
+        if(newAnimal.getWeight() != null && newAnimal.getWeight()>0){
+            animal.setWeight(newAnimal.getWeight());
+        }
+        if(newAnimal.getHeight() != null && newAnimal.getHeight()>0){
+            animal.setHeight(newAnimal.getHeight());
+        }
+        if(newAnimal.getAgeClass() != null){
+            animal.setAgeClass(newAnimal.getAgeClass());
+        }
+        if(newAnimal.getDescription() != null && !newAnimal.getDescription().isEmpty()) {
+            animal.setDescription(newAnimal.getDescription());
+        }
+        if(newAnimal.getSize() != null){
+            animal.setSize(newAnimal.getSize());
+        }
+
+        return animalRepository.save(newAnimal).getId();
     }
 }
