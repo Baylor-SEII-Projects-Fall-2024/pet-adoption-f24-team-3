@@ -22,24 +22,21 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-import userService from "@/utils/services/userService";
 import animalService from "@/utils/services/animalService";
+import imageService from "@/utils/services/imageService";
 
+// TODO How do we get centerid?
 export default function PetsPage() {
     const router = useRouter();
-    const { userId } = router.query; //get user ID from the routing
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-    // const { updatePreferences, getPreferences } = userService();
-    // const { updatePet } = animalService();
+    const { createPetPost } = animalService();
+    const { uploadProfilePic } = imageService();
 
-    const date = new Date().toJSON();
-
+    const [petPicture, setPetPicture] = useState(null);
+    const [isUploading, setIsUploading] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [preferences, setPreferences] = useState(null);
     const [formError, setFormError] = useState(null);
     const [formSuccess, setFormSuccess] = useState();
     const [formData, setFormData] = useState({
-        date: "",
         petName: "",
         species: "",
         breed: "",
@@ -59,6 +56,10 @@ export default function PetsPage() {
         const { value } = event.target;
         setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
     };
+
+    const handleProfileImageUpload = (e) => {
+        setProfileImage(e.target.files[0]);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -83,87 +84,24 @@ export default function PetsPage() {
             return;
         }
 
-    {/*
-      TODO update to a savePet endpoint
-    try {
-      await savePet(formData).then((userId) => {
-        //if user id is not null, that is handled in the hook below
-        if (userId !== null) {
-          setFormError(null);
-          setFormSuccess("Pet Preferences Saved!");
-        } else {
-          setFormError("An error occured, try again!");
-          setFormSuccess(null);
+        try {
+            console.log("calling savePet")
+            await savePet(formData, petPicture).then((petPostId) => {
+                //if user id is not null, that is handled in the hook below
+                if (petPostId !== null) {
+                    setFormError(null);
+                    setFormSuccess("Pet Post Saved!");
+                } else {
+                    setFormError("An error occured, try again!");
+                    setFormSuccess(null);
+                }
+            });
+        } catch (error) {
+            console.error("Error: ", error);
+            setFormError("An error occured saving your data.");
         }
-      });
-    } catch (error) {
-      console.error("Error: ", error);
-      setFormError("An error occured saving your data.");
-    }
-      */}
 
     };
-
-    useEffect(() => {
-        if (userId && userId != currentUserId) {
-            // If they try to access a different profile, route them back to theirs
-            router.push(`/profile/${currentUserId}/preferences`);
-        }
-        if (userId) {
-            const fetchUserPreferences = async () => {
-                try {
-                    const result = await getPreferences(userId);
-                    if (result !== null) {
-                        setPreferences(result);
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["petName"]: result.petName,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["species"]: result.species,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["breed"]: result.breed,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["sex"]: result.sex,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["furType"]: result.furType,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["age"]: result.age,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["size"]: result.size,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["city"]: result.city,
-                        }));
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            ["state"]: result.state,
-                        }));
-                    }
-                    // Set error state if not ok
-                } catch (error) {
-                    setFormError(
-                        `Pet preferences could not be found for user ${userId}`
-                    );
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchUserPreferences();
-        }
-    }, [userId]); // rerender if userId changes
 
     return (
         <>
@@ -287,9 +225,21 @@ export default function PetsPage() {
 
                         <br></br>
 
-                        <Button type="submit" variant="contained" color="primary">
-                            Save
-                        </Button>
+                        <TextField
+                            type="file"
+                            label='Pet Picture'
+                            name="petPicture"
+                            size="small" margin="dense"
+                            InputLabelProps={{ shrink: true }}
+                            inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
+                            onChange={handleProfileImageUpload} />
+
+
+                        {isUploading ?
+                            <Typography>Creating Account...</Typography>
+                            :
+                            <Button type='submit' variant='contained' color='primary'>Save</Button>
+                        }
                     </Stack>
                 </Stack>
             </main>

@@ -3,16 +3,18 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const animalService = () => {
 
-    const { uploadPetPic } = imageService();
+    const { uploadProfilePic } = imageService();
 
-    const saveAnimal = async (formData, uploadPetPic) => {
-        const response = await fetch(`http://localhost:8080/api/register/animals`, {
+    const createPetPost = async (formData, petPic) => {
+        console.log(`Saving animal ${formData.petName}`)
+        console.log(`formData: ${formData}`)
+        const response = await fetch(`${apiUrl}/api/animals`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                date: formData.date,
+                date: new Date().toJSON(),
                 petName: formData.petName,
                 species: formData.species,
                 breed: formData.breed,
@@ -27,13 +29,11 @@ const animalService = () => {
         const result = await response.json();
         if (response.ok) {
             if (profilePic != null) {
-                const imageResult = await uploadPetPic(petPic, result.animalid); // TODO: check actual variable of result
-                if (!imageResult) {
+                const profilePicResult = await uploadProfilePic(petPic, result.userid);
+                if (!profilePicResult) {
                     return null;
                 }
             }
-            saveCurrentUserToRedux(result.userid);
-            setAuthenticationCookies(result.userid);
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -110,7 +110,7 @@ const animalService = () => {
     }
 
     return {
-        saveAnimal,
+        createPetPost,
         getAnimal,
         getCenterAnimals,
         getAnimal,
