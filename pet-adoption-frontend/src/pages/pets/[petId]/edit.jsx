@@ -171,16 +171,6 @@ export default function EditPetPage() {
                 <TextField
                   required
                   fullWidth
-                  label="State"
-                  name="state"
-                  size="small"
-                  margin="dense"
-                  value={formData.state}
-                  onChange={handleChange}
-                />
-                <TextField
-                  required
-                  fullWidth
                   label="Description"
                   name="description"
                   size="small"
