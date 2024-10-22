@@ -11,6 +11,7 @@ const userService = () => {
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
+        console.log("API URL being used:", apiUrl);  // Log the URL for debugging
         const response = await fetch(`${apiUrl}/api/login`, {
             method: "POST",
             headers: {
@@ -78,6 +79,8 @@ const userService = () => {
     };
 
     const registerOwner = async (formData, profilePic) => {
+        console.log('registerOwner function called')
+        console.log(`apiUrl: ${apiUrl}`)
         const response = await fetch(`${apiUrl}/api/owners`, {
             method: "POST",
             headers: {
