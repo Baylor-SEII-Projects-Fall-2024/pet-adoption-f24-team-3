@@ -47,7 +47,7 @@ export default function HomePage() {
                 textAlign: "center",
                 textShadow: "#000 2px 1px 5px",
               }}
-            >Find Your New Best Friend!</Typography>
+            >Adopt Your New Best Friend!</Typography>
           </Box>
 
           <Stack direction="column"
