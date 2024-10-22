@@ -5,7 +5,8 @@ import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/materia
 import userService from "@/utils/services/userService";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
 import imageService from "@/utils/services/imageService";
@@ -111,7 +112,7 @@ export default function CreateEventPage() {
                     <TextField required multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div style={{ marginBottom: '8px', marginTop: '6px' }}>
-                            <DatePicker
+                            <DateTimePicker
                                 required
                                 label="Start Date"
                                 value={formData.dateStart ? dayjs(formData.dateStart) : null}
@@ -120,7 +121,7 @@ export default function CreateEventPage() {
                             />
                         </div>
                         <div style={{ marginBottom: '8px' }}>
-                            <DatePicker
+                            <DateTimePicker
                                 required
                                 label="End Date"
                                 value={formData.dateEnd ? dayjs(formData.dateEnd) : null}

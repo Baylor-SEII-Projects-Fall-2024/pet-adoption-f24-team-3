@@ -5,7 +5,7 @@ const eventService = () => {
     const { uploadEventThumbnail } = imageService();
 
     const createEvent = async (formData, centerId) => {
-        const response = await fetch(`${apiUrl}/api/events`, {
+        const response = await fetch(`${apiUrl}/api/events/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
