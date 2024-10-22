@@ -75,7 +75,7 @@ const animalService = () => {
         const response = await fetch(`${apiUrl}/api/update/pet/${petId}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/jsgiton"
             },
             body: JSON.stringify({
                 name: formData.name,

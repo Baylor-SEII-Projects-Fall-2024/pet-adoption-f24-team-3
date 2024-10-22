@@ -27,6 +27,41 @@ export default function EditPetPage() {
     weight: "",
   });
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleProfileImageUpload = (e) => {
+    setProfileImage(e.target.files[0]);
+  }
+
+  //handle what happens on sumbmit. Does not reroute on success.
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await updatePet(formData, profileImage, petId)
+        .then((petId) => {
+          //if user id is not null, that is handled in the hook below
+          if (petId !== null) {
+            let elm = document.getElementById("errorLabel");
+            elm.innerHTML = "Pet Settings Saved!";
+            elm.style = "color: green;"
+          }
+          else {
+            let elm = document.getElementById("errorLabel");
+            elm.innerHTML = "An error occured, try again!";
+            elm.style = "color: red;"
+          }
+        })
+
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("An error occured saving data.");
+    }
+  };
 
   if(getAnimal(petId).centerId != currentUserId){
     return
