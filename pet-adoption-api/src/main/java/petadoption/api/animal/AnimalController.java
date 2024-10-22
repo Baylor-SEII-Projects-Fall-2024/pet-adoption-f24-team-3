@@ -26,7 +26,6 @@ public class AnimalController {
     public List<Animal> findAllAnimals() {
         return animalService.findAllAnimals();
     }
-
     @GetMapping("/{id}")
     public Animal findAnimalBy(@PathVariable Long id) {
         var animal = animalService.findAnimal(id).orElse(null);
