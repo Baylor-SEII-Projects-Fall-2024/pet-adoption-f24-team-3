@@ -80,4 +80,12 @@ public class AnimalsTest {
             fail("Exception thrown" + e.getMessage());
         }
     }
+
+    @Test
+    public void testUpdateAnimal(){
+        animal.setName("newName");
+        animalService.updateAnimal(animal, animal.getId());
+        assertFalse(animalService.findAnimal(animal.getId()).isEmpty());
+        assertEquals(animal, animalService.findAnimal(animal.getId()).get());
+    }
 }
