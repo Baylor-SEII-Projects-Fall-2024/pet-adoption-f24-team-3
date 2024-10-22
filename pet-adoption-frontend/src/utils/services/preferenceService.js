@@ -1,7 +1,9 @@
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const preferenceService = () => {
 
     const getPreferences = async (userId) => {
-        const response = await fetch(`http://localhost:8080/api/preferences/${userId}`, {
+        const response = await fetch(`${apiUrl}/api/preferences/${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -19,7 +21,7 @@ const preferenceService = () => {
     };
 
     const updatePreferences = async (formData, userid) => {
-        const response = await fetch(`http://localhost:8080/api/update/preferences/${userid}`, {
+        const response = await fetch(`${apiUrl}/api/update/preferences/${userid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
