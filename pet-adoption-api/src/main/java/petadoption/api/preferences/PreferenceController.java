@@ -11,6 +11,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
 public class PreferenceController {
     @Autowired
     private PreferenceService preferenceService;

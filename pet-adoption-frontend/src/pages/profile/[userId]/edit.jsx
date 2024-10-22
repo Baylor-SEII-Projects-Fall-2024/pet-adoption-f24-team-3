@@ -70,7 +70,7 @@ export default function EditProfilePage() {
     if (userId) {
       const fetchUserInfo = async () => {
         try {
-          const result = await getOwnerInfo(userId);
+          const result = await getUserInfo(userId);
           if (result !== null) {
             setUserInfo(result);
             setFormData((prevState) => ({

@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
 @RequestMapping("/api/images")
 public class ImageController {
     @Autowired

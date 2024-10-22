@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
 public class EventController {
     @Autowired
     private EventService eventService;
