@@ -93,6 +93,6 @@ public class AnimalService {
             animal.setSize(newAnimal.getSize());
         }
 
-        return animalRepository.save(newAnimal).getId();
+        return animalRepository.save(animal).getId();
     }
 }
