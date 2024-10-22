@@ -2,6 +2,8 @@
 # Author: Icko Iben
 # Date Created: 09/17/2024
 #
+# Modified:       10/21/2024
+#   - Remove action on pull request so we don't deploy changes we don't want
 # Modified:       09/24/2024
 #   - File header added
 #   - Add ickoxii/cicd-init for testing
@@ -14,6 +16,8 @@
 #
 # CI Docker image
 # https://github.com/actions/starter-workflows/blob/main/ci/docker-image.yml
+#
+# TODO: Create another github action that can validate our code on pull requests
 
 name: Build & Deploy
 
@@ -21,10 +25,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-
 
 jobs:
   build-and-deploy:
