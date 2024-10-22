@@ -11,7 +11,6 @@ import {
   Box,
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 import Loading from "@/components/Loading";
 import userService from "@/utils/services/userService";
 import CenterCard from "@/components/CenterCard";
