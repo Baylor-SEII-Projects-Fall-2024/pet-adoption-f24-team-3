@@ -1,11 +1,13 @@
 package petadoption.api.animal;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import petadoption.api.event.Event;
 import petadoption.api.images.ImageService;
 
 import java.util.List;
@@ -47,5 +49,21 @@ public class AnimalService {
             imageService.deleteAnimalPicture(animalId);
         }
         animalRepository.delete(deletedAnimal);
+    }
+
+    public Long updateAnimal(Animal newAnimal, Long id) {
+        Animal animal = findAnimal(id).orElseThrow(EntityNotFoundException::new);
+        animal.setName(newAnimal.getName());
+        animal.setPicPath(newAnimal.getPicPath());
+        animal.setAge(newAnimal.getAge());
+        animal.setSpecies(newAnimal.getSpecies());
+        animal.setBreed(newAnimal.getBreed());
+        animal.setSex(newAnimal.getSex());
+        animal.setWeight(newAnimal.getWeight());
+        animal.setHeight(newAnimal.getHeight());
+        animal.setAgeClass(newAnimal.getAgeClass());
+        animal.setDescription(newAnimal.getDescription());
+        animal.setSize(newAnimal.getSize());
+        return animalRepository.save(newAnimal).getId();
     }
 }

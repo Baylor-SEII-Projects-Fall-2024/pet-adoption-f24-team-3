@@ -6,9 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
+import petadoption.api.user.dtos.OwnerDto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -31,6 +34,18 @@ public class AnimalController {
             log.warn("Animal not found");
         }
         return animal;
+    }
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Map<String, Object>> updateAnimal(@RequestBody Animal animalDto, @PathVariable Long id) {
+        Long updatedPet = animalService.updateAnimal(animalDto, id);
+        Map<String, Object>  response = new HashMap<>();
+        if (updatedPet!=null) {
+            response.put("petid", updatedPet);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Update failed.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+        }
     }
 
     @GetMapping("/recommend")
