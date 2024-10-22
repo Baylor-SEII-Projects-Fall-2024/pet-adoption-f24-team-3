@@ -164,7 +164,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/centers/{id}/details")
     public ResponseEntity<Map<String, Object>> getCenterDetails(@PathVariable Long id) {
         Map<String, Object> response = userService.getCenterDetails(id);

@@ -26,7 +26,6 @@ public class PreferenceController {
         return preferenceService.findAllPreferences();
     }
 
-    @CrossOrigin("http://localhost:3000")
     @GetMapping("/preferences/{userId}")
     public Preference findPreferenceByUserId(@PathVariable Long userId) {
         var preference = preferenceService.findPreferenceByOwnerId(userId).orElse(null);
@@ -36,7 +35,6 @@ public class PreferenceController {
         return preference;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/update/preferences/{id}")
     public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody PreferenceDto preferenceDto, @PathVariable Long id) {
         try {
@@ -51,7 +49,6 @@ public class PreferenceController {
         }
     }
 
-    @CrossOrigin("http://localhost:3000")
     @PostMapping("/preferences/{potentialOwnerId}")
     public Preference savePreference(@PathVariable Long potentialOwnerId, @RequestBody Preference preference)
             throws Exception {
