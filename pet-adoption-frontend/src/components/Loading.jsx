@@ -1,24 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 
-import {
-    Box, Typography
-} from "@mui/material";
-
+import { Box, Typography } from "@mui/material";
 
 export default function Loading(props) {
-    const { doneLoading } = props;
+  const { doneLoading, page } = props;
 
-    if (doneLoading) return;
+  if (doneLoading || page < 2) return;
 
-    return (
-        <Box
-            sx={{
-                width: "100%",
-                textAlign: "center",
-                height: "200px",
-            }}
-        >
-            <Typography variant="h4" color="text.secondary">Loading...</Typography>
-        </Box>
-    );
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        textAlign: "center",
+        height: "200px",
+      }}
+    >
+      <Typography variant="h4" color="text.secondary">
+        Loading...
+      </Typography>
+    </Box>
+  );
 }

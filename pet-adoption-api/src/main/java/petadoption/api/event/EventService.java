@@ -3,6 +3,8 @@ package petadoption.api.event;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import petadoption.api.animal.Animal;
 import petadoption.api.images.ImageService;
@@ -40,6 +42,11 @@ public class EventService {
         return eventRepository.save(getEvent).getId();
     }
     public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
+
+    public List<Event> paginateEvents(Integer pageSize, Integer pageNumber) {
+        Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
+        return eventRepository.findAll(pagingRequest).getContent();
+    }
     public void deleteEvent(Long eventId) throws Exception{
         Event deletedEvent = eventRepository.findById(eventId).orElse(null);
         if(deletedEvent == null){

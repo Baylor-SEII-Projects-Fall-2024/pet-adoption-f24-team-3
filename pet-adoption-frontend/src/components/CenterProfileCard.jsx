@@ -12,7 +12,6 @@ import {
 import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
 export default function CenterProfileCard(props) {
   const propsNotInInfo = [
     "bannerPicPath",
@@ -116,8 +115,9 @@ export default function CenterProfileCard(props) {
                         return (
                           <Grid item xs={12} sm={4} md={4} key={key}>
                             <Typography variant="body1" color="textSecondary">
-                              {`${camelCaseToReadable(key)}: ${value === null ? "N/A" : value
-                                }`}
+                              {`${camelCaseToReadable(key)}: ${
+                                value === null ? "N/A" : value
+                              }`}
                             </Typography>
                           </Grid>
                         );
@@ -135,7 +135,7 @@ export default function CenterProfileCard(props) {
             width: "100%",
           }}
         >
-          <Typography variant="body1" align="left">
+          <Typography variant="body1" align="left" color="textSecondary">
             {centerInfo.description}
           </Typography>
         </Box>
