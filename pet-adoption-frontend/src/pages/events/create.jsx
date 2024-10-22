@@ -2,19 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
-import userService from "@/utils/services/userService";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
-import imageService from "@/utils/services/imageService";
 
 
 export default function CreateEventPage() {
     const router = useRouter();
     const { createEvent } = eventService();
-    const { uploadEventThumbnail } = imageService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
@@ -23,7 +20,7 @@ export default function CreateEventPage() {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
-    const [thumbnailPath, setThumbnailPath] = useState(null);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
 
 
@@ -54,7 +51,7 @@ export default function CreateEventPage() {
     };
 
     const handleThumbnailUpload = (e) => {
-        setThumbnailPath(e.target.files[0]);
+        setThumbnailFile(e.target.files[0]);
     }
 
     const handleSubmit = async (e) => {
@@ -78,16 +75,11 @@ export default function CreateEventPage() {
 
         try {
             setIsUploading(true);
-            await createEvent(formData, currentUserId)
+            await createEvent(formData, thumbnailFile, currentUserId)
                 .then(async (result) => {
                     if (result !== null) {
-                        if (thumbnailPath != null) {
-                            await uploadEventThumbnail(thumbnailPath, result.eventID);
-                        }
                         setIsUploading(false);
-                        console.log(isUploading);
-                        alert("Event Created")
-                        router.push("/events")
+                        router.push(`/events/${result.eventID}`)
                     }
                 });
 

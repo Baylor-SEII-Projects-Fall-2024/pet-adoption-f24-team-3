@@ -4,8 +4,9 @@ import imageService from './imageService';
 const eventService = () => {
     const { uploadEventThumbnail } = imageService();
 
-    const createEvent = async (formData, centerId) => {
-        const response = await fetch(`${apiUrl}/api/events`, {
+    const createEvent = async (formData, thumbnailImage, centerId) => {
+        console.log("Creating new event:", formData, centerId, thumbnailImage);
+        const response = await fetch(`${apiUrl}/api/events/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -16,15 +17,19 @@ const eventService = () => {
                 name: formData.name,
                 description: formData.description,
                 dateStart: formData.dateStart,
-                dateEnd: formData.dateEnd,
-                thumbnailPath: formData.thumbNail
+                dateEnd: formData.dateEnd
             })
         });
 
         const result = await response.json();
         if (response.ok) {
-            // saveCurrentUserToRedux(result.userid); Don't think these are needed
-            // setAuthenticationCookies(result.userid);
+            if (thumbnailImage != null) {
+                const thumbnailResult = uploadEventThumbnail(thumbnailImage, result.eventID);
+                if (thumbnailResult == null) {
+                    console.log("Error uploading event thumbnail!");
+                    return null;
+                }
+            }
             return result;
         } else {
             alert(`Event creation failed: ${result.message}`);
