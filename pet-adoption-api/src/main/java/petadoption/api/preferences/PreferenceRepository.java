@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface PreferenceRepository extends JpaRepository<Preference, Long> {
 
     public Optional<Preference> findByPotentialOwnerId(Long potentialOwnerId);
+    void deleteAll();
 }

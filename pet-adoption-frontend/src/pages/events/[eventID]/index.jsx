@@ -171,10 +171,16 @@ export default function ViewEventPage() {
                                 </Typography>
                               </>
                             ) : (
+                              <>
                               <Typography>
-                                {format(new Date(event.dateStart), "MMM dd, yyyy")} -{" "}
-                                {format(new Date(event.dateEnd), "MMM dd, yyyy")}
+                                Beginning:{" "}{format(new Date(event.dateStart), "MMM dd, yyyy")} -{" "}
+                                {format(new Date(event.dateStart), "h:mm a")}
                               </Typography>
+                              <Typography>
+                                Ending: {" "}{format(new Date(event.dateEnd), "MMM dd, yyyy")} -{" "}
+                                {format(new Date(event.dateEnd), "h:mm a")}
+                              </Typography>
+                              </>
                             ))}
                         </td>
 
