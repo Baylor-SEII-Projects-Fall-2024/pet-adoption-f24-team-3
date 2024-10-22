@@ -11,7 +11,7 @@ import petadoption.api.user.UserService;
  * Just using this for testing.
  */
 
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = {"http://localhost:3000","http://34.69.88.79:3000"})
 @RestController
 public class ClearDataController {
 
