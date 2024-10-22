@@ -36,15 +36,15 @@ public class AnimalController {
         return animal;
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateAnimal(@RequestBody Animal animal, @PathVariable Long id) {
+        public ResponseEntity<Object> updateAnimal(@RequestBody Animal animal, @PathVariable Long id) {
         Long updatedPet = animalService.updateAnimal(animal, id);
-        Map<String, Object>  response = new HashMap<>();
+//        Map<String, Object>  response = new HashMap<>();
         if (updatedPet!=null) {
-            response.put("petid", updatedPet);
-            return ResponseEntity.ok(response);
+//            response.put("petid", updatedPet);
+            return ResponseEntity.ok(updatedPet);
         } else {
-            response.put("message", "Update failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as JSON
+//            response.put("message", "Update failed.");
+            return new ResponseEntity<Object>(null, HttpStatus.BAD_REQUEST);// Return error message as JSON
         }
     }
 

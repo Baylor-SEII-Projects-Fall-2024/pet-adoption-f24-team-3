@@ -85,7 +85,6 @@ const animalService = () => {
                 breed: formData.breed,
                 sex: formData.sex,
                 description: formData.description,
-                picPath: formData.picPath,
                 size: formData.size,
                 ageClass: formData.ageClass,
                 height: formData.height,
@@ -115,7 +114,7 @@ const animalService = () => {
         getAnimal,
         deleteAnimal,
         getRecommendedAnimals,
-        updateAnimal
+        updateAnimal,
     };
 
 };
