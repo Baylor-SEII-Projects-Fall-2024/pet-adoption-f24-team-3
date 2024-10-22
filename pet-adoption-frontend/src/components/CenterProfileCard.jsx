@@ -13,17 +13,8 @@ import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CenterProfileCard(props) {
-  const propsNotInInfo = [
-    "bannerPicPath",
-    "profilePicPath",
-    "name",
-    "password",
-    "id",
-    "description",
-  ];
   const router = useRouter();
   const { centerInfo, centerId, currentUserId } = props;
-  const { camelCaseToReadable } = formatter();
 
   const handleEditInfoClick = () => {
     router.push(`/centers/${centerId}/edit`);
@@ -46,10 +37,11 @@ export default function CenterProfileCard(props) {
           sx={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             width: "100%",
           }}
         >
+          <Typography variant="h4">{centerInfo.name}</Typography>
           {/* Display edit button if user is viewing their own page */}
           {String(centerId) === String(currentUserId) && (
             <Button
@@ -85,7 +77,6 @@ export default function CenterProfileCard(props) {
               width: "40%",
             }}
           >
-            <Typography variant="h4">{centerInfo.name}</Typography>
             {/* Display centers avatar */}
             <Avatar
               sx={{
@@ -109,21 +100,15 @@ export default function CenterProfileCard(props) {
               {/* Info */}
               {centerInfo && (
                 <>
-                  <Grid container spacing={2}>
-                    {Object.entries(centerInfo).map(([key, value]) => {
-                      if (!propsNotInInfo.includes(key)) {
-                        return (
-                          <Grid item xs={12} sm={4} md={4} key={key}>
-                            <Typography variant="body1" color="textSecondary">
-                              {`${camelCaseToReadable(key)}: ${
-                                value === null ? "N/A" : value
-                              }`}
-                            </Typography>
-                          </Grid>
-                        );
-                      }
-                    })}
-                  </Grid>
+                  <Typography variant="h5" >About</Typography>
+                  <Typography variant="body1" align="left">
+                    {centerInfo.description}
+                  </Typography>
+                  <br />
+                  <Typography variant="h5" >Contact Information</Typography>
+                  <Typography variant="body1" >Email: {centerInfo.emailAddress} </Typography>
+                  <Typography variant="body1" >Address: {centerInfo.address}, {centerInfo.city}, {centerInfo.state}, {centerInfo.zipCode} </Typography>
+
                 </>
               )}
             </CardContent>
@@ -135,9 +120,7 @@ export default function CenterProfileCard(props) {
             width: "100%",
           }}
         >
-          <Typography variant="body1" align="left" color="textSecondary">
-            {centerInfo.description}
-          </Typography>
+
         </Box>
       </Card>
     </Box>
