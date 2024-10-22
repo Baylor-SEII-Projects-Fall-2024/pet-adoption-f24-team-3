@@ -79,6 +79,8 @@ const userService = () => {
     };
 
     const registerOwner = async (formData, profilePic) => {
+        console.log('registerOwner function called')
+        console.log(`apiUrl: ${apiUrl}`)
         const response = await fetch(`${apiUrl}/api/owners`, {
             method: "POST",
             headers: {
