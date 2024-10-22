@@ -16,7 +16,7 @@ import petadoption.api.user.dtos.PreferenceDto;
 @Log4j2
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 public class PreferenceController {
     @Autowired
     private PreferenceService preferenceService;
@@ -36,7 +36,8 @@ public class PreferenceController {
     }
 
     @PostMapping("/update/preferences/{id}")
-    public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody PreferenceDto preferenceDto, @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody PreferenceDto preferenceDto,
+            @PathVariable Long id) {
         try {
             Preference updatedPreference = preferenceService.updatePreference(id, preferenceDto);
             Map<String, Object> response = new HashMap<>();

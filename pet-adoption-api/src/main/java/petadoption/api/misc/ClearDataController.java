@@ -11,7 +11,7 @@ import petadoption.api.user.UserService;
  * Just using this for testing.
  */
 
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 @RestController
 public class ClearDataController {
 
@@ -27,9 +27,11 @@ public class ClearDataController {
         return "User table emptied";
     }
 
-     /* If you cant delete preferences table, you may have to delete the users table first
-      * because of foreign key shenanigans
-      * */
+    /*
+     * If you cant delete preferences table, you may have to delete the users table
+     * first
+     * because of foreign key shenanigans
+     */
     @PostMapping("/clear-table-preferences")
     public String clearPreferences() {
         preferenceService.clearData();
