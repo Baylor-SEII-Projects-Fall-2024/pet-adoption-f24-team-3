@@ -2,8 +2,9 @@ import React from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography, Box } from '@mui/material'
+import { Button, Card, CardContent, Stack, Typography, Box, Link } from '@mui/material'
 import animalService from '@/utils/services/animalService';
+import userService from '@/utils/services/userService';
 import formatter from '@/utils/formatter';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -14,9 +15,11 @@ export default function ViewPetPage() {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
   const { getAnimal, deleteAnimal } = animalService();
+  const { getCenterDetails } = userService();
   const { formatSize, formatSex } = formatter();
 
   const [animal, setAnimal] = React.useState(null);
+  const [adoptionCenter, setAdoptionCenter] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
 
@@ -63,7 +66,28 @@ export default function ViewPetPage() {
     }
   }, [petId]);
 
-  if ((isLoading == true || !animal) && !isError) {
+  React.useEffect(() => {
+    const fetchCenterInfo = async () => {
+      if (animal) {
+        try {
+          const result = await getCenterDetails(animal.centerId);
+          if (result != null) {
+            setAdoptionCenter(result);
+          } else {
+            console.error(`Error loading center ${animal.centerId}:`, result);
+            setIsError(true);
+          }
+        } catch (error) {
+          console.error(`Error loading center ${animal.centerId}:`, error);
+          setIsError(true);
+        }
+      }
+    };
+
+    fetchCenterInfo();
+  }, [animal]);
+
+  if ((isLoading == true || !animal || !adoptionCenter) && !isError) {
     return (
       <>
         <Head>
@@ -120,7 +144,8 @@ export default function ViewPetPage() {
                 />
                 <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
                   <Typography variant='h3' >{animal.name}</Typography>
-                  <br></br>
+
+                  <Typography variant='h5'>Quick Facts</Typography>
                   <table>
                     <tbody>
                       <tr>
@@ -153,6 +178,7 @@ export default function ViewPetPage() {
                       </tr>
                     </tbody>
                   </table>
+
                 </Stack>
                 {currentUserId == animal.centerId && (
                   <Box
@@ -176,7 +202,13 @@ export default function ViewPetPage() {
                   mt: "30px"
                 }}
               >
+                <Typography variant='h5'>More Info</Typography>
                 <Typography>{animal.description}</Typography>
+                <br />
+                <Typography variant='h5'>Location</Typography>
+                <Link onClick={() => router.push(`/centers/${adoptionCenter.id}`)} color="secondary">
+                  {adoptionCenter.name}</Link>
+                <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
               </Box>
 
 

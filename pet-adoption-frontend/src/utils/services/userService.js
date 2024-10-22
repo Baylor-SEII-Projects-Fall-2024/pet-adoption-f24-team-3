@@ -214,6 +214,23 @@ const userService = () => {
         }
     }
 
+    const getCenterDetails = async (centerId) => {
+        const response = await fetch(`${apiUrl}/api/centers/${centerId}/details`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get center details failed: ${result.message}`);
+            return null;
+        }
+    }
+
     const getCentersByPage = async (pageSize, pageNumber) => {
         const response = await fetch(`${apiUrl}/api/centers/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: "GET",
@@ -316,6 +333,7 @@ const userService = () => {
         updateOwner,
         updateCenter,
         authenticateFromCookie,
+        getCenterDetails,
     };
 
 };
