@@ -3,7 +3,7 @@ FROM node:20 AS build
 WORKDIR /build
 COPY . .
 
-RUN yarn install
+RUN yarn install --network-timeout 300000
 RUN yarn run build
 
 # Copy the build artifacts

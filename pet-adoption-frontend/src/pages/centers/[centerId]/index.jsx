@@ -10,6 +10,7 @@ import {
   CardContent,
   AppBar,
   Grid,
+  Button,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
 import animalService from "@/utils/services/animalService";
@@ -22,7 +23,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
-  const { pets, events, router } = props;
+  const { pets, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -48,10 +49,45 @@ function PetsAndEventsTabs(props) {
         indicatorColor="secondary"
         aria-label="pets and events tabs"
       >
-        <Tab value="one" label="Events" />
-        <Tab value="two" label="Pets" />
+        <Tab value="one" label="Availible Pets" />
+        <Tab value="two" label="Upcoming Events" />
       </Tabs>
       <TabPanel value={value} index="one">
+        {isLoggedInCenter && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => router.push(`/pets/new`)}
+            sx={{ width: 200, mb: "30px" }}
+          >
+            Post New Pet
+          </Button>
+        )}
+        <Grid container spacing={5}>
+          {pets.map((pet) => (
+
+            <Grid item xs={11} sm={5} md={3} key={pet.id}>
+              <Box
+                onClick={() => handlePetClick(pet.id)}
+                sx={{ cursor: "pointer" }}
+              >
+                <PetCard pet={pet} />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </TabPanel>
+      <TabPanel value={value} index="two">
+        {isLoggedInCenter && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => router.push(`/events/create`)}
+            sx={{ width: 200, mb: "30px" }}
+          >
+            Post New Event
+          </Button>
+        )}
         <Grid container spacing={5}>
           {events.map((event) => (
             <Grid item xs={11} sm={5} md={3} key={event.id}>
@@ -65,20 +101,7 @@ function PetsAndEventsTabs(props) {
           ))}
         </Grid>
       </TabPanel>
-      <TabPanel value={value} index="two">
-        <Grid container spacing={5}>
-          {pets.map((pet) => (
-            <Grid item xs={11} sm={5} md={3} key={pet.id}>
-              <Box
-                onClick={() => handlePetClick(pet.id)}
-                sx={{ cursor: "pointer" }}
-              >
-                <PetCard pet={pet} />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </TabPanel>
+
     </Box>
   );
 }
@@ -198,7 +221,12 @@ export default function CenterPage() {
         centerId={centerId}
         currentUserId={currentUserId}
       />
-      <PetsAndEventsTabs pets={pets} events={events} router={router} />
+      <PetsAndEventsTabs
+        pets={pets}
+        events={events}
+        router={router}
+        isLoggedInCenter={currentUserId == centerId}
+      />
     </Box>
   );
 }
