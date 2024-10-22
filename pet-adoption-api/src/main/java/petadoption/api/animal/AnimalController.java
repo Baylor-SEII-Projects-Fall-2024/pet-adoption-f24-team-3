@@ -35,7 +35,7 @@ public class AnimalController {
         }
         return animal;
     }
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateAnimal(@RequestBody Animal animalDto, @PathVariable Long id) {
         Long updatedPet = animalService.updateAnimal(animalDto, id);
         Map<String, Object>  response = new HashMap<>();
