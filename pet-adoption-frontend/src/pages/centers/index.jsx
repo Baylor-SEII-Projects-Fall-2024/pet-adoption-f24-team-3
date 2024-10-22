@@ -111,7 +111,14 @@ export default function CentersPage() {
               dataLength={centerData.length}
               next={fetchMoreData}
               hasMore={hasMore}
-              loader={<Loading doneLoading={!hasMore} page={page} />}
+              loader={
+                <Loading
+                  doneLoading={!hasMore}
+                  page={
+                    page + 1
+                  } /* Adding one since first page is more like 1.2 pages */
+                />
+              }
             >
               <Grid container spacing={2} sx={{ minHeight: "50px" }}>
                 {centerData.map((center) => (
