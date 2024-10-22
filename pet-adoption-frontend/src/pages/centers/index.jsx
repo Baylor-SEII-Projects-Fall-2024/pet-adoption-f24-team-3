@@ -15,7 +15,7 @@ import Loading from "@/components/Loading";
 import userService from "@/utils/services/userService";
 import CenterCard from "@/components/CenterCard";
 
-const quantityPerPage = 4;
+const quantityPerPage = 8;
 
 export default function CentersPage() {
   const router = useRouter();

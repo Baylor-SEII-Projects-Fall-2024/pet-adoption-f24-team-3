@@ -17,7 +17,7 @@ import Loading from "@/components/Loading";
 import eventService from "@/utils/services/eventService";
 import EventCard from "@/components/EventCard";
 
-const quantityPerPage = 8;
+const quantityPerPage = 12;
 
 export default function EventsPage() {
   const router = useRouter();

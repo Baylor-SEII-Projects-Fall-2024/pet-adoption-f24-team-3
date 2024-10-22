@@ -17,7 +17,7 @@ import Loading from "@/components/Loading";
 import animalService from "@/utils/services/animalService";
 import PetCard from "@/components/PetCard";
 
-const quantityPerPage = 8;
+const quantityPerPage = 12;
 
 export default function PetsPage() {
   const router = useRouter();
