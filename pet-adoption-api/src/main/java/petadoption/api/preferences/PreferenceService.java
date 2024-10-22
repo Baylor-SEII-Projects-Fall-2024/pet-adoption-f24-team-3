@@ -22,7 +22,10 @@ public class PreferenceService {
     @Autowired
     UserService userService;
 
-    public List<Preference> findAllPreferences(){ return preferenceRepository.findAll();}
+    public List<Preference> findAllPreferences() {
+        return preferenceRepository.findAll();
+    }
+
     public Optional<Preference> findPreference(Long preferenceId) {
         return preferenceRepository.findById(preferenceId);
     }
@@ -59,12 +62,11 @@ public class PreferenceService {
     public Preference savePreference(Long potentialOwnerId, Preference preference) throws Exception {
         PotentialOwner owner = userService.findPotentialOwner(potentialOwnerId).orElse(null);
 
-        if(owner == null){
+        if (owner == null) {
             throw new Exception("Owner Not Found");
         }
 
         preference.setPotentialOwnerId(owner.getId());
-
 
         Preference savedPreference = preferenceRepository.save(preference);
 

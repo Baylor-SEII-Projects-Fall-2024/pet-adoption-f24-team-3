@@ -7,8 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.user.dtos.CenterDto;
+import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -118,4 +120,93 @@ public class UserTests {
         assertTrue(passwordEncoder.matches(centerDto.getPassword(), foundUser.getPassword()));
 
     }
+
+    @Test
+    void testGetCenterDetails(){
+        AdoptionCenter adoptionCenter = new AdoptionCenter();
+        adoptionCenter.accountType = "OWNER";
+        adoptionCenter.emailAddress = "example@example.com";
+        adoptionCenter.password = "password";
+        adoptionCenter.setAddress("Old Address");
+        adoptionCenter.setCity("Old City");
+        adoptionCenter.setState("Old State");
+        adoptionCenter.setZipCode("1234");
+        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
+        Long id = savedUser.id;
+
+        Map<String, Object> centerDetails = userService.getCenterDetails(id);
+        assertNotNull(centerDetails);
+        assertEquals(id, centerDetails.get("id"));
+        assertEquals(adoptionCenter.getAddress(), centerDetails.get("address"));
+        assertEquals(adoptionCenter.getName(), centerDetails.get("name"));
+    }
+
+    @Test
+    void testRegisterOwner(){
+        OwnerDto ownerDto = new OwnerDto();
+        ownerDto.setAccountType("OWNER");
+        ownerDto.setEmailAddress("example@example.com");
+        ownerDto.setPassword("Newpassword");
+        ownerDto.setNameFirst("New First");
+        ownerDto.setNameLast("New Last");
+
+        Long newID = userService.registerOwner(ownerDto);
+
+        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
+
+        assertNotNull(foundUser);
+        assertEquals(ownerDto.getEmailAddress(), foundUser.emailAddress);
+        assertTrue(passwordEncoder.matches(ownerDto.getPassword(), foundUser.getPassword()));
+        assertEquals(ownerDto.getNameFirst(), foundUser.getNameFirst());
+        assertEquals(ownerDto.getNameLast(), foundUser.getNameLast());
+
+    }
+
+    @Test
+    void testRegisterCenter(){
+        CenterDto centerDto = new CenterDto();
+        centerDto.setAccountType("CENTER");
+        centerDto.setEmailAddress("newEx@example.com");
+        centerDto.setPassword("Newpassword");
+        centerDto.setAddress("New place");
+        centerDto.setCity("New city");
+        centerDto.setState("New State");
+        centerDto.setZipCode("5678");
+
+        Long newID = userService.registerCenter(centerDto);
+
+        assertNotNull(newID);
+        AdoptionCenter foundUser = adoptionCenterRepository.findById(newID).orElse(null);
+        assertNotNull(foundUser);
+        assertEquals(centerDto.getEmailAddress(), foundUser.emailAddress);
+        assertEquals(centerDto.getAddress(), foundUser.getAddress());
+        assertEquals(centerDto.getCity(), foundUser.getCity());
+
+        assertTrue(passwordEncoder.matches(centerDto.getPassword(), foundUser.getPassword()));
+
+
+    }
+
+    @Test
+    void testLogin(){
+        OwnerDto ownerDto = new OwnerDto();
+        ownerDto.setAccountType("OWNER");
+        ownerDto.setEmailAddress("example@example.com");
+        ownerDto.setPassword("Newpassword");
+        ownerDto.setNameFirst("New First");
+        ownerDto.setNameLast("New Last");
+
+        Long newID = userService.registerOwner(ownerDto);
+        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
+
+        LoginDto loginDto = new LoginDto();
+        loginDto.setEmailAddress(ownerDto.getEmailAddress());
+
+        assert foundUser != null;
+        loginDto.setPassword(ownerDto.getPassword());
+
+        assertNotEquals( -1, userService.loginUser(loginDto));
+        assertEquals(foundUser.id, userService.loginUser(loginDto));
+    }
+
 }

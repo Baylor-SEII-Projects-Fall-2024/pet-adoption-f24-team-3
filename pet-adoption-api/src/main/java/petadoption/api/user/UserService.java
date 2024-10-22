@@ -4,11 +4,15 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import petadoption.api.user.dtos.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
@@ -24,13 +28,25 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<User> findAllUsers(){ return userRepository.findAll();}
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
     public Optional<User> findUser(Long userId) {
         return userRepository.findById(userId);
     }
-    public Optional<AdoptionCenter> findAdoptionCenter(Long userId) {return adoptionCenterRepository.findById(userId);}
-    public Optional<PotentialOwner> findPotentialOwner(Long userId) {return potentialOwnerRepository.findById(userId);}
-    public Optional<User> findUserByEmail(String userEmail){return userRepository.findUserByEmailAddress(userEmail);}
+
+    public Optional<AdoptionCenter> findAdoptionCenter(Long userId) {
+        return adoptionCenterRepository.findById(userId);
+    }
+
+    public Optional<PotentialOwner> findPotentialOwner(Long userId) {
+        return potentialOwnerRepository.findById(userId);
+    }
+
+    public Optional<User> findUserByEmail(String userEmail) {
+        return userRepository.findUserByEmailAddress(userEmail);
+    }
 
     public Long registerOwner(OwnerDto ownerDto) {
         // Encode password using BCrypt
@@ -71,19 +87,19 @@ public class UserService {
             String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
             updateOwner.setPassword(encodedPassword);
         }
-        if(ownerDto.getEmailAddress() != null && !ownerDto.getEmailAddress().isEmpty()) {
+        if (ownerDto.getEmailAddress() != null && !ownerDto.getEmailAddress().isEmpty()) {
             updateOwner.setEmailAddress(ownerDto.getEmailAddress());
         }
-        if(ownerDto.getProfilePicPath() != null && !ownerDto.getProfilePicPath().isEmpty()) {
+        if (ownerDto.getProfilePicPath() != null && !ownerDto.getProfilePicPath().isEmpty()) {
             updateOwner.setProfilePicPath(ownerDto.getProfilePicPath());
         }
-        if(ownerDto.getAccountType() != null && !ownerDto.getAccountType().isEmpty()) {
+        if (ownerDto.getAccountType() != null && !ownerDto.getAccountType().isEmpty()) {
             updateOwner.setAccountType(ownerDto.getAccountType());
         }
-        if(ownerDto.getNameFirst() != null && !ownerDto.getNameFirst().isEmpty()) {
+        if (ownerDto.getNameFirst() != null && !ownerDto.getNameFirst().isEmpty()) {
             updateOwner.setNameFirst(ownerDto.getNameFirst());
         }
-        if(ownerDto.getNameLast() != null && !ownerDto.getNameLast().isEmpty()) {
+        if (ownerDto.getNameLast() != null && !ownerDto.getNameLast().isEmpty()) {
             updateOwner.setNameLast(ownerDto.getNameLast());
 
         }
@@ -125,7 +141,7 @@ public class UserService {
         return adoptionCenter;
     }
 
-    public Long updateAdoptionCenter(CenterDto centerDto, Long centerID){
+    public Long updateAdoptionCenter(CenterDto centerDto, Long centerID) {
         AdoptionCenter updateCenter = adoptionCenterRepository.findById(centerID)
                 .orElseThrow(() -> new EntityNotFoundException("Adoption center not found with ID: " + centerID));
 
@@ -133,31 +149,31 @@ public class UserService {
             String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
             updateCenter.setPassword(encodedPassword);
         }
-        if(centerDto.getAccountType() != null && !centerDto.getAccountType().isEmpty()) {
+        if (centerDto.getAccountType() != null && !centerDto.getAccountType().isEmpty()) {
             updateCenter.setAccountType(centerDto.getAccountType());
         }
-        if(centerDto.getProfilePicPath() != null) {
+        if (centerDto.getProfilePicPath() != null) {
             updateCenter.setProfilePicPath(centerDto.getProfilePicPath());
         }
-        if(centerDto.getName() != null && !centerDto.getName().isEmpty()) {
+        if (centerDto.getName() != null && !centerDto.getName().isEmpty()) {
             updateCenter.setName(centerDto.getName());
         }
-        if(centerDto.getAddress() != null && !centerDto.getAddress().isEmpty()) {
+        if (centerDto.getAddress() != null && !centerDto.getAddress().isEmpty()) {
             updateCenter.setAddress(centerDto.getAddress());
         }
-        if(centerDto.getCity() != null && !centerDto.getCity().isEmpty()) {
+        if (centerDto.getCity() != null && !centerDto.getCity().isEmpty()) {
             updateCenter.setCity(centerDto.getCity());
         }
-        if(centerDto.getState() != null && !centerDto.getState().isEmpty()) {
+        if (centerDto.getState() != null && !centerDto.getState().isEmpty()) {
             updateCenter.setState(centerDto.getState());
         }
-        if(centerDto.getZipCode() != null && !centerDto.getZipCode().isEmpty()) {
+        if (centerDto.getZipCode() != null && !centerDto.getZipCode().isEmpty()) {
             updateCenter.setZipCode(centerDto.getZipCode());
         }
-        if(centerDto.getEmailAddress() != null && !centerDto.getEmailAddress().isEmpty()) {
+        if (centerDto.getEmailAddress() != null && !centerDto.getEmailAddress().isEmpty()) {
             updateCenter.setEmailAddress(centerDto.getEmailAddress());
         }
-        if(centerDto.getDescription() != null && !centerDto.getDescription().isEmpty()){
+        if (centerDto.getDescription() != null && !centerDto.getDescription().isEmpty()) {
             updateCenter.setDescription(centerDto.getDescription());
         }
 
@@ -177,14 +193,32 @@ public class UserService {
         User user = userOptional.get();
 
         // Compare encoded password with the one provided
-        if(! passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             return -1;
         }
         return user.id;
     }
 
+    public Map<String, Object> getCenterDetails(Long centerId){
+        Map<String, Object> details = new HashMap<>();
+        AdoptionCenter adoptionCenter = adoptionCenterRepository.findById(centerId).orElseThrow(()
+                -> new EntityNotFoundException("Adoption center not found with ID: " + centerId));
+        details.put("id", adoptionCenter.getId());
+        details.put("address", adoptionCenter.getAddress());
+        details.put("city",adoptionCenter.getCity());
+        details.put("state",adoptionCenter.getState());
+        details.put("name", adoptionCenter.getName());
+
+        return details;
+    }
+
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public List<AdoptionCenter> paginateCenters(Integer pageSize, Integer pageNumber) {
+        Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
+        return adoptionCenterRepository.findAll(pagingRequest).getContent();
     }
 
     // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
