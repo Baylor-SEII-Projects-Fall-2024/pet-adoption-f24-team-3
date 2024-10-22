@@ -23,6 +23,28 @@ const imageService = () => {
         }
     };
 
+    // uploads a pet picture
+    // TODO: fix
+    const uploadPetPic = async (imageFile, animalId) => {
+        const formData = new FormData();
+        formData.append("imageFile", imageFile);
+        const response = await fetch(`http://localhost:8080/api/images/animals/${animalId}/profile`, {
+            method: "POST",
+            headers: {
+                //dont need to set for form data    
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Profile Picture upload failed: ${result.message}`);
+            return null;
+        }
+    };
+
     // uploads a center banner picture. Returns True or error
     const uploadCenterBanner = async (imageFile, userId) => {
         const formData = new FormData();
