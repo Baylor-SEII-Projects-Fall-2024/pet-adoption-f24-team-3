@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - jarpletz/uploads-volume
+      - jarpletz/uploads-volume 
 
 jobs:
   build-and-deploy:
