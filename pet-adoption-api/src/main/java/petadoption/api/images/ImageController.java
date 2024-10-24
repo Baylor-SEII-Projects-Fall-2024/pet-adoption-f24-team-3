@@ -1,6 +1,5 @@
 package petadoption.api.images;
 
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -24,7 +23,7 @@ import java.nio.file.Paths;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 @RequestMapping("/api/images")
 public class ImageController {
     @Autowired
@@ -41,21 +40,20 @@ public class ImageController {
 
         User user = userService.findUser(userId).orElse(null);
 
-        if(user == null){
-            log.error("User "+ userId + " not found!");
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        if (user == null) {
+            log.error("User " + userId + " not found!");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        try{
+        try {
             Path filePath = Paths.get(user.getProfilePicPath());
-            byte[] pictureFile =  Files.readAllBytes(filePath);
+            byte[] pictureFile = Files.readAllBytes(filePath);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
-        }
-        catch (NullPointerException e){//if here, the image was not found, return placeholder image
+        } catch (NullPointerException e) {// if here, the image was not found, return placeholder image
             ClassPathResource resource = new ClassPathResource("placeholders/profile_picture.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
@@ -69,15 +67,15 @@ public class ImageController {
 
         AdoptionCenter user = userService.findAdoptionCenter(userId).orElse(null);
 
-        if(user == null){
-            log.error("Adoption Center "+ userId + " not found!");
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        if (user == null) {
+            log.error("Adoption Center " + userId + " not found!");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        try{
+        try {
             Path filePath = Paths.get(user.getBannerPicPath());
-            byte[] pictureFile =  Files.readAllBytes(filePath);
+            byte[] pictureFile = Files.readAllBytes(filePath);
 
-            if(pictureFile.length<1){
+            if (pictureFile.length < 1) {
                 throw new Exception("File is empty!");
             }
 
@@ -85,8 +83,7 @@ public class ImageController {
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ClassPathResource resource = new ClassPathResource("placeholders/center_banner.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
@@ -99,20 +96,19 @@ public class ImageController {
 
         Animal animal = animalService.findAnimal(animalId).orElse(null);
 
-        if(animal == null){
-            log.error("Animal "+ animalId + " not found!");
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        if (animal == null) {
+            log.error("Animal " + animalId + " not found!");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        try{
+        try {
             Path filePath = Paths.get(animal.getPicPath());
-            byte[] pictureFile =  Files.readAllBytes(filePath);
+            byte[] pictureFile = Files.readAllBytes(filePath);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             ClassPathResource resource = new ClassPathResource("placeholders/animal.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
@@ -125,20 +121,19 @@ public class ImageController {
 
         Event event = eventService.findEvent(eventId).orElse(null);
 
-        if(event == null){
-            log.error("Event "+ eventId + " not found!");
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        if (event == null) {
+            log.error("Event " + eventId + " not found!");
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        try{
+        try {
             Path filePath = Paths.get(event.getThumbnailPath());
-            byte[] pictureFile =  Files.readAllBytes(filePath);
+            byte[] pictureFile = Files.readAllBytes(filePath);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
 
             return new ResponseEntity<>(pictureFile, headers, HttpStatus.OK);
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             ClassPathResource resource = new ClassPathResource("placeholders/event.png");
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
@@ -147,86 +142,85 @@ public class ImageController {
     }
 
     @PostMapping("/users/{userId}/profile")
-    public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) {
-        try{
-            imageService.saveProfilePicture(imageFile,userId);
+    public ResponseEntity<Object> uploadProfilePic(@PathVariable Long userId,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            imageService.saveProfilePicture(imageFile, userId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/users/{userId}/banner")
-    public ResponseEntity<Object> uploadCenterBanner(@PathVariable Long userId, @RequestParam("imageFile") MultipartFile imageFile) {
-        try{
-            imageService.saveCenterBanner(imageFile,userId);
+    public ResponseEntity<Object> uploadCenterBanner(@PathVariable Long userId,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            imageService.saveCenterBanner(imageFile, userId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/animals/{animalId}")
-    public ResponseEntity<Object> uploadAnimalPic(@PathVariable Long animalId, @RequestParam("imageFile") MultipartFile imageFile) {
-        try{
-            imageService.saveAnimalPicture(imageFile,animalId);
+    public ResponseEntity<Object> uploadAnimalPic(@PathVariable Long animalId,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            imageService.saveAnimalPicture(imageFile, animalId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/events/{eventId}")
-    public ResponseEntity<Object> uploadEventThumbnail(@PathVariable Long eventId, @RequestParam("imageFile") MultipartFile imageFile) {
-        try{
-            imageService.saveEventThumbnail(imageFile,eventId);
+    public ResponseEntity<Object> uploadEventThumbnail(@PathVariable Long eventId,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            imageService.saveEventThumbnail(imageFile, eventId);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/users/{userId}/profile")
-    public ResponseEntity<Object> deleteProfilePic(@PathVariable Long userId){
+    public ResponseEntity<Object> deleteProfilePic(@PathVariable Long userId) {
         try {
             boolean result = imageService.deleteProfilePicture(userId);
-            return new ResponseEntity<>(result,HttpStatus.OK);
-        }
-        catch(Exception e){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/users/{userId}/banner")
-    public ResponseEntity<Object> deleteBannerPic(@PathVariable Long userId){
+    public ResponseEntity<Object> deleteBannerPic(@PathVariable Long userId) {
         try {
             boolean result = imageService.deleteCenterBanner(userId);
-            return new ResponseEntity<>(result,HttpStatus.OK);
-        }
-        catch(Exception e){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/animals/{animalId}")
-    public ResponseEntity<Object> deleteAnimalPic(@PathVariable Long animalId){
+    public ResponseEntity<Object> deleteAnimalPic(@PathVariable Long animalId) {
         try {
             boolean result = imageService.deleteAnimalPicture(animalId);
-            return new ResponseEntity<>(result,HttpStatus.OK);
-        }
-        catch(Exception e){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/events/{eventId}")
-    public ResponseEntity<Object> deleteEventThumbnail(@PathVariable Long eventId){
+    public ResponseEntity<Object> deleteEventThumbnail(@PathVariable Long eventId) {
         try {
             boolean result = imageService.deleteEventThumbnail(eventId);
-            return new ResponseEntity<>(result,HttpStatus.OK);
-        }
-        catch(Exception e){
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

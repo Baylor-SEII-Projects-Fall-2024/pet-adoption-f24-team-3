@@ -59,9 +59,6 @@ public class AnimalService {
 
     public Long updateAnimal(Animal newAnimal, Long id) {
         Animal animal = findAnimal(id).orElseThrow(EntityNotFoundException::new);
-        if(newAnimal.getCenterId() != null ) {
-            animal.setCenterId(newAnimal.getCenterId());
-        }
         if(newAnimal.getName() != null && !newAnimal.getName().isEmpty()) {
             animal.setName(newAnimal.getName());
         }
@@ -93,6 +90,6 @@ public class AnimalService {
             animal.setSize(newAnimal.getSize());
         }
 
-        return animalRepository.save(newAnimal).getId();
+        return animalRepository.save(animal).getId();
     }
 }

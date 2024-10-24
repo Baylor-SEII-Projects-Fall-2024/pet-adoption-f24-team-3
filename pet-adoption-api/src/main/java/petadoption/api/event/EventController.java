@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = {"http://localhost:3000","http://35.224.27.57:3000"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 public class EventController {
     @Autowired
     private EventService eventService;
@@ -75,13 +75,13 @@ public class EventController {
         List<Event> events = eventService.paginateEvents(pageSize, pageNumber);
         return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
-        try{
+        try {
             eventService.deleteEvent(id);
-            return new ResponseEntity<>(true,HttpStatus.OK);
-        }
-        catch (Exception e) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
             log.error("Unable to delete Event:" + e.getMessage());
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
