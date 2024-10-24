@@ -20,7 +20,7 @@ services:
     environment:
       MYSQL_HOST: db
     volumes:
-      - uploads-data:/pet-adoption-api/uploads
+      - uploads-data: ../pet-adoption-api/uploads
 
   db:
     image: mysql:8.4.2
