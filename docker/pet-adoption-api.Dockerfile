@@ -10,6 +10,5 @@ FROM openjdk:22
 WORKDIR /app
 COPY --from=build /build/build/libs/pet-adoption-api-1.0.0-SNAPSHOT.jar app.jar
 
-
 # Run the app
 ENTRYPOINT exec java $JAVA_OPTS -jar -Dspring.profiles.active=prod app.jar
