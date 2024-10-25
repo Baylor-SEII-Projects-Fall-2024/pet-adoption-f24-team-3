@@ -1,14 +1,20 @@
-import React from 'react';
-import Head from 'next/head';
-import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography, Box } from '@mui/material'
-import eventService from '@/utils/services/eventService';
-import userService from '@/utils/services/userService';
-import { format } from 'date-fns';
+import React from "react";
+import Head from "next/head";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import {
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  Box,
+} from "@mui/material";
+import eventService from "@/utils/services/eventService";
+import userService from "@/utils/services/userService";
+import { format } from "date-fns";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 
 export default function ViewEventPage() {
   const router = useRouter();
@@ -26,19 +32,28 @@ export default function ViewEventPage() {
   const onDeleteEvent = async () => {
     if (!event || !adoptionCenter) return;
 
-    if (window.confirm(`Are you sure you want to delete ${event.name}? It will be gone forever...`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${event.name}? It will be gone forever...`
+      )
+    ) {
       await deleteEvent(eventID)
         .then((result) => {
           if (result == true) {
-            router.push(`/centers/${adoptionCenter.id}`)
-          }
-          else console.error("There was an error deleting event!");
+            router.push(`/centers/${adoptionCenter.id}`);
+          } else console.error("There was an error deleting event!");
         })
         .catch((error) => {
           console.error("There was an error deleting event:", error);
         });
     }
-  }
+  };
+
+  const onContactCenter = () => {
+    alert(
+      `You want to message ${adoptionCenter.name} with id ${adoptionCenter.id}`
+    );
+  };
 
   React.useEffect(() => {
     if (eventID) {
@@ -47,12 +62,10 @@ export default function ViewEventPage() {
           .then((result) => {
             if (result != null) {
               setEvent(result);
-            }
-            else {
+            } else {
               console.error(`Error loading event ${eventID}:`, result);
               setIsError(true);
             }
-
           })
           .catch((error) => {
             console.error(`Error loading event ${eventID}:`, error);
@@ -60,7 +73,7 @@ export default function ViewEventPage() {
           })
           .finally(() => {
             setIsLoading(false);
-          })
+          });
       }
       fetchEvent();
     }
@@ -87,7 +100,6 @@ export default function ViewEventPage() {
     fetchCenterInfo();
   }, [event]);
 
-
   if ((isLoading == true || !event || !adoptionCenter) && !isError) {
     return (
       <>
@@ -95,16 +107,18 @@ export default function ViewEventPage() {
           <title>View Event</title>
         </Head>
         <main>
-          <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+          <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
             <Card sx={{ width: "75%" }} elevation={4}>
               <CardContent>
-                <Typography variant='h3' align='center'>Loading...</Typography>
+                <Typography variant="h3" align="center">
+                  Loading...
+                </Typography>
               </CardContent>
             </Card>
           </Stack>
         </main>
       </>
-    )
+    );
   }
 
   if (isError) {
@@ -114,18 +128,19 @@ export default function ViewEventPage() {
           <title>View Event</title>
         </Head>
         <main>
-          <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+          <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
             <Card sx={{ width: "75%" }} elevation={4}>
               <CardContent>
-                <Typography variant='h5' align='center' color='text.error'>Error: Unable to load event. Please check again soon!</Typography>
+                <Typography variant="h5" align="center" color="text.error">
+                  Error: Unable to load event. Please check again soon!
+                </Typography>
               </CardContent>
             </Card>
           </Stack>
         </main>
       </>
-    )
+    );
   }
-
 
   return (
     <>
@@ -134,98 +149,137 @@ export default function ViewEventPage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+        <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
           <Card sx={{ width: "75%" }} elevation={4}>
             <CardContent>
               <Stack direction="row">
                 <img
                   src={`${apiUrl}/api/images/events/${eventID}`}
                   alt={`${event.name}`}
-                  style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
+                  style={{
+                    maxWidth: "50%",
+                    maxHeight: "400px",
+                    borderRadius: "2%",
+                    marginRight: "30px",
+                  }}
                 />
-                <Stack Stack direction="column" sx={{ display: "flex", flex: 1 }}>
-                  <Typography variant='h3' >{event.name}</Typography>
+                <Stack
+                  Stack
+                  direction="column"
+                  sx={{ display: "flex", flex: 1 }}
+                >
+                  <Typography variant="h3">{event.name}</Typography>
                   <br></br>
                   <table>
                     <tbody>
                       <tr>
-                        <td><Typography>Hosted By: </Typography></td>
+                        <td>
+                          <Typography>Hosted By: </Typography>
+                        </td>
                         <td>
                           <Typography>{adoptionCenter.name}</Typography>
-                          <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
+                          <Typography>
+                            {adoptionCenter.address}, {adoptionCenter.city},{" "}
+                            {adoptionCenter.state}
+                          </Typography>
                         </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Dates:</Typography> </td>
                         <td>
-                          {event.dateStart && event.dateEnd &&
+                          {" "}
+                          <Typography>Dates:</Typography>{" "}
+                        </td>
+                        <td>
+                          {event.dateStart &&
+                            event.dateEnd &&
                             (format(new Date(event.dateStart), "MM dd yyyy") ===
-                              format(new Date(event.dateEnd), "MM dd yyyy") ? (
+                            format(new Date(event.dateEnd), "MM dd yyyy") ? (
                               <>
                                 <Typography>
-                                  {format(new Date(event.dateStart), "MMM dd, yyyy")}
+                                  {format(
+                                    new Date(event.dateStart),
+                                    "MMM dd, yyyy"
+                                  )}
                                 </Typography>
                                 <Typography>
-                                  {format(new Date(event.dateStart), "h:mm a")} -{" "}
-                                  {format(new Date(event.dateEnd), "h:mm a")}
+                                  {format(new Date(event.dateStart), "h:mm a")}{" "}
+                                  - {format(new Date(event.dateEnd), "h:mm a")}
                                 </Typography>
                               </>
                             ) : (
                               <>
-                              <Typography>
-                                Beginning:{" "}{format(new Date(event.dateStart), "MMM dd, yyyy")} -{" "}
-                                {format(new Date(event.dateStart), "h:mm a")}
-                              </Typography>
-                              <Typography>
-                                Ending: {" "}{format(new Date(event.dateEnd), "MMM dd, yyyy")} -{" "}
-                                {format(new Date(event.dateEnd), "h:mm a")}
-                              </Typography>
+                                <Typography>
+                                  Beginning:{" "}
+                                  {format(
+                                    new Date(event.dateStart),
+                                    "MMM dd, yyyy"
+                                  )}{" "}
+                                  -{" "}
+                                  {format(new Date(event.dateStart), "h:mm a")}
+                                </Typography>
+                                <Typography>
+                                  Ending:{" "}
+                                  {format(
+                                    new Date(event.dateEnd),
+                                    "MMM dd, yyyy"
+                                  )}{" "}
+                                  - {format(new Date(event.dateEnd), "h:mm a")}
+                                </Typography>
                               </>
                             ))}
                         </td>
-
                       </tr>
                     </tbody>
                   </table>
                 </Stack>
-                <Box>
-                  {currentUserId == event.currentUserId && (
-                    <Button
-                      variant='contained'
-                      color="secondary"
-                      onClick={() => router.push(`/events/${eventID}/edit`)} sx={{ width: "150px" }}>Edit Event</Button>
+                <Box sx={{ width: "150px" }}>
+                  {currentUserId == event.centerId ? (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => router.push(`/events/${eventID}/edit`)}
+                        sx={{ width: "150px" }}
+                      >
+                        Edit Event
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={onDeleteEvent}
+                        sx={{ width: "150px" }}
+                      >
+                        Delete Event
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={onContactCenter}
+                        sx={{ width: "150px" }}
+                      >
+                        Contact Center
+                      </Button>
+                    </>
                   )}
                 </Box>
-                {currentUserId == event.centerId && (
-                  <Box
-                    sx={{ width: "150px" }}>
-                    <Button
-                      variant='contained'
-                      color="secondary"
-                      onClick={() => router.push(`/events/${eventID}/edit`)} sx={{ width: "150px" }}>Edit Event</Button>
-                    <Button
-                      variant='outlined'
-                      color="secondary"
-                      onClick={onDeleteEvent} sx={{ width: "150px" }}>Delete Event</Button>
-                  </Box>
-                )}
               </Stack>
               <Box
                 sx={{
                   width: "80%",
                   ml: "auto",
                   mr: "auto",
-                  mt: "30px"
+                  mt: "30px",
                 }}
               >
-                <Typography align='center'>{event.description}</Typography>
+                <Typography align="center">{event.description}</Typography>
               </Box>
-
-
             </CardContent>
           </Card>
         </Stack>
-      </main >
+      </main>
     </>
   );
 }

@@ -266,8 +266,8 @@ export default function ViewPetPage() {
                   ) : (
                     <>
                       <Button
-                        variant="outlined"
-                        color="secondary"
+                        variant="contained"
+                        color="primary"
                         onClick={onContactCenter}
                         sx={{ width: "150px" }}
                       >
