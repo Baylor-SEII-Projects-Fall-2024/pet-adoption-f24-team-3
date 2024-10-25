@@ -24,7 +24,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - main
+      - [main, prod]
 
 jobs:
   build-and-deploy:
