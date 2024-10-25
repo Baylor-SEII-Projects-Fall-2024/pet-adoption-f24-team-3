@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { Message } from "@mui/icons-material";
 import eventService from "@/utils/services/eventService";
 import userService from "@/utils/services/userService";
 import { format } from "date-fns";
@@ -232,7 +233,7 @@ export default function ViewEventPage() {
                     </tbody>
                   </table>
                 </Stack>
-                <Box sx={{ width: "150px" }}>
+                <Box sx={{ width: "175px" }}>
                   {currentUserId == event.centerId ? (
                     <>
                       <Button
@@ -258,8 +259,9 @@ export default function ViewEventPage() {
                         variant="contained"
                         color="primary"
                         onClick={onContactCenter}
-                        sx={{ width: "150px" }}
+                        sx={{ width: "175px", justifyContent: "space-evenly" }}
                       >
+                        <Message></Message>
                         Contact Center
                       </Button>
                     </>
