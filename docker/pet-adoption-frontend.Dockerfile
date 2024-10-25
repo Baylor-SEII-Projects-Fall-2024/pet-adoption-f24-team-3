@@ -3,8 +3,10 @@ FROM node:20 AS build
 WORKDIR /build
 COPY . .
 
+# Add network timeout so our action doesn't fail from loading a bajillion dependencies
 RUN yarn install --network-timeout 300000
-RUN yarn run build
+# Add --profile to use React Profiler DevTools for performance profiling
+RUN yarn run build --profile
 
 # Copy the build artifacts
 FROM node:20
