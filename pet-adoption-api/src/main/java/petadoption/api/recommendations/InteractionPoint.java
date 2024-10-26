@@ -27,8 +27,8 @@ public class InteractionPoint {
         this();
         this.type = type;
         this.name = name;
-        this.score = 0;
-        this.history=history;
+        this.score = 1;
+        this.history = history;
     }
 
 
