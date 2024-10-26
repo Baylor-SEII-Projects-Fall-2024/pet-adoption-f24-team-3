@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
