@@ -59,9 +59,6 @@ public class AnimalService {
 
     public Long updateAnimal(Animal newAnimal, Long id) {
         Animal animal = findAnimal(id).orElseThrow(EntityNotFoundException::new);
-        if(newAnimal.getCenterId() != null ) {
-            animal.setCenterId(newAnimal.getCenterId());
-        }
         if(newAnimal.getName() != null && !newAnimal.getName().isEmpty()) {
             animal.setName(newAnimal.getName());
         }
