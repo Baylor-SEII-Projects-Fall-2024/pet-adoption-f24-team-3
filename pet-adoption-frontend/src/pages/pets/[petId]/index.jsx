@@ -2,10 +2,13 @@ import React from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography, Box, Link } from '@mui/material'
+import { Button, Card, CardContent, Stack, Typography, Box, Link, IconButton } from '@mui/material'
 import animalService from '@/utils/services/animalService';
 import userService from '@/utils/services/userService';
+import recommendationService from '@/utils/services/recommendationService';
 import formatter from '@/utils/formatter';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -13,10 +16,13 @@ export default function ViewPetPage() {
   const router = useRouter();
   const { petId } = router.query; //get pet ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
   const { getAnimal, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
   const { formatSize, formatSex } = formatter();
+
+  const { likePet } = recommendationService();
 
   const [animal, setAnimal] = React.useState(null);
   const [adoptionCenter, setAdoptionCenter] = React.useState(null);
@@ -178,6 +184,20 @@ export default function ViewPetPage() {
                       </tr>
                     </tbody>
                   </table>
+                  {currentUserType == "Owner" && (
+                    <Stack direction="column"  sx={{ paddingLeft: 10, paddingTop: 3 }} alignItems='left'>
+                    <Typography varient='h3'>What do you think?</Typography>
+                    <Stack direction="row" spacing={1}>
+                      <IconButton aria-label='like' size='large' color='primary' onClick={() => likePet(currentUserId, petId)}>
+                        <ThumbUpIcon fontSize="inherit"/>
+                      </IconButton>
+                      <IconButton aria-label='dislike' size='large' color='secondary'>
+                        <ThumbDownAltIcon fontSize="inherit"/>
+                      </IconButton>
+                    </Stack>
+                </Stack>
+                  )}
+                  
 
                 </Stack>
                 {currentUserId == animal.centerId && (
@@ -210,7 +230,8 @@ export default function ViewPetPage() {
                   {adoptionCenter.name}</Link>
                 <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
               </Box>
-
+              
+                
 
             </CardContent>
           </Card>
