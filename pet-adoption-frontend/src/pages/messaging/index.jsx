@@ -2,12 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   TextField,
-  IconButton,
+  Button,
   List,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Card,
+  CardContent,
+  Typography,
+  Stack,
 } from "@mui/material";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
@@ -69,30 +73,53 @@ const ChatPage = () => {
   };
 
   return (
-    <div>
-      <div>
-        <List>
-          {messages.map((msg, index) => (
-            <ListItem key={index}>
-              <ListItemAvatar>
-                <Avatar>{msg.sender[0]}</Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={msg.sender} secondary={msg.content} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
-      <div>
-        <TextField
-          label="Message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <IconButton onClick={sendMessage} disabled={!message.trim()}>
-          send
-        </IconButton>
-      </div>
-    </div>
+    <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
+      <Card sx={{ width: "80%", position: "relative" }} elevation={4}>
+        <CardContent>
+          <Typography variant="h3" align="center">
+            Messaging
+          </Typography>
+          <Typography variant="body1" align="center" color="text.secondary">
+            Have fun in this silly little chat room!
+          </Typography>
+        </CardContent>
+      </Card>
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          alignItems: "flex-start",
+        }}
+      >
+        {messages.map((msg, index) => (
+          <ListItem
+            key={index}
+            sx={{
+              width: "100%",
+              alignItems: "flex-start",
+            }}
+          >
+            <ListItemAvatar>
+              <Avatar>{msg.sender[0]}</Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={msg.sender} secondary={msg.content} />
+          </ListItem>
+        ))}
+      </List>
+      <TextField
+        label="Message"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <Button
+        onClick={sendMessage}
+        disabled={!message.trim()}
+        variant="contained"
+      >
+        send
+      </Button>
+    </Stack>
   );
 };
 
