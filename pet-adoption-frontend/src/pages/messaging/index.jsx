@@ -72,6 +72,12 @@ const ChatPage = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
+
   return (
     <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
       <Card sx={{ width: "80%", position: "relative" }} elevation={4}>
@@ -111,6 +117,7 @@ const ChatPage = () => {
         label="Message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <Button
         onClick={sendMessage}
