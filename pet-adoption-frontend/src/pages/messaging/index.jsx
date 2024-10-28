@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   TextField,
   IconButton,
@@ -7,7 +7,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Typography,
 } from "@mui/material";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
@@ -17,6 +16,7 @@ const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [nickname, setNickname] = useState("");
   const [stompClient, setStompClient] = useState(null);
+  const isSubscribed = useRef(false);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/ws");
@@ -26,11 +26,16 @@ const ChatPage = () => {
       {},
       () => {
         console.log("Connected to WebSocket");
-        client.subscribe("/topic/messages", (msg) => {
-          const newMessage = JSON.parse(msg.body);
-          console.log("Received message:", newMessage);
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
-        });
+        // Check if already subscribed
+        if (!isSubscribed.current) {
+          client.subscribe("/topic/messages", (msg) => {
+            const newMessage = JSON.parse(msg.body);
+            console.log("Received message:", newMessage);
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+          });
+          isSubscribed.current = true; // Mark as subscribed
+          console.log("Subscription created");
+        }
       },
       (error) => {
         console.error("WebSocket connection error:", error);

@@ -137,7 +137,12 @@ export default function HeaderBar(props) {
               <AccountBox></AccountBox>
               <Typography sx={{ textAlign: "center" }}>Profile</Typography>
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              key={"inbox"}
+              onClick={() => {
+                router.push("/messaging");
+              }}
+            >
               <Inbox></Inbox>
               <Typography sx={{ textAlign: "center" }}>Inbox</Typography>
             </MenuItem>
