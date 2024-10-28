@@ -21,6 +21,7 @@ const ChatPage = () => {
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/ws");
     const client = Stomp.over(socket);
+
     client.connect(
       {},
       () => {
@@ -35,10 +36,13 @@ const ChatPage = () => {
         console.error("WebSocket connection error:", error);
       }
     );
+
     setStompClient(client);
 
+    // Cleanup function to disconnect the client
     return () => {
       if (client && client.connected) {
+        console.log("Disconnecting WebSocket client");
         client.disconnect();
       }
     };
@@ -49,14 +53,9 @@ const ChatPage = () => {
       const chatMessage = {
         sender: nickname,
         content: message,
-        type: "CHAT",
       };
       console.log("Sending message:", chatMessage);
-      stompClient.send(
-        "/app/chat.sendMessage",
-        {},
-        JSON.stringify(chatMessage)
-      );
+      stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
       setMessage("");
     }
   };

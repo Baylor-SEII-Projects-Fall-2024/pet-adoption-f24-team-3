@@ -12,6 +12,7 @@ public class ChatController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+        System.out.println("Received message: " + chatMessage);
         chatMessage.setTimestamp(new Date());
         return chatMessage;
     }
