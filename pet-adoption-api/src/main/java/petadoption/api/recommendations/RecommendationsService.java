@@ -10,7 +10,6 @@ import petadoption.api.user.UserService;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.Math.abs;
 
 @Service
 public class RecommendationsService {
