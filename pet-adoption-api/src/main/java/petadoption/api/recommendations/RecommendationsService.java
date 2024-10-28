@@ -74,10 +74,13 @@ public class RecommendationsService {
         modifyAttribute(history, InteractionType.CITY, center.getCity(), numInteractions);
         modifyAttribute(history, InteractionType.CENTER_ID,center.getId().toString(), numInteractions);
 
-        history.setAvgAge(modifyAverage(history.getAvgAge(), history.getTotalLikes(), animal.getAge(),numInteractions));
-        history.setAvgHeight(modifyAverage(history.getAvgHeight(), history.getTotalLikes(), animal.getHeight(),numInteractions));
-        history.setAvgWeight(modifyAverage(history.getAvgWeight(), history.getTotalLikes(), animal.getWeight(),numInteractions));
-        history.setTotalLikes(history.getTotalLikes()+numInteractions);
+        if(numInteractions >0){
+            history.setAvgAge(modifyAverage(history.getAvgAge(), history.getTotalLikes(), animal.getAge(),numInteractions));
+            history.setAvgHeight(modifyAverage(history.getAvgHeight(), history.getTotalLikes(), animal.getHeight(),numInteractions));
+            history.setAvgWeight(modifyAverage(history.getAvgWeight(), history.getTotalLikes(), animal.getWeight(),numInteractions));
+            history.setTotalLikes(history.getTotalLikes()+numInteractions);
+        }
+
 
         interactionRepository.save(history);
     }
@@ -94,7 +97,7 @@ public class RecommendationsService {
             modifiedPoint.setScore(modifiedPoint.getScore() + increment);
             points.set(points.indexOf(existingPoint.get()), modifiedPoint);
         } else {
-            points.add(new InteractionPoint(type,name,history));
+            points.add(new InteractionPoint(type,name,history,increment));
         }
         history.setInteractionPoints(points);
         return history;
