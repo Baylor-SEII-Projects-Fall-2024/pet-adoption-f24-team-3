@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import {
   TextField,
   IconButton,
@@ -14,9 +15,11 @@ import SockJS from "sockjs-client";
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [nickname, setNickname] = useState("");
   const [stompClient, setStompClient] = useState(null);
   const isSubscribed = useRef(false);
+  const currentUserName = useSelector(
+    (state) => state.currentUser.currentUserFullName
+  );
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/ws");
@@ -56,7 +59,7 @@ const ChatPage = () => {
   const sendMessage = () => {
     if (stompClient && message.trim()) {
       const chatMessage = {
-        sender: nickname,
+        sender: currentUserName,
         content: message,
       };
       console.log("Sending message:", chatMessage);
@@ -67,13 +70,6 @@ const ChatPage = () => {
 
   return (
     <div>
-      <div>
-        <TextField
-          label="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-        />
-      </div>
       <div>
         <List>
           {messages.map((msg, index) => (
