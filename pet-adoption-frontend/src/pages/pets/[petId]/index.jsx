@@ -272,8 +272,8 @@ export default function ViewPetPage() {
                         onClick={onContactCenter}
                         sx={{ width: "175px", justifyContent: "space-evenly" }}
                       >
-                        Contact Center
                         <Message></Message>
+                        Contact Center
                       </Button>
                     </>
                   )}
