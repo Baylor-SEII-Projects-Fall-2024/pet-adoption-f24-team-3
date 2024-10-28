@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -24,6 +25,7 @@ const ChatPage = () => {
   const currentUserName = useSelector(
     (state) => state.currentUser.currentUserFullName
   );
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/ws");
@@ -107,7 +109,9 @@ const ChatPage = () => {
             }}
           >
             <ListItemAvatar>
-              <Avatar>{msg.sender[0]}</Avatar>
+              <Avatar
+                src={`${apiUrl}/api/images/users/${currentUserId}/profile`}
+              ></Avatar>
             </ListItemAvatar>
             <ListItemText primary={msg.sender} secondary={msg.content} />
           </ListItem>
