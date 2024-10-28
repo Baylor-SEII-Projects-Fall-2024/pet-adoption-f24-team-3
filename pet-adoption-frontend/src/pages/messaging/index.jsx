@@ -122,6 +122,7 @@ const ChatPage = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
+        autoComplete="off"
       />
       <Button
         onClick={sendMessage}
