@@ -14,8 +14,6 @@ The JSON Schema for each individual entity can be described as follows
 | `api/events/` | Create event |
 | `api/update/preferences` | Update users preferences |
 
-
-
 ---
 
 ## Adoption Center
