@@ -63,10 +63,12 @@ export default function PetCard(props) {
           </Typography>
         </Box>
       </CardContent>
-      <CardActions sx={{
-          marginTop: "auto", // Pushes CardActions to the bottom
-          justifyContent: "center", // Centers the buttons horizontally
+      {currentUserType == "Owner" && (
+           <CardActions sx={{
+          marginTop: "auto", 
+          justifyContent: "center", 
         }}>
+        
       <IconButton aria-label="like" className="hidden-button" size="large" color="primary" onClick={(event) => {
             event.stopPropagation();
             likePet(currentUserId, pet.id);
@@ -77,6 +79,8 @@ export default function PetCard(props) {
           <ThumbDownAltIcon fontSize="inherit" />
         </IconButton>
         </CardActions>
+        )}
+     
     </Card>
   );
 }
