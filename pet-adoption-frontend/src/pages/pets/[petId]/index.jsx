@@ -23,6 +23,7 @@ export default function ViewPetPage() {
   const { formatSize, formatSex } = formatter();
 
   const { likePet } = recommendationService();
+  const { dislikePet } = recommendationService();
 
   const [animal, setAnimal] = React.useState(null);
   const [adoptionCenter, setAdoptionCenter] = React.useState(null);
@@ -191,7 +192,7 @@ export default function ViewPetPage() {
                       <IconButton aria-label='like' size='large' color='primary' onClick={() => likePet(currentUserId, petId)}>
                         <ThumbUpIcon fontSize="inherit"/>
                       </IconButton>
-                      <IconButton aria-label='dislike' size='large' color='secondary'>
+                      <IconButton aria-label='dislike' size='large' color='secondary' onClick={() => dislikePet(currentUserId, petId)}>
                         <ThumbDownAltIcon fontSize="inherit"/>
                       </IconButton>
                     </Stack>

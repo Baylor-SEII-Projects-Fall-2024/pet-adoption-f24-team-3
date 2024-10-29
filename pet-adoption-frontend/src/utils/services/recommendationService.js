@@ -19,8 +19,27 @@ const recommendationService = () => {
         }
     };
 
+    const dislikePet = async (userId, petId) => {
+        const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            console.log(result);
+            return result;
+        } else {
+            alert(`Dislike pet failed: ${result.message}`);
+            return null;
+        }
+    };
+
     return{
-        likePet
+        likePet,
+        dislikePet
     };
 };
 export default recommendationService;

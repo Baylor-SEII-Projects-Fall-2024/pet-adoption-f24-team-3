@@ -14,6 +14,7 @@ export default function PetCard(props) {
   const { pet } = props;
   const { formatSex } = formatter();
   const { likePet } = recommendationService();
+  const { dislikePet } = recommendationService();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
@@ -75,7 +76,10 @@ export default function PetCard(props) {
           }}>
           <ThumbUpIcon fontSize="inherit" />
         </IconButton>
-        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={(event) => event.stopPropagation()}>
+        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={(event) => {
+            event.stopPropagation();
+            dislikePet(currentUserId, pet.id);
+          }}>
           <ThumbDownAltIcon fontSize="inherit" />
         </IconButton>
         </CardActions>
