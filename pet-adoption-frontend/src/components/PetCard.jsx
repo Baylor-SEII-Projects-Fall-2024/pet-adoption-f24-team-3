@@ -1,13 +1,14 @@
 import React from "react";
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Card, CardContent, Typography, Box, IconButton, Stack } from "@mui/material";
+import { Card, CardContent, Typography, Box, IconButton, Button } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import CardActions from "@mui/material/CardActions";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import formatter from "@/utils/formatter";
 import recommendationService from "@/utils/services/recommendationService";
+import { ThumbDownAltOutlined, ThumbUpAltOutlined, ThumbUpAltSharp } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
@@ -74,20 +75,29 @@ export default function PetCard(props) {
         </Box>
       </CardContent>
       {currentUserType == "Owner" && (
-           <CardActions sx={{
-          marginTop: "auto", 
-          justifyContent: "center", 
+        <CardActions sx={{
+          marginTop: "auto",
+          justifyContent: "center",
+          height: "60px",
+          pl: "15%",
+          pr: "15%",
         }}>
-        
-      <IconButton aria-label="like" className="hidden-button" size="large" color="primary" onClick={onLikePet}>
-          <ThumbUpIcon fontSize="inherit" />
-        </IconButton>
-        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={onDislikePet}>
-          <ThumbDownAltIcon fontSize="inherit" />
-        </IconButton>
+          <Button
+            onClick={onLikePet}
+            className="hidden-button"
+            variant="like">
+            <ThumbUpAltOutlined fontSize="large" />
+          </Button>
+          <Button
+            onClick={onLikePet}
+            className="hidden-button"
+            variant="dislike">
+            <ThumbDownAltOutlined fontSize="large" color="dislike" />
+          </Button>
+
         </CardActions>
-        )}
-     
+      )}
+
     </Card>
   );
 }

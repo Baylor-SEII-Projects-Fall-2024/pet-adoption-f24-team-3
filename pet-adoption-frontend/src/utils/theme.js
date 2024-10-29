@@ -45,6 +45,20 @@ const themeOptions = {
                         backgroundColor: '#af8ba5',
                     },
                 },
+                like: {
+                    flex: 1,
+                    width: "50%",
+                    height: "100%",
+                    backgroundColor: "#b3f4b3",
+                    color: "#4c874c"
+                },
+                dislike: {
+                    flex: 1,
+                    width: "50%",
+                    height: "100%",
+                    backgroundColor: "#ffd0d0",
+                    color: "#bf3232"
+                },
             },
         },
         MuiSvgIcon: {
@@ -72,8 +86,7 @@ const themeOptions = {
             secondary: '#666666', // Lighter grey for secondary text
             white: '#fff',
             darkColor: '#5F4B59', // dark purple for some occasional text
-            success: '#00780a', //bright green for success
-            error: '#ff0000'  //red for error
+
         },
     }
 };
