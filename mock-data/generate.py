@@ -11,6 +11,7 @@ from modules.generators import (
 from modules.static import generate_static_accounts
 from modules.utils import api_post, api_get
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
+from modules.images import generate_image, ImageType
 
 
 # Delete existing JSON files
@@ -26,12 +27,20 @@ for file in ["MOCK_CENTERS.json",
 # Generate sample data
 
 # NUMBER OF GENERATIONS
-num_centers = len(center_names_provider.elements)
-num_owners = 50
-min_pets_per_center = 10
-max_pets_per_center = 20
+# num_centers = len(center_names_provider.elements)
+# num_owners = 50
+# min_pets_per_center = 10
+# max_pets_per_center = 20
+# min_events_per_center = 5
+# max_events_per_center = 10
+
+# Small batch generation
+num_centers = 5
+num_owners = 5
+min_pets_per_center = 5
+max_pets_per_center = 5
 min_events_per_center = 5
-max_events_per_center = 10
+max_events_per_center = 5
 
 # Generate static values
 static_centers, static_owners = generate_static_accounts()
@@ -61,19 +70,28 @@ for center in adoption_centers:
     append_pretty_json(pets, "MOCK_PETS.json")
     append_pretty_json(events, "MOCK_EVENTS.json")
 
+    center_img_path = generate_image(ImageType.CENTER, user_id)
+    banner_img_path = generate_image(ImageType.BANNER, user_id)
+
     for pet in pets:
         print(f"Saving pet {pet['name']} to {center['name']}")
-        api_post("api/animals/", pet)
+        response = api_post("api/animals/", pet)
+        pet_id = response['id']
+        pet_img_path = generate_image(ImageType.PET, pet_id)
     for event in events:
         print(f"Saving event {event['name']} to {center['name']}")
-        api_post("api/events/", event)
+        response = api_post("api/events/", event)
+        event_id = response['eventID']
+        event_img_path = generate_image(ImageType.EVENT, event_id)
 
-print("\n==================\n")
+print("\n==========\n")
 
 for owner in potential_owners:
     print(f"Saving {owner['nameFirst']} {owner['nameLast']}")
     response = api_post("api/owners", owner)
     user_id = response['userid']
+
+    owner_img_path = generate_image(ImageType.OWNER, user_id)
 
     # Generate a preference for this user
     preference = generate_preference(user_id)
