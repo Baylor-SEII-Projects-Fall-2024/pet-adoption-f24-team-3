@@ -17,7 +17,7 @@ somewhat realistic values.
 
 [back to top](#generating-mock-data-and-populating-our-database)
 
-Set the appropriate URL in `generate.py`
+Set the appropriate URL in `modules/config.py`
 
 ```py
 # Production build
@@ -45,6 +45,38 @@ This script generates random values to seed our database with, sends requests
 to the api layer to add these to the database, and saves generated json objects
 to files for logging purposes.
 
+### File Structure
+
+```
+generate.py
+modules/
+ |_ __init__.py
+ |_ config.py
+ |_ generators.py
+ |_ models.py
+ |_ utils.py
+clear-db.py
+```
+
+`config.py`
+
+Contains generatal configuration data. `API_BASE_URL`, `city_state_map`,
+`center_names_provider`, pet name providers, `species_classifications`,
+and `species_breeds`. These are all constant values that are used to
+generate random values later.
+
+`generators.py`
+
+Contains the actual generation logic for owners, centers, pets, events, and preferences.
+
+`models.py`
+
+Contains enums for Sex, AgeClass, and Size.
+
+`utils.py`
+
+Contains utility functions for getting, posting, and printing json data.
+
 ### Random Value Generation
 
 [back to top](#generating-mock-data-and-populating-our-database)
@@ -62,8 +94,8 @@ values for this session.
 
 [back to top](#generating-mock-data-and-populating-our-database)
 
-Somewhere near the bottom of the file we can see variables defined for the
-number of each instance to generate.
+In `generate.py` we can see variables defined for the number of each
+instance to generate.
 
 ```py
 # NUMBER OF GENERATIONS
@@ -79,7 +111,7 @@ The number of centers looks in our `center_names_provider` to see the amount
 of defined names. It will generate a center for each of these names. If we
 want more centers, then we can define additional centers in the `elements`
 section of `center_names_provider`. If we want fewer centers, then we can
-simply define a constant value in place of `len(center_names_provider.elements`.
+simply define a constant value in place of `len(center_names_provider.elements)`.
 
 For each adoption center created, the script generates a random amount of
 pets and events between `min_pets_per_center` and `max_pets_per_center` or
