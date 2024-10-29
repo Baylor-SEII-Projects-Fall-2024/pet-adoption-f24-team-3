@@ -66,6 +66,7 @@ const ChatPage = () => {
     if (stompClient && message.trim()) {
       const chatMessage = {
         sender: currentUserName,
+        senderID: currentUserId,
         content: message,
       };
       console.log("Sending message:", chatMessage);
@@ -110,7 +111,7 @@ const ChatPage = () => {
           >
             <ListItemAvatar>
               <Avatar
-                src={`${apiUrl}/api/images/users/${currentUserId}/profile`}
+                src={`${apiUrl}/api/images/users/${msg.senderID}/profile`}
               ></Avatar>
             </ListItemAvatar>
             <ListItemText primary={msg.sender} secondary={msg.content} />

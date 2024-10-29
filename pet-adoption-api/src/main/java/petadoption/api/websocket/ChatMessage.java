@@ -13,6 +13,7 @@ import java.util.Date;
 @ToString
 public class ChatMessage {
     private String sender;
+    private Long senderID;
     private String content;
     private Date timestamp;
 }
