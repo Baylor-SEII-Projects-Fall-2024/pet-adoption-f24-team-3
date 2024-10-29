@@ -150,12 +150,11 @@ tables.
         * Used DynamicProvider
 * [x] Add non-random dev accounts so we don't have to make a new account
     everytime after clearing db
-* [ ] Randomly generate images
-    * Unsplash API?
-        * Limit of 50 requests per hour
+* [x] Randomly generate images
     * Lorem Picsum?
-    * Pillow?
-    * OpenCV?
+        * No filtering images, but at least we have some
+    * Find out if we can just save images in pet-adoption-api/uploads
+      and if they will get pushed to our docker containers next deployment
 
 ## Things to think about
 
