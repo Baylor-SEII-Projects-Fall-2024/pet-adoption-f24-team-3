@@ -13,10 +13,19 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function PetCard(props) {
   const { pet } = props;
   const { formatSex } = formatter();
-  const { likePet } = recommendationService();
-  const { dislikePet } = recommendationService();
+  const { likePet, dislikePet } = recommendationService();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
+
+  const onLikePet = (event) => {
+    event.stopPropagation();
+    likePet(currentUserId, pet.id);
+  };
+
+  const onDislikePet = (event) => {
+    event.stopPropagation();
+    dislikePet(currentUserId, pet.id);
+  };
 
   return (
     <Card
@@ -70,16 +79,10 @@ export default function PetCard(props) {
           justifyContent: "center", 
         }}>
         
-      <IconButton aria-label="like" className="hidden-button" size="large" color="primary" onClick={(event) => {
-            event.stopPropagation();
-            likePet(currentUserId, pet.id);
-          }}>
+      <IconButton aria-label="like" className="hidden-button" size="large" color="primary" onClick={onLikePet}>
           <ThumbUpIcon fontSize="inherit" />
         </IconButton>
-        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={(event) => {
-            event.stopPropagation();
-            dislikePet(currentUserId, pet.id);
-          }}>
+        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={onDislikePet}>
           <ThumbDownAltIcon fontSize="inherit" />
         </IconButton>
         </CardActions>

@@ -14,7 +14,7 @@ const recommendationService = () => {
             console.log(result);
             return result;
         } else {
-            alert(`Like pet failed: ${result.message}`);
+            console.error(`Like pet failed: ${result.message}`);
             return null;
         }
     };
@@ -32,7 +32,7 @@ const recommendationService = () => {
             console.log(result);
             return result;
         } else {
-            alert(`Dislike pet failed: ${result.message}`);
+            console.error(`Dislike pet failed: ${result.message}`);
             return null;
         }
     };

@@ -9,6 +9,8 @@ import recommendationService from '@/utils/services/recommendationService';
 import formatter from '@/utils/formatter';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
