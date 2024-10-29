@@ -13,7 +13,10 @@ faker = Faker()
 faker.seed_instance(420)
 random.seed(69)
 
-#API_BASE_URL = "http://35.184.141.85:8080"
+# Production
+# API_BASE_URL = "http://35.184.141.85:8080"
+
+# Development
 API_BASE_URL = "http://localhost:8080"
 
 class Sex(Enum):
@@ -378,8 +381,14 @@ for file in ["MOCK_CENTERS.json",
         print(f"Deleted existing file: {file}")
 
 # Generate sample data
+
+# NUMBER OF GENERATIONS
 num_centers = len(center_names_provider.elements)
 num_owners = 50
+min_pets_per_center = 10
+max_pets_per_center = 20
+min_events_per_center = 5
+max_events_per_center = 10
 
 adoption_centers = [generate_adoption_center() for _ in range(0, num_centers)]
 potential_owners = [generate_potential_owner() for _ in range(0, num_owners)]
@@ -388,21 +397,25 @@ save_pretty_json(adoption_centers, "MOCK_CENTERS.json")
 save_pretty_json(potential_owners, "MOCK_OWNERS.json")
 
 for center in adoption_centers:
+    print("\n==========\n")
     print(f"Saving {center['name']}")
     response = api_post("api/centers", center)
     user_id = response['userid']
     
     # Generate some pets and events for this center
-    for i in range(random.randint(5,10)):
-        pets = [generate_pet(user_id) for _ in range(0, i)]
-        events = [generate_event(user_id) for _ in range(0, i)]
-        append_pretty_json(pets, "MOCK_PETS.json")
-        append_pretty_json(events, "MOCK_EVENTS.json")
-        for pet in pets:
-            response = api_post("api/animals/", pet)
-        for event in events:
-            response = api_post("api/events/", event)
+    num_pets = random.randint(min_pets_per_center, max_pets_per_center)
+    num_events = random.randint(min_events_per_center, max_events_per_center)
 
+    pets = [generate_pet(user_id) for _ in range(num_pets)]
+    events = [generate_event(user_id) for _ in range(num_events)]
+    append_pretty_json(pets, "MOCK_PETS.json")
+    append_pretty_json(events, "MOCK_EVENTS.json")
+    for pet in pets:
+        print(f"Saving pet {pet['name']} to {center['name']}")
+        response = api_post("api/animals/", pet)
+    for event in events:
+        print(f"Saving event {event['name']} to {center['name']}")
+        response = api_post("api/events/", event)
 
 print("\n==================\n")
 
@@ -413,6 +426,7 @@ for owner in potential_owners:
 
     # Generate a preference for this user
     preference = generate_preference(user_id)
+    print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
     append_pretty_json([preference], "MOCK_PREFERENCES.json")
     response = api_post(f"api/update/preferences/{user_id}", preference)
 
