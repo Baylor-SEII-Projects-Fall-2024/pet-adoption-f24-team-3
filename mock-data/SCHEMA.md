@@ -13,6 +13,10 @@ The JSON Schema for each individual entity can be described as follows
 | `api/users` | Get all registered users |
 | `api/events/` | Create event |
 | `api/update/preferences` | Update users preferences |
+| `api/images/users/{userid}/profile` | upload user profile |
+| `api/images/users/{userid}/banner` | upload center banner |
+| `api/images/animals/{animalid}` | upload pet picture |
+| `api/images/events/{eventid}` | upload event picture |
 
 ---
 

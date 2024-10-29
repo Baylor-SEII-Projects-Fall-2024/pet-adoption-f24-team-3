@@ -9,7 +9,7 @@ from modules.generators import (
     generate_preference
 )
 from modules.static import generate_static_accounts
-from modules.utils import api_post, api_get
+from modules.utils import api_post, api_get, api_post_img
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
 from modules.images import generate_image, ImageType
 
@@ -70,19 +70,19 @@ for center in adoption_centers:
     append_pretty_json(pets, "MOCK_PETS.json")
     append_pretty_json(events, "MOCK_EVENTS.json")
 
-    center_img_path = generate_image(ImageType.CENTER, user_id)
-    banner_img_path = generate_image(ImageType.BANNER, user_id)
+    response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id))
+    response = api_post_img(f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id))
 
     for pet in pets:
         print(f"Saving pet {pet['name']} to {center['name']}")
         response = api_post("api/animals/", pet)
         pet_id = response['id']
-        pet_img_path = generate_image(ImageType.PET, pet_id)
+        response = api_post_img(f"api/images/animals/{pet_id}", generate_image(ImageType.PET, pet_id))
     for event in events:
         print(f"Saving event {event['name']} to {center['name']}")
         response = api_post("api/events/", event)
         event_id = response['eventID']
-        event_img_path = generate_image(ImageType.EVENT, event_id)
+        response = api_post_img(f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
 
 print("\n==========\n")
 
@@ -91,7 +91,7 @@ for owner in potential_owners:
     response = api_post("api/owners", owner)
     user_id = response['userid']
 
-    owner_img_path = generate_image(ImageType.OWNER, user_id)
+    response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id))
 
     # Generate a preference for this user
     preference = generate_preference(user_id)
