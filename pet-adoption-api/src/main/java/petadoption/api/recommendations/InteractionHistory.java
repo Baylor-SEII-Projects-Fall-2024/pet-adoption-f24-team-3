@@ -24,19 +24,20 @@ public class InteractionHistory {
     private Long userId;
 
     @Column(name="TOTAL_LIKES")
-    private int totalLikes;
+    private int totalLikes = 0  ;
 
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<InteractionPoint> interactionPoints = new ArrayList<>();
 
     @Column(name="AVG_WEIGHT")
-    private Double avgWeight;
+    private Double avgWeight = 0.0;
 
     @Column(name="AVG_HEIGHT")
-    private Double avgHeight;
+    private Double avgHeight= 0.0;
 
     @Column(name="AVG_AGE")
-    private Double avgAge;
+    private Double avgAge= 0.0;
+
 
 }
