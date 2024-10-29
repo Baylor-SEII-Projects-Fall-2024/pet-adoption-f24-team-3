@@ -1,19 +1,36 @@
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { Card, CardContent, Typography, Box, IconButton, Stack } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import CardActions from "@mui/material/CardActions";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import formatter from "@/utils/formatter";
+import recommendationService from "@/utils/services/recommendationService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
   const { pet } = props;
   const { formatSex } = formatter();
+  const { likePet } = recommendationService();
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
   return (
     <Card
       key={pet.id}
       sx={{
         display: "flex",
+        flexDirection: "column",
         mb: 2,
         width: "100%",
+        "& .hidden-button": {
+          display: "none",
+        },
+        "&:hover .hidden-button": {
+          display: "inline-flex",
+        },
       }}
     >
       <CardContent>
@@ -46,6 +63,20 @@ export default function PetCard(props) {
           </Typography>
         </Box>
       </CardContent>
+      <CardActions sx={{
+          marginTop: "auto", // Pushes CardActions to the bottom
+          justifyContent: "center", // Centers the buttons horizontally
+        }}>
+      <IconButton aria-label="like" className="hidden-button" size="large" color="primary" onClick={(event) => {
+            event.stopPropagation();
+            likePet(currentUserId, pet.id);
+          }}>
+          <ThumbUpIcon fontSize="inherit" />
+        </IconButton>
+        <IconButton aria-label="dislike" className="hidden-button" size="large" color="secondary" onClick={(event) => event.stopPropagation()}>
+          <ThumbDownAltIcon fontSize="inherit" />
+        </IconButton>
+        </CardActions>
     </Card>
   );
 }
