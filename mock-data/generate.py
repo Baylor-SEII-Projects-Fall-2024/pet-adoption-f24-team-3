@@ -8,6 +8,7 @@ from modules.generators import (
     generate_event,
     generate_preference
 )
+from modules.static import generate_static_accounts
 from modules.utils import api_post, api_get
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
 
@@ -32,8 +33,15 @@ max_pets_per_center = 20
 min_events_per_center = 5
 max_events_per_center = 10
 
-adoption_centers = [generate_adoption_center() for _ in range(0, num_centers)]
-potential_owners = [generate_potential_owner() for _ in range(0, num_owners)]
+# Generate static values
+static_centers, static_owners = generate_static_accounts()
+
+adoption_centers = static_centers.copy()
+potential_owners = static_owners.copy()
+
+# Generate random values
+adoption_centers.extend([generate_adoption_center() for _ in range(0, num_centers)])
+potential_owners.extend([generate_potential_owner() for _ in range(0, num_owners)])
 
 save_pretty_json(adoption_centers, "MOCK_CENTERS.json")
 save_pretty_json(potential_owners, "MOCK_OWNERS.json")
@@ -52,12 +60,13 @@ for center in adoption_centers:
     events = [generate_event(user_id) for _ in range(num_events)]
     append_pretty_json(pets, "MOCK_PETS.json")
     append_pretty_json(events, "MOCK_EVENTS.json")
+
     for pet in pets:
         print(f"Saving pet {pet['name']} to {center['name']}")
-        response = api_post("api/animals/", pet)
+        api_post("api/animals/", pet)
     for event in events:
         print(f"Saving event {event['name']} to {center['name']}")
-        response = api_post("api/events/", event)
+        api_post("api/events/", event)
 
 print("\n==================\n")
 
@@ -70,5 +79,5 @@ for owner in potential_owners:
     preference = generate_preference(user_id)
     print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
     append_pretty_json([preference], "MOCK_PREFERENCES.json")
-    response = api_post(f"api/update/preferences/{user_id}", preference)
+    api_post(f"api/update/preferences/{user_id}", preference)
 
