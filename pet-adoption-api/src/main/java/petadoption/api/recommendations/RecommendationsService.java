@@ -8,7 +8,9 @@ import petadoption.api.user.AdoptionCenter;
 import petadoption.api.user.UserService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
@@ -108,6 +110,34 @@ public class RecommendationsService {
         double newSum = oldSum + (newValue * itemsAdded);
         double newTotal = oldTotal + itemsAdded;
         return newSum / newTotal;
+    }
+
+    private int getAttribute(InteractionHistory history, InteractionType type, String name){
+        List<InteractionPoint> points = history.getInteractionPoints();
+        Optional<InteractionPoint> existingPoint = points.stream()
+                .filter(p-> p.getType() == type && p.getName().equals(name))
+                .findFirst();
+        return existingPoint.isPresent() ? existingPoint.get().getScore() : 0;
+    }
+
+    private double getSexCompatibility(Long userId, Long animalId) throws Exception {
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if(animal == null){
+            throw new Exception("Animal not found!");
+        }
+
+        int currentScore = getAttribute(history, InteractionType.SEX, animal.getName());
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        Map<String, Integer> sexHistory = mapHistory.getSexHistory();
+
+        String nameFav = sexHistory.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey).orElse("No Value Found");
+
+        int numFav = sexHistory.get(nameFav);
+
+        return (double) currentScore /numFav;
     }
 
 }
