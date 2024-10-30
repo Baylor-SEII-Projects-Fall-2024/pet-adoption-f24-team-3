@@ -92,10 +92,17 @@ faker.add_provider(center_names_provider)
 
 pet_first_provider = DynamicProvider(
     provider_name="pet_first",
-    elements=["Captain","Sir","Bongo","Flappy","Knobber","L-dog","Piggers",
-              "Tinks","Biscuit","Judge","Warlock","Chunks","Mr.","Ms.",
+    elements=["Bongo","Flappy","Knobber","L-dog","Piggers",
+              "Tinks","Biscuit","Judge","Warlock","Chunks",
               "Fluffles","Zoomers","Pickles","Thicken","Crunchwrap",
-              "Major","Admiral","Professor","MF","Baron","Buff"],
+              "Professor","MF","Baron","Buff",
+              "Clownish","Bonkers","Nutty","Silly","Sillier","Silliest",
+              "Microscopic","Massive","Voodoo","Hunks","Princess",
+              "Honored","Heavy","French Fry","Greg","Uncanny",
+              "OoOo Ah Ah","Mini","Timmy","Buttermilk","Felony",
+              "Misdemeanor","Skippy","Big Boy","Beef",
+              "99 cent Arizona Ice Tea","Sausage","Bouncy",
+              "\"Can I Get uhhhh\""],
 )
 faker.add_provider(pet_first_provider)
 
@@ -103,7 +110,12 @@ pet_last_provider = DynamicProvider(
     provider_name="pet_last",
     elements=["McGee","the Throngler","Muncher","Boi","Fluffernutter",
               "Horseface","Thunderbottom","Nugget","Supreme","DOOM",
-              "Churro","Dillier of Dallies","von Buscuit","McSquishface"],
+              "Churro","Dillier of Dallies","von Buscuit","McSquishface",
+              "Niblits","Wimdy","Chungus","King of Entropy","Mahoraga",
+              "the Chosen One","the Fallen","Cabbage","Egg","Thrower of Ups",
+              "McCollum","Not a Dog","Bouncers","Dipstick","McFish",
+              "the Indomitable Spirit","the Disgraced One",
+              "the Hurty of Tummies"],
 )
 faker.add_provider(pet_last_provider)
 
