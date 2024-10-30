@@ -95,31 +95,20 @@ pet_first_provider = DynamicProvider(
     elements=["Captain","Sir","Bongo","Flappy","Knobber","L-dog","Piggers",
               "Tinks","Biscuit","Judge","Warlock","Chunks","Mr.","Ms.",
               "Fluffles","Zoomers","Pickles","Thicken","Crunchwrap",
-              "Major","Admiral","Professor","MF","Baron"],
+              "Major","Admiral","Professor","MF","Baron","Buff"],
 )
 faker.add_provider(pet_first_provider)
 
 pet_last_provider = DynamicProvider(
     provider_name="pet_last",
     elements=["McGee","the Throngler","Muncher","Boi","Fluffernutter",
-              "Horseface","Thunderbottom","","Nugget","Supreme","DOOM",
+              "Horseface","Thunderbottom","Nugget","Supreme","DOOM",
               "Churro","Dillier of Dallies","von Buscuit","McSquishface"],
 )
 faker.add_provider(pet_last_provider)
 
 # Define age and size classifications for different species
 species_classifications = {
-    "Dog": {
-        "age": [(0, 1, AgeClass.BABY),
-                (1, 3, AgeClass.ADOLESCENT),
-                (3, 8, AgeClass.ADULT),
-                (8, 20, AgeClass.OLD)],
-        "size": [(0, 10, Size.EXTRA_SMALL),
-                 (10, 25, Size.SMALL),
-                 (25, 50, Size.MEDIUM),
-                 (50, 90, Size.LARGE),
-                 (90, 200, Size.EXTRA_LARGE)]
-    },
     "Cat": {
         "age": [(0, 1, AgeClass.BABY),
                 (1, 2, AgeClass.ADOLESCENT),
@@ -131,55 +120,65 @@ species_classifications = {
                  (15, 20, Size.LARGE),
                  (20, 50, Size.EXTRA_LARGE)]
     },
-    "Rabbit": {
+    "Dog": {
+        "age": [(0, 1, AgeClass.BABY),
+                (1, 3, AgeClass.ADOLESCENT),
+                (3, 8, AgeClass.ADULT),
+                (8, 20, AgeClass.OLD)],
+        "size": [(0, 10, Size.EXTRA_SMALL),
+                 (10, 25, Size.SMALL),
+                 (25, 50, Size.MEDIUM),
+                 (50, 90, Size.LARGE),
+                 (90, 200, Size.EXTRA_LARGE)]
+    },
+    "Duck": {
+        "age": [(0, 0.17, AgeClass.BABY),  # 0-2 months
+                (0.17, 0.5, AgeClass.ADOLESCENT),  # 2-6 months
+                (0.5, 5, AgeClass.ADULT),
+                (5, 12, AgeClass.OLD)],
+        "size": [(0, 0.5, Size.EXTRA_SMALL),
+                 (0.5, 1, Size.SMALL),
+                 (1, 2, Size.MEDIUM),
+                 (2, 3, Size.LARGE),
+                 (3, 6, Size.EXTRA_LARGE)]
+    },
+    "Fox": {
         "age": [(0, 0.5, AgeClass.BABY),
                 (0.5, 1, AgeClass.ADOLESCENT),
-                (1, 6, AgeClass.ADULT),
-                (6, 12, AgeClass.OLD)],
+                (1, 5, AgeClass.ADULT),
+                (5, 14, AgeClass.OLD)],
         "size": [(0, 2, Size.EXTRA_SMALL),
                  (2, 4, Size.SMALL),
                  (4, 6, Size.MEDIUM),
-                 (6, 8, Size.LARGE),
-                 (8, 20, Size.EXTRA_LARGE)]
+                 (6, 10, Size.LARGE),
+                 (10, 20, Size.EXTRA_LARGE)]
     },
-    "Guinea Pig": {
-        "age": [(0, 0.25, AgeClass.BABY),
-                (0.25, 0.5, AgeClass.ADOLESCENT),
-                (0.5, 4, AgeClass.ADULT),
-                (4, 8, AgeClass.OLD)],
-        "size": [(0, 0.3, Size.EXTRA_SMALL),
-                 (0.3, 0.7, Size.SMALL),
-                 (0.7, 1, Size.MEDIUM),
-                 (1, 1.3, Size.LARGE),
-                 (1.3, 2, Size.EXTRA_LARGE)]
-    },
-    "Ferret": {
-        "age": [(0, 0.25, AgeClass.BABY),
-                (0.25, 1, AgeClass.ADOLESCENT),
+    "Frog": {
+        "age": [(0, 0.5, AgeClass.BABY),
+                (0.5, 1, AgeClass.ADOLESCENT),
                 (1, 4, AgeClass.ADULT),
                 (4, 10, AgeClass.OLD)],
-        "size": [(0, 0.3, Size.EXTRA_SMALL),
-                 (0.3, 0.7, Size.SMALL),
-                 (0.7, 1, Size.MEDIUM),
-                 (1, 1.5, Size.LARGE),
-                 (1.5, 2.5, Size.EXTRA_LARGE)]
-    }
+        "size": [(0, 1, Size.EXTRA_SMALL),
+                 (1, 2, Size.SMALL),
+                 (2, 4, Size.MEDIUM),
+                 (4, 6, Size.LARGE),
+                 (6, 30, Size.EXTRA_LARGE)]
+    },
+    "Raccoon": {
+        "age": [(0, 0.5, AgeClass.BABY),
+                (0.5, 1, AgeClass.ADOLESCENT),
+                (1, 3, AgeClass.ADULT),
+                (3, 20, AgeClass.OLD)],
+        "size": [(0, 1, Size.EXTRA_SMALL),
+                 (1, 3, Size.SMALL),
+                 (3, 7, Size.MEDIUM),
+                 (7, 10, Size.LARGE),
+                 (10, 15, Size.EXTRA_LARGE)]
+    },
 }
 
 # Define breeds for each species
 species_breeds = {
-    "Dog": [
-        "Labrador Retriever",
-        "German Shepherd",
-        "Golden Retriever",
-        "Bulldog",
-        "Beagle",
-        "Poodle",
-        "Rottweiler",
-        "Boxer",
-        "Dachshund",
-        "Siberian Husky"
-    ],
     "Cat": [
         "Siamese",
         "Persian",
@@ -190,36 +189,66 @@ species_breeds = {
         "British Shorthair",
         "Scottish Fold",
         "Russian Blue",
-        "American Shorthair"
+        "American Shorthair",
     ],
-    "Rabbit": [
-        "Holland Lop",
-        "Mini Rex",
-        "Netherland Dwarf",
-        "Lionhead",
-        "French Lop",
-        "English Angora",
-        "Flemish Giant",
-        "Dutch Rabbit",
-        "New Zealand Rabbit",
-        "Californian Rabbit"
+    "Dog": [
+        "Affenpinscher",
+        "Beagle",
+        "Boxer",
+        "Bulldog",
+        "Chihuahua",
+        "Corgi",
+        "Dachshund",
+        "Doberman",
+        "German Shepherd",
+        "Bulldog",
+        "Poodle",
+        "Rottweiler",
+        "Husky",
+        "Samoyed",
+        "Retriever",
+        "Shiba",
+        "Shihtzu",
     ],
-    "Guinea Pig": [
-        "American Guinea Pig",
-        "Peruvian Guinea Pig",
-        "Abyssinian Guinea Pig",
-        "Silkie Guinea Pig",
-        "Teddy Guinea Pig",
-        "Coronet Guinea Pig",
-        "Lunkarya Guinea Pig",
-        "White Crested Guinea Pig"
+    "Duck": [
+        "Pekin Duck",
+        "Muscovy Duck",
+        "Moulard Duck",
+        "Welsh Harleuin",
+        "Silver Appleyard",
+        "Aylesbury Duck",
+        "Ancona Duck",
+        "Rouen Duck",
+        "Magpie Duck",
+        "Buff Duck",
+        "Golden 300 Hybrid Layer Duck",
     ],
-    "Ferret": [
-        "Sable Ferret", 
-        "Albino Ferret", 
-        "Champagne Ferret", 
-        "Cinnamon Ferret", 
-        "Black-footed Ferret"
-    ]
+    "Fox": [
+        "Red Fox",
+        "Fennec Fox",
+        "Arctic Fox",
+        "Cape Fox",
+        "Bengal Fox",
+        "Blanford's Fox",
+        "Corsac Fox",
+        "Kit Fox",
+        "Tibetan Sand Fox",
+        "Pale Fox",
+        "Rüppell’s Fox",
+        "Swift Fox",
+        "Darwin’s Fox",
+        "Culpeo Fox",
+    ],
+    "Frog": [
+        "Horned Frog",
+        "Gray Tree Frog",
+        "Dart Frog",
+        "Red-eyed Tree Frog",
+        "American Bullfrog"
+    ],
+    "Raccoon": [
+        "North American Raccoon",
+        "Cozumel Raccoon",
+        "Crab-Eating Raccoon",
+    ],
 }
-
