@@ -11,7 +11,7 @@ from modules.generators import (
 from modules.static import generate_static_accounts
 from modules.utils import api_post, api_get, api_post_img
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
-from modules.images import generate_image, ImageType
+from modules.images import generate_image, ImageType, generate_animal_image
 
 
 # Delete existing JSON files
@@ -27,20 +27,20 @@ for file in ["MOCK_CENTERS.json",
 # Generate sample data
 
 # NUMBER OF GENERATIONS
-# num_centers = len(center_names_provider.elements)
-# num_owners = 50
-# min_pets_per_center = 10
-# max_pets_per_center = 20
-# min_events_per_center = 5
-# max_events_per_center = 10
-
-# Small batch generation
-num_centers = 5
-num_owners = 5
-min_pets_per_center = 5
-max_pets_per_center = 5
+num_centers = len(center_names_provider.elements)
+num_owners = 50
+min_pets_per_center = 10
+max_pets_per_center = 20
 min_events_per_center = 5
-max_events_per_center = 5
+max_events_per_center = 10
+
+# Small batch generation for testing
+# num_centers = 5
+# num_owners = 5
+# min_pets_per_center = 5
+# max_pets_per_center = 5
+# min_events_per_center = 5
+# max_events_per_center = 5
 
 # Generate static values
 static_centers, static_owners = generate_static_accounts()
@@ -77,7 +77,15 @@ for center in adoption_centers:
         print(f"Saving pet {pet['name']} to {center['name']}")
         response = api_post("api/animals/", pet)
         pet_id = response['id']
-        response = api_post_img(f"api/images/animals/{pet_id}", generate_image(ImageType.PET, pet_id))
+        # response = api_post_img(f"api/images/animals/{pet_id}", generate_image(ImageType.PET, pet_id))
+        img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
+        if img_url:
+            try:
+                response = api_post_img(f"api/images/animals/{pet_id}", img_url)
+            except Exception as e:
+                print(f"Failed to post image for pet {pet_id}")
+        else:
+            print(f"No image generated for pet {pet_id}")
     for event in events:
         print(f"Saving event {event['name']} to {center['name']}")
         response = api_post("api/events/", event)

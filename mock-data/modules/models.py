@@ -1,5 +1,12 @@
 from enum import Enum
 
+class ImageType(Enum):
+    PET = "pet"
+    BANNER = "banner"
+    CENTER = "center"
+    OWNER = "owner"
+    EVENT = "event"
+
 class Sex(Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
