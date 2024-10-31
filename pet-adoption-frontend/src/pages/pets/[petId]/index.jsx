@@ -152,7 +152,6 @@ export default function ViewPetPage() {
                     <Box sx={{ width: "50%", height: "60px", mt: "5px", }}>
                       <LikeButtons userId={currentUserId} petId={petId} />
                     </Box>
-
                   )}
 
                   <Typography variant='h5'>Quick Facts</Typography>

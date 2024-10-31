@@ -11,7 +11,6 @@ const recommendationService = () => {
 
         const result = await response.json();
         if (response.ok) {
-            console.log(result);
             return result;
         } else {
             console.error(`Like pet failed: ${result.message}`);
@@ -29,7 +28,6 @@ const recommendationService = () => {
 
         const result = await response.json();
         if (response.ok) {
-            console.log(result);
             return result;
         } else {
             console.error(`Dislike pet failed: ${result.message}`);
@@ -37,7 +35,7 @@ const recommendationService = () => {
         }
     };
 
-    return{
+    return {
         likePet,
         dislikePet
     };
