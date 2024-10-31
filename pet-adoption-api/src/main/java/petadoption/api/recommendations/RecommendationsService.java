@@ -10,7 +10,6 @@ import petadoption.api.user.UserService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
@@ -118,7 +117,7 @@ public class RecommendationsService {
                 .map(Map.Entry::getKey)
                 .orElse("No Value Found");
 
-        int numFav = historyMap.getOrDefault(nameFav, 1); // Avoid division by zero
+        int numFav = historyMap.getOrDefault(nameFav, 1); // Avoids division by zero without affecting score
         int specifiedScore = historyMap.getOrDefault(targetAttribute, 0);
 
         return maxValue * ((double) specifiedScore / numFav);
@@ -127,25 +126,43 @@ public class RecommendationsService {
     public double getSexCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
-        if(animal == null){
+        if (animal == null) {
             throw new Exception("Animal not found!");
         }
 
         MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
         Map<String, Integer> sexHistory = mapHistory.getSexHistory();
 
-        String nameFav = sexHistory.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey).orElse("No Value Found");
-
-        int numFav = sexHistory.get(nameFav);
-
-        int specifiedScore = sexHistory.getOrDefault(animal.getSex().toString(), 0);
-
-        return (double) specifiedScore /numFav;
+        return calculateCompatibilityScore(sexHistory, animal.getSex().toString(), 1.0);
     }
 
-    public double getAgeCompatibility(Long userId, Long animalId) throws Exception {
+    public double getSpeciesCompatibility(Long userId, Long animalId) throws Exception {
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if (animal == null) {
+            throw new Exception("Animal not found!");
+        }
+
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        Map<String, Integer> speciesHistory = mapHistory.getSpeciesHistory();
+
+        return calculateCompatibilityScore(speciesHistory, animal.getSpecies(), 1.0);
+    }
+
+    public double getBreedCompatibility(Long userId, Long animalId) throws Exception {
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if (animal == null) {
+            throw new Exception("Animal not found!");
+        }
+
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        Map<String, Integer> breedHistory = mapHistory.getBreedHistory();
+
+        return calculateCompatibilityScore(breedHistory, animal.getBreed(), 1.0);
+    }
+
+    public double getAgeClassCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
         if(animal == null){
@@ -164,6 +181,45 @@ public class RecommendationsService {
         int specifiedScore = ageHistory.getOrDefault(animal.getAgeClass().toString(), 0);
 
         return 1 - (double) abs(numFav - specifiedScore) /numFav;
+    }
+
+    public double getAgeCompatibility(Long userId, Long animalId) throws Exception{
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if (animal == null) {
+            throw new Exception("Animal not found!");
+        }
+
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        double avgAge = mapHistory.getAvgAge();
+
+        return (animal.getAge() - avgAge)/avgAge;
+    }
+
+    public double getWeightCompatibility(Long userId, Long animalId) throws Exception{
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if (animal == null) {
+            throw new Exception("Animal not found!");
+        }
+
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        double avgWeight = mapHistory.getAvgWeight();
+
+        return (animal.getWeight() - avgWeight)/avgWeight;
+    }
+
+    public double getHeightCompatibility(Long userId, Long animalId) throws Exception{
+        InteractionHistory history = findOrMakeByUser(userId);
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if (animal == null) {
+            throw new Exception("Animal not found!");
+        }
+
+        MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
+        double avgHeight = mapHistory.getAvgHeight();
+
+        return (animal.getHeight() - avgHeight)/avgHeight;
     }
 
     public double getSizeCompatibility(Long userId, Long animalId) throws Exception {
@@ -190,81 +246,50 @@ public class RecommendationsService {
     public double getCenterCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
-        if(animal == null){
+        if (animal == null) {
             throw new Exception("Animal not found!");
         }
 
         MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
         Map<String, Integer> centerHistory = mapHistory.getCenterHistory();
 
-        String nameFav = centerHistory.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey).orElse("No Value Found");
-
-        int numFav = centerHistory.get(nameFav);
-
-        int specifiedScore = centerHistory.getOrDefault(animal.getCenterId().toString(), 0);
-
-        double maxValue = 0.4;
-
-        return((double) specifiedScore /numFav) * maxValue;
+        return calculateCompatibilityScore(centerHistory, animal.getCenterId().toString(), 0.4);
     }
 
     public double getStateCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
-        if(animal == null){
+        if (animal == null) {
             throw new Exception("Animal not found!");
         }
 
         AdoptionCenter adoptionCenter = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
-        if(adoptionCenter == null){
+        if (adoptionCenter == null) {
             throw new Exception("AdoptionCenter not found!");
         }
-
 
         MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
         Map<String, Integer> stateHistory = mapHistory.getStateHistory();
 
-        String nameFav = stateHistory.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey).orElse("No Value Found");
-
-        int numFav = stateHistory.get(nameFav);
-
-        int specifiedScore = stateHistory.getOrDefault(adoptionCenter.getState(), 0);
-
-        double maxValue = 0.6;
-
-        return((double) specifiedScore /numFav) * maxValue;
+        return calculateCompatibilityScore(stateHistory, adoptionCenter.getState(), 0.6);
     }
 
     public double getCityCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
-        if(animal == null){
+        if (animal == null) {
             throw new Exception("Animal not found!");
         }
 
         AdoptionCenter adoptionCenter = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
-        if(adoptionCenter == null){
+        if (adoptionCenter == null) {
             throw new Exception("AdoptionCenter not found!");
         }
 
         MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
         Map<String, Integer> cityHistory = mapHistory.getCityHistory();
 
-        String nameFav = cityHistory.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey).orElse("No Value Found");
-
-        int numFav = cityHistory.get(nameFav);
-
-        int specifiedScore = cityHistory.getOrDefault(adoptionCenter.getCity(), 0);
-
-        double maxValue = 0.6;
-
-        return((double) specifiedScore /numFav) * maxValue;
+        return calculateCompatibilityScore(cityHistory, adoptionCenter.getCity(), 0.6);
     }
 
 

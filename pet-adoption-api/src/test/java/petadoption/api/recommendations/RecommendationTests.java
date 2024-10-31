@@ -32,533 +32,277 @@ public class RecommendationTests {
     @Autowired
     private AdoptionCenterRepository adoptionCenterRepository;
 
-    @Test
-    void testSexCompatibility() throws Exception {
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
+    private Long createAdoptionCenter(String email, String address, String city, String state, String zip) {
+        AdoptionCenter center = new AdoptionCenter();
+        center.setAccountType("OWNER");
+        center.setEmailAddress(email);
+        center.setPassword("password");
+        center.setAddress(address);
+        center.setCity(city);
+        center.setState(state);
+        center.setZipCode(zip);
+        return adoptionCenterRepository.save(center).getId();
+    }
 
+    private Long registerOwner(String email, String firstName, String lastName) throws Exception {
         OwnerDto ownerDto = new OwnerDto();
         ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
+        ownerDto.setEmailAddress(email);
         ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
+        ownerDto.setNameFirst(firstName);
+        ownerDto.setNameLast(lastName);
+        return userService.registerOwner(ownerDto);
+    }
 
-        Long newID = userService.registerOwner(ownerDto);
+    private Long createAndSaveAnimal(Long centerId, String name, int age, AnimalSex sex, AnimalSize size, AnimalAgeClass ageClass, String breed, String species) {
+        Animal animal = new Animal();
+        animal.setCenterId(centerId);
+        animal.setDatePosted(new Date());
+        animal.setName(name);
+        animal.setAge(age);
+        animal.setSpecies(species);
+        animal.setBreed(breed);
+        animal.setSex(sex);
+        animal.setDescription("testDescription");
+        animal.setSize(size);
+        animal.setAgeClass(ageClass);
+        animal.setHeight(1.0);
+        animal.setWeight(1.0);
+        return animalService.saveAnimal(animal).getId();
+    }
 
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
+    @Test
+    void testSexCompatibility() throws Exception {
+        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
 
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.ADULT);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
+        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        double sexCompat = recommendationsService.getSexCompatibility(ownerId, animalThreeId);
+        assertEquals(0.5, sexCompat);
+
+        double notMostCompat = recommendationsService.getSexCompatibility(ownerId, animalTwoId);
+        assertNotEquals(0.5, notMostCompat);
+    }
+
+    @Test
+    void testSpeciesCompatibility() throws Exception {
+        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Tabby", "Cat");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        double speciesCompat = recommendationsService.getSpeciesCompatibility(ownerId, animalThreeId);
+        assertEquals(0.5, speciesCompat);
+
+        double notMostCompat = recommendationsService.getSpeciesCompatibility(ownerId, animalTwoId);
+        assertNotEquals(0.5, notMostCompat);
+    }
+
+    @Test
+    void testBreedCompatibility() throws Exception {
+        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Dobberman", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        double breedCompatibility = recommendationsService.getBreedCompatibility(ownerId, animalThreeId);
+        assertEquals(0.5, breedCompatibility);
+
+        double notMostCompat = recommendationsService.getBreedCompatibility(ownerId, animalTwoId);
+        assertNotEquals(0.5, notMostCompat);
+    }
+
+    @Test
+    void testAgeClassCompatibility() throws Exception {
+        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(0.5, recommendationsService.getAgeClassCompatibility(ownerId, animalTwoId));
+        assertEquals(1.0, recommendationsService.getAgeClassCompatibility(ownerId, animalThreeId));
+    }
+
+    @Test
+    void testSizeCompatibility() throws Exception {
+        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.LARGE, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(0.5, recommendationsService.getSizeCompatibility(ownerId, animalTwoId));
+        assertEquals(1.0, recommendationsService.getSizeCompatibility(ownerId, animalThreeId));
+    }
+
+    @Test
+    void testCenterCompatibility() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(0.2, recommendationsService.getCenterCompatibility(ownerId, animalTwoId));
+        assertEquals(0.4, recommendationsService.getCenterCompatibility(ownerId, animalThreeId));
+    }
+
+    @Test
+    void testStateCompatibility() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(0.3, recommendationsService.getStateCompatibility(ownerId, animalTwoId));
+        assertEquals(0.6, recommendationsService.getStateCompatibility(ownerId, animalThreeId));
+    }
+
+    @Test
+    void testCityCompatibility() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(0.3, recommendationsService.getCityCompatibility(ownerId, animalTwoId));
+        assertEquals(0.6, recommendationsService.getCityCompatibility(ownerId, animalThreeId));
+    }
+
+    @Test
+    void testWeightCompatibility() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        assert animalOne != null;
+        animalOne.setWeight(5.0);
         animalService.saveAnimal(animalOne);
 
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(id);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.MEDIUM);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        assert animalTwo != null;
+        animalTwo.setWeight(2.0);
         animalService.saveAnimal(animalTwo);
 
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.ADULT);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+        assert animalThree != null;
+        animalThree.setWeight(5.0);
         animalService.saveAnimal(animalThree);
 
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        double sexCompat = recommendationsService.getSexCompatibility(newID, animalThree.getId());
-        double testValue = (double) 1 /2;
+        assertEquals(-0.5, recommendationsService.getWeightCompatibility(ownerId, animalTwoId));
+        assertEquals(0.25, recommendationsService.getWeightCompatibility(ownerId, animalThreeId));
+    }
 
-        assertEquals(testValue, sexCompat);
+    @Test
+    void testHeightCompatibility() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
 
-        double notMostCompat = recommendationsService.getSexCompatibility(newID, animalTwo.getId());
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
 
-        assertNotEquals(testValue, notMostCompat);
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        assert animalOne != null;
+        animalOne.setHeight(5.0);
+        animalService.saveAnimal(animalOne);
 
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        assert animalTwo != null;
+        animalTwo.setHeight(2.0);
+        animalService.saveAnimal(animalTwo);
 
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+        assert animalThree != null;
+        animalThree.setHeight(5.0);
+        animalService.saveAnimal(animalThree);
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        assertEquals(-0.5, recommendationsService.getHeightCompatibility(ownerId, animalTwoId));
+        assertEquals(0.25, recommendationsService.getHeightCompatibility(ownerId, animalThreeId));
     }
 
     @Test
     void testAgeCompatibility() throws Exception {
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
 
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 7, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
 
-        Long newID = userService.registerOwner(ownerDto);
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
-
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.BABY);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
-        animalService.saveAnimal(animalOne);
-
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(id);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.MEDIUM);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
-        animalService.saveAnimal(animalTwo);
-
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.BABY);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
-        animalService.saveAnimal(animalThree);
-
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
-
-        double ageCompat = recommendationsService.getAgeCompatibility(newID, animalTwo.getId());
-        double testValue = (double) 1 /2;
-
-        assertEquals(testValue, ageCompat);
-
-        double maxAgeCompat = recommendationsService.getAgeCompatibility(newID, animalThree.getId());
-
-        assertEquals(1, maxAgeCompat);
+        assertEquals(0.4, recommendationsService.getAgeCompatibility(ownerId, animalTwoId));
+        assertEquals(-0.2, recommendationsService.getAgeCompatibility(ownerId, animalThreeId));
     }
 
-    @Test
-    void testSizeCompatibility() throws Exception{
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
 
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
-
-        Long newID = userService.registerOwner(ownerDto);
-
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
-
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.BABY);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
-        animalService.saveAnimal(animalOne);
-
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(id);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.LARGE);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
-        animalService.saveAnimal(animalTwo);
-
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.BABY);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
-        animalService.saveAnimal(animalThree);
-
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
-
-        double sizeCompat = recommendationsService.getSizeCompatibility(newID, animalTwo.getId());
-        double testValue = (double) 1 /2;
-
-        assertEquals(testValue, sizeCompat);
-
-        double maxSizeCompat = recommendationsService.getSizeCompatibility(newID, animalThree.getId());
-
-        assertEquals(1, maxSizeCompat);
-    }
-
-    @Test
-    void testCenterCompatibility() throws Exception{
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
-
-        AdoptionCenter adoptionCenterTwo = new AdoptionCenter();
-        adoptionCenterTwo.setAccountType("OWNER");
-        adoptionCenterTwo.setEmailAddress("other@example.com");
-        adoptionCenterTwo.setPassword("otherPassword");
-        adoptionCenterTwo.setAddress("Other Address");
-        adoptionCenterTwo.setCity("Other City");
-        adoptionCenterTwo.setState("Other State");
-        adoptionCenterTwo.setZipCode("5678");
-        AdoptionCenter savedUserTwo = adoptionCenterRepository.save(adoptionCenterTwo);
-        Long idTwo = savedUserTwo.getId();
-
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
-
-        Long newID = userService.registerOwner(ownerDto);
-
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
-
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.BABY);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
-        animalService.saveAnimal(animalOne);
-
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(idTwo);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.MEDIUM);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
-        animalService.saveAnimal(animalTwo);
-
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.BABY);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
-        animalService.saveAnimal(animalThree);
-
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
-
-        double centerCompat = recommendationsService.getCenterCompatibility(newID, animalTwo.getId());
-        double testValue = 0.2;
-
-        assertEquals(testValue, centerCompat);
-
-        double maxCenterCompat = recommendationsService.getCenterCompatibility(newID, animalThree.getId());
-
-        assertEquals(0.4, maxCenterCompat);
-    }
-
-    @Test
-    void testStateCompatibility() throws Exception{
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
-
-        AdoptionCenter adoptionCenterTwo = new AdoptionCenter();
-        adoptionCenterTwo.setAccountType("OWNER");
-        adoptionCenterTwo.setEmailAddress("other@example.com");
-        adoptionCenterTwo.setPassword("otherPassword");
-        adoptionCenterTwo.setAddress("Other Address");
-        adoptionCenterTwo.setCity("Other City");
-        adoptionCenterTwo.setState("Other State");
-        adoptionCenterTwo.setZipCode("5678");
-        AdoptionCenter savedUserTwo = adoptionCenterRepository.save(adoptionCenterTwo);
-        Long idTwo = savedUserTwo.getId();
-
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
-
-        Long newID = userService.registerOwner(ownerDto);
-
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.BABY);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
-        animalService.saveAnimal(animalOne);
-
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(idTwo);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.MEDIUM);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
-        animalService.saveAnimal(animalTwo);
-
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.BABY);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
-        animalService.saveAnimal(animalThree);
-
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
-
-        double stateCompat = recommendationsService.getStateCompatibility(newID, animalTwo.getId());
-        double testValue = 0.3;
-
-        assertEquals(testValue, stateCompat);
-
-        double maxStateCompat = recommendationsService.getStateCompatibility(newID, animalThree.getId());
-
-        assertEquals(0.6, maxStateCompat);
-    }
-
-    @Test
-    void testCityCompatibility() throws Exception{
-        AdoptionCenter adoptionCenter = new AdoptionCenter();
-        adoptionCenter.setAccountType("OWNER");
-        adoptionCenter.setEmailAddress("example@example.com");
-        adoptionCenter.setPassword("password");
-        adoptionCenter.setAddress("Old Address");
-        adoptionCenter.setCity("Old City");
-        adoptionCenter.setState("Old State");
-        adoptionCenter.setZipCode("1234");
-        AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-        Long id = savedUser.getId();
-
-        AdoptionCenter adoptionCenterTwo = new AdoptionCenter();
-        adoptionCenterTwo.setAccountType("OWNER");
-        adoptionCenterTwo.setEmailAddress("other@example.com");
-        adoptionCenterTwo.setPassword("otherPassword");
-        adoptionCenterTwo.setAddress("Other Address");
-        adoptionCenterTwo.setCity("Other City");
-        adoptionCenterTwo.setState("Other State");
-        adoptionCenterTwo.setZipCode("5678");
-        AdoptionCenter savedUserTwo = adoptionCenterRepository.save(adoptionCenterTwo);
-        Long idTwo = savedUserTwo.getId();
-
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
-
-        Long newID = userService.registerOwner(ownerDto);
-
-        Animal animalOne = new Animal();
-        animalOne.setCenterId(id);
-        animalOne.setDatePosted(new Date());
-        animalOne.setName("Charles");
-        animalOne.setAge(4);
-        animalOne.setSpecies("Dog");
-        animalOne.setBreed("Shihtzu");
-        animalOne.setSex(AnimalSex.MALE);
-        animalOne.setDescription("testDescription");
-        animalOne.setSize(AnimalSize.MEDIUM);
-        animalOne.setAgeClass(AnimalAgeClass.BABY);
-        animalOne.setHeight(1.0);
-        animalOne.setWeight(1.0);
-        animalService.saveAnimal(animalOne);
-
-        Animal animalTwo = new Animal();
-        animalTwo.setCenterId(idTwo);
-        animalTwo.setDatePosted(new Date());
-        animalTwo.setName("Alakazam");
-        animalTwo.setAge(4);
-        animalTwo.setSpecies("Dog");
-        animalTwo.setBreed("Shihtzu");
-        animalTwo.setSex(AnimalSex.MALE);
-        animalTwo.setDescription("testDescription");
-        animalTwo.setSize(AnimalSize.MEDIUM);
-        animalTwo.setAgeClass(AnimalAgeClass.ADULT);
-        animalTwo.setHeight(1.0);
-        animalTwo.setWeight(1.0);
-        animalService.saveAnimal(animalTwo);
-
-        Animal animalThree = new Animal();
-        animalThree.setCenterId(id);
-        animalThree.setDatePosted(new Date());
-        animalThree.setName("Sharan");
-        animalThree.setAge(4);
-        animalThree.setSpecies("Dog");
-        animalThree.setBreed("Shihtzu");
-        animalThree.setSex(AnimalSex.FEMALE);
-        animalThree.setDescription("testDescription");
-        animalThree.setSize(AnimalSize.MEDIUM);
-        animalThree.setAgeClass(AnimalAgeClass.BABY);
-        animalThree.setHeight(1.0);
-        animalThree.setWeight(1.0);
-        animalService.saveAnimal(animalThree);
-
-        recommendationsService.likeAnimal(newID, animalOne.getId());
-        recommendationsService.likeAnimal(newID, animalTwo.getId());
-        recommendationsService.likeAnimal(newID, animalThree.getId());
-
-        double cityCompat = recommendationsService.getCityCompatibility(newID, animalTwo.getId());
-        double testValue = 0.3;
-
-        assertEquals(testValue, cityCompat);
-
-        double maxCityCompat = recommendationsService.getCityCompatibility(newID, animalThree.getId());
-
-        assertEquals(0.6, maxCityCompat);
-    }
 
 }
