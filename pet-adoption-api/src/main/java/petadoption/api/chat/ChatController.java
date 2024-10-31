@@ -1,4 +1,4 @@
-package petadoption.api.websocket;
+package petadoption.api.chat;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -11,10 +11,10 @@ import java.util.Date;
 public class ChatController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        System.out.println("Received message: " + chatMessage);
-        chatMessage.setTimestamp(new Date());
-        return chatMessage;
+    public Message sendMessage(@Payload Message message) {
+        System.out.println("Received message: " + message);
+        message.setTimestamp(new Date());
+        return message;
     }
 
 }
