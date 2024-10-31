@@ -2,15 +2,11 @@ import React from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography, Box, Link, IconButton } from '@mui/material'
+import { Button, Card, CardContent, Stack, Typography, Box, Link } from '@mui/material'
 import animalService from '@/utils/services/animalService';
 import userService from '@/utils/services/userService';
-import recommendationService from '@/utils/services/recommendationService';
 import formatter from '@/utils/formatter';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import LikeButtons from '@/components/LikeButtons';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -23,9 +19,6 @@ export default function ViewPetPage() {
   const { getAnimal, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
   const { formatSize, formatSex } = formatter();
-
-  const { likePet } = recommendationService();
-  const { dislikePet } = recommendationService();
 
   const [animal, setAnimal] = React.useState(null);
   const [adoptionCenter, setAdoptionCenter] = React.useState(null);
@@ -152,7 +145,15 @@ export default function ViewPetPage() {
                   style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
                 />
                 <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
+
                   <Typography variant='h3' >{animal.name}</Typography>
+
+                  {currentUserType == "Owner" && (
+                    <Box sx={{ width: "50%", height: "60px", mt: "5px", }}>
+                      <LikeButtons userId={currentUserId} petId={petId} />
+                    </Box>
+
+                  )}
 
                   <Typography variant='h5'>Quick Facts</Typography>
                   <table>
@@ -187,21 +188,6 @@ export default function ViewPetPage() {
                       </tr>
                     </tbody>
                   </table>
-                  {currentUserType == "Owner" && (
-                    <Stack direction="column"  sx={{ paddingLeft: 10, paddingTop: 3 }} alignItems='left'>
-                    <Typography varient='h3'>What do you think?</Typography>
-                    <Stack direction="row" spacing={1}>
-                      <IconButton aria-label='like' size='large' color='primary' onClick={() => likePet(currentUserId, petId)}>
-                        <ThumbUpIcon fontSize="inherit"/>
-                      </IconButton>
-                      <IconButton aria-label='dislike' size='large' color='secondary' onClick={() => dislikePet(currentUserId, petId)}>
-                        <ThumbDownAltIcon fontSize="inherit"/>
-                      </IconButton>
-                    </Stack>
-                </Stack>
-                  )}
-                  
-
                 </Stack>
                 {currentUserId == animal.centerId && (
                   <Box
@@ -233,13 +219,13 @@ export default function ViewPetPage() {
                   {adoptionCenter.name}</Link>
                 <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
               </Box>
-              
-                
+
+
 
             </CardContent>
           </Card>
         </Stack>
-      </main>
+      </main >
     </>
   );
 }

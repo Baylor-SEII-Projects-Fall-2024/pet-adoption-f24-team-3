@@ -47,17 +47,21 @@ const themeOptions = {
                 },
                 like: {
                     flex: 1,
-                    width: "50%",
                     height: "100%",
-                    backgroundColor: "#b3f4b3",
-                    color: "#4c874c"
+                    backgroundColor: "#e0fde0",
+                    color: "#4c874c",
+                    '&:hover': {
+                        backgroundColor: '#b3f4b3',
+                    },
                 },
                 dislike: {
                     flex: 1,
-                    width: "50%",
                     height: "100%",
-                    backgroundColor: "#ffd0d0",
-                    color: "#bf3232"
+                    backgroundColor: "#fde4e4",
+                    color: "#bf3232",
+                    '&:hover': {
+                        backgroundColor: '#ffd0d0',
+                    },
                 },
             },
         },

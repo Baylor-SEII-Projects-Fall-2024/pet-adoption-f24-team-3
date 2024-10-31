@@ -1,32 +1,22 @@
 import React from "react";
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { Card, CardContent, Typography, Box, IconButton, Button } from "@mui/material";
-import { createTheme } from "@mui/material/styles";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import formatter from "@/utils/formatter";
-import recommendationService from "@/utils/services/recommendationService";
-import { ThumbDownAltOutlined, ThumbUpAltOutlined, ThumbUpAltSharp } from "@mui/icons-material";
+import LikeButtons from "./LikeButtons";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
   const { pet } = props;
   const { formatSex } = formatter();
-  const { likePet, dislikePet } = recommendationService();
+  const [hasInteracted, setHasInteracted] = React.useState(false);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
-  const onLikePet = (event) => {
-    event.stopPropagation();
-    likePet(currentUserId, pet.id);
-  };
-
-  const onDislikePet = (event) => {
-    event.stopPropagation();
-    dislikePet(currentUserId, pet.id);
-  };
+  const onLikeInteraction = () => {
+    setHasInteracted(!hasInteracted);
+  }
 
   return (
     <Card
@@ -42,6 +32,7 @@ export default function PetCard(props) {
         "&:hover .hidden-button": {
           display: "inline-flex",
         },
+
       }}
     >
       <CardContent>
@@ -75,26 +66,15 @@ export default function PetCard(props) {
         </Box>
       </CardContent>
       {currentUserType == "Owner" && (
-        <CardActions sx={{
-          marginTop: "auto",
-          justifyContent: "center",
-          height: "60px",
-          pl: "15%",
-          pr: "15%",
-        }}>
-          <Button
-            onClick={onLikePet}
-            className="hidden-button"
-            variant="like">
-            <ThumbUpAltOutlined fontSize="large" />
-          </Button>
-          <Button
-            onClick={onLikePet}
-            className="hidden-button"
-            variant="dislike">
-            <ThumbDownAltOutlined fontSize="large" color="dislike" />
-          </Button>
-
+        <CardActions sx={{ height: "60px" }}>
+          <div className={`${!hasInteracted ? "hidden-button" : ""}`}
+            style={{
+              width: "100%",
+              paddingLeft: "10%",
+              paddingRight: "10%",
+            }}>
+            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} />
+          </div>
         </CardActions>
       )}
 
