@@ -120,14 +120,14 @@ public class RecommendationsService {
         return existingPoint.isPresent() ? existingPoint.get().getScore() : 0;
     }
 
-    private double getSexCompatibility(Long userId, Long animalId) throws Exception {
+    public double getSexCompatibility(Long userId, Long animalId) throws Exception {
         InteractionHistory history = findOrMakeByUser(userId);
         Animal animal = animalService.findAnimal(animalId).orElse(null);
         if(animal == null){
             throw new Exception("Animal not found!");
         }
 
-        int currentScore = getAttribute(history, InteractionType.SEX, animal.getName());
+        int currentScore = getAttribute(history, InteractionType.SEX, animal.getName()); //problem is here
         MappedInteractionHistory mapHistory = new MappedInteractionHistory(history);
         Map<String, Integer> sexHistory = mapHistory.getSexHistory();
 
@@ -137,7 +137,9 @@ public class RecommendationsService {
 
         int numFav = sexHistory.get(nameFav);
 
-        return (double) currentScore /numFav;
+        int specifiedScore = sexHistory.getOrDefault(animal.getSex().toString(), 0);
+
+        return (double) specifiedScore /numFav;
     }
 
 }
