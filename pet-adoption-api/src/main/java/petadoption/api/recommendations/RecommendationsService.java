@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.lang.Math.abs;
 
 @Service
 public class RecommendationsService {
@@ -31,7 +30,7 @@ public class RecommendationsService {
     public void likeAnimal(Long userId, Long animalId) throws Exception {
         addInteractions(userId,animalId,1);
     }
-    public void disLikeAnimal(Long userId, Long animalId) throws Exception {
+    public void dislikeAnimal(Long userId, Long animalId) throws Exception {
         addInteractions(userId,animalId,-1);
     }
 

@@ -92,4 +92,8 @@ public class AnimalService {
 
         return animalRepository.save(animal).getId();
     }
+
+    public void clearData() {
+        animalRepository.deleteAll();
+    }
 }

@@ -58,5 +58,9 @@ public class EventService {
         }
         eventRepository.delete(deletedEvent);
     }
+
+    public void clearData() {
+        eventRepository.deleteAll();
+    }
 }
 
