@@ -23,11 +23,11 @@ public class InteractionPoint {
     private Integer score;
 
     public InteractionPoint() {}
-    public InteractionPoint(InteractionType type, String name, InteractionHistory history){
+    public InteractionPoint(InteractionType type, String name, InteractionHistory history,Integer initialValue){
         this();
         this.type = type;
         this.name = name;
-        this.score = 1;
+        this.score = initialValue;
         this.history = history;
     }
 

@@ -32,7 +32,7 @@ public class RecommendationsController {
     @PutMapping("/{userId}/dislike/{animalId}")
     public HttpStatus dislikeAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
         try {
-            recommendationsService.disLikeAnimal(userId, animalId);
+            recommendationsService.dislikeAnimal(userId, animalId);
             return HttpStatus.OK;
         } catch (Exception e){
             log.error(e.getMessage());

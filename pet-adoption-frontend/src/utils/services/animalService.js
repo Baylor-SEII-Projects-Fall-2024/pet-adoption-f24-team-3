@@ -17,7 +17,7 @@ const animalService = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                date: new Date().toJSON(),
+                datePosted: new Date().toJSON(),
                 name: formData.name,
                 species: formData.species,
                 breed: formData.breed,
