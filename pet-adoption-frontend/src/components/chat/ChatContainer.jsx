@@ -7,12 +7,7 @@ import ChatBox from './ChatBox';
 import { useChat } from '@/utils/contexts/chatContext';
 
 export default function ChatContainer(props) {
-    const [chatOpen, setChatOpen] = React.useState(false);
     const { isChatDialogOpen, openChatDialog, closeChatDialog } = useChat();
-
-    const toggleChat = () => {
-        setChatOpen(!chatOpen);
-    }
 
     if (!isChatDialogOpen) {
         return (
