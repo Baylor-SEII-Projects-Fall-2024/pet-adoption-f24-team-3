@@ -3,6 +3,7 @@ package petadoption.api.chat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,11 @@ public class ChatService {
         return chatRepository.findByUserIDs(userID1, userID2);
     }
 
+    public List<Chat> getChatsByUserID(Long userID) {
+        return chatRepository.findChatsByUserID(userID);
+    }
+
+    // Creates and saves a chat. If one already exists, it is returned
     public Chat createChat(Long senderID, Long receiverID) {
 
         var exists = chatRepository.findByUserIDs(senderID, receiverID);

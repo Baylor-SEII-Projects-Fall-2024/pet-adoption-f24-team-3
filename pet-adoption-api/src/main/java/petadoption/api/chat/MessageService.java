@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class MessageService {
@@ -18,6 +19,10 @@ public class MessageService {
         message.setTimestamp(new Date());
         message.setIsRead(false);
         return messageRepository.save(message);
+    }
+
+    public List<Message> getByChatID(Long chatID) {
+        return messageRepository.getMessagesByChatIDOrderByTimestampDesc(chatID);
     }
 
 

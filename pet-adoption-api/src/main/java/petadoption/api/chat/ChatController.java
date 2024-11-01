@@ -8,6 +8,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/chats")
 @CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
@@ -27,9 +29,20 @@ public class ChatController {
 
     // Gets a chat between two users based on their ids
     @GetMapping("/by-users")
-    public ResponseEntity<Chat> getChatByUserIds(@RequestParam Long userId1, @RequestParam Long userId2) {
-        var chat = chatService.getChatByUserIDs(userId1, userId2);
+    public ResponseEntity<Chat> getChatByUserIDs(@RequestParam Long userID1, @RequestParam Long userID2) {
+        var chat = chatService.getChatByUserIDs(userID1, userID2);
         return chat.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/by-user")
+    public List<Chat> getChatsByUserID(@RequestParam Long userID) {
+        return chatService.getChatsByUserID(userID);
+    }
+
+    // Gets a list of messages by the chatID ordered chronologically
+    @GetMapping("/by-chatID")
+    public List<Message> getMessagesByChatID(@RequestParam Long chatID) {
+        return messageService.getByChatID(chatID);
     }
 
     // Creates a chat between two users. If the chat already exists, it just returns the existing chat
@@ -37,6 +50,8 @@ public class ChatController {
     public Chat createChat(@RequestParam Long senderID, @RequestParam Long receiverID) {
         return chatService.createChat(senderID, receiverID);
     }
+
+
 
 
 }
