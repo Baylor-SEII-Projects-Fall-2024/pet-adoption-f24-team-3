@@ -37,7 +37,7 @@ const ChatPage = () => {
         console.log("Connected to WebSocket");
         // Check if already subscribed
         if (!isSubscribed.current) {
-          client.subscribe("/topic/messages", (msg) => {
+          client.subscribe("/topic/messages/1", (msg) => {
             const newMessage = JSON.parse(msg.body);
             console.log("Received message:", newMessage);
             setMessages((prevMessages) => [...prevMessages, newMessage]);
