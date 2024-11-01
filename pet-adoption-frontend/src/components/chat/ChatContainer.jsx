@@ -42,7 +42,6 @@ export default function ChatContainer(props) {
                 position: "fixed",
                 alignItems: "flex-end",
                 display: "flex",
-                // flexDirection: "column-reverse",
                 justifyContent: "flex-start",
             }}
         >
