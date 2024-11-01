@@ -29,8 +29,8 @@ public class ChatController {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    // Sends a message mapped to /api/chats/{chatID}
-    @MessageMapping("/{chatID}")
+    // Saves a message sent to /app/chat/{chatID} and sends it to topic/messages/{chatID}
+    @MessageMapping("/chat/{chatID}")
     public void sendMessage(@Payload Message message, @DestinationVariable Long chatID) {
         System.out.println("Received message: " + message);
 
@@ -54,6 +54,11 @@ public class ChatController {
     @GetMapping("/by-chatID")
     public List<Message> getMessagesByChatID(@RequestParam Long chatID) {
         return messageService.getByChatID(chatID);
+    }
+
+    @GetMapping("unread-count")
+    public Integer getUnreadMessageCount(Long userID) {
+        return messageService.getUnreadMessageCount(userID);
     }
 
     // Gets a list of chat infos for a user id, with optional pagination

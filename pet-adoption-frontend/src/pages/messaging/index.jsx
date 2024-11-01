@@ -65,12 +65,13 @@ const ChatPage = () => {
   const sendMessage = () => {
     if (stompClient && message.trim()) {
       const chatMessage = {
-        sender: currentUserName,
-        senderID: currentUserId,
+        chatID: 1,
+        senderID: 9,
+        recipientID: 10,
         content: message,
       };
       console.log("Sending message:", chatMessage);
-      stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+      stompClient.send("/app/chat/1", {}, JSON.stringify(chatMessage));
       setMessage("");
     }
   };

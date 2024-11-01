@@ -19,7 +19,7 @@ public class ChatInfoResponse {
         this.chatID = chat.getId();
         this.senderID = message.getSenderID();
         this.mostRecentContent = message.getContent();
-        this.hasUnread = message.getIsRead();
+        this.hasUnread = !(message.getIsRead());    // If the message is unread, then isRead = false -> hasUnread = true
         this.timestamp = message.getTimestamp();
     }
 }

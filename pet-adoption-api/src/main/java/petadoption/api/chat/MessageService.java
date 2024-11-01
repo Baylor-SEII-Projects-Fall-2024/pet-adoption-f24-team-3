@@ -29,4 +29,8 @@ public class MessageService {
         return message.orElse(null);
     }
 
+    public Integer getUnreadMessageCount(Long userID) {
+        return messageRepository.countMessageByRecipientIDAndIsReadFalse(userID);
+    }
+
 }

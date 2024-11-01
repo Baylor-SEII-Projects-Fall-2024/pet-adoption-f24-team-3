@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> getMessagesByChatIDOrderByTimestampDesc(Long chatID);
-
+    Integer countMessageByRecipientIDAndIsReadFalse(Long userID);
     Optional<Message> findTopByChatIDOrderByTimestampDesc(Long chatID);
 }
