@@ -2,6 +2,7 @@ package petadoption.api.recommendations;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -140,12 +141,21 @@ public class RecommendationTests {
         Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
         Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
 
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+
         recommendationsService.likeAnimal(ownerId, animalOneId);
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        assertEquals(0.5, recommendationsService.getAgeClassCompatibility(ownerId, animalTwoId));
-        assertEquals(1.0, recommendationsService.getAgeClassCompatibility(ownerId, animalThreeId));
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+
+        assert animalOne != null;
+        assert animalTwo != null;
+        assertEquals(0.5, recommendationsService.getAgeClassCompatibility(animalTwo, history.getAgeClassHistory()));
+        assert animalThree != null;
+        assertEquals(1.0, recommendationsService.getAgeClassCompatibility(animalThree, history.getAgeClassHistory()));
     }
 
     @Test
@@ -161,8 +171,15 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        assertEquals(0.5, recommendationsService.getSizeCompatibility(ownerId, animalTwoId));
-        assertEquals(1.0, recommendationsService.getSizeCompatibility(ownerId, animalThreeId));
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+
+        assert animalTwo != null;
+        assertEquals(0.5, recommendationsService.getSizeCompatibility(animalTwo, history.getSizeHistory()));
+        assert animalThree != null;
+        assertEquals(1.0, recommendationsService.getSizeCompatibility(animalThree, history.getSizeHistory()));
     }
 
     @Test
@@ -248,8 +265,10 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        assertEquals(-0.5, recommendationsService.getWeightCompatibility(ownerId, animalTwoId));
-        assertEquals(0.25, recommendationsService.getWeightCompatibility(ownerId, animalThreeId));
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+
+        assertEquals(-0.5, recommendationsService.getWeightCompatibility(animalTwo, history));
+        assertEquals(0.25, recommendationsService.getWeightCompatibility(animalThree, history));
     }
 
     @Test
@@ -280,9 +299,10 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalOneId);
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
 
-        assertEquals(-0.5, recommendationsService.getHeightCompatibility(ownerId, animalTwoId));
-        assertEquals(0.25, recommendationsService.getHeightCompatibility(ownerId, animalThreeId));
+        assertEquals(-0.5, recommendationsService.getHeightCompatibility(animalTwo, history));
+        assertEquals(0.25, recommendationsService.getHeightCompatibility(animalThree, history));
     }
 
     @Test
@@ -299,10 +319,49 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        assertEquals(0.4, recommendationsService.getAgeCompatibility(ownerId, animalTwoId));
-        assertEquals(-0.2, recommendationsService.getAgeCompatibility(ownerId, animalThreeId));
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+
+        assert animalTwo != null;
+        assertEquals(0.4, recommendationsService.getAgeCompatibility(animalTwo, history));
+        assert animalThree != null;
+        assertEquals(-0.2, recommendationsService.getAgeCompatibility(animalThree, history));
     }
 
+    @Test
+    void testCompatibilityScore() throws Exception {
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
 
+        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 7, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalFourId = createAndSaveAnimal(centerOneId, "Dave", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long animalDiffId = createAndSaveAnimal(centerOneId, "Ashlen", 4, AnimalSex.FEMALE, AnimalSize.LARGE, AnimalAgeClass.ADULT, "Tabby", "Cat");
+
+        recommendationsService.likeAnimal(ownerId, animalOneId);
+        recommendationsService.likeAnimal(ownerId, animalTwoId);
+        recommendationsService.likeAnimal(ownerId, animalThreeId);
+
+        Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
+        Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
+        Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
+        Animal animalFour = animalService.findAnimal(animalFourId).orElse(null);
+        Animal animalDiff = animalService.findAnimal(animalDiffId).orElse(null);
+        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+
+        assert animalFour != null;
+        double fourScore = recommendationsService.calculateCompatibilityScore(animalFour, history);
+        assert animalDiff != null;
+        double diffScore = recommendationsService.calculateCompatibilityScore(animalDiff, history);
+
+        System.out.println(fourScore);
+        System.out.println(diffScore);
+        assert(fourScore > diffScore);
+
+    }
 
 }
