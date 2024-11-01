@@ -68,7 +68,4 @@ public class ChatController {
         return chatService.createChat(senderID, receiverID);
     }
 
-
-
-
 }

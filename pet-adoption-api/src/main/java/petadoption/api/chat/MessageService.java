@@ -14,9 +14,6 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    @Autowired
-    private ChatService chatService;
-
     public Message saveMessage(Message message, Long chatID) {
         message.setTimestamp(new Date());
         message.setIsRead(false);
@@ -28,8 +25,7 @@ public class MessageService {
     }
 
     public Message getMostRecentMessage(Long chatID) {
-        Pageable pageable = PageRequest.of(0,1);
-        var message = messageRepository.findTopByChatIDOrderByTimestampDesc(chatID, pageable);
+        var message = messageRepository.findTopByChatIDOrderByTimestampDesc(chatID);
         return message.orElse(null);
     }
 

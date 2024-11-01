@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> getMessagesByChatIDOrderByTimestampDesc(Long chatID);
 
-    Optional<Message> findTopByChatIDOrderByTimestampDesc(Long chatID, Pageable pageable);
+    Optional<Message> findTopByChatIDOrderByTimestampDesc(Long chatID);
 }
