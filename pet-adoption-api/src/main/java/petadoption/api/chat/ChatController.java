@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
 
@@ -18,17 +19,23 @@ import java.util.Optional;
 @RequestMapping("/api/chats")
 @CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
 public class ChatController {
+
     @Autowired
     private ChatService chatService;
+
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     // Sends a message mapped to /api/chats/{chatID}
     @MessageMapping("/{chatID}")
-    @SendTo("/topic/messages")
-    public Message sendMessage(@Payload Message message, @DestinationVariable Long chatID) {
+    public void sendMessage(@Payload Message message, @DestinationVariable Long chatID) {
         System.out.println("Received message: " + message);
-        return messageService.saveMessage(message, chatID);
+
+        Message savedMessage = messageService.saveMessage(message, chatID);
+        simpMessagingTemplate.convertAndSend("/topic/messages/" + chatID, savedMessage);
     }
 
     // Gets a chat between two users based on their ids
