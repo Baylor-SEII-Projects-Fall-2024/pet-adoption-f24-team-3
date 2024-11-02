@@ -98,12 +98,14 @@ const animalService = () => {
         }
     };
 
-    const getRecommendedAnimals = async (pageSize, pageNumber) => {
-        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
-            method: 'GET',
+    const getRecommendedAnimals = async (pageSize, alreadyDisplayedIds) => {
+        const exculdeIds = alreadyDisplayedIds.join(',');
+        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}`, {
+            method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
+            body: JSON.stringify(alreadyDisplayedIds)
         });
 
         const result = await response.json();

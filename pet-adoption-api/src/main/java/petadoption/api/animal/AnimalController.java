@@ -47,10 +47,10 @@ public class AnimalController {
         }
     }
 
-    @GetMapping("/recommend")
+    @PostMapping("/recommend")
     public List<AnimalCardResponse> recommendAnimals(@RequestParam("pageSize") Integer pageSize,
-            @RequestParam("pageNumber") Integer pageNumber) {
-        List<Animal> animals = animalService.recommendAnimals(pageSize, pageNumber);
+            @RequestBody List<Long> alreadyDisplayedIds) {
+        List<Animal> animals = animalService.recommendAnimals(pageSize, alreadyDisplayedIds);
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 
