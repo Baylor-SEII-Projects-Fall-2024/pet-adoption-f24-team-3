@@ -16,14 +16,14 @@ export default function LikeButtons(props) {
         if (isLiked) {
             //if already liked, untoggle the like button and undo like
             setIsLiked(false);
-            if (onInteract !== null)
+            if (onInteract)
                 onInteract(false);
         }
         else {
             //if not yet liked, like the pet
             setIsLiked(true);
             setIsDisliked(false);
-            if (onInteract !== null)
+            if (onInteract)
                 onInteract(true);
             await likePet(userId, petId)
                 .then(() => {
@@ -39,14 +39,14 @@ export default function LikeButtons(props) {
         if (isDisliked) {
             //if already liked, untoggle the like button and undo like
             setIsDisliked(false);
-            if (onInteract !== null)
+            if (onInteract)
                 onInteract(false);
         }
         else {
             //if not yet liked, like the pet
             setIsLiked(false);
             setIsDisliked(true);
-            if (onInteract !== null)
+            if (onInteract)
                 onInteract(true);
             await dislikePet(userId, petId)
                 .then(() => {
