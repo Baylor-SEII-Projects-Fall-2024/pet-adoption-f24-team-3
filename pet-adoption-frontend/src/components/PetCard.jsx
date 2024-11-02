@@ -14,8 +14,8 @@ export default function PetCard(props) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
-  const onLikeInteraction = () => {
-    setHasInteracted(!hasInteracted);
+  const onLikeInteraction = (buttonPressed) => {
+    setHasInteracted(buttonPressed);
   }
 
   return (
