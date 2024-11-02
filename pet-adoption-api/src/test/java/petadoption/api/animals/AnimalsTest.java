@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.animal.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,7 +77,7 @@ public class AnimalsTest {
     @Test
     public void testRecommendAnimal(){
         try {
-            assertFalse(animalService.recommendAnimals(1, 0).isEmpty());
+            assertFalse(animalService.recommendAnimals(1, new ArrayList<Long>()).isEmpty());
         }catch (Exception e){
             fail("Exception thrown" + e.getMessage());
         }
