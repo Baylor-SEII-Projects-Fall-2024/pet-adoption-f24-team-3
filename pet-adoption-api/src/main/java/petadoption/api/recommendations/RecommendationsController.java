@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.DescriptorKey;
+
 @Log4j2
 @RestController
 @RequestMapping("/api/recommendations")
@@ -16,6 +18,11 @@ public class RecommendationsController {
     @GetMapping("/{userId}")
     public MappedInteractionHistory fetch(@PathVariable Long userId){
         return recommendationsService.findByUser(userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public boolean resetHistory(@PathVariable Long userId){
+        return recommendationsService.resetHistory(userId);
     }
 
     @PutMapping("/{userId}/like/{animalId}")

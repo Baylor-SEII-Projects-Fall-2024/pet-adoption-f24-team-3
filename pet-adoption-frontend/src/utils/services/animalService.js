@@ -3,11 +3,10 @@ import imageService from "./imageService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 import { useSelector } from 'react-redux';
 
-const { uploadAnimalPicture } = imageService();
 const animalService = () => {
 
     const { uploadAnimalPicture } = imageService();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
 
     const createPet = async (formData, petPic) => {
@@ -99,8 +98,7 @@ const animalService = () => {
     };
 
     const getRecommendedAnimals = async (pageSize, alreadyDisplayedIds) => {
-        const exculdeIds = alreadyDisplayedIds.join(',');
-        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}`, {
+        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${127}`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"

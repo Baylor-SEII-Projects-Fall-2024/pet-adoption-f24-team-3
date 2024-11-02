@@ -63,6 +63,9 @@ export default function PetCard(props) {
           <Typography>
             {formatSex(pet.sex)} {pet.breed}
           </Typography>
+          <Typography>
+            {pet.score}
+          </Typography>
         </Box>
       </CardContent>
       {currentUserType == "Owner" && (

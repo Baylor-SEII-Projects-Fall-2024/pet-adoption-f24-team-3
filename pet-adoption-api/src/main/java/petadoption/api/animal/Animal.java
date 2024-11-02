@@ -59,4 +59,6 @@ public class Animal {
     @Column(name = "WEIGHT")
     private Double weight;
 
+    @Transient
+    private double score;
 }

@@ -48,10 +48,18 @@ public class AnimalController {
     }
 
     @PostMapping("/recommend")
-    public List<AnimalCardResponse> recommendAnimals(@RequestParam("pageSize") Integer pageSize,
+    public ResponseEntity<List<AnimalCardResponse>> recommendAnimals(@RequestParam("pageSize") Integer pageSize,@RequestParam Long userId,
             @RequestBody List<Long> alreadyDisplayedIds) {
-        List<Animal> animals = animalService.recommendAnimals(pageSize, alreadyDisplayedIds);
-        return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+        try {
+            List<Animal> animals = animalService.recommendAnimals(pageSize, alreadyDisplayedIds, userId);
+            List<AnimalCardResponse> responses =  animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+            return new ResponseEntity<>(responses,HttpStatus.OK);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/center/{id}")

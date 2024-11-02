@@ -60,7 +60,7 @@ export default function PetsPage() {
   //get data after first call, called by infinite scroll
   const fetchMoreData = async () => {
     if (animalData.length === 0) {
-      setPage(0);
+      return;
     }
     let previousIds = animalData.map(a => a.id);
     await getRecommendedAnimals(quantityPerPage, previousIds)

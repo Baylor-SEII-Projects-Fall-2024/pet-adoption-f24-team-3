@@ -51,7 +51,9 @@ public class MappedInteractionHistory {
     private Map<String,Integer> extractStream(List<InteractionPoint> points,InteractionType type){
         return points.stream()
                 .filter(p -> p.getType() == type)
-                .collect(Collectors.toMap(InteractionPoint::getName, InteractionPoint::getScore));
+                .collect(
+                        Collectors.toMap(InteractionPoint::getName, InteractionPoint::getScore,Integer::sum)
+                );
     }
 
 
