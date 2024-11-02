@@ -72,65 +72,6 @@ public class RecommendationTests {
         return animalService.saveAnimal(animal).getId();
     }
 
-    @Test
-    void testSexCompatibility() throws Exception {
-        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        double sexCompat = recommendationsService.getSexCompatibility(ownerId, animalThreeId);
-        assertEquals(0.5, sexCompat);
-
-        double notMostCompat = recommendationsService.getSexCompatibility(ownerId, animalTwoId);
-        assertNotEquals(0.5, notMostCompat);
-    }
-
-    @Test
-    void testSpeciesCompatibility() throws Exception {
-        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Tabby", "Cat");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        double speciesCompat = recommendationsService.getSpeciesCompatibility(ownerId, animalThreeId);
-        assertEquals(0.5, speciesCompat);
-
-        double notMostCompat = recommendationsService.getSpeciesCompatibility(ownerId, animalTwoId);
-        assertNotEquals(0.5, notMostCompat);
-    }
-
-    @Test
-    void testBreedCompatibility() throws Exception {
-        Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Dobberman", "Dog");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        double breedCompatibility = recommendationsService.getBreedCompatibility(ownerId, animalThreeId);
-        assertEquals(0.5, breedCompatibility);
-
-        double notMostCompat = recommendationsService.getBreedCompatibility(ownerId, animalTwoId);
-        assertNotEquals(0.5, notMostCompat);
-    }
 
     @Test
     void testAgeClassCompatibility() throws Exception {
@@ -153,9 +94,9 @@ public class RecommendationTests {
 
         assert animalOne != null;
         assert animalTwo != null;
-        assertEquals(0.5, recommendationsService.getAgeClassCompatibility(animalTwo, history.getAgeClassHistory()));
+        assertEquals(0.5, recommendationsService.getAgeClassCompatibility(animalTwo, history.getAgeClassHistory(), 1));
         assert animalThree != null;
-        assertEquals(1.0, recommendationsService.getAgeClassCompatibility(animalThree, history.getAgeClassHistory()));
+        assertEquals(1.0, recommendationsService.getAgeClassCompatibility(animalThree, history.getAgeClassHistory(), 1));
     }
 
     @Test
@@ -177,64 +118,11 @@ public class RecommendationTests {
         MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
 
         assert animalTwo != null;
-        assertEquals(0.5, recommendationsService.getSizeCompatibility(animalTwo, history.getSizeHistory()));
+        assertEquals(0.5, recommendationsService.getSizeCompatibility(animalTwo, history.getSizeHistory(), 1));
         assert animalThree != null;
-        assertEquals(1.0, recommendationsService.getSizeCompatibility(animalThree, history.getSizeHistory()));
+        assertEquals(1.0, recommendationsService.getSizeCompatibility(animalThree, history.getSizeHistory(), 1));
     }
 
-    @Test
-    void testCenterCompatibility() throws Exception {
-        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        assertEquals(0.2, recommendationsService.getCenterCompatibility(ownerId, animalTwoId));
-        assertEquals(0.4, recommendationsService.getCenterCompatibility(ownerId, animalThreeId));
-    }
-
-    @Test
-    void testStateCompatibility() throws Exception {
-        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        assertEquals(0.3, recommendationsService.getStateCompatibility(ownerId, animalTwoId));
-        assertEquals(0.6, recommendationsService.getStateCompatibility(ownerId, animalThreeId));
-    }
-
-    @Test
-    void testCityCompatibility() throws Exception {
-        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
-        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
-        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
-
-        Long animalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-        Long animalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
-        Long animalThreeId = createAndSaveAnimal(centerOneId, "Sharan", 4, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
-
-        recommendationsService.likeAnimal(ownerId, animalOneId);
-        recommendationsService.likeAnimal(ownerId, animalTwoId);
-        recommendationsService.likeAnimal(ownerId, animalThreeId);
-
-        assertEquals(0.3, recommendationsService.getCityCompatibility(ownerId, animalTwoId));
-        assertEquals(0.6, recommendationsService.getCityCompatibility(ownerId, animalThreeId));
-    }
 
     @Test
     void testWeightCompatibility() throws Exception {
@@ -267,8 +155,8 @@ public class RecommendationTests {
 
         MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
 
-        assertEquals(-0.5, recommendationsService.getWeightCompatibility(animalTwo, history));
-        assertEquals(0.25, recommendationsService.getWeightCompatibility(animalThree, history));
+        assertEquals(-0.5, recommendationsService.getWeightCompatibility(animalTwo, history, 1));
+        assertEquals(0.25, recommendationsService.getWeightCompatibility(animalThree, history, 1));
     }
 
     @Test
@@ -301,8 +189,8 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalThreeId);
         MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
 
-        assertEquals(-0.5, recommendationsService.getHeightCompatibility(animalTwo, history));
-        assertEquals(0.25, recommendationsService.getHeightCompatibility(animalThree, history));
+        assertEquals(-0.5, recommendationsService.getHeightCompatibility(animalTwo, history, 1));
+        assertEquals(0.25, recommendationsService.getHeightCompatibility(animalThree, history, 1));
     }
 
     @Test
@@ -325,9 +213,9 @@ public class RecommendationTests {
         MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
 
         assert animalTwo != null;
-        assertEquals(0.4, recommendationsService.getAgeCompatibility(animalTwo, history));
+        assertEquals(0.4, recommendationsService.getAgeCompatibility(animalTwo, history, 1));
         assert animalThree != null;
-        assertEquals(-0.2, recommendationsService.getAgeCompatibility(animalThree, history));
+        assertEquals(-0.2, recommendationsService.getAgeCompatibility(animalThree, history, 1));
     }
 
     @Test
