@@ -7,12 +7,10 @@ import petadoption.api.animal.AnimalService;
 import petadoption.api.user.AdoptionCenter;
 import petadoption.api.user.UserService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.random;
 
 
 @Service
@@ -115,6 +113,7 @@ public class RecommendationsService {
 
     public double calculateCompatibilityScore(Animal animal, MappedInteractionHistory mappedHistory) throws Exception {
         double score = 0;
+        Random randomNum = new Random();
         AdoptionCenter adoptionCenter = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
         if (adoptionCenter == null) {
             throw new Exception("AdoptionCenter not found!");
@@ -130,6 +129,8 @@ public class RecommendationsService {
         score += getWeightCompatibility(animal, mappedHistory, 1);
         score += getAgeCompatibility(animal, mappedHistory, 1);
         score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
+        score += randomNum.nextDouble(2.0);
+
         return score;
     }
 
