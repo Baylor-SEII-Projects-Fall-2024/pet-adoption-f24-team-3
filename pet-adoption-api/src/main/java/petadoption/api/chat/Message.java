@@ -1,8 +1,6 @@
 package petadoption.api.chat;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +17,10 @@ public class Message {
     public static final String TABLE_NAME = "MESSAGES";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long messageID;
+
+    @Column(name = "CHAT_ID")
     protected Long chatID;
 
     @Column(name = "SENDER_ID")

@@ -1,7 +1,6 @@
 package petadoption.api.chat;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
@@ -17,9 +16,8 @@ public class ChatService {
     @Autowired
     private MessageService messageService;
 
-    public Chat getChatByID(Long chatID) {
-        var chat = chatRepository.getChatById(chatID);
-        return chat.orElse(null);
+    public Optional<Chat> getChatByID(Long chatID) {
+        return chatRepository.getChatById(chatID);
     }
 
     public Optional<Chat> getChatByUserIDs(Long userID1, Long userID2) {
@@ -33,7 +31,7 @@ public class ChatService {
     // Constructs a list of ChatInfos by getting the users chats and the most recent messages
     public List<ChatInfoResponse> getChatInfoByUserID(Long userID, Optional<Pageable> pageable) {
         List<ChatInfoResponse> result = new ArrayList<>();
-        List<Chat> chats = new ArrayList<>();
+        List<Chat> chats;
         if (pageable.isPresent()) {
             chats = chatRepository.findChatsByUserID(userID, pageable.get());
         } else {
@@ -41,12 +39,12 @@ public class ChatService {
         }
 
         for (Chat chat : chats) {
-            Message mostRecentMessage = messageService.getMostRecentMessage(chat.getId());
+            Optional<Message> mostRecentMessageOpt = messageService.getMostRecentMessage(chat.getId());
             // Skip any chats with no messages
-            if (mostRecentMessage == null) {
+            if (mostRecentMessageOpt.isEmpty()) {
                 continue;
             }
-            result.add(new ChatInfoResponse(chat, mostRecentMessage));
+            result.add(new ChatInfoResponse(chat, mostRecentMessageOpt.get()));
         }
         return result;
     }

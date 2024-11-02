@@ -52,8 +52,15 @@ public class ChatController {
 
     // Gets a list of messages by the chatID ordered chronologically
     @GetMapping("/by-chatID")
-    public List<Message> getMessagesByChatID(@RequestParam Long chatID) {
-        return messageService.getByChatID(chatID);
+    public List<Message> getMessagesByChatID(@RequestParam Long chatID,
+                                             @RequestParam(required = false) Optional<Integer> pageSize,
+                                             @RequestParam(required = false) Optional<Integer> pageNumber) {
+        if (pageSize.isPresent() && pageNumber.isPresent()) {
+            Pageable pageable = PageRequest.of(pageNumber.get(), pageSize.get());
+            return messageService.getByChatID(chatID, Optional.of(pageable));
+        } else {
+            return messageService.getByChatID(chatID, Optional.empty());
+        }
     }
 
     @GetMapping("unread-count")
