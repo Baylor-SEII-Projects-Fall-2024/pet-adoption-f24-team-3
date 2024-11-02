@@ -6,6 +6,7 @@ import { Button, Card, CardContent, Stack, Typography, Box, Link } from '@mui/ma
 import animalService from '@/utils/services/animalService';
 import userService from '@/utils/services/userService';
 import formatter from '@/utils/formatter';
+import LikeButtons from '@/components/LikeButtons';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -13,6 +14,7 @@ export default function ViewPetPage() {
   const router = useRouter();
   const { petId } = router.query; //get pet ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
   const { getAnimal, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
@@ -143,7 +145,14 @@ export default function ViewPetPage() {
                   style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
                 />
                 <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
+
                   <Typography variant='h3' >{animal.name}</Typography>
+
+                  {currentUserType == "Owner" && (
+                    <Box sx={{ width: "50%", height: "60px", mt: "5px", }}>
+                      <LikeButtons userId={currentUserId} petId={petId} />
+                    </Box>
+                  )}
 
                   <Typography variant='h5'>Quick Facts</Typography>
                   <table>
@@ -178,7 +187,6 @@ export default function ViewPetPage() {
                       </tr>
                     </tbody>
                   </table>
-
                 </Stack>
                 {currentUserId == animal.centerId && (
                   <Box
@@ -212,10 +220,11 @@ export default function ViewPetPage() {
               </Box>
 
 
+
             </CardContent>
           </Card>
         </Stack>
-      </main>
+      </main >
     </>
   );
 }
