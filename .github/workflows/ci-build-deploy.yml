@@ -25,6 +25,7 @@ on:
   push:
     branches:
       - main
+      - brendonnewt/vmfix
 
 jobs:
   build-and-deploy:
