@@ -35,7 +35,7 @@ export default function PetsPage() {
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
     async function load() {
-      await getRecommendedAnimals(quantityPerPage, 0)
+      await getRecommendedAnimals(quantityPerPage, [])
         .then((result) => {
           if (result != null) {
             if (result.length < 1) {
@@ -62,7 +62,8 @@ export default function PetsPage() {
     if (animalData.length === 0) {
       setPage(0);
     }
-    await getRecommendedAnimals(quantityPerPage, page)
+    let previousIds = animalData.map(a => a.id);
+    await getRecommendedAnimals(quantityPerPage, previousIds)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {

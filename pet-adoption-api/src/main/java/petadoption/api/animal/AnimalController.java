@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/animals")
-@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000", "http://34.69.88.79:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000" })
 public class AnimalController {
     @Autowired
     private AnimalService animalService;
@@ -47,10 +47,10 @@ public class AnimalController {
         }
     }
 
-    @GetMapping("/recommend")
+    @PostMapping("/recommend")
     public List<AnimalCardResponse> recommendAnimals(@RequestParam("pageSize") Integer pageSize,
-            @RequestParam("pageNumber") Integer pageNumber) {
-        List<Animal> animals = animalService.recommendAnimals(pageSize, pageNumber);
+            @RequestBody List<Long> alreadyDisplayedIds) {
+        List<Animal> animals = animalService.recommendAnimals(pageSize, alreadyDisplayedIds);
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 

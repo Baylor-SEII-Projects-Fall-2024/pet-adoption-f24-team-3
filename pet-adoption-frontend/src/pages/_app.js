@@ -14,6 +14,8 @@ import '@/styles/globals.css'
 import HeaderBar from '@/components/HeaderBar';
 import Footer from '@/components/Footer';
 import userService from '@/utils/services/userService';
+import ChatContainer from '@/components/chat/ChatContainer';
+import { ChatProvider } from '@/utils/contexts/chatContext';
 
 // Initialize Redux
 let initialState = {};
@@ -31,7 +33,9 @@ const safePaths = [
 function PetApp({ Component, pageProps }) {
   return (
     <ReduxProvider store={reduxStore}>
-      <MainApp Component={Component} pageProps={pageProps} />
+      <ChatProvider>
+        <MainApp Component={Component} pageProps={pageProps} />
+      </ChatProvider>
     </ReduxProvider>
   );
 }
@@ -92,12 +96,15 @@ function MainApp({ Component, pageProps }) {
       <PetAdoptionThemeProvider>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
+
         <HeaderBar />
         <div style={{ minHeight: "90vh" }}>
           <Component {...pageProps} />
         </div>
         <Footer />
+        <ChatContainer />
       </PetAdoptionThemeProvider>
+
     </AppCacheProvider >
   );
 }
