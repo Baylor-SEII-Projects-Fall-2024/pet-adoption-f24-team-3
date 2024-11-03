@@ -10,6 +10,7 @@ import {
   Avatar,
 } from "@mui/material";
 import formatter from "@/utils/formatter";
+import ContactCard from "@/components/ContactCard"; /* testing this out */
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CenterProfileCard(props) {
@@ -108,7 +109,9 @@ export default function CenterProfileCard(props) {
                   <Typography variant="h5" >Contact Information</Typography>
                   <Typography variant="body1" >Email: {centerInfo.emailAddress} </Typography>
                   <Typography variant="body1" >Address: {centerInfo.address}, {centerInfo.city}, {centerInfo.state}, {centerInfo.zipCode} </Typography>
-
+                  <ContactCard
+                    contactee={centerId}
+                  />
                 </>
               )}
             </CardContent>

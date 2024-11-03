@@ -21,7 +21,7 @@ export default function HomePage() {
 
       <main>
         <Stack alignItems='center' gap={2}>
-
+          <div>
           <Box
             sx={{
               position: "relative",
@@ -29,7 +29,7 @@ export default function HomePage() {
               height: "50vh"
             }}
           >
-            <img
+            <img class="fade-in"
               style={{
                 width: "100vw",
                 height: "50vh",
@@ -37,6 +37,7 @@ export default function HomePage() {
               }}
               src={"homescreen_header.jpg"}
             />
+            <div class="fade-in-faster">
             <Typography variant='h1' color='text.white'
               sx={{
                 position: "absolute",
@@ -48,8 +49,10 @@ export default function HomePage() {
                 textShadow: "#000 2px 1px 5px",
               }}
             >Find Your New Best Friend!</Typography>
+            </div>
           </Box>
-
+          </div>
+          <div class="fade-in-faster">
           <Stack direction="column"
             sx={{
               mt: "30px",
@@ -58,10 +61,11 @@ export default function HomePage() {
               alignItems: "center",
               textAlign: "center",
             }}>
-            <Typography variant='h2' align='center'>WOOF helps you find your ideal pet.</Typography>
-            <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend. <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
-            <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px" }}>Find Your Friend</Button>
+            <Typography variant='h2' align='center'>WOOF helps you find your ideal pet</Typography>
+            <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend.<br></br> <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
+            <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px", fontSize: "20px"}}>Find Your Friend!</Button>
           </Stack>
+          </div>
 
           <Card sx={{
             width: "80%",
@@ -73,7 +77,7 @@ export default function HomePage() {
             pb: "15px",
           }} elevation={4}>
             <CardContent>
-              <img
+              <img class="fade-in-faster"
                 style={{
                   width: "60%",
                   borderRadius: "2%",
