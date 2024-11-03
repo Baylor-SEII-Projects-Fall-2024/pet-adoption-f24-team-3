@@ -150,12 +150,38 @@ tables.
         * Used DynamicProvider
 * [x] Add non-random dev accounts so we don't have to make a new account
     everytime after clearing db
-* [ ] Randomly generate images
-    * Unsplash API?
-        * Limit of 50 requests per hour
+* [x] Randomly generate images
     * Lorem Picsum?
-    * Pillow?
-    * OpenCV?
+        * No filtering images, but at least we have some
+    * Find out if we can just save images in pet-adoption-api/uploads
+      and if they will get pushed to our docker containers next deployment
+
+### Animal Image APIs
+
+* <https://dog.ceo/dog-api/>
+* <https://randomfox.ca/floof>
+    * <https://randomfox.ca>
+* <https://thecatapi.com/>
+    * 10,000 requests per month
+* <https://random-d.uk/api/quack>
+    * <https://random-d.uk/api?ref=public_apis>
+* <https://api.racc.lol/raccoon?json=true>
+    * <https://racc.lol>
+* <https://github.com/treboryx/snake-api>
+* <https://some-random-api.com/animal/bird>
+    * Also: bird, cat, dog, fox, kangaroo, koala, panda, red\_panda
+    * returns a link to imgur in 'image' json tag
+
+#### Sites that don't have API's but we can potentially scrape
+
+* <https://www.bunnies.io/>
+
+#### Sites that we won't be using but I still like
+
+* <https://random.cat/meow>
+* <https://random.dog/woof.json>
+* <https://placebear.com/{width}/{height}>
+    * <https://placebear.com/?ref=public_apis>
 
 ## Things to think about
 

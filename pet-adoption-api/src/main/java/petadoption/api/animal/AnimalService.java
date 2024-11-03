@@ -11,6 +11,7 @@ import petadoption.api.images.ImageService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalService {
@@ -40,9 +41,9 @@ public class AnimalService {
         return animalRepository.findAnimalsByCenterId(centerId);
     }
 
-    public List<Animal> recommendAnimals(Integer pageSize, Integer pageNumber) {
-        Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
-        return animalRepository.findAll(pagingRequest).getContent();
+    public List<Animal> recommendAnimals(Integer pageSize, List<Long> alreadyDisplayedIds) {
+        List<Animal> initialAnimalList = animalRepository.findAllNotRetrieved(alreadyDisplayedIds);
+        return initialAnimalList.stream().limit(pageSize).collect(Collectors.toList());
     }
 
     public void deleteAnimal(Long animalId) throws Exception{

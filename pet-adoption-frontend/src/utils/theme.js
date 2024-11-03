@@ -45,6 +45,24 @@ const themeOptions = {
                         backgroundColor: '#af8ba5',
                     },
                 },
+                like: {
+                    flex: 1,
+                    height: "100%",
+                    backgroundColor: "#e0fde0",
+                    color: "#4c874c",
+                    '&:hover': {
+                        backgroundColor: '#b3f4b3',
+                    },
+                },
+                dislike: {
+                    flex: 1,
+                    height: "100%",
+                    backgroundColor: "#fde4e4",
+                    color: "#bf3232",
+                    '&:hover': {
+                        backgroundColor: '#ffd0d0',
+                    },
+                },
             },
         },
         MuiSvgIcon: {
