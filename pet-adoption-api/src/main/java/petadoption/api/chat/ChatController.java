@@ -3,16 +3,18 @@ package petadoption.api.chat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,7 +37,7 @@ public class ChatController {
         System.out.println("Received message: " + message);
 
         Message savedMessage = messageService.saveMessage(message, chatID);
-        chatService.updateChatTimestamp(message, chatID);
+        chatService.updateChatTimestamp(message);
 
         simpMessagingTemplate.convertAndSend("/topic/messages/" + chatID, savedMessage);
     }
@@ -87,6 +89,19 @@ public class ChatController {
     @PostMapping("/create")
     public Chat createChat(@RequestParam Long senderID, @RequestParam Long receiverID) {
         return chatService.createChat(senderID, receiverID);
+    }
+
+    @PutMapping("/message-read-status")
+    public ResponseEntity<Map<String, Object>> updateMessageStatus(@RequestParam Long messageID, @RequestParam Boolean status) {
+        Optional<Message> msg = messageService.updateMessageStatus(messageID, status);
+        Map<String, Object> response = new HashMap<>();
+        if (msg.isPresent()) {
+            response.put("message", msg);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Update failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 }

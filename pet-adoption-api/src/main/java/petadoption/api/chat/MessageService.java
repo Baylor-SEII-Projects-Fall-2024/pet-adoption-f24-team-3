@@ -33,15 +33,15 @@ public class MessageService {
         return messageRepository.findTopByChatIDOrderByTimestampDesc(chatID);
     }
 
-    public void updateMessageStatus(Long messageID, Boolean status) {
+    public Optional<Message> updateMessageStatus(Long messageID, Boolean status) {
         Optional<Message> foundOpt = messageRepository.getMessageByMessageID(messageID);
         if (foundOpt.isEmpty()) {
-            return;
+            return Optional.empty();
         }
 
         Message message = foundOpt.get();
         message.setIsRead(status);
-        messageRepository.save(message);
+        return Optional.of(messageRepository.save(message));
     }
 
     public Integer getUnreadMessageCount(Long userID) {

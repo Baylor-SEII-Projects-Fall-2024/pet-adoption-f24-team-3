@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +90,30 @@ public class ChatTest {
         // Find user with no existing chats
         List<Chat> notExists = chatService.getChatsByUserID(-1L);
         assertEquals(notExists.size(), 0);
+    }
+
+    @Test
+    void testUpdateChatTimestamp() {
+        Optional<Chat> chat1Opt = chatService.getChatByUserIDs(1L, 2L);
+        assertTrue(chat1Opt.isPresent());
+
+        Chat chat1 = chat1Opt.get();
+
+        Message message = new Message();
+        message.setChatID(chat1.getId());
+        message.setContent("Test content");
+        message.setSenderID(2L);
+        message.setRecipientID(1L);
+        message.setTimestamp(new Date());
+
+        chatService.updateChatTimestamp(message);
+
+        Optional<Chat> chatAfterOpt = chatService.getChatByID(chat1.getId());
+        assertTrue(chatAfterOpt.isPresent());
+
+        Chat chatAfter = chatAfterOpt.get();
+
+        assertEquals(chatAfter.getLastUpdated(), message.getTimestamp());
     }
 
     @Test
