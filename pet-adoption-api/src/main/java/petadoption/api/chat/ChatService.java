@@ -24,6 +24,19 @@ public class ChatService {
         return chatRepository.findByUserIDs(userID1, userID2);
     }
 
+    public void updateChatTimestamp(Message message, Long chatID) {
+        // Get the chat
+        Optional<Chat> chatOpt = chatRepository.getChatById(chatID);
+        if (chatOpt.isEmpty()) {
+            return;
+        }
+        // Update the timestamp
+        Chat chat = chatOpt.get();
+        chat.setLastUpdated(message.getTimestamp());
+        // Save
+        chatRepository.save(chat);
+    }
+
     public List<Chat> getChatsByUserID(Long userID) {
         return chatRepository.findChatsByUserID(userID);
     }

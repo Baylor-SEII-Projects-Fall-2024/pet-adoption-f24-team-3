@@ -35,6 +35,8 @@ public class ChatController {
         System.out.println("Received message: " + message);
 
         Message savedMessage = messageService.saveMessage(message, chatID);
+        chatService.updateChatTimestamp(message, chatID);
+
         simpMessagingTemplate.convertAndSend("/topic/messages/" + chatID, savedMessage);
     }
 

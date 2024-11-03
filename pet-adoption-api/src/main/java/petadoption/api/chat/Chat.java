@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Data
 @Entity
 @Getter
@@ -23,5 +25,8 @@ public class Chat {
 
     @Column(name = "USER_ID_SECOND")
     protected Long userIDSecond;
+
+    @Column(name = "LAST_UPDATED")
+    protected Date lastUpdated;
 
 }

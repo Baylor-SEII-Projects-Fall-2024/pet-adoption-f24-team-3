@@ -33,11 +33,7 @@ export default function ViewEventPage() {
   const onDeleteEvent = async () => {
     if (!event || !adoptionCenter) return;
 
-    if (
-      window.confirm(
-        `Are you sure you want to delete ${event.name}? It will be gone forever...`
-      )
-    ) {
+    if (window.confirm(`Are you sure you want to delete ${event.name}? It will be gone forever...`)) {
       await deleteEvent(eventID)
         .then((result) => {
           if (result == true) {

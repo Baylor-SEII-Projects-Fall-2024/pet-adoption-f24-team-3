@@ -18,10 +18,10 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     Optional<Chat> findByUserIDs(Long userID1, Long userID2);
 
     // Gets a list of chats by a users ID
-    @Query("SELECT c FROM Chat c WHERE (c.userIDFirst = :userID) OR (c.userIDSecond = :userID)")
+    @Query("SELECT c FROM Chat c WHERE (c.userIDFirst = :userID) OR (c.userIDSecond = :userID) ORDER BY c.lastUpdated DESC")
     List<Chat> findChatsByUserID(Long userID);
 
-    @Query("SELECT c FROM Chat c WHERE (c.userIDFirst = :userID) OR (c.userIDSecond = :userID)")
+    @Query("SELECT c FROM Chat c WHERE (c.userIDFirst = :userID) OR (c.userIDSecond = :userID) ORDER BY c.lastUpdated DESC")
     List<Chat> findChatsByUserID(Long userID, Pageable pageable);
 
 
