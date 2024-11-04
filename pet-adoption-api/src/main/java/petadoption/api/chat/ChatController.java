@@ -34,8 +34,6 @@ public class ChatController {
     // Saves a message sent to /app/chat/{chatID} and sends it to topic/messages/{chatID}
     @MessageMapping("/chat/{chatID}")
     public void sendMessage(@Payload Message message, @DestinationVariable Long chatID) {
-        System.out.println("Received message: " + message);
-
         Message savedMessage = messageService.saveMessage(message, chatID);
         chatService.updateChatTimestamp(message);
 
@@ -86,8 +84,8 @@ public class ChatController {
     }
 
     // Creates a chat between two users. If the chat already exists, it just returns the existing chat
-    @PostMapping("/create")
-    public Chat createChat(@RequestParam Long senderID, @RequestParam Long receiverID) {
+    @PostMapping("/get-or-create")
+    public Chat getOrCreateChat(@RequestParam Long senderID, @RequestParam Long receiverID) {
         return chatService.createChat(senderID, receiverID);
     }
 
