@@ -1,20 +1,29 @@
-import React from 'react';
-import Head from 'next/head';
-import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Stack, Typography, Box, Link } from '@mui/material'
-import animalService from '@/utils/services/animalService';
-import userService from '@/utils/services/userService';
-import formatter from '@/utils/formatter';
-import LikeButtons from '@/components/LikeButtons';
+import React from "react";
+import Head from "next/head";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import {
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  Box,
+  Link,
+} from "@mui/material";
+import animalService from "@/utils/services/animalService";
+import userService from "@/utils/services/userService";
+import formatter from "@/utils/formatter";
+import LikeButtons from "@/components/LikeButtons";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 
 export default function ViewPetPage() {
   const router = useRouter();
   const { petId } = router.query; //get pet ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const currentUserType = useSelector((state) => state.currentUser.currentUserType);
+  const currentUserType = useSelector(
+    (state) => state.currentUser.currentUserType
+  );
 
   const { getAnimal, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
@@ -28,19 +37,28 @@ export default function ViewPetPage() {
   const onDeleteAnimal = async () => {
     if (!animal) return;
 
-    if (window.confirm(`Are you sure you want to delete ${animal.name}? They will be gone forever...`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${animal.name}? They will be gone forever...`
+      )
+    ) {
       await deleteAnimal(petId)
         .then((result) => {
           if (result == true) {
-            router.push(`/pets`)
-          }
-          else console.error("There was an error deleting this animal!");
+            router.push(`/pets`);
+          } else console.error("There was an error deleting this animal!");
         })
         .catch((error) => {
           console.error("There was an error deleting animal:", error);
         });
     }
-  }
+  };
+
+  const onContactCenter = () => {
+    alert(
+      `You want to message ${adoptionCenter.name}, with id ${adoptionCenter.id}`
+    );
+  };
 
   React.useEffect(() => {
     if (petId) {
@@ -49,12 +67,10 @@ export default function ViewPetPage() {
           .then((result) => {
             if (result != null) {
               setAnimal(result);
-            }
-            else {
+            } else {
               console.error(`Error loading animal ${petId}:`, result);
               setIsError(true);
             }
-
           })
           .catch((error) => {
             console.error(`Error loading animal ${petId}:`, error);
@@ -62,7 +78,7 @@ export default function ViewPetPage() {
           })
           .finally(() => {
             setIsLoading(false);
-          })
+          });
       }
       fetchAnimal();
     }
@@ -96,16 +112,18 @@ export default function ViewPetPage() {
           <title>View Pet</title>
         </Head>
         <main>
-          <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+          <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
             <Card sx={{ width: "75%" }} elevation={4}>
               <CardContent>
-                <Typography variant='h3' align='center'>Loading...</Typography>
+                <Typography variant="h3" align="center">
+                  Loading...
+                </Typography>
               </CardContent>
             </Card>
           </Stack>
         </main>
       </>
-    )
+    );
   }
 
   if (isError) {
@@ -115,18 +133,19 @@ export default function ViewPetPage() {
           <title>View Pet</title>
         </Head>
         <main>
-          <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+          <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
             <Card sx={{ width: "75%" }} elevation={4}>
               <CardContent>
-                <Typography variant='h5' align='center' color='text.error'>Error: Unable to load animal. Please check again soon!</Typography>
+                <Typography variant="h5" align="center" color="text.error">
+                  Error: Unable to load animal. Please check again soon!
+                </Typography>
               </CardContent>
             </Card>
           </Stack>
         </main>
       </>
-    )
+    );
   }
-
 
   return (
     <>
@@ -135,96 +154,167 @@ export default function ViewPetPage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems='center' gap={2}>
+        <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
           <Card sx={{ width: "75%" }} elevation={4}>
             <CardContent>
               <Stack direction="row">
                 <img
                   src={`${apiUrl}/api/images/animals/${petId}`}
                   alt={`${animal.name}`}
-                  style={{ maxWidth: "50%", maxHeight: "400px", borderRadius: "2%", marginRight: "30px" }}
+                  style={{
+                    maxWidth: "50%",
+                    maxHeight: "400px",
+                    borderRadius: "2%",
+                    marginRight: "30px",
+                  }}
                 />
                 <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
-
-                  <Typography variant='h3' >{animal.name}</Typography>
+                  <Typography variant="h3">{animal.name}</Typography>
 
                   {currentUserType == "Owner" && (
-                    <Box sx={{ width: "50%", height: "60px", mt: "5px", }}>
+                    <Box sx={{ width: "50%", height: "60px", mt: "5px" }}>
                       <LikeButtons userId={currentUserId} petId={petId} />
                     </Box>
                   )}
 
-                  <Typography variant='h5'>Quick Facts</Typography>
+                  <Typography variant="h5">Quick Facts</Typography>
                   <table>
                     <tbody>
                       <tr>
-                        <td> <Typography>Species:</Typography> </td>
-                        <td> <Typography>{animal.species}</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Species:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{animal.species}</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Breed:</Typography> </td>
-                        <td> <Typography>{animal.breed}</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Breed:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{animal.breed}</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Size:</Typography> </td>
-                        <td> <Typography>{formatSize(animal.size)}</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Size:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{formatSize(animal.size)}</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Age:</Typography> </td>
-                        <td> <Typography>{animal.age}</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Age:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{animal.age}</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Sex:</Typography> </td>
-                        <td> <Typography>{formatSex(animal.sex)}</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Sex:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{formatSex(animal.sex)}</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Height:</Typography> </td>
-                        <td> <Typography>{animal.height} inches</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Height:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{animal.height} inches</Typography>
+                        </td>
                       </tr>
                       <tr>
-                        <td> <Typography>Weight:</Typography> </td>
-                        <td> <Typography>{animal.weight} lbs</Typography></td>
+                        <td>
+                          {" "}
+                          <Typography>Weight:</Typography>{" "}
+                        </td>
+                        <td>
+                          {" "}
+                          <Typography>{animal.weight} lbs</Typography>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
                 </Stack>
-                {currentUserId == animal.centerId && (
-                  <Box
-                    sx={{ width: "150px", alignItems: "left" }}>
-                    <Button
-                      variant='contained'
-                      color="secondary"
-                      onClick={() => router.push(`/pets/${petId}/edit`)} sx={{ width: "150px" }}>Edit Pet</Button>
-                    <Button
-                      variant='outlined'
-                      color="secondary"
-                      onClick={onDeleteAnimal} sx={{ width: "150px" }}>Delete Pet</Button>
-                  </Box>
-                )}
+                <Box sx={{ width: "175px", alignItems: "left" }}>
+                  {currentUserId == animal.centerId ? (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => router.push(`/pets/${petId}/edit`)}
+                        sx={{ width: "150px" }}
+                      >
+                        Edit Pet
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={onDeleteAnimal}
+                        sx={{ width: "150px" }}
+                      >
+                        Delete Pet
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={onContactCenter}
+                        sx={{ width: "175px", justifyContent: "space-evenly" }}
+                      >
+                        <Message></Message>
+                        Contact Center
+                      </Button>
+                    </>
+                  )}
+                </Box>
               </Stack>
               <Box
                 sx={{
                   width: "80%",
                   ml: "auto",
                   mr: "auto",
-                  mt: "30px"
+                  mt: "30px",
                 }}
               >
-                <Typography variant='h5'>More Info</Typography>
+                <Typography variant="h5">More Info</Typography>
                 <Typography>{animal.description}</Typography>
                 <br />
-                <Typography variant='h5'>Location</Typography>
-                <Link onClick={() => router.push(`/centers/${adoptionCenter.id}`)} color="secondary">
-                  {adoptionCenter.name}</Link>
-                <Typography>{adoptionCenter.address}, {adoptionCenter.city}, {adoptionCenter.state}</Typography>
+                <Typography variant="h5">Location</Typography>
+                <Link
+                  onClick={() => router.push(`/centers/${adoptionCenter.id}`)}
+                  color="secondary"
+                >
+                  {adoptionCenter.name}
+                </Link>
+                <Typography>
+                  {adoptionCenter.address}, {adoptionCenter.city},{" "}
+                  {adoptionCenter.state}
+                </Typography>
               </Box>
-
-
-
             </CardContent>
           </Card>
         </Stack>
-      </main >
+      </main>
     </>
   );
 }

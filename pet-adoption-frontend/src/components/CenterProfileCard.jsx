@@ -3,13 +3,12 @@ import { useRouter } from "next/router";
 import {
   Card,
   Box,
-  Grid,
   CardContent,
   Typography,
   Button,
   Avatar,
 } from "@mui/material";
-import formatter from "@/utils/formatter";
+import { Message } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CenterProfileCard(props) {
@@ -18,6 +17,12 @@ export default function CenterProfileCard(props) {
 
   const handleEditInfoClick = () => {
     router.push(`/centers/${centerId}/edit`);
+  };
+
+  const handleContactClick = () => {
+    alert(
+      "You will be able to message them eventually young one. Just be patient"
+    );
   };
 
   return (
@@ -43,7 +48,7 @@ export default function CenterProfileCard(props) {
         >
           <Typography variant="h4">{centerInfo.name}</Typography>
           {/* Display edit button if user is viewing their own page */}
-          {String(centerId) === String(currentUserId) && (
+          {String(centerId) === String(currentUserId) ? (
             <Button
               variant="contained"
               color="secondary"
@@ -55,6 +60,21 @@ export default function CenterProfileCard(props) {
               onClick={handleEditInfoClick}
             >
               Edit Info
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                padding: "12px 12px",
+                fontSize: "14px",
+                minWidth: "175px",
+                justifyContent: "space-evenly",
+              }}
+              onClick={handleContactClick} // Define this function for the different action
+            >
+              <Message></Message>
+              Contact Center
             </Button>
           )}
         </Box>
@@ -100,15 +120,19 @@ export default function CenterProfileCard(props) {
               {/* Info */}
               {centerInfo && (
                 <>
-                  <Typography variant="h5" >About</Typography>
+                  <Typography variant="h5">About</Typography>
                   <Typography variant="body1" align="left">
                     {centerInfo.description}
                   </Typography>
                   <br />
-                  <Typography variant="h5" >Contact Information</Typography>
-                  <Typography variant="body1" >Email: {centerInfo.emailAddress} </Typography>
-                  <Typography variant="body1" >Address: {centerInfo.address}, {centerInfo.city}, {centerInfo.state}, {centerInfo.zipCode} </Typography>
-
+                  <Typography variant="h5">Contact Information</Typography>
+                  <Typography variant="body1">
+                    Email: {centerInfo.emailAddress}{" "}
+                  </Typography>
+                  <Typography variant="body1">
+                    Address: {centerInfo.address}, {centerInfo.city},{" "}
+                    {centerInfo.state}, {centerInfo.zipCode}{" "}
+                  </Typography>
                 </>
               )}
             </CardContent>
@@ -119,9 +143,7 @@ export default function CenterProfileCard(props) {
           sx={{
             width: "100%",
           }}
-        >
-
-        </Box>
+        ></Box>
       </Card>
     </Box>
   );
