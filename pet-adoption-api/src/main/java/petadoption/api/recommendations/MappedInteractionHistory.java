@@ -1,10 +1,17 @@
 package petadoption.api.recommendations;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
+@EqualsAndHashCode()
 public class MappedInteractionHistory {
 
     public Long userId;
