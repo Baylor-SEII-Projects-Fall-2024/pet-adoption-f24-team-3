@@ -23,3 +23,8 @@ spring:
     active: dev
 upload:
   directory: "uploads"
+
+logging:
+  level:
+    org.springframework.messaging: DEBUG
+    org.springframework.web: DEBUG

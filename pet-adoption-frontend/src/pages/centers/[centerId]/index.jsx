@@ -65,7 +65,6 @@ function PetsAndEventsTabs(props) {
         )}
         <Grid container spacing={5}>
           {pets.map((pet) => (
-
             <Grid item xs={11} sm={5} md={3} key={pet.id}>
               <Box
                 onClick={() => handlePetClick(pet.id)}
@@ -101,7 +100,6 @@ function PetsAndEventsTabs(props) {
           ))}
         </Grid>
       </TabPanel>
-
     </Box>
   );
 }
