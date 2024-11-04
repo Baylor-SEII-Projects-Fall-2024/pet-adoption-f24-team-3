@@ -4,10 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import petadoption.api.recommendations.InteractionRepository;
+import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.dtos.*;
 
 import java.util.HashMap;
@@ -27,6 +30,9 @@ public class UserService {
     private AdoptionCenterRepository adoptionCenterRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    @Lazy
+    private RecommendationsService recommendationsService;
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -63,6 +69,7 @@ public class UserService {
 
         // Save the user to the database
         PotentialOwner savedUser = potentialOwnerRepository.save(potentialOwner);
+        recommendationsService.createHistory(savedUser.getId());
 
         // Return status of registration
         return savedUser.getId();
@@ -122,7 +129,7 @@ public class UserService {
 
         // Save the user to the database
         AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
-
+        recommendationsService.createHistory(savedUser.getId());
         // Return status of registration
         return savedUser.getId();
     }
@@ -213,7 +220,9 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        recommendationsService.createHistory(savedUser.getId());
+        return savedUser;
     }
 
     public List<AdoptionCenter> paginateCenters(Integer pageSize, Integer pageNumber) {

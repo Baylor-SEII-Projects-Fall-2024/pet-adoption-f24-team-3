@@ -26,11 +26,18 @@ public class RecommendationsService {
     @Autowired
     InteractionRepository interactionRepository;
 
-    public MappedInteractionHistory findByUser(Long userId){
+    public InteractionHistory findByUser(Long userId){
+        return interactionRepository.findByUserId(userId).orElse(null);
+    }
+    public MappedInteractionHistory findByUserMapped(Long userId){
         InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
         return ih == null? null : new MappedInteractionHistory(ih);
     }
 
+    public void createHistory(Long userId){
+        InteractionHistory history = findOrMakeByUser(userId);
+        interactionRepository.save(history);
+    }
     public void likeAnimal(Long userId, Long animalId) throws Exception {
         addInteractions(userId,animalId,1);
     }
