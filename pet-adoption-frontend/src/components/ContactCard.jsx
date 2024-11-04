@@ -6,7 +6,11 @@ export default function ContactCard(props) {
     const { openChat } = useChat();
 
     const handleContact = async (event) => {
-        /* Send a message to contactee */
+        /* Send a message to contactee, if NULL then return
+         */
+        if(contactee == null){
+            return
+        }
         openChat(contactee)
     }
 
