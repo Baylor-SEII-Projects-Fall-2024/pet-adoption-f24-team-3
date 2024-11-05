@@ -101,17 +101,22 @@ public class RecommendationsService {
         //if (adoptionCenter == null) {
         //    throw new Exception("AdoptionCenter not found!");
         //}
-        score += calculateCompatibility(mappedHistory.getSexHistory(), animal.getSex().toString(), 1.2);
+        if(animal.getSex()!=null)
+            score += calculateCompatibility(mappedHistory.getSexHistory(), animal.getSex().toString(), 1.2);
         //log.info("Sex:"+score);
-        score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1.5);
+        if(animal.getBreed()!=null)
+            score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1.5);
         //log.info("Breed:"+score);
-        score += calculateCompatibility(mappedHistory.getSpeciesHistory(), animal.getSpecies(), 2);
+        if(animal.getSpecies()!=null)
+            score += calculateCompatibility(mappedHistory.getSpeciesHistory(), animal.getSpecies(), 2);
         //log.info("Species:"+score);
-        score += calculateCompatibility(mappedHistory.getCenterHistory(), animal.getCenterId().toString(), 0.4);
+        if(animal.getCenterId()!=null)
+            score += calculateCompatibility(mappedHistory.getCenterHistory(), animal.getCenterId().toString(), 0.4);
         //log.info("Center:"+score);
         //score += calculateCompatibility(mappedHistory.getStateHistory(), adoptionCenter.getState(), 0.6);
         //score += calculateCompatibility(mappedHistory.getCityHistory(), adoptionCenter.getCity(), 0.6);
-        score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
+        if(animal.getAgeClass()!=null)
+            score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
         //log.info("Age Class:"+score);
         score += getHeightCompatibility(animal, mappedHistory, 0.4);
         //log.info("Height:"+score);
@@ -119,7 +124,8 @@ public class RecommendationsService {
         //log.info("Weight:"+score);
         score += getAgeCompatibility(animal, mappedHistory, 1);
         //log.info("Age:"+score);
-        score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
+        if(animal.getSize()!=null)
+            score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
         //log.info("Size:"+score);
         score += randomNum.nextDouble(2.0);
         //log.info("Random:"+score);
