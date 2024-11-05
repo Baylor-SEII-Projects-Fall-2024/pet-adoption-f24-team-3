@@ -43,13 +43,9 @@ const chatService = () => {
         );
     }
 
-    function getChatInfoByUserID({ userID, pageSize, pageNumber }) {
+    function getChatInfoByUserId({ userID }) {
         return new Promise((resolve, reject) => {
             let url = `${apiUrl}/api/chats/chat-info-by-user?userID=${userID}`;
-
-            if (pageSize !== undefined && pageNumber !== undefined) {
-                url += `&pageSize=${pageSize}&pageNumber=${pageNumber}`;
-            }
 
             fetch(url)
                 .then(response => {
@@ -66,10 +62,30 @@ const chatService = () => {
         });
     }
 
+    function getChatByChatId({ currentChatId }) {
+        return new Promise((resolve, reject) => {
+            let url = `${apiUrl}/api/chats/by-chatID?chatID=${currentChatId}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch chat by id = ${chatID}`)
+                    }
+                    return response.json();
+                })
+                .then(data => resolve(data))
+                .catch(error => {
+                    console.error('Error:', error);
+                    reject(error);
+                });
+        });
+    }
+
     return {
         getOrCreate,
         chatList,
-        getChatInfoByUserID,
+        getChatInfoByUserId,
+        getChatByChatId,
     };
 
 };
