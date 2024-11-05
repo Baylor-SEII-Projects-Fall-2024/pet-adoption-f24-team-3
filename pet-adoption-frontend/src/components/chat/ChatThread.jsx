@@ -1,5 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Box, Button, Link } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import {
+    Box,
+    Button,
+    Link,
+    Typography
+} from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import chatService from "@/utils/services/chatService";
 import { useSelector } from 'react-redux';
@@ -11,7 +16,7 @@ export default function ChatThread(props) {
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const messagesEndRef = useRef(null);
 
-    const fetchChat = useCallback(async () => {
+    const fetchChat = async () => {
         if (!currentChatId) {
             openInbox;
         };
@@ -24,7 +29,7 @@ export default function ChatThread(props) {
         } catch (error) {
             console.error("Error fetching chats:", error);
         }
-    });
+    };
 
     useEffect(() => {
         fetchChat();
@@ -32,8 +37,10 @@ export default function ChatThread(props) {
 
     return (
         <Box>
-            Chat with ID {currentChatId}
-            <br />
+            <Typography variant="h4" gutterBottom>
+                {/* TODO: get recepient user based on chatId -Icko */}
+                Chat With ID {currentChatId}
+            </Typography>
             <hr />
             {/*
             This is an individual chat thread, where you will be able to send and
@@ -43,7 +50,6 @@ export default function ChatThread(props) {
             feature as a rough style guide. In the top left corner there should
             be an icon that returns the uer to their inbox.
             */}
-            <br />
             <Button onClick={openInbox}>Return to Inbox</Button>
             <hr />
             <br />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Button,
@@ -17,7 +17,7 @@ export default function ChatInbox() {
     const [chats, setChats] = useState([]);
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
-    const fetchChats = useCallback(async () => {
+    const fetchChats = async () => {
         try {
             const userID = currentUserId; // Implement this function to get the current user's ID
             const chatInfoList = await getChatInfoByUserId({ userID });
@@ -27,7 +27,7 @@ export default function ChatInbox() {
         } catch (error) {
             console.error("Error fetching chats:", error);
         }
-    });
+    };
 
     useEffect(() => {
         fetchChats();
