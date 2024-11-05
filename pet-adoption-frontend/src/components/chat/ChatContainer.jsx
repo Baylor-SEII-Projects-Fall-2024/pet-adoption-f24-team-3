@@ -11,7 +11,7 @@ import chatServices from '@/utils/services/chatServices'
 export default function ChatContainer(props) {
     const { isChatDialogOpen, openChatDialog, closeChatDialog } = useChat();
     const { getUnreadMessages } = chatServices();
-    const [unreadMessages, setUnreadMessages] = useState( null ); /* Starts at 0 */
+    const [unreadMessages, setUnreadMessages] = useState( null );
     const [loading, setLoading] = useState(true);
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
@@ -24,7 +24,6 @@ export default function ChatContainer(props) {
                 setUnreadMessages(result);
                 setLoading(false);
               }
-              // Set error state if not ok
             } catch (error) {
               console.error("Error fetching unread messages:", error);
             } finally {
@@ -33,7 +32,7 @@ export default function ChatContainer(props) {
           };
           fetchUnread();
         }
-      }, [currentUserId]); // rerender if userId changes
+      }, [currentUserId]);
 
 
     if (!isChatDialogOpen && !loading) {

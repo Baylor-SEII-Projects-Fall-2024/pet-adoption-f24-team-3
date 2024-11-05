@@ -18,10 +18,23 @@ const chatServices = () => {
             return null;
         }
     }
-
+    const sendMessage = async(chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
+        if (stompClient) {
+          const chatMessage = {
+            chatID: chatID,
+            senderID: sender,
+            recipientID: contactee,
+            content: content,
+          };
+          console.log("Sending message:", chatMessage);
+          stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
+        //   setMessage("");
+        }
+    };
 
     return{
         getUnreadMessages,
+        sendMessage
     };
 };
 export default chatServices;

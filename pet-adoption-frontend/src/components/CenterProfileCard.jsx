@@ -64,7 +64,7 @@ export default function CenterProfileCard(props) {
               Edit Info
             </Button>
           ) : (
-            <ContactCard contactee={centerId}/>
+            <ContactCard contactee={centerId} sender={currentUserId}/>
           )}
         </Box>
         <Box
