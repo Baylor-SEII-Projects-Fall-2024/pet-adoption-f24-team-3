@@ -14,6 +14,7 @@ public class AnimalCardResponse {
     public Integer age;
     public String breed;
     public AnimalSex sex;
+    public Double score;
 
     public AnimalCardResponse(Animal sourceAnimal){
         this.id=sourceAnimal.getId();
@@ -23,6 +24,7 @@ public class AnimalCardResponse {
         this.age=sourceAnimal.getAge();
         this.breed=sourceAnimal.getBreed();
         this.sex=sourceAnimal.getSex();
+        this.score = sourceAnimal.getScore();
     }
 
 }

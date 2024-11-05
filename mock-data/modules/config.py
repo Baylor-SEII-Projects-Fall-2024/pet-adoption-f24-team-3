@@ -13,10 +13,10 @@ random.seed(69)
 # API_BASE_URL = "http://35.184.141.85:8080"
 
 # Remote Dev - Icko's Runner
-API_BASE_URL = "http://35.184.141.85:8080"
+#API_BASE_URL = "http://35.184.141.85:8080"
 
 # Local Development
-# API_BASE_URL = "http://localhost:8080"
+API_BASE_URL = "http://localhost:8080"
 
 # Cities and States for generation
 city_state_map = {
