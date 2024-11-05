@@ -21,6 +21,7 @@ export default function ChatBox(props) {
         >
             {currentChatPage == "INBOX" &&
                 <ChatInbox openChat={openChat} />
+                
             }
             {currentChatPage == "CHAT" && currentChatId != null &&
                 <ChatThread openInbox={openInbox} chatId={currentChatId} />

@@ -1,15 +1,47 @@
 
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, IconButton, Stack } from '@mui/material'
 import ChatBox from './ChatBox';
+import { Box, IconButton, Stack } from '@mui/material'
 import { useChat } from '@/utils/contexts/chatContext';
+import { useSelector } from "react-redux";
+import chatServices from '@/utils/services/chatServices'
 
 export default function ChatContainer(props) {
     const { isChatDialogOpen, openChatDialog, closeChatDialog } = useChat();
+    const { getUnreadMessages } = chatServices();
+    const [unreadMessages, setUnreadMessages] = useState( null );
+    const [loading, setLoading] = useState(true);
+    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
-    if (!isChatDialogOpen) {
+    useEffect(() => {
+        if (currentUserId) {
+          const fetchUnread = async () => {
+            try {
+              const result = await getUnreadMessages(currentUserId);
+              if (result !== null) {
+                if(result>9){
+                    setUnreadMessages("9+");
+                }
+                else{
+                    setUnreadMessages(result);
+
+                }
+                setLoading(false);
+              }
+            } catch (error) {
+              console.error("Error fetching unread messages:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchUnread();
+        }
+      }, [currentUserId]);
+
+
+    if (!isChatDialogOpen && !loading) {
         return (
             <Box
                 sx={{
@@ -27,37 +59,45 @@ export default function ChatContainer(props) {
                     onClick={openChatDialog}
                 >
                     <ChatIcon sx={{ fontSize: "45px" }} />
+                    <div>
+
+                        {unreadMessages=="9+"||unreadMessages>0?
+                        <span className="icon-button__badge">
+                            {unreadMessages}
+                        </span> : <></>}
+                    </div>
                 </IconButton>
 
             </Box>
         );
     }
-
-    return (
-        <Stack direction="column"
-            sx={{
-                position: "absolute",
-                right: "3%",
-                bottom: "5%",
-                position: "fixed",
-                alignItems: "flex-end",
-                display: "flex",
-                justifyContent: "flex-start",
-            }}
-        >
-            <ChatBox />
-            <IconButton color="primary"
+    if(!loading){
+        return (
+            <Stack direction="column"
                 sx={{
-                    width: "80px",
-                    height: "80px",
+                    position: "absolute",
+                    right: "3%",
+                    bottom: "5%",
+                    position: "fixed",
+                    alignItems: "flex-end",
+                    display: "flex",
+                    justifyContent: "flex-start",
                 }}
-                onClick={closeChatDialog}
             >
-                <CloseIcon sx={{ fontSize: "45px" }} />
-            </IconButton>
+                <ChatBox />
+                <IconButton color="primary"
+                    sx={{
+                        width: "80px",
+                        height: "80px",
+                    }}
+                    onClick={closeChatDialog}
+                >
+                    <CloseIcon sx={{ fontSize: "45px" }} />
+                </IconButton>
 
-        </Stack>
-    );
+            </Stack>
+        );
+    }
 
 
 }
