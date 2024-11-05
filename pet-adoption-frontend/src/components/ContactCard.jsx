@@ -2,10 +2,9 @@ import { Box, Button, Typography } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import { Message } from "@mui/icons-material";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function ContactCard(props) {
     /*  */
-    const { contactee, sender } = props;
+    const { contactee, sender } = props; /* Passing in sender if needed for later */
     const { openChat } = useChat();
     const handleContact = async (event) => {
         /* Send a message to contactee, if NULL then return
