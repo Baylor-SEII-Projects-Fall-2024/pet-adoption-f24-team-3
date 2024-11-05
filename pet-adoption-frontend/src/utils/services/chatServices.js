@@ -32,7 +32,7 @@ const chatServices = () => {
         }
     };
 
-    const getOrCreateChatID = async(senderID, receiverID) => {
+    const getOrCreateChat = async(senderID, receiverID) => {
         const response = await fetch(`${apiUrl}/api/chats/get-or-create?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
             headers: {
@@ -41,9 +41,24 @@ const chatServices = () => {
         });
         const result = await response.json();
         if (response.ok) {
-            return result.id;
+            return result;
         } else {
             alert(`Get/create chatID failed: ${result.message}`);
+            return null;
+        }
+    }
+    const getByChatID = async(chatId) => {
+        const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get chatID failed: ${result.message}`);
             return null;
         }
     }
@@ -51,7 +66,8 @@ const chatServices = () => {
     return{
         getUnreadMessages,
         sendMessage,
-        getOrCreateChatID
+        getOrCreateChat,
+        getByChatID
     };
 };
 export default chatServices;

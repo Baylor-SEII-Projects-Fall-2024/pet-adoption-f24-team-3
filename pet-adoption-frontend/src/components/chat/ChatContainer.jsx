@@ -21,7 +21,13 @@ export default function ChatContainer(props) {
             try {
               const result = await getUnreadMessages(currentUserId);
               if (result !== null) {
-                setUnreadMessages(result);
+                if(result>9){
+                    setUnreadMessages("9+");
+                }
+                else{
+                    setUnreadMessages(result);
+
+                }
                 setLoading(false);
               }
             } catch (error) {
@@ -55,7 +61,7 @@ export default function ChatContainer(props) {
                     <ChatIcon sx={{ fontSize: "45px" }} />
                     <div>
 
-                        {unreadMessages>0?
+                        {unreadMessages=="9+"||unreadMessages>0?
                         <span className="icon-button__badge">
                             {unreadMessages}
                         </span> : <></>}
