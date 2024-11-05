@@ -20,7 +20,7 @@ public class RecommendationsController {
 
     @GetMapping("/{userId}/calculate/{animalId}")
     public double getScoreForAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
-        return recommendationsService.calcualteForSingleAnimal(animalId,userId);
+        return recommendationsService.calculateForSingleAnimal(animalId,userId);
     }
 
     @DeleteMapping("/{userId}")

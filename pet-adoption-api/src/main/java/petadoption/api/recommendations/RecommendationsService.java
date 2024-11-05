@@ -80,7 +80,7 @@ public class RecommendationsService {
         return sortedAnimals;
     }
 
-    public double calcualteForSingleAnimal(Long animalId, Long userId) throws Exception {
+    public double calculateForSingleAnimal(Long animalId, Long userId) throws Exception {
         InteractionHistory history = interactionRepository.findByUserId(userId).orElse(null);
         if(history == null) return -1;
 
