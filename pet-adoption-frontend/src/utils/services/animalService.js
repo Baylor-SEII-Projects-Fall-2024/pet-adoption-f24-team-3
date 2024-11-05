@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const animalService = () => {
 
     const { uploadAnimalPicture } = imageService();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    let currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
 
     const createPet = async (formData, petPic) => {
@@ -97,8 +97,9 @@ const animalService = () => {
         }
     };
 
-    const getRecommendedAnimals = async (pageSize, alreadyDisplayedIds) => {
-        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${127}`, {
+    const getRecommendedAnimals = async (userId, pageSize, alreadyDisplayedIds) => {
+
+        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${userId}`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"

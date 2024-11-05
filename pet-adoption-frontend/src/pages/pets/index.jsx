@@ -22,9 +22,8 @@ const quantityPerPage = 12;
 export default function PetsPage() {
   const router = useRouter();
   const { getRecommendedAnimals } = animalService();
-  const currentUserType = useSelector(
-    (state) => state.currentUser.currentUserType
-  );
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+  const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
   const [animalData, setAnimalData] = React.useState([]);
   const [page, setPage] = React.useState(1);
@@ -35,7 +34,9 @@ export default function PetsPage() {
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
     async function load() {
-      await getRecommendedAnimals(quantityPerPage, [])
+      if (!currentUserId) return;
+
+      await getRecommendedAnimals(currentUserId, quantityPerPage, [])
         .then((result) => {
           if (result != null) {
             if (result.length < 1) {
@@ -55,7 +56,7 @@ export default function PetsPage() {
         });
     }
     load();
-  }, []);
+  }, [currentUserId]);
 
   //get data after first call, called by infinite scroll
   const fetchMoreData = async () => {
@@ -63,7 +64,7 @@ export default function PetsPage() {
       return;
     }
     let previousIds = animalData.map(a => a.id);
-    await getRecommendedAnimals(quantityPerPage, previousIds)
+    await getRecommendedAnimals(currentUserId, quantityPerPage, previousIds)
       .then((result) => {
         if (result != null) {
           if (result.length < 1) {
