@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
+import { Message } from "@mui/icons-material";
 
 export default function ContactCard(props) {
     const { contactee } = props;
@@ -15,24 +16,19 @@ export default function ContactCard(props) {
     }
 
     return(
-        <Box
-        sx={{
-            width: "100%",
-            height: "auto",
-            paddingTop: "1rem",
-            paddingBottom: "1rem",
-        }}>
         <Button
             variant="contained"
             color="primary"
             sx={{
-                fontSize: "20px",
-                minWidth: "150px",
+            padding: "12px 12px",
+            fontSize: "14px",
+            minWidth: "175px",
+            justifyContent: "space-evenly",
             }}
-            onClick={handleContact}
-        > Contact 
+            onClick={handleContact} // Define this function for the different action
+        >
+        <Message></Message>
+            Contact Center
         </Button>
-
-        </Box>
     )
 }

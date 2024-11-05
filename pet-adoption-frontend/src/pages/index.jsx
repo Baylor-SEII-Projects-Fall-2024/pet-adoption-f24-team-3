@@ -29,7 +29,7 @@ export default function HomePage() {
               height: "50vh"
             }}
           >
-            <img class="fade-in"
+            <img className="fade-in"
               style={{
                 width: "100vw",
                 height: "50vh",
@@ -37,7 +37,7 @@ export default function HomePage() {
               }}
               src={"homescreen_header.jpg"}
             />
-            <div class="fade-in-faster">
+            <div className="fade-in-faster">
             <Typography variant='h1' color='text.white'
               sx={{
                 position: "absolute",
@@ -52,7 +52,7 @@ export default function HomePage() {
             </div>
           </Box>
           </div>
-          <div class="fade-in-faster">
+          <div className="fade-in-faster">
           <Stack direction="column"
             sx={{
               mt: "30px",
@@ -77,7 +77,7 @@ export default function HomePage() {
             pb: "15px",
           }} elevation={4}>
             <CardContent>
-              <img class="fade-in-faster"
+              <img className="fade-in-faster"
                 style={{
                   width: "60%",
                   borderRadius: "2%",

@@ -8,6 +8,8 @@ import {
   Button,
   Avatar,
 } from "@mui/material";
+import formatter from "@/utils/formatter";
+import ContactCard from "@/components/ContactCard"; /* testing this out */
 import { Message } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -62,20 +64,7 @@ export default function CenterProfileCard(props) {
               Edit Info
             </Button>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                padding: "12px 12px",
-                fontSize: "14px",
-                minWidth: "175px",
-                justifyContent: "space-evenly",
-              }}
-              onClick={handleContactClick} // Define this function for the different action
-            >
-              <Message></Message>
-              Contact Center
-            </Button>
+            <ContactCard contactee={centerId}/>
           )}
         </Box>
         <Box
