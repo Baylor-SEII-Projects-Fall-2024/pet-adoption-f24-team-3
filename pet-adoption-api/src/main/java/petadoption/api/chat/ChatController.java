@@ -67,7 +67,6 @@ public class ChatController {
 
     @GetMapping("/unread-count")
     public Integer getUnreadMessageCount(@RequestParam("userID") Long userID) {
-        Integer unreadCount = messageService.getUnreadMessageCount(userID);
         return messageService.getUnreadMessageCount(userID);
     }
 

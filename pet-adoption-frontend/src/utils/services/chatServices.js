@@ -32,9 +32,26 @@ const chatServices = () => {
         }
     };
 
+    const getOrCreateChatID = async(senderID, receiverID) => {
+        const response = await fetch(`${apiUrl}/api/chats/get-or-create?senderID=${senderID}&receiverID=${receiverID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result.id;
+        } else {
+            alert(`Get/create chatID failed: ${result.message}`);
+            return null;
+        }
+    }
+
     return{
         getUnreadMessages,
-        sendMessage
+        sendMessage,
+        getOrCreateChatID
     };
 };
 export default chatServices;

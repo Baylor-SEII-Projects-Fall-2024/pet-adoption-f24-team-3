@@ -2,17 +2,19 @@ import { Box, Button, Typography } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import { Message } from "@mui/icons-material";
 
+
 export default function ContactCard(props) {
     /*  */
     const { contactee, sender } = props; /* Passing in sender if needed for later */
-    const { openChat } = useChat();
+    const { openChatByUser } = useChat();
+
     const handleContact = async (event) => {
         /* Send a message to contactee, if NULL then return
          */
         if(contactee == null){
             return
         }
-        openChat(contactee) /* Opens a chat with contactee as receiver */    
+        openChatByUser(sender, contactee) /* Opens a chat with contactee as receiver */    
              
 
     }

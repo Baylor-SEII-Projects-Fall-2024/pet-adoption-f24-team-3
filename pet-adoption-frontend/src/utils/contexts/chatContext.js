@@ -1,6 +1,6 @@
 // ChatContext.js
 import React, { createContext, useContext, useState } from 'react';
-
+import chatServices from "@/utils/services/chatServices";
 const ChatContext = createContext();
 
 
@@ -10,12 +10,13 @@ export const ChatProvider = ({ children }) => {
     const [isChatDialogOpen, setIsChatDialogOpen] = useState(false);
     const [currentChatId, setCurrentChatId] = React.useState(null);
     const [currentChatPage, setCurrentChatPage] = React.useState("INBOX");
+    const { getOrCreateChatID } = chatServices();
 
     //opens the chat dialog with the specified user. Creates a chat if DNE
-    const openChatByUser = (userId) => {
+    const openChatByUser = async (senderID,receiverID) => {
         //TODO: CALL a service function to get or create a chat based on the other user's id
-        chatId = 4;
-        openChat(userId);
+        const chatID = await getOrCreateChatID(senderID,receiverID) // Async function wait for result
+        openChat(chatID);
     };
 
     //opens the chat dialog, at its previous state
