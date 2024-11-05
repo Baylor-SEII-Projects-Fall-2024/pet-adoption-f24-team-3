@@ -80,6 +80,19 @@ public class RecommendationsService {
         return sortedAnimals;
     }
 
+    public double calcualteForSingleAnimal(Long animalId, Long userId) throws Exception {
+        InteractionHistory history = interactionRepository.findByUserId(userId).orElse(null);
+        if(history == null) return -1;
+
+        MappedInteractionHistory mappedInteractionHistory = new MappedInteractionHistory(history);
+
+        Animal animal = animalService.findAnimal(animalId).orElse(null);
+        if(animal == null) return -1;
+
+        return calculateCompatibilityScore(animal,mappedInteractionHistory);
+
+    }
+
     public double calculateCompatibilityScore(Animal animal, MappedInteractionHistory mappedHistory) throws Exception {
 
         double score = 0;
@@ -89,17 +102,27 @@ public class RecommendationsService {
         //    throw new Exception("AdoptionCenter not found!");
         //}
         score += calculateCompatibility(mappedHistory.getSexHistory(), animal.getSex().toString(), 1.2);
-        score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1);
+        //log.info("Sex:"+score);
+        score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1.5);
+        //log.info("Breed:"+score);
         score += calculateCompatibility(mappedHistory.getSpeciesHistory(), animal.getSpecies(), 2);
+        //log.info("Species:"+score);
         score += calculateCompatibility(mappedHistory.getCenterHistory(), animal.getCenterId().toString(), 0.4);
+        //log.info("Center:"+score);
         //score += calculateCompatibility(mappedHistory.getStateHistory(), adoptionCenter.getState(), 0.6);
         //score += calculateCompatibility(mappedHistory.getCityHistory(), adoptionCenter.getCity(), 0.6);
         score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
+        //log.info("Age Class:"+score);
         score += getHeightCompatibility(animal, mappedHistory, 0.4);
+        //log.info("Height:"+score);
         score += getWeightCompatibility(animal, mappedHistory, 0.4);
+        //log.info("Weight:"+score);
         score += getAgeCompatibility(animal, mappedHistory, 1);
-        score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1.5);
+        //log.info("Age:"+score);
+        score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
+        //log.info("Size:"+score);
         score += randomNum.nextDouble(2.0);
+        //log.info("Random:"+score);
         return score;
     }
 
@@ -111,7 +134,6 @@ public class RecommendationsService {
         if(maxVal == 0) return 0.0;
 
         int specifiedScore = historyMap.getOrDefault(targetAttribute, 0);
-
         return weight * ((double) specifiedScore / maxVal);
     }
 
@@ -133,13 +155,15 @@ public class RecommendationsService {
     public double getWeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgWeight = history.getAvgWeight();
         if(avgWeight == 0) return 0.0;
-        return ((animal.getWeight() - avgWeight)/avgWeight) * weight;
+        double score =  weight - ((animal.getWeight() - avgWeight)/avgWeight);
+        return Math.clamp(score,-weight, weight);
     }
 
     public double getHeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgHeight = history.getAvgHeight();
         if(avgHeight == 0) return 0.0;
-        return ((animal.getHeight() - avgHeight)/avgHeight) * weight;
+        double score =  weight - ((animal.getHeight() - avgHeight)/avgHeight);
+        return Math.clamp(score,-weight, weight);
     }
 
     public double getSizeCompatibility(Animal animal, Map<String, Integer> history, double weight) throws Exception {

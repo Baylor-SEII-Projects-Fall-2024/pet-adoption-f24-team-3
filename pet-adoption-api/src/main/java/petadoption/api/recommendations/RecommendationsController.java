@@ -18,6 +18,11 @@ public class RecommendationsController {
         return recommendationsService.findByUserMapped(userId);
     }
 
+    @GetMapping("/{userId}/calculate/{animalId}")
+    public double getScoreForAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
+        return recommendationsService.calcualteForSingleAnimal(animalId,userId);
+    }
+
     @DeleteMapping("/{userId}")
     public boolean resetHistory(@PathVariable Long userId){
         return recommendationsService.resetHistory(userId);
