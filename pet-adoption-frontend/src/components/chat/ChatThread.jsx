@@ -18,7 +18,7 @@ export default function ChatThread(props) {
 
     const fetchChat = async () => {
         if (!currentChatId) {
-            openInbox;
+            openInbox; // I don't know if this does what I think it'll do -Icko
         };
 
         try {
@@ -35,13 +35,16 @@ export default function ChatThread(props) {
         fetchChat();
     }, [fetchChat]);
 
+    const otherUserId = chat.length > 0
+        ? (chat[0].senderID === currentUserId ? chat[0].recipientID : chat[0].senderID)
+        : null;
+
     return (
         <Box>
             <Typography variant="h4" gutterBottom>
                 {/* TODO: get recepient user based on chatId -Icko */}
-                Chat With ID {currentChatId}
+                Chatting With {otherUserId}
             </Typography>
-            <hr />
             {/*
             This is an individual chat thread, where you will be able to send and
             recieve messages from a user. This is where all the websocket stuff
@@ -50,13 +53,14 @@ export default function ChatThread(props) {
             feature as a rough style guide. In the top left corner there should
             be an icon that returns the uer to their inbox.
             */}
-            <Button onClick={openInbox}>Return to Inbox</Button>
-            <hr />
-            <br />
+            <Button
+                variant="outlined"
+                onClick={openInbox}>Return to Inbox
+            </Button>
             {/* Display chat messages */}
-                        <Box 
+            <Box
                 sx={{
-                    height: '400px', // Adjust this value as needed
+                    height: '400px',
                     overflowY: 'auto',
                     border: '1px solid #ccc',
                     borderRadius: '4px',

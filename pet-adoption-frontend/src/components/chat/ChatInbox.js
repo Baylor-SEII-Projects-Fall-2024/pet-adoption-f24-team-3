@@ -75,9 +75,12 @@ export default function ChatInbox() {
                 ))}
             </List>
             ) : (
-                <Typography variant="body1" align="center">
-                    No messages found
-                </Typography>
+                <>
+                    <br />
+                    <Typography variant="body1" align="center">
+                        No messages found
+                    </Typography>
+                </>
             )}
         </Box>
     );
