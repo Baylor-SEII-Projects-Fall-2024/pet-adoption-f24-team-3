@@ -12,6 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
+import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -27,6 +28,8 @@ export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { formatSize, formatSex, formatAge } = formatter();
+
 
   // Fetch user info when page renders
   useEffect(() => {
@@ -236,13 +239,13 @@ export default function ProfilePage() {
                 <Typography>Breed: {userInfo.preference.breed}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>Size: {userInfo.preference.size}</Typography>
+                <Typography>Size: {formatSize(userInfo.preference.size)}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>Sex: {userInfo.preference.sex}</Typography>
+                <Typography>Sex: {formatSex(userInfo.preference.sex)}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>Age: {userInfo.preference.ageClass}</Typography>
+                <Typography>Age: {formatAge(userInfo.preference.ageClass)}</Typography>
               </Grid>
             </Grid>
           )}
