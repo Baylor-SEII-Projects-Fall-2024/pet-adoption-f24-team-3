@@ -80,6 +80,18 @@ public class RecommendationsService {
         return sortedAnimals;
     }
 
+    public void editHistoryByPreference(Long userId, Animal oldPreference, Animal newPreference){
+        InteractionHistory history = findOrMakeByUser(userId);
+
+        //remove the old interactions
+        if(oldPreference!=null){
+            updateHistory(history,oldPreference,null,-5,false);
+        }
+        //add the new interactions
+        updateHistory(history,newPreference,null,5,false);
+
+        interactionRepository.save(history);
+    }
     public double calculateForSingleAnimal(Long animalId, Long userId) throws Exception {
         InteractionHistory history = interactionRepository.findByUserId(userId).orElse(null);
         if(history == null) return -1;
@@ -103,32 +115,32 @@ public class RecommendationsService {
         //}
         if(animal.getSex()!=null)
             score += calculateCompatibility(mappedHistory.getSexHistory(), animal.getSex().toString(), 1.2);
-        //log.info("Sex:"+score);
+        log.info("Sex:"+score);
         if(animal.getBreed()!=null)
             score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1.5);
-        //log.info("Breed:"+score);
+        log.info("Breed:"+score);
         if(animal.getSpecies()!=null)
             score += calculateCompatibility(mappedHistory.getSpeciesHistory(), animal.getSpecies(), 2);
-        //log.info("Species:"+score);
+        log.info("Species:"+score);
         if(animal.getCenterId()!=null)
             score += calculateCompatibility(mappedHistory.getCenterHistory(), animal.getCenterId().toString(), 0.4);
-        //log.info("Center:"+score);
+        log.info("Center:"+score);
         //score += calculateCompatibility(mappedHistory.getStateHistory(), adoptionCenter.getState(), 0.6);
         //score += calculateCompatibility(mappedHistory.getCityHistory(), adoptionCenter.getCity(), 0.6);
         if(animal.getAgeClass()!=null)
             score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
-        //log.info("Age Class:"+score);
+        log.info("Age Class:"+score);
         score += getHeightCompatibility(animal, mappedHistory, 0.4);
-        //log.info("Height:"+score);
+        log.info("Height:"+score);
         score += getWeightCompatibility(animal, mappedHistory, 0.4);
-        //log.info("Weight:"+score);
+        log.info("Weight:"+score);
         score += getAgeCompatibility(animal, mappedHistory, 1);
-        //log.info("Age:"+score);
+        log.info("Age:"+score);
         if(animal.getSize()!=null)
             score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
-        //log.info("Size:"+score);
+        log.info("Size:"+score);
         score += randomNum.nextDouble(2.0);
-        //log.info("Random:"+score);
+        log.info("Random:"+score);
         return score;
     }
 
@@ -176,6 +188,9 @@ public class RecommendationsService {
         if(history.isEmpty()) return 0;
 
         int maxVal = (Collections.max(history.values()));
+
+        if(maxVal==0) return 0;
+
         int specifiedScore = history.getOrDefault(animal.getSize().toString(), 0);
 
         return (1 - (double) abs(maxVal - specifiedScore) /maxVal) * weight;
@@ -205,19 +220,29 @@ public class RecommendationsService {
         }
 
         InteractionHistory history = findOrMakeByUser(userId);
-        modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
-        modifyAttribute(history, InteractionType.BREED, animal.getBreed(), numInteractions);
+
+        updateHistory(history,animal,center,numInteractions,(numInteractions>0));
+    }
+
+    private void updateHistory(InteractionHistory history, Animal animal, AdoptionCenter center, int numInteractions, boolean effectAverages){
+        if(animal.getSpecies()!= null)
+            modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
+        if(animal.getBreed()!=null)
+            modifyAttribute(history, InteractionType.BREED, animal.getBreed(), numInteractions);
         if(animal.getSex()!= null)
             modifyAttribute(history, InteractionType.SEX, animal.getSex().toString(), numInteractions);
         if(animal.getAgeClass()!= null)
             modifyAttribute(history, InteractionType.AGE_CLASS, animal.getAgeClass().toString(), numInteractions);
         if(animal.getSize()!= null)
             modifyAttribute(history, InteractionType.SIZE, animal.getSize().toString(), numInteractions);
-        modifyAttribute(history, InteractionType.STATE,center.getState(), numInteractions);
-        modifyAttribute(history, InteractionType.CITY, center.getCity(), numInteractions);
-        modifyAttribute(history, InteractionType.CENTER_ID,center.getId().toString(), numInteractions);
 
-        if(numInteractions >0){
+        if(center!=null){
+            modifyAttribute(history, InteractionType.STATE,center.getState(), numInteractions);
+            modifyAttribute(history, InteractionType.CITY, center.getCity(), numInteractions);
+            modifyAttribute(history, InteractionType.CENTER_ID,center.getId().toString(), numInteractions);
+        }
+
+        if(effectAverages){
             history.setAvgAge(modifyAverage(history.getAvgAge(), history.getTotalLikes(), animal.getAge(),numInteractions));
             history.setAvgHeight(modifyAverage(history.getAvgHeight(), history.getTotalLikes(), animal.getHeight(),numInteractions));
             history.setAvgWeight(modifyAverage(history.getAvgWeight(), history.getTotalLikes(), animal.getWeight(),numInteractions));
@@ -232,7 +257,7 @@ public class RecommendationsService {
         List<InteractionPoint> points = history.getInteractionPoints();
 
         Optional<InteractionPoint> existingPoint = points.stream()
-                .filter(p-> p.getType() == type && p.getName().equals(name))
+                .filter(p-> p.getName()!=null &&  p.getType() == type && p.getName().equals(name))
                 .findFirst();
 
         if (existingPoint.isPresent()) {

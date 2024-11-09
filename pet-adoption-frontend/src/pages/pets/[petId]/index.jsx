@@ -11,6 +11,7 @@ import {
   Box,
   Link,
 } from "@mui/material";
+import { Message } from "@mui/icons-material";
 import animalService from "@/utils/services/animalService";
 import userService from "@/utils/services/userService";
 import formatter from "@/utils/formatter";
