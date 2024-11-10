@@ -15,7 +15,17 @@ public class RecommendationsController {
 
     @GetMapping("/{userId}")
     public MappedInteractionHistory fetch(@PathVariable Long userId){
-        return recommendationsService.findByUser(userId);
+        return recommendationsService.findByUserMapped(userId);
+    }
+
+    @GetMapping("/{userId}/calculate/{animalId}")
+    public double getScoreForAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
+        return recommendationsService.calculateForSingleAnimal(animalId,userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public boolean resetHistory(@PathVariable Long userId){
+        return recommendationsService.resetHistory(userId);
     }
 
     @PutMapping("/{userId}/like/{animalId}")

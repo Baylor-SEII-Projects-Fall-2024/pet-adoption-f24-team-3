@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import petadoption.api.event.Event;
 import petadoption.api.images.ImageService;
+import petadoption.api.recommendations.RecommendationsService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 public class AnimalService {
     @Autowired
     AnimalRepository animalRepository;
+    @Autowired
+    @Lazy
+    RecommendationsService recommendationsService;
     ImageService imageService;
 
     //only creates the image service when it needs it - prevents cyclical loading
@@ -41,9 +45,10 @@ public class AnimalService {
         return animalRepository.findAnimalsByCenterId(centerId);
     }
 
-    public List<Animal> recommendAnimals(Integer pageSize, List<Long> alreadyDisplayedIds) {
+    public List<Animal> recommendAnimals(Integer pageSize, List<Long> alreadyDisplayedIds,Long userId) throws Exception {
         List<Animal> initialAnimalList = animalRepository.findAllNotRetrieved(alreadyDisplayedIds);
-        return initialAnimalList.stream().limit(pageSize).collect(Collectors.toList());
+        return recommendationsService.orderByCompatibilityScore(initialAnimalList,userId)
+                .stream().limit(pageSize).collect(Collectors.toList());
     }
 
     public void deleteAnimal(Long animalId) throws Exception{

@@ -3,9 +3,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const chatService = () => {
 
-    function getOrCreate({ senderID, receiverID }) {
-    };
-
     function chatList({ userId }) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
@@ -80,14 +77,77 @@ const chatService = () => {
                 });
         });
     }
+    /* ========== */
+    const getUnreadMessages = async (userId) => {
+        const response = await fetch(`${apiUrl}/api/chats/unread-count?userID=${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    return {
-        getOrCreate,
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get unread count failed: ${result.message}`);
+            return null;
+        }
+    }
+    const sendMessage = async(chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
+        if (stompClient) {
+          const chatMessage = {
+            chatID: chatID,
+            senderID: sender,
+            recipientID: contactee,
+            content: content,
+          };
+          console.log("Sending message:", chatMessage);
+          stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
+        //   setMessage("");
+        }
+    };
+
+    const getOrCreateChat = async(senderID, receiverID) => {
+        const response = await fetch(`${apiUrl}/api/chats/get-or-create?senderID=${senderID}&receiverID=${receiverID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get/create chatID failed: ${result.message}`);
+            return null;
+        }
+    }
+    const getByChatID = async(chatId) => {
+        const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get chatID failed: ${result.message}`);
+            return null;
+        }
+    }
+
+    return{
         chatList,
         getChatInfoByUserId,
         getChatByChatId,
+        getUnreadMessages,
+        sendMessage,
+        getOrCreateChat,
+        getByChatID
     };
-
 };
 
 export default chatService;

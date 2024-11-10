@@ -2,12 +2,12 @@ package petadoption.api.recommendations;
 
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.animal.*;
 import petadoption.api.user.*;
+import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.OwnerDto;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,6 +74,47 @@ public class RecommendationTests {
 
 
     @Test
+    void testCreateHistoryOnAccountCreation() throws  Exception{
+        AdoptionCenter center = new AdoptionCenter();
+        center.setName("Test");
+        center.setEmailAddress("test@test");
+        center.setPassword("Woof");
+
+        //check it doesnt initially exist
+        InteractionHistory centerHistory = recommendationsService.findByUser(center.getId());
+        assertNull(centerHistory);
+
+        //save the user
+        center = (AdoptionCenter) userService.saveUser(center);
+
+        //check that it exists now
+        centerHistory = recommendationsService.findByUser(center.getId());
+        assertNotNull(centerHistory);
+        assertEquals(centerHistory.getUserId(),center.getId());
+
+        //test it with the dto method
+        CenterDto centerDto = new CenterDto();
+        centerDto.setName("Test");
+        centerDto.setEmailAddress("test@test78r6645t87");
+        centerDto.setPassword("Woof");
+
+        Long dtoCenterId = userService.registerCenter(centerDto);
+        InteractionHistory dtoCenterHistory = recommendationsService.findByUser(dtoCenterId);
+        assertNotNull(dtoCenterHistory);
+        assertEquals(dtoCenterId, dtoCenterHistory.getUserId());
+
+        //do it with the potential owner dto method
+        OwnerDto ownerDto = new OwnerDto();
+        ownerDto.setNameFirst("Joe");
+        ownerDto.setEmailAddress("test@test6567575747535456543424354657");
+        ownerDto.setPassword("Woof");
+
+        Long dtoOwnerId = userService.registerOwner(ownerDto);
+        InteractionHistory dtoOwnerHistory = recommendationsService.findByUser(dtoOwnerId);
+        assertNotNull(dtoOwnerHistory);
+        assertEquals(dtoOwnerId, dtoOwnerHistory.getUserId());
+    }
+    @Test
     void testAgeClassCompatibility() throws Exception {
         Long centerId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
         Long ownerId = registerOwner("example@example.com", "New First", "New Last");
@@ -90,7 +131,7 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assert animalOne != null;
         assert animalTwo != null;
@@ -115,7 +156,7 @@ public class RecommendationTests {
         Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
         Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
         Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assert animalTwo != null;
         assertEquals(0.5, recommendationsService.getSizeCompatibility(animalTwo, history.getSizeHistory(), 1));
@@ -153,7 +194,7 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assertEquals(-0.5, recommendationsService.getWeightCompatibility(animalTwo, history, 1));
         assertEquals(0.25, recommendationsService.getWeightCompatibility(animalThree, history, 1));
@@ -187,7 +228,7 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalOneId);
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assertEquals(-0.5, recommendationsService.getHeightCompatibility(animalTwo, history, 1));
         assertEquals(0.25, recommendationsService.getHeightCompatibility(animalThree, history, 1));
@@ -210,7 +251,7 @@ public class RecommendationTests {
         Animal animalOne = animalService.findAnimal(animalOneId).orElse(null);
         Animal animalTwo = animalService.findAnimal(animalTwoId).orElse(null);
         Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assert animalTwo != null;
         assertEquals(0.4, recommendationsService.getAgeCompatibility(animalTwo, history, 1));
@@ -239,7 +280,7 @@ public class RecommendationTests {
         Animal animalThree = animalService.findAnimal(animalThreeId).orElse(null);
         Animal animalFour = animalService.findAnimal(animalFourId).orElse(null);
         Animal animalDiff = animalService.findAnimal(animalDiffId).orElse(null);
-        MappedInteractionHistory history = recommendationsService.findByUser(ownerId);
+        MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assert animalFour != null;
         double fourScore = recommendationsService.calculateCompatibilityScore(animalFour, history);
