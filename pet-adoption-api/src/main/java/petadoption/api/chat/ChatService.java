@@ -77,16 +77,16 @@ public class ChatService {
                 otherUserID = mostRecentMessage.getRecipientID();
             }
             User user = userService.findUser(otherUserID).orElse(null);
-            String senderName;
+            String otherUserName;
             if(user instanceof PotentialOwner owner){
-                senderName = owner.getNameFirst() + " " + owner.getNameLast();
+                otherUserName = owner.getNameFirst() + " " + owner.getNameLast();
             }
             else if(user instanceof AdoptionCenter center){
-                senderName = center.getName();
+                otherUserName = center.getName();
             } else {
-                senderName = null;
+                otherUserName = null;
             }
-            result.add(new ChatInfoResponse(chat, mostRecentMessage, senderName));
+            result.add(new ChatInfoResponse(chat, mostRecentMessage, otherUserName, otherUserID));
         }
         return result;
     }

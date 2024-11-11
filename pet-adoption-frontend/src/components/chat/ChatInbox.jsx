@@ -81,11 +81,15 @@ export default function ChatInbox() {
                       border: "1px solid #000",
                     }}
                     alt="Sender Avatar"
-                    src={`${apiUrl}/api/images/users/${chat.senderID}/profile`}
+                    src={`${apiUrl}/api/images/users/${chat.otherUserID}/profile`}
                   />
                 </Box>
                 <Box>
-                  {<Typography variant="body1">{chat.senderName}</Typography>}
+                  {
+                    <Typography variant="body1">
+                      {chat.otherUserName}
+                    </Typography>
+                  }
                   {
                     <>
                       {chat.hasUnread ? (
