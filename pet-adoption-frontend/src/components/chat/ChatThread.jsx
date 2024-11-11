@@ -130,7 +130,6 @@ export default function ChatThread(props) {
                     if (!isSubscribed.current) {
                         client.subscribe(`/topic/messages/${currentChatId}`, (msg) => {
                             const newMessage = JSON.parse(msg.body);
-                            console.log("Messages in state:", messages);
                             recieveMessage(newMessage);
                         });
                         isSubscribed.current = true; // Mark as subscribed
