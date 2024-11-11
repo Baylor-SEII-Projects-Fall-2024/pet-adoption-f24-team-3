@@ -118,11 +118,11 @@ public class RecommendationsService {
         if(animal.getAgeClass()!=null)
             score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
         //log.info("Age Class:"+score);
-        score += getHeightCompatibility(animal, mappedHistory, 0.4);
+        score += getHeightCompatibility(animal, mappedHistory, 0.6);
         //log.info("Height:"+score);
-        score += getWeightCompatibility(animal, mappedHistory, 0.4);
+        score += getWeightCompatibility(animal, mappedHistory, 0.6);
         //log.info("Weight:"+score);
-        score += getAgeCompatibility(animal, mappedHistory, 1);
+        score += getAgeCompatibility(animal, mappedHistory, 1.2);
         //log.info("Age:"+score);
         if(animal.getSize()!=null)
             score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
@@ -155,7 +155,8 @@ public class RecommendationsService {
     public double getAgeCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgAge = history.getAvgAge();
         if(avgAge == 0) return 0.0;
-        return ((animal.getAge() - avgAge)/avgAge) * weight;
+        double score =  weight - ((animal.getAge() - avgAge)/avgAge);
+        return Math.clamp(score,-weight, weight);
     }
 
     public double getWeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
