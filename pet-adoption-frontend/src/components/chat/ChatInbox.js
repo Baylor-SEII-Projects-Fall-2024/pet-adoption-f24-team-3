@@ -31,7 +31,7 @@ export default function ChatInbox() {
 
     useEffect(() => {
         fetchChats();
-    }, [fetchChats]);
+    }, []);
 
     const handleChatClick = (chatID) => {
         openChat(chatID);
@@ -44,36 +44,36 @@ export default function ChatInbox() {
             </Typography>
             <hr />
             {chats.length > 0 ? (
-            <List>
-                {chats.map((chat) => (
-                    <ListItem 
-                        key={chat.chatID} 
-                        divider
-                    >
-                        <Button
-                            fullWidth
-                            onClick={() => handleChatClick(chat.chatID)}
-                            sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                <List>
+                    {chats.map((chat) => (
+                        <ListItem
+                            key={chat.chatID}
+                            divider
                         >
-                            <ListItemText
-                                primary={chat.senderID}
-                                secondary={
-                                    <>
-                                        <Typography
-                                            component="span"
-                                            variant="body2"
-                                            color="textPrimary"
-                                        >
-                                            {chat.lastMessage}
-                                        </Typography>
-                                        {new Date(chat.timestamp).toLocaleString()}
-                                    </>
-                                }
-                            />
-                        </Button>
-                    </ListItem>
-                ))}
-            </List>
+                            <Button
+                                fullWidth
+                                onClick={() => handleChatClick(chat.chatID)}
+                                sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                            >
+                                <ListItemText
+                                    primary={chat.senderID}
+                                    secondary={
+                                        <>
+                                            <Typography
+                                                component="span"
+                                                variant="body2"
+                                                color="textPrimary"
+                                            >
+                                                {chat.lastMessage}
+                                            </Typography>
+                                            {new Date(chat.timestamp).toLocaleString()}
+                                        </>
+                                    }
+                                />
+                            </Button>
+                        </ListItem>
+                    ))}
+                </List>
             ) : (
                 <>
                     <br />

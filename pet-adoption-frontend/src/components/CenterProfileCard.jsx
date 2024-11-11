@@ -8,9 +8,7 @@ import {
   Button,
   Avatar,
 } from "@mui/material";
-import formatter from "@/utils/formatter";
 import ContactCard from "@/components/ContactCard"; /* testing this out */
-import { Message } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CenterProfileCard(props) {
@@ -19,12 +17,6 @@ export default function CenterProfileCard(props) {
 
   const handleEditInfoClick = () => {
     router.push(`/centers/${centerId}/edit`);
-  };
-
-  const handleContactClick = () => {
-    alert(
-      "You will be able to message them eventually young one. Just be patient"
-    );
   };
 
   return (
@@ -64,7 +56,7 @@ export default function CenterProfileCard(props) {
               Edit Info
             </Button>
           ) : (
-            <ContactCard contactee={centerId} sender={currentUserId}/>
+            <ContactCard contactee={centerId} sender={currentUserId} />
           )}
         </Box>
         <Box
