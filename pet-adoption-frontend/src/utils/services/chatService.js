@@ -11,8 +11,8 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/by-user?userID={userId}`);
-                    if(!response.ok) {
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID={userId}`);
+                    if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
                     const data = await response.json();
@@ -27,8 +27,8 @@ const chatService = () => {
             fetchChats();
         }, [userId]);
 
-        if(loading) return <div>Loading...</div>;
-        if(error) return <div>Error: {error}</div>;
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error}</div>;
 
         return (
             <div>
@@ -42,7 +42,7 @@ const chatService = () => {
 
     function getChatInfoByUserId({ userID }) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chat-info-by-user?userID=${userID}`;
+            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}`;
 
             fetch(url)
                 .then(response => {
@@ -59,9 +59,9 @@ const chatService = () => {
         });
     }
 
-    function getChatByChatId({ currentChatId }) {
+    function getMessagesByChatId({ currentChatId }) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/by-chatID?chatID=${currentChatId}`;
+            let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
             fetch(url)
                 .then(response => {
@@ -79,7 +79,7 @@ const chatService = () => {
     }
     /* ========== */
     const getUnreadMessages = async (userId) => {
-        const response = await fetch(`${apiUrl}/api/chats/unread-count?userID=${userId}`, {
+        const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -94,22 +94,22 @@ const chatService = () => {
             return null;
         }
     }
-    const sendMessage = async(chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
+    const sendMessage = async (chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
         if (stompClient) {
-          const chatMessage = {
-            chatID: chatID,
-            senderID: sender,
-            recipientID: contactee,
-            content: content,
-          };
-          console.log("Sending message:", chatMessage);
-          stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
-        //   setMessage("");
+            const chatMessage = {
+                chatID: chatID,
+                senderID: sender,
+                recipientID: contactee,
+                content: content,
+            };
+            console.log("Sending message:", chatMessage);
+            stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
+            //   setMessage("");
         }
     };
 
-    const getOrCreateChat = async(senderID, receiverID) => {
-        const response = await fetch(`${apiUrl}/api/chats/get-or-create?senderID=${senderID}&receiverID=${receiverID}`, {
+    const getOrCreateChat = async (senderID, receiverID) => {
+        const response = await fetch(`${apiUrl}/api/chats/getOrCreate?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -123,7 +123,7 @@ const chatService = () => {
             return null;
         }
     }
-    const getByChatID = async(chatId) => {
+    const getChatByChatID = async (chatId) => {
         const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
             method: "GET",
             headers: {
@@ -139,14 +139,14 @@ const chatService = () => {
         }
     }
 
-    return{
+    return {
         chatList,
         getChatInfoByUserId,
-        getChatByChatId,
+        getMessagesByChatId,
         getUnreadMessages,
         sendMessage,
         getOrCreateChat,
-        getByChatID
+        getChatByChatID
     };
 };
 

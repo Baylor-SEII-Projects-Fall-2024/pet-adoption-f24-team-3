@@ -118,11 +118,11 @@ public class RecommendationsService {
         if(animal.getAgeClass()!=null)
             score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
         //log.info("Age Class:"+score);
-        score += getHeightCompatibility(animal, mappedHistory, 0.4);
+        score += getHeightCompatibility(animal, mappedHistory, 0.6);
         //log.info("Height:"+score);
-        score += getWeightCompatibility(animal, mappedHistory, 0.4);
+        score += getWeightCompatibility(animal, mappedHistory, 0.6);
         //log.info("Weight:"+score);
-        score += getAgeCompatibility(animal, mappedHistory, 1);
+        score += getAgeCompatibility(animal, mappedHistory, 1.2);
         //log.info("Age:"+score);
         if(animal.getSize()!=null)
             score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
@@ -155,21 +155,22 @@ public class RecommendationsService {
     public double getAgeCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgAge = history.getAvgAge();
         if(avgAge == 0) return 0.0;
-        return ((animal.getAge() - avgAge)/avgAge) * weight;
+        double score =  weight - abs((animal.getAge() - avgAge)/avgAge);
+        return Math.clamp(score,0, weight);
     }
 
     public double getWeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgWeight = history.getAvgWeight();
         if(avgWeight == 0) return 0.0;
-        double score =  weight - ((animal.getWeight() - avgWeight)/avgWeight);
-        return Math.clamp(score,-weight, weight);
+        double score =  weight - abs((animal.getWeight() - avgWeight)/avgWeight);
+        return Math.clamp(score,0, weight);
     }
 
     public double getHeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgHeight = history.getAvgHeight();
         if(avgHeight == 0) return 0.0;
-        double score =  weight - ((animal.getHeight() - avgHeight)/avgHeight);
-        return Math.clamp(score,-weight, weight);
+        double score =  weight - abs((animal.getHeight() - avgHeight)/avgHeight);
+        return Math.clamp(score,0, weight);
     }
 
     public double getSizeCompatibility(Animal animal, Map<String, Integer> history, double weight) throws Exception {

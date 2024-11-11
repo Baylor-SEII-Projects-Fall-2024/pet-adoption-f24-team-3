@@ -11,6 +11,7 @@ import {
   Box,
   Link,
 } from "@mui/material";
+import ContactCard from "@/components/ContactCard";
 import animalService from "@/utils/services/animalService";
 import userService from "@/utils/services/userService";
 import formatter from "@/utils/formatter";
@@ -52,12 +53,6 @@ export default function ViewPetPage() {
           console.error("There was an error deleting animal:", error);
         });
     }
-  };
-
-  const onContactCenter = () => {
-    alert(
-      `You want to message ${adoptionCenter.name}, with id ${adoptionCenter.id}`
-    );
   };
 
   React.useEffect(() => {
@@ -275,15 +270,7 @@ export default function ViewPetPage() {
                     </>
                   ) : (
                     <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={onContactCenter}
-                        sx={{ width: "175px", justifyContent: "space-evenly" }}
-                      >
-                        <Message></Message>
-                        Contact Center
-                      </Button>
+                      <ContactCard contactee={animal.centerId} sender={currentUserId} />
                     </>
                   )}
                 </Box>

@@ -190,14 +190,20 @@ public class RecommendationTests {
         animalThree.setWeight(5.0);
         animalService.saveAnimal(animalThree);
 
+        Animal animalFour = new Animal();
+        animalFour.setWeight(10.0);
+        animalFour = animalService.saveAnimal(animalFour);
+
         recommendationsService.likeAnimal(ownerId, animalOneId);
         recommendationsService.likeAnimal(ownerId, animalTwoId);
         recommendationsService.likeAnimal(ownerId, animalThreeId);
 
         MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
-        assertEquals(-0.5, recommendationsService.getWeightCompatibility(animalTwo, history, 1));
-        assertEquals(0.25, recommendationsService.getWeightCompatibility(animalThree, history, 1));
+        assertEquals(0.5, recommendationsService.getWeightCompatibility(animalTwo, history, 1));
+        assertEquals(0.75, recommendationsService.getWeightCompatibility(animalThree, history, 1));
+        assertEquals(0, recommendationsService.getWeightCompatibility(animalFour, history, 1));
+
     }
 
     @Test
@@ -230,8 +236,8 @@ public class RecommendationTests {
         recommendationsService.likeAnimal(ownerId, animalThreeId);
         MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
-        assertEquals(-0.5, recommendationsService.getHeightCompatibility(animalTwo, history, 1));
-        assertEquals(0.25, recommendationsService.getHeightCompatibility(animalThree, history, 1));
+        assertEquals(0.5, recommendationsService.getHeightCompatibility(animalTwo, history, 1));
+        assertEquals(0.75, recommendationsService.getHeightCompatibility(animalThree, history, 1));
     }
 
     @Test
@@ -254,9 +260,9 @@ public class RecommendationTests {
         MappedInteractionHistory history = recommendationsService.findByUserMapped(ownerId);
 
         assert animalTwo != null;
-        assertEquals(0.4, recommendationsService.getAgeCompatibility(animalTwo, history, 1));
+        assertEquals(0.6, recommendationsService.getAgeCompatibility(animalTwo, history, 1));
         assert animalThree != null;
-        assertEquals(-0.2, recommendationsService.getAgeCompatibility(animalThree, history, 1));
+        assertEquals(0.8, recommendationsService.getAgeCompatibility(animalThree, history, 1));
     }
 
     @Test
