@@ -10,14 +10,16 @@ import java.util.Date;
 public class ChatInfoResponse {
     public Long chatID;
     public Long senderID;
+    public String senderName;
     public String mostRecentContent;
     public Boolean hasUnread;
     public Date timestamp;
 
     // Creates a response assuming the message is the newest message in the chat
-    public ChatInfoResponse(Chat chat, Message message) {
+    public ChatInfoResponse(Chat chat, Message message, String senderName) {
         this.chatID = chat.getId();
         this.senderID = message.getSenderID();
+        this.senderName = senderName;
         this.mostRecentContent = message.getContent();
         this.hasUnread = !(message.getIsRead());    // If the message is unread, then isRead = false -> hasUnread = true
         this.timestamp = message.getTimestamp();

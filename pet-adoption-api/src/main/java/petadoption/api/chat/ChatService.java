@@ -2,11 +2,19 @@ package petadoption.api.chat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
+import petadoption.api.user.AdoptionCenter;
+import petadoption.api.user.PotentialOwner;
+import petadoption.api.user.User;
+import petadoption.api.user.UserService;
+import petadoption.api.user.responseObjects.GenericUserDataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -15,6 +23,8 @@ public class ChatService {
     private ChatRepository chatRepository;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private UserService userService;
 
     public Optional<Chat> getChatByID(Long chatID) {
         return chatRepository.getChatById(chatID);
@@ -57,7 +67,26 @@ public class ChatService {
             if (mostRecentMessageOpt.isEmpty()) {
                 continue;
             }
-            result.add(new ChatInfoResponse(chat, mostRecentMessageOpt.get()));
+            Message mostRecentMessage = mostRecentMessageOpt.get();
+
+            // Get the other users id, not the one looking at their inbox
+            Long otherUserID;
+            if (Objects.equals(userID, mostRecentMessage.getRecipientID())) {
+                otherUserID = mostRecentMessage.getSenderID();
+            } else {
+                otherUserID = mostRecentMessage.getRecipientID();
+            }
+            User user = userService.findUser(otherUserID).orElse(null);
+            String senderName;
+            if(user instanceof PotentialOwner owner){
+                senderName = owner.getNameFirst() + " " + owner.getNameLast();
+            }
+            else if(user instanceof AdoptionCenter center){
+                senderName = center.getName();
+            } else {
+                senderName = null;
+            }
+            result.add(new ChatInfoResponse(chat, mostRecentMessage, senderName));
         }
         return result;
     }
