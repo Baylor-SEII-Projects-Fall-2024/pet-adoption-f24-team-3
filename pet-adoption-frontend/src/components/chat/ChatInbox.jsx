@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  Avatar,
-} from "@mui/material";
+import { Box, Button, List, ListItem, Typography, Avatar } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import chatService from "@/utils/services/chatService";
 import { useSelector } from "react-redux";
@@ -93,32 +85,27 @@ export default function ChatInbox() {
                   />
                 </Box>
                 <Box>
-                  <ListItemText
-                    primary={
-                      <Typography variant="body1">{chat.senderName}</Typography>
-                    }
-                    secondary={
-                      <>
-                        {chat.hasUnread ? (
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "bold" }}
-                            color="textPrimary"
-                            component="span"
-                          >
-                            {truncateText(chat.mostRecentContent, 30)}
-                          </Typography>
-                        ) : (
-                          <Typography variant="body2" color="textPrimary">
-                            {truncateText(chat.mostRecentContent, 30)}
-                          </Typography>
-                        )}
-                        <Typography variant="caption">
-                          {new Date(chat.timestamp).toLocaleString()}
+                  {<Typography variant="body1">{chat.senderName}</Typography>}
+                  {
+                    <>
+                      {chat.hasUnread ? (
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: "bold" }}
+                          color="textPrimary"
+                        >
+                          {truncateText(chat.mostRecentContent, 30)}
                         </Typography>
-                      </>
-                    }
-                  />
+                      ) : (
+                        <Typography variant="body2" color="textPrimary">
+                          {truncateText(chat.mostRecentContent, 30)}
+                        </Typography>
+                      )}
+                      <Typography variant="caption" color="textSecondary">
+                        {new Date(chat.timestamp).toLocaleString()}
+                      </Typography>
+                    </>
+                  }
                 </Box>
               </Button>
             </ListItem>
