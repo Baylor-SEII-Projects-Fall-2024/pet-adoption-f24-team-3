@@ -104,6 +104,7 @@ export default function ChatInbox() {
                             variant="body2"
                             sx={{ fontWeight: "bold" }}
                             color="textPrimary"
+                            component="span"
                           >
                             {truncateText(chat.mostRecentContent, 30)}
                           </Typography>
