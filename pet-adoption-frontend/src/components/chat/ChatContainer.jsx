@@ -16,9 +16,9 @@ export default function ChatContainer(props) {
   const [loading, setLoading] = useState(true);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
-  useEffect(() => {
-    closeChatDialog();
-  }, [router]);
+  // useEffect(() => {
+  //   closeChatDialog();
+  // }, [router]);
 
   useEffect(() => {
     if (currentUserId) {

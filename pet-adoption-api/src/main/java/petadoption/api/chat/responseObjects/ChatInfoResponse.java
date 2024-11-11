@@ -10,7 +10,7 @@ import java.util.Date;
 public class ChatInfoResponse {
     public Long chatID;
     public Long senderID;
-    public String mostRecentContent;
+    public String x;
     public Boolean hasUnread;
     public Date timestamp;
 
