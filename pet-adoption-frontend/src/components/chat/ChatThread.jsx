@@ -19,7 +19,12 @@ export default function ChatThread(props) {
 
   const messagesEndRef = useRef(null);
 
-  const { sendMessage, getChatByChatID, getMessagesByChatId } = chatService();
+  const {
+    sendMessage,
+    getChatByChatID,
+    getMessagesByChatId,
+    updateMessageStatus,
+  } = chatService();
   const { getGenericUserInfo } = userService();
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -142,6 +147,12 @@ export default function ChatThread(props) {
     };
   }, [currentChatId]);
 
+  useEffect(() => {
+    messages.forEach((message) => {
+      checkMessageStatus(message);
+    });
+  }, [messages]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMyMessage(value);
@@ -158,6 +169,17 @@ export default function ChatThread(props) {
         stompClient
       );
       setMyMessage("");
+    }
+  };
+
+  const checkMessageStatus = async (message) => {
+    if (!message) {
+      return;
+    }
+
+    if (!message.isRead) {
+      const result = await updateMessageStatus(message.messageID, true);
+      console.log(result);
     }
   };
 

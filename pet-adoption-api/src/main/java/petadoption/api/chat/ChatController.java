@@ -94,7 +94,7 @@ public class ChatController {
         return chatService.createChat(senderID, receiverID);
     }
 
-    @PutMapping("/messageReadStatus")
+    @PostMapping("/messageReadStatus")
     public ResponseEntity<Map<String, Object>> updateMessageStatus(@RequestParam Long messageID, @RequestParam Boolean status) {
         Optional<Message> msg = messageService.updateMessageStatus(messageID, status);
         Map<String, Object> response = new HashMap<>();

@@ -77,7 +77,7 @@ const chatService = () => {
                 });
         });
     }
-    /* ========== */
+
     const getUnreadMessages = async (userId) => {
         const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
@@ -102,9 +102,7 @@ const chatService = () => {
                 recipientID: contactee,
                 content: content,
             };
-            console.log("Sending message:", chatMessage);
             stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
-            //   setMessage("");
         }
     };
 
@@ -139,6 +137,23 @@ const chatService = () => {
         }
     }
 
+    const updateMessageStatus = async (messageID, status) => {
+        const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        console.log(result);
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Updating message failed: ${result.message}`);
+            return null;
+        }
+    }
+
     return {
         chatList,
         getChatInfoByUserId,
@@ -146,7 +161,8 @@ const chatService = () => {
         getUnreadMessages,
         sendMessage,
         getOrCreateChat,
-        getChatByChatID
+        getChatByChatID,
+        updateMessageStatus,
     };
 };
 
