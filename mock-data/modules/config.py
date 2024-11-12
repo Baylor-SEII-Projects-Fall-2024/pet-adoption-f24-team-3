@@ -12,8 +12,11 @@ random.seed(69)
 # Production - Brendon's Runner
 # API_BASE_URL = "http://35.184.141.85:8080"
 
-# Remote Dev - Icko's Runner
-#API_BASE_URL = "http://35.184.141.85:8080"
+# Icko's First Runner
+# API_BASE_URL = "http://http://35.224.27.57:8080"
+
+# Remote Dev - Icko's woofrunner
+# API_BASE_URL = "http://35.184.141.85:8080"
 
 # Local Development
 API_BASE_URL = "http://localhost:8080"
