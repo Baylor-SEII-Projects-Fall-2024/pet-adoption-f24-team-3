@@ -12,8 +12,11 @@ random.seed(69)
 # Production - Brendon's Runner
 # API_BASE_URL = "http://35.184.141.85:8080"
 
-# Remote Dev - Icko's Runner
-#API_BASE_URL = "http://35.184.141.85:8080"
+# Icko's First Runner
+# API_BASE_URL = "http://http://35.224.27.57:8080"
+
+# Remote Dev - Icko's woofrunner
+# API_BASE_URL = "http://35.184.141.85:8080"
 
 # Local Development
 API_BASE_URL = "http://localhost:8080"
@@ -267,3 +270,28 @@ species_breeds = {
         "Crab-Eating Raccoon",
     ],
 }
+
+# Event providers
+species_names_provider = DynamicProvider(
+    provider_name = "species_names",
+    elements = list(species_classifications.keys())
+)
+faker.add_provider(species_names_provider)
+
+event_actions_provider = DynamicProvider(
+    provider_name = "event_actions",
+    elements = ["Adoption", "Rescue", "Care", "Love", "Cuddle", "Training"]
+)
+faker.add_provider(event_actions_provider)
+
+event_types_provider = DynamicProvider(
+    provider_name = "event_types",
+    elements = ["Day", "Festival", "Fair", "Extravaganza", "Celebration", "Gala", "BOGO"]
+)
+faker.add_provider(event_types_provider)
+
+event_themes_provider = DynamicProvider(
+    provider_name = "event_themes",
+    elements = ["Superhero", "Pirate", "Space", "Tropical", "Vintage", "Magical", "Guilt-Trip"]
+)
+faker.add_provider(event_themes_provider)
