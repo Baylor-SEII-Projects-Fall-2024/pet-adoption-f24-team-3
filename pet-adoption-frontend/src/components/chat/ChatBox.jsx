@@ -14,14 +14,14 @@ export default function ChatBox(props) {
                 width: "30vw",
                 height: "70vh",
                 borderRadius: 2,
-                padding: "10px",
                 boxShadow: 4,
+                overflow: "hidden",
                 border: "4px grey"
             }}
         >
             {currentChatPage == "INBOX" &&
                 <ChatInbox openChat={openChat} />
-                
+
             }
             {currentChatPage == "CHAT" && currentChatId != null &&
                 <ChatThread openInbox={openInbox} chatId={currentChatId} />
