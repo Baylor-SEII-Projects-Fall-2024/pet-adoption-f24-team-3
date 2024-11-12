@@ -10,11 +10,13 @@ import {
   Typography,
   Grid,
   Box,
+  TextField,
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import Loading from "@/components/Loading";
 import eventService from "@/utils/services/eventService";
+import userService from "@/utils/services/userService";
 import EventCard from "@/components/EventCard";
 
 const quantityPerPage = 12;
@@ -22,6 +24,7 @@ const quantityPerPage = 12;
 export default function EventsPage() {
   const router = useRouter();
   const { getEventsByPage } = eventService();
+  const { getCenterInfo } = userService();
   const currentUserType = useSelector(
     (state) => state.currentUser.currentUserType
   );
@@ -30,15 +33,22 @@ export default function EventsPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [stateFilter, setStateFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  
+
   useEffect(() => {
     async function load() {
       await getEventsByPage(quantityPerPage, 0)
-        .then((result) => {
+        .then(async (result) => {
           if (result != null) {
             if (result.length < 1) {
               setHasMore(false);
             } else {
-              setEventData(result);
+              const eventCenters = await fetchCenterData(result);
+              setEventData(eventCenters);
+              setFilteredEvents(eventCenters);
             }
           } else {
             console.error(
@@ -54,19 +64,30 @@ export default function EventsPage() {
     load();
   }, []);
 
+  const fetchCenterData = async (events) => {
+    const eventCenters = await Promise.all(
+      events.map(async (event) => {
+        const center = await getCenterInfo(event.centerId);
+        return { ...event, center };
+      })
+    );
+    return eventCenters;
+  };
+
   const fetchMoreData = async () => {
     if (eventData.length === 0) {
       setPage(0);
     }
     await getEventsByPage(quantityPerPage, page)
-      .then((result) => {
+      .then(async (result) => {
         if (result != null) {
           if (result.length < 1) {
             setHasMore(false);
           } else {
-            let dataCopy = eventData;
-            let newData = [...new Set(dataCopy.concat(result))];
-            setEventData(newData);
+            const newEventsWithCenters = await fetchCenterData(result);
+            const newEventData = [...eventData, ...newEventsWithCenters];
+            setEventData(newEventData);
+            applyFilters(newEventData, stateFilter); 
             setPage((currentPage) => currentPage + 1);
           }
         } else {
@@ -79,6 +100,42 @@ export default function EventsPage() {
       .catch((error) => {
         console.error("There was an error fetching more event info", error);
       });
+  };
+
+
+  const applyFilters = (events) => {
+    if (!stateFilter && !cityFilter) {
+      setFilteredEvents(events);
+      return;
+    }
+  
+    const filtered = events.filter((event) => {
+      const matchesState =
+        stateFilter.length > 1
+          ? event.center?.state.toLowerCase() === stateFilter.toLowerCase()
+          : true;
+  
+      const matchesCity =
+        cityFilter.length > 1
+          ? event.center?.city.toLowerCase() === cityFilter.toLowerCase()
+          : true;
+  
+      return matchesState && matchesCity;
+    });
+  
+    setFilteredEvents(filtered);
+  };
+
+  const handleStateFilterChange = (e) => {
+    const filter = e.target.value;
+    setStateFilter(filter);
+    applyFilters(eventData);
+  };
+
+  const handleCityFilterChange = (e) => {
+    const filter = e.target.value;
+    setCityFilter(filter);
+    applyFilters(eventData);
   };
 
   return (
@@ -113,6 +170,22 @@ export default function EventsPage() {
                   Post New Event
                 </Button>
               )}
+              <TextField
+                label="Filter by State"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={stateFilter}
+                onChange={handleStateFilterChange}
+              />
+              <TextField
+                label="Filter by City"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={cityFilter}
+                onChange={handleCityFilterChange}
+              />
             </CardContent>
           </Card>
           <Box
@@ -123,13 +196,13 @@ export default function EventsPage() {
             }}
           >
             <InfiniteScroll
-              dataLength={eventData.length}
+              dataLength={filteredEvents.length}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={<Loading doneLoading={!hasMore} page={page} />}
             >
               <Grid container spacing={4} sx={{ minHeight: "50px" }}>
-                {eventData.map((event) => (
+                {filteredEvents.map((event) => (
                   <Grid item xs={11} sm={5} md={3} key={event.id}>
                     <Box
                       onClick={() => router.push(`/events/${event.id}`)}
