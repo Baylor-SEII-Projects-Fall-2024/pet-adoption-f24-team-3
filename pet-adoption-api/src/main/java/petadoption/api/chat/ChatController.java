@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/chats")
-@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://35.184.141.85:3000" })
 public class ChatController {
 
     @Autowired
