@@ -10,7 +10,8 @@ import chatService from "@/utils/services/chatService";
 
 export default function ChatContainer(props) {
   const router = useRouter();
-  const { isChatDialogOpen, openChatDialog, closeChatDialog } = useChat();
+  const { isChatDialogOpen, openChatDialog, closeChatDialog, currentChatId } =
+    useChat();
   const { getUnreadMessages } = chatService();
   const [unreadMessages, setUnreadMessages] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,7 +42,7 @@ export default function ChatContainer(props) {
       };
       fetchUnread();
     }
-  }, [currentUserId]);
+  }, [currentUserId, router, currentChatId]);
 
   if (!isChatDialogOpen && !loading) {
     return (
