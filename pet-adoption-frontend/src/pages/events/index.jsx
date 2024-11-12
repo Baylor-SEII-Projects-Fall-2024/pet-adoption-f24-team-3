@@ -105,7 +105,6 @@ export default function EventsPage() {
 
   const applyFilters = (events) => {
     if (!stateFilter && !cityFilter) {
-      // If both filters are empty, show all events
       setFilteredEvents(events);
       return;
     }
@@ -126,8 +125,6 @@ export default function EventsPage() {
   
     setFilteredEvents(filtered);
   };
-  
-  
 
   const handleStateFilterChange = (e) => {
     const filter = e.target.value;
