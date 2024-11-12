@@ -57,60 +57,64 @@ save_pretty_json(adoption_centers, "MOCK_CENTERS.json")
 save_pretty_json(potential_owners, "MOCK_OWNERS.json")
 
 for owner in potential_owners:
-    print(f"Saving {owner['nameFirst']} {owner['nameLast']}")
-    response = api_post("api/owners", owner)
-    user_id = response['userid']
+    try:
+        print(f"Saving {owner['nameFirst']} {owner['nameLast']}")
+        response = api_post("api/owners", owner)
+        user_id = response['userid']
 
-    response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id))
+        response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id))
 
-    # Generate a preference for this user
-    preference = generate_preference(user_id)
-    print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
-    append_pretty_json([preference], "MOCK_PREFERENCES.json")
-    api_post(f"api/update/preferences/{user_id}", preference)
+        # Generate a preference for this user
+        preference = generate_preference(user_id)
+        print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
+        append_pretty_json([preference], "MOCK_PREFERENCES.json")
+        api_post(f"api/update/preferences/{user_id}", preference)
+    except Exception as e:
+        print(f"Error adding owner. Reason: {e}")
 
 print("\n==========\n")
 
 for center in adoption_centers:
-    print("\n==========\n")
+    try:
+        print(f"Saving {center['name']}")
+        response = api_post("api/centers", center)
+        user_id = response['userid']
 
-    print(f"Saving {center['name']}")
-    response = api_post("api/centers", center)
-    user_id = response['userid']
-    
-    # Generate some pets and events for this center
-    num_pets = random.randint(min_pets_per_center, max_pets_per_center)
-    num_events = random.randint(min_events_per_center, max_events_per_center)
+        # Generate some pets and events for this center
+        num_pets = random.randint(min_pets_per_center, max_pets_per_center)
+        num_events = random.randint(min_events_per_center, max_events_per_center)
 
-    pets = [generate_pet(user_id) for _ in range(num_pets)]
-    events = [generate_event(user_id) for _ in range(num_events)]
-    append_pretty_json(pets, "MOCK_PETS.json")
-    append_pretty_json(events, "MOCK_EVENTS.json")
+        pets = [generate_pet(user_id) for _ in range(num_pets)]
+        events = [generate_event(user_id) for _ in range(num_events)]
+        append_pretty_json(pets, "MOCK_PETS.json")
+        append_pretty_json(events, "MOCK_EVENTS.json")
 
-    response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id))
-    response = api_post_img(f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id))
+        response = api_post_img(f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id))
+        response = api_post_img(f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id))
 
-    for pet in pets:
-        print(f"  Saving pet {pet['name']} to {center['name']}")
-        response = api_post("api/animals/", pet)
-        pet_id = response['id']
+        for pet in pets:
+            print(f"  Saving pet {pet['name']} to {center['name']}")
+            response = api_post("api/animals/", pet)
+            pet_id = response['id']
 
-        try:
-            img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
-            if img_url:
-                response = api_post_img(f"api/images/animals/{pet_id}", img_url)
-                print(f"    Successfully added image for pet {pet_id}")
-            else:
-                print(f"    No image generated for pet {pet_id}")
-        except Exception as e:
-            print(f"    Failed to generate image {pet_id}")
-            continue # Skip to next pet
+            try:
+                img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
+                if img_url:
+                    response = api_post_img(f"api/images/animals/{pet_id}", img_url)
+                    print(f"    Successfully added image for pet {pet_id}")
+                else:
+                    print(f"    No image generated for pet {pet_id}")
+            except Exception as e:
+                print(f"    Failed to generate image {pet_id}")
+                continue # Skip to next pet
 
-    for event in events:
-        print(f"  Saving event {event['name']} to {center['name']}")
-        response = api_post("api/events/", event)
-        event_id = response['eventID']
-        response = api_post_img(f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
+        for event in events:
+            print(f"  Saving event {event['name']} to {center['name']}")
+            response = api_post("api/events/", event)
+            event_id = response['eventID']
+            response = api_post_img(f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
+    except Exception as e;
+        print(f"Error while adding center. Reason: {e}")
 
 print("Cleaning up uploads directory")
 clean_uploads("uploads")
