@@ -3,7 +3,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const chatService = () => {
 
-    function chatList({ userId }) {
+    function chatList(userId) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID={userId}`);
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`);
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
@@ -40,9 +40,9 @@ const chatService = () => {
         );
     }
 
-    function getChatInfoByUserId({ userID }) {
+    function getChatInfoByUserId(userID, pageSize, pageNumber) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}`;
+            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
             fetch(url)
                 .then(response => {
@@ -59,7 +59,7 @@ const chatService = () => {
         });
     }
 
-    function getMessagesByChatId({ currentChatId }) {
+    function getMessagesByChatId(currentChatId) {
         return new Promise((resolve, reject) => {
             let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
@@ -77,7 +77,7 @@ const chatService = () => {
                 });
         });
     }
-    /* ========== */
+
     const getUnreadMessages = async (userId) => {
         const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
@@ -102,9 +102,7 @@ const chatService = () => {
                 recipientID: contactee,
                 content: content,
             };
-            console.log("Sending message:", chatMessage);
             stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
-            //   setMessage("");
         }
     };
 
@@ -139,6 +137,22 @@ const chatService = () => {
         }
     }
 
+    const updateMessageStatus = async (messageID, status) => {
+        const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Updating message failed: ${result.message}`);
+            return null;
+        }
+    }
+
     return {
         chatList,
         getChatInfoByUserId,
@@ -146,7 +160,8 @@ const chatService = () => {
         getUnreadMessages,
         sendMessage,
         getOrCreateChat,
-        getChatByChatID
+        getChatByChatID,
+        updateMessageStatus,
     };
 };
 
