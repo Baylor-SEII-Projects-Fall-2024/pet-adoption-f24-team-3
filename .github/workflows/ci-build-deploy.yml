@@ -11,13 +11,8 @@
 #   - Copied from template actions yml file
 #   - Changed to docker/ci.docker-compose.yml file
 #
-# Deploy to Google CloudRun
-# https://github.com/actions/starter-workflows/blob/main/deployments/google-cloudrun-docker.yml
-#
-# CI Docker image
-# https://github.com/actions/starter-workflows/blob/main/ci/docker-image.yml
-#
-# TODO: Create another github action that can validate our code on pull requests
+# If we need to change runners, go to github > settings > actions > runners,
+# and add the prod label to whatever runner we are switching to.
 
 name: Build & Deploy
 
@@ -28,7 +23,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, prod]
     steps:
       - uses: actions/checkout@v3
 
