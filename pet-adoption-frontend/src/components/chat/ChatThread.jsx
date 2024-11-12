@@ -179,7 +179,6 @@ export default function ChatThread(props) {
 
     if (!message.isRead) {
       const result = await updateMessageStatus(message.messageID, true);
-      console.log(result);
     }
   };
 

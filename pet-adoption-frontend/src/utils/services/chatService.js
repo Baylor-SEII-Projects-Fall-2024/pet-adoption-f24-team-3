@@ -139,13 +139,12 @@ const chatService = () => {
 
     const updateMessageStatus = async (messageID, status) => {
         const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             }
         });
         const result = await response.json();
-        console.log(result);
         if (response.ok) {
             return result;
         } else {
