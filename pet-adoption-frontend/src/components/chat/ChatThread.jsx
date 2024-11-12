@@ -190,8 +190,7 @@ export default function ChatThread(props) {
     if (!message) {
       return;
     }
-
-    if (!message.isRead) {
+    if (message.senderID != currentUserId && !message.isRead) {
       const result = await updateMessageStatus(message.messageID, true);
     }
   };
