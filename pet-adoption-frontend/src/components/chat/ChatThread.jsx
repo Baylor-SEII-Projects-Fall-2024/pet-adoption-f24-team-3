@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Box, Button, TextField, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+  Stack,
+  Avatar,
+} from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
@@ -9,6 +16,8 @@ import ChatMessage from "./ChatMessage";
 import { useChat } from "@/utils/contexts/chatContext";
 import userService from "@/utils/services/userService";
 import chatService from "@/utils/services/chatService";
+import { ArrowBack, Send } from "@mui/icons-material";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatThread(props) {
   const { currentChatId, openInbox } = useChat();
@@ -158,8 +167,13 @@ export default function ChatThread(props) {
     setMyMessage(value);
   };
 
-  const handleContact = async (event) => {
-    if (event.key == "Enter" && myMessage != "") {
+  const handleSendKeyContact = async (event) => {
+    if (event.key == "Enter") {
+      handleMessageSend();
+    }
+  };
+  const handleMessageSend = async () => {
+    if (myMessage != "") {
       if (recipient.id == null) return;
       sendMessage(
         currentChatId,
@@ -187,34 +201,50 @@ export default function ChatThread(props) {
   }
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box
+      sx={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        height: "70vh",
+      }}
+    >
       <Stack
         direction="row"
         sx={{
-          height: "10%",
+          height: "4rem",
+          alignItems: "center",
+          backgroundColor: "primary.main",
+          pt: "10px",
+          pb: "10px",
+          borderBottom: "1px solid #D4D4D4",
         }}
       >
-        <Typography variant="h5" gutterBottom>
+        <IconButton sx={{ color: "white" }} onClick={openInbox}>
+          <ArrowBack fontSize="large" />
+        </IconButton>
+        <Avatar
+          alt="Remy Sharp"
+          src={`${apiUrl}/api/images/users/${recipient.id}/profile`}
+          sx={{
+            mr: "15px",
+          }}
+        >
+          {recipient.name[0]}
+        </Avatar>
+        <Typography variant="h6" noWrap sx={{ color: "white" }}>
           {recipient.name}
         </Typography>
-        <Button variant="outlined" onClick={openInbox}>
-          Inbox
-        </Button>
       </Stack>
 
       {/* Display chat messages */}
       <Box
         id="messageDiv"
         sx={{
-          display: "flex",
+          flex: 1,
           flexDirection: "column-reverse",
-          maxHeight: "75%",
           overflowY: "scroll",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
           padding: "10px",
-          marginTop: "10px",
-          marginBottom: "10px",
         }}
       >
         <InfiniteScroll
@@ -242,12 +272,34 @@ export default function ChatThread(props) {
 
         <div ref={messagesEndRef} />
       </Box>
-      <TextField
-        fullWidth
-        onChange={handleChange}
-        onKeyDown={handleContact}
-        value={myMessage}
-      ></TextField>
+      <Box
+        sx={{
+          height: "5rem",
+          width: "100%",
+          backgroundColor: "#f4f4f4",
+          pr: "10px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          sx={{
+            //width: "80%",
+            ml: "20px",
+            backgroundColor: "white",
+          }}
+          fullWidth
+          onChange={handleChange}
+          onKeyDown={handleSendKeyContact}
+          value={myMessage}
+        ></TextField>
+        <IconButton
+          sx={{ color: "secondary.main" }}
+          onClick={handleMessageSend}
+        >
+          <Send fontSize="large" />
+        </IconButton>
+      </Box>
     </Box>
   );
 }

@@ -46,7 +46,7 @@ export default function ChatMessage(props) {
                     <strong>
                         {senderName}
                     </strong>
-                    <Typography variant="subtitle1" color="text.secondary" sx={{ pl: "10px" }}>
+                    <Typography variant="subtitle1" color="text.secondary" sx={{ pl: "10px", width: "5rem" }}>
                         {formatDate(message.timestamp)}
                     </Typography>
                 </Box>
