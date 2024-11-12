@@ -91,8 +91,8 @@ export default function ChatInbox() {
         flexDirection: "column",
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        Chat Inbox
+      <Typography alignSelf="center" variant="h4" gutterBottom>
+        Inbox
       </Typography>
       <hr />
       {chatData.length > 0 ? (

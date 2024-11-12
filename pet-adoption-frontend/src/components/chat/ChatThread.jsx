@@ -103,6 +103,9 @@ export default function ChatThread(props) {
     const socket = new SockJS("http://localhost:8080/ws");
     let client = Stomp.over(socket);
 
+    // Disable logging
+    client.debug = () => {};
+
     async function setup() {
       await getChat();
       await getMessages();
@@ -112,7 +115,6 @@ export default function ChatThread(props) {
       client.connect(
         {},
         () => {
-          console.log("Connected to WebSocket");
           // Check if already subscribed
           if (!isSubscribed.current) {
             client.subscribe(`/topic/messages/${currentChatId}`, (msg) => {
@@ -120,7 +122,6 @@ export default function ChatThread(props) {
               recieveMessage(newMessage);
             });
             isSubscribed.current = true; // Mark as subscribed
-            console.log("Subscription created");
           }
         },
         (error) => {
@@ -136,7 +137,6 @@ export default function ChatThread(props) {
     // Cleanup function to disconnect the client
     return () => {
       if (client && client.connected) {
-        console.log("Disconnecting WebSocket client");
         client.disconnect();
       }
     };
@@ -149,7 +149,6 @@ export default function ChatThread(props) {
 
   const handleContact = async (event) => {
     if (event.key == "Enter" && myMessage != "") {
-      console.log("RecipientId", recipient.id);
       if (recipient.id == null) return;
       sendMessage(
         currentChatId,

@@ -43,7 +43,6 @@ export const ChatProvider = ({ children }) => {
     //opens the chat dialog (if closed) to the chat with the specified chat ID
     const openChat = (chatId) => {
         setCurrentChatId(chatId);
-        console.log("Current chat ID:",chatId);
         setCurrentChatPage("CHAT");
         setIsChatDialogOpen(true);
     }
