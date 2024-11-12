@@ -35,6 +35,8 @@ export default function EventsPage() {
 
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [stateFilter, setStateFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  
 
   useEffect(() => {
     async function load() {
@@ -44,9 +46,9 @@ export default function EventsPage() {
             if (result.length < 1) {
               setHasMore(false);
             } else {
-              const eventsWithCenters = await fetchCenterData(result);
-              setEventData(eventsWithCenters);
-              setFilteredEvents(eventsWithCenters);
+              const eventCenters = await fetchCenterData(result);
+              setEventData(eventCenters);
+              setFilteredEvents(eventCenters);
             }
           } else {
             console.error(
@@ -63,13 +65,13 @@ export default function EventsPage() {
   }, []);
 
   const fetchCenterData = async (events) => {
-    const eventsWithCenters = await Promise.all(
+    const eventCenters = await Promise.all(
       events.map(async (event) => {
         const center = await getCenterInfo(event.centerId);
         return { ...event, center };
       })
     );
-    return eventsWithCenters;
+    return eventCenters;
   };
 
   const fetchMoreData = async () => {
@@ -82,14 +84,10 @@ export default function EventsPage() {
           if (result.length < 1) {
             setHasMore(false);
           } else {
-            // let dataCopy = eventData;
-            // let newData = [...new Set(dataCopy.concat(result))];
-            // setEventData(newData);
-            // setPage((currentPage) => currentPage + 1);
             const newEventsWithCenters = await fetchCenterData(result);
             const newEventData = [...eventData, ...newEventsWithCenters];
             setEventData(newEventData);
-            applyFilter(newEventData, stateFilter); // Update the filter on new data
+            applyFilters(newEventData, stateFilter); 
             setPage((currentPage) => currentPage + 1);
           }
         } else {
@@ -105,19 +103,42 @@ export default function EventsPage() {
   };
 
 
-const applyFilter = (events, filter) => {
-    const filtered = events.filter(
-      (event) =>
-        event.center &&
-        event.center.state.toLowerCase().includes(filter.toLowerCase())
-    );
+  const applyFilters = (events) => {
+    if (!stateFilter && !cityFilter) {
+      // If both filters are empty, show all events
+      setFilteredEvents(events);
+      return;
+    }
+  
+    const filtered = events.filter((event) => {
+      const matchesState =
+        stateFilter.length > 1
+          ? event.center?.state.toLowerCase() === stateFilter.toLowerCase()
+          : true;
+  
+      const matchesCity =
+        cityFilter.length > 1
+          ? event.center?.city.toLowerCase() === cityFilter.toLowerCase()
+          : true;
+  
+      return matchesState && matchesCity;
+    });
+  
     setFilteredEvents(filtered);
   };
+  
+  
 
-  const handleFilterChange = (e) => {
+  const handleStateFilterChange = (e) => {
     const filter = e.target.value;
     setStateFilter(filter);
-    applyFilter(eventData, filter);
+    applyFilters(eventData);
+  };
+
+  const handleCityFilterChange = (e) => {
+    const filter = e.target.value;
+    setCityFilter(filter);
+    applyFilters(eventData);
   };
 
   return (
@@ -158,7 +179,15 @@ const applyFilter = (events, filter) => {
                 fullWidth
                 margin="normal"
                 value={stateFilter}
-                onChange={handleFilterChange}
+                onChange={handleStateFilterChange}
+              />
+              <TextField
+                label="Filter by City"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={cityFilter}
+                onChange={handleCityFilterChange}
               />
             </CardContent>
           </Card>
