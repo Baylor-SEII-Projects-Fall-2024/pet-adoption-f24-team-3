@@ -1090,7 +1090,7 @@ path-type@^4.0.0:
     dayjs "^1.11.13"
     js-cookie "^3.0.5"
     next "^14.2.14"
-    pet-adoption-frontend "file:../../AppData/Local/Yarn/Cache/v6/npm-pet-adoption-frontend-1.0.0-9f4e892d-8dac-44e0-94a7-2ec2a95db9f6-1730761600212/node_modules/pet-adoption-frontend"
+    pet-adoption-frontend "file:../../../../../Library/Caches/Yarn/v6/npm-pet-adoption-frontend-1.0.0-7ac2f240-c81d-45af-b1b2-0911cfc70c63-1731301538763/node_modules/pet-adoption-frontend"
     react "^18"
     react-dom "^18"
     react-infinite-scroll-component "^6.1.0"

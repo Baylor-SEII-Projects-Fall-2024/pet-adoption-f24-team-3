@@ -10,7 +10,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { Message } from "@mui/icons-material";
+import ContactCard from "@/components/ContactCard";
 import eventService from "@/utils/services/eventService";
 import userService from "@/utils/services/userService";
 import { format } from "date-fns";
@@ -44,12 +44,6 @@ export default function ViewEventPage() {
           console.error("There was an error deleting event:", error);
         });
     }
-  };
-
-  const onContactCenter = () => {
-    alert(
-      `You want to message ${adoptionCenter.name} with id ${adoptionCenter.id}`
-    );
   };
 
   React.useEffect(() => {
@@ -190,7 +184,7 @@ export default function ViewEventPage() {
                           {event.dateStart &&
                             event.dateEnd &&
                             (format(new Date(event.dateStart), "MM dd yyyy") ===
-                            format(new Date(event.dateEnd), "MM dd yyyy") ? (
+                              format(new Date(event.dateEnd), "MM dd yyyy") ? (
                               <>
                                 <Typography>
                                   {format(
@@ -250,17 +244,7 @@ export default function ViewEventPage() {
                       </Button>
                     </>
                   ) : (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={onContactCenter}
-                        sx={{ width: "175px", justifyContent: "space-evenly" }}
-                      >
-                        <Message></Message>
-                        Contact Center
-                      </Button>
-                    </>
+                    <ContactCard contactee={event.centerId} sender={currentUserId} />
                   )}
                 </Box>
               </Stack>

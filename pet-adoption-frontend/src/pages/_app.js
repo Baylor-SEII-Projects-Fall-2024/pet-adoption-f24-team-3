@@ -102,7 +102,7 @@ function MainApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </div>
         <Footer />
-        <ChatContainer />
+        {currentUserId && <ChatContainer />}
       </PetAdoptionThemeProvider>
 
     </AppCacheProvider >
