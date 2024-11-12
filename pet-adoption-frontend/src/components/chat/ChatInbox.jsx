@@ -84,8 +84,11 @@ export default function ChatInbox() {
     <Box
       id="scrollableDiv"
       sx={{
-        height: "500px",
+        height: "100%",
         overflow: "auto",
+        flexGrow: 1,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Typography variant="h4" gutterBottom>
