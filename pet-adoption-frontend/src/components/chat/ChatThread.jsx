@@ -55,7 +55,7 @@ export default function ChatThread(props) {
     }
 
     //Get the messages already sent in this chat
-    await getMessagesByChatId({ currentChatId })
+    await getMessagesByChatId(currentChatId)
       .then((result) => {
         setMessages(result);
       })

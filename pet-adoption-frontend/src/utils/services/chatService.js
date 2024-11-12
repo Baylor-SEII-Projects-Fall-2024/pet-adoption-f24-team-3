@@ -3,7 +3,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const chatService = () => {
 
-    function chatList({ userId }) {
+    function chatList(userId) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID={userId}`);
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`);
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
@@ -40,9 +40,9 @@ const chatService = () => {
         );
     }
 
-    function getChatInfoByUserId({ userID }) {
+    function getChatInfoByUserId(userID, pageSize, pageNumber) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}`;
+            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
             fetch(url)
                 .then(response => {
@@ -59,7 +59,7 @@ const chatService = () => {
         });
     }
 
-    function getMessagesByChatId({ currentChatId }) {
+    function getMessagesByChatId(currentChatId) {
         return new Promise((resolve, reject) => {
             let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
