@@ -13,24 +13,31 @@ def generate_adoption_center():
     city, state = random.choice(list(city_state_map.items()))
     center_name = faker.unique.center_names()
     email_name = center_name.replace(" ","").lower()
+
     return {
         "accountType": "Center",
-        "emailAddress": f"{email_name}@example.com",
+        "emailAddress": f"{email_name}@center.com",
         "password": faker.password(),
         "name": center_name,
         "address": faker.unique.street_address(),
         "city": city,
         "state": state,
         "zipCode": faker.postcode(),
-        "description": faker.unique.sentence(),
+        "description": faker.paragraph(),
     }
 
 def generate_potential_owner():
+    nameFirst = faker.first_name()
+    nameLast = faker.last_name()
+    id = faker.unique.random_number(digits=9)
+    domain = faker.domain_name()
+    email = f"{nameFirst[0].lower()}{nameLast.lower()}{id}@{domain}"
+
     return {
         "accountType": "Owner",
-        "emailAddress": faker.unique.email(),
-        "nameFirst": faker.first_name(),
-        "nameLast": faker.last_name(),
+        "emailAddress": email,
+        "nameFirst": nameFirst,
+        "nameLast": nameLast,
         "password": faker.password(),
     }
 
@@ -85,10 +92,22 @@ def generate_event(center_id: int):
     start_date = datetime.now() + timedelta(days=random.randint(1 ,30))
     end_date = start_date + timedelta(days=random.randint(1 ,7))
 
+    # species_names e.g. Cat
+    # event_actions e.g. Adoption
+    # event_types e.g. Extravaganza
+    # event_themes e.g. Space
+    name_type = random.choice([1, 2, 3])
+    if name_type == 1:
+        event_name = f"{faker.species_names()} {faker.event_actions()} {faker.event_types()}"
+    elif name_type == 2:
+        event_name = f"{faker.event_themes()} {faker.species_names()} {faker.event_actions()}"
+    elif name_type == 3:
+        event_name = f"{faker.event_actions()} {faker.event_types()} for {faker.species_names()}s"
+
     return {
         'centerId': center_id,
         'datePosted': datetime.now().isoformat(),
-        'name': f'Event for {center_id}',
+        'name': event_name,
         'description': faker.sentence(),
         'dateStart': start_date.isoformat(),
         'dateEnd': end_date.isoformat()
