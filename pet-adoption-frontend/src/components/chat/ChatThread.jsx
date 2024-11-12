@@ -114,7 +114,7 @@ export default function ChatThread(props) {
       openInbox(); //return to the inbox if there is no currentChatID
     }
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${apiURL}:8080/ws`);
     let client = Stomp.over(socket);
 
     // Disable logging
