@@ -45,7 +45,7 @@ public class MessageService {
     }
 
     public Integer getUnreadMessageCount(Long userID) {
-        return messageRepository.countMessageByRecipientIDAndIsReadFalse(userID);
+        return messageRepository.countByRecipientIDAndIsReadFalseAndSenderIDNot(userID, userID);
     }
 
 }

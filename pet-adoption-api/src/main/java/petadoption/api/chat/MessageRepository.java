@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> getMessagesByChatIDOrderByTimestampDesc(Long chatID);
     List<Message> getMessagesByChatIDOrderByTimestampDesc(Long chatID, Pageable pageable);
-    Integer countMessageByRecipientIDAndIsReadFalse(Long userID);
+    Integer countByRecipientIDAndIsReadFalseAndSenderIDNot(Long userID, Long sameID);
     Optional<Message> findTopByChatIDOrderByTimestampDesc(Long chatID);
     Optional<Message> getMessageByMessageID(Long messageID);
 }
