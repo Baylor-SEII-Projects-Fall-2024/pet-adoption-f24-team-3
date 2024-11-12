@@ -4,7 +4,7 @@ import shutil
 import sys
 
 # Production - Brendon's Runner
-# API_BASE_URL = "http://35.184.141.85:8080"
+API_BASE_URL = "http://34.172.7.53:8080"
 
 # Icko's First Runner
 # API_BASE_URL = "http://http://35.224.27.57:8080"
@@ -13,7 +13,7 @@ import sys
 # API_BASE_URL = "http://35.184.141.85:8080"
 
 # Local Development
-API_BASE_URL = "http://localhost:8080"
+# API_BASE_URL = "http://localhost:8080"
 
 # >>>> Clear Tables >>>>
 print(f"Clearing tables from {API_BASE_URL}")
@@ -42,7 +42,7 @@ if confirmation == 'yes':
 # <<<< Clear Tables <<<<
 
 # >>>> Clear Mock Uploads >>>>
-if API_BASE_URL == "http://localhost:8080"
+if API_BASE_URL == "http://localhost:8080":
     confirmation = input("Would you like to clear mock-data/uploads? (yes/no): ").lower()
 
     if confirmation == 'yes':
@@ -59,7 +59,7 @@ if API_BASE_URL == "http://localhost:8080"
 # <<<< Clear Mock Uploads <<<<
 
 # <<<< Clear pet-adoption-api/uploads <<<<
-if API_BASE_URL == "http://localhost:8080"
+if API_BASE_URL == "http://localhost:8080":
     confirmation = input("Would you like to clear pet-adoption-api/uploads? (yes/no): ").lower()
 
     if confirmation == 'yes':

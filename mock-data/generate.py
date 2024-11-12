@@ -14,7 +14,6 @@ from modules.utils import save_pretty_json, append_pretty_json, pretty_print_jso
 from modules.utils import clean_uploads
 from modules.images import generate_image, ImageType, generate_animal_image
 
-
 # Delete existing JSON files
 for file in ["MOCK_CENTERS.json",
              "MOCK_OWNERS.json",
@@ -113,7 +112,7 @@ for center in adoption_centers:
             response = api_post("api/events/", event)
             event_id = response['eventID']
             response = api_post_img(f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
-    except Exception as e;
+    except Exception as e:
         print(f"Error while adding center. Reason: {e}")
 
 print("Cleaning up uploads directory")
