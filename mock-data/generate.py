@@ -11,6 +11,7 @@ from modules.generators import (
 from modules.static import generate_static_accounts
 from modules.utils import api_post, api_get, api_post_img
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
+from modules.utils import clean_uploads
 from modules.images import generate_image, ImageType, generate_animal_image
 
 
@@ -110,3 +111,7 @@ for center in adoption_centers:
         response = api_post("api/events/", event)
         event_id = response['eventID']
         response = api_post_img(f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
+
+print("Cleaning up uploads directory")
+clean_uploads("uploads")
+print("All files inside uploads/ have been deleted.")
