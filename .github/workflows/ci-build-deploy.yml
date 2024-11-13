@@ -17,8 +17,7 @@
 on:
   push:
     branches:
-      - ickoxii/multiple-runners
-      # - main
+      - main
 
 jobs:
   build-and-deploy:
@@ -26,7 +25,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        runner: [dev, backup]
+        runner: [prod, backup]
 
     steps:
       - uses: actions/checkout@v3
