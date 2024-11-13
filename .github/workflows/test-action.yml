@@ -1,0 +1,86 @@
+# File: .github/workflows/gh-actions-ci.yml
+# Author: Icko Iben
+# Date Created: 09/17/2024
+#
+# Modified:       10/21/2024
+#   - Remove action on pull request so we don't deploy changes we don't want
+# Modified:       09/24/2024
+#   - File header added
+#   - Add ickoxii/cicd-init for testing
+# Modified:       09/17/2024
+#   - Copied from template actions yml file
+#   - Changed to docker/ci.docker-compose.yml file
+#
+# If we need to change runners, go to github > settings > actions > runners,
+# and add the prod label to whatever runner we are switching to.
+
+on:
+  push:
+    branches:
+      - ickoxii/multiple-runners
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: [dev, backup]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Pre-Clean
+        run: |
+          docker image prune -af
+
+      - name: Set IP Address
+        run: |
+          cd pet-adoption-frontend
+          if [ "${{ matrix.runner }}" == "dev" ]; then
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.DEV_IP_ADDRESS }}" > .env.production
+          elif [ "${{ matrix.runner }}" == "prod" ]; then
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.PROD_IP_ADDRESS }}" > .env.production
+          elif [ "${{ matrix.runner }}" == "backup" ]; then
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.BACKUP_IP_ADDRESS }}" > .env.production
+          else
+            echo "Error: Unknown runner label '${{ matrix.runner }}'"
+            exit 1
+          fi
+
+      - name: Build ${{ matrix.runner }}
+        # This step builds both the frontend and backend docker images using
+        # Docker Compose. To change how the images are built or their actual
+        # buildscripts, modify the corresponding files in the docker/ directory.
+        #
+        # You will need to point this command to the correct Docker Compose file.
+        run: |
+          docker compose -f docker/ci.docker-compose.yml build
+
+      - name: Deploy to ${{ matrix.runner }}
+        # This script simply runs the images that were built in the previous step.
+        # This uses the same Docker Compose file in the previous step.
+        #
+        # If the frontend and backend are already running on the VM, we first
+        # need to stop them to free the port and delete them to free the
+        # container name before trying to start the new versions
+        #
+        # It is important you prune your docker repository after all containers
+        # are deployed. This is because all images used in the build stages are
+        # saved by docker; this can quickly consume a lot of memory after a few
+        # builds. Using `docker image prune -af` here will free up some space, but
+        # you may want to consider running `docker system prune -f` on your
+        # GCP instance to free up additional cached objects if you are running
+        # out of storage space.
+        #
+        # This command assumes that the docker compose is also set up to properly
+        # manage a MYSQL server.
+        #
+        # You will need to point these commands to the correct Docker Compose file.
+        run: |
+          docker compose -f docker/ci.docker-compose.yml down
+          docker compose -f docker/ci.docker-compose.yml up -d --build
+
+      - name: Post-Clean
+        run: |
+          docker image prune -af
