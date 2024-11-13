@@ -1,5 +1,6 @@
 package petadoption.api.chat;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -104,5 +105,11 @@ public class ChatService {
         chat.setUserIDFirst(senderID);
         chat.setUserIDSecond(receiverID);
         return chatRepository.save(chat);
+    }
+
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        chatRepository.deleteAll();
     }
 }

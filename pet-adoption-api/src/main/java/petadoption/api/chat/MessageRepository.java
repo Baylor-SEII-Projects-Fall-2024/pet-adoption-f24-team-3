@@ -15,4 +15,5 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     Integer countMessageByRecipientIDAndIsReadFalse(Long userID);
     Optional<Message> findTopByChatIDOrderByTimestampDesc(Long chatID);
     Optional<Message> getMessageByMessageID(Long messageID);
+    void deleteAll();
 }
