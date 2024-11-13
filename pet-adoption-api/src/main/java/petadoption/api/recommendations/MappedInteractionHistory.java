@@ -20,6 +20,7 @@ public class MappedInteractionHistory {
     public Double avgWeight;
     public Double avgHeight;
 
+    public Map<String,Integer> animalHistory = new HashMap<>();
     public Map<String,Integer> breedHistory = new HashMap<>();
     public Map<String,Integer> speciesHistory = new HashMap<>();
     public Map<String,Integer> sexHistory = new HashMap<>();
@@ -38,6 +39,7 @@ public class MappedInteractionHistory {
 
         List<InteractionPoint> points = history.getInteractionPoints();
 
+        this.animalHistory = extractStream(points, InteractionType.ANIMAL_ID);
         this.breedHistory = extractStream(points, InteractionType.BREED);
         this.speciesHistory = extractStream(points, InteractionType.SPECIES);
         this.sexHistory = extractStream(points, InteractionType.SEX);

@@ -45,6 +45,26 @@ public class RecommendationsService {
         addInteractions(userId,animalId,-1);
     }
 
+    //-1 if animal disliked, 1 if animal liked, 0 if neither.
+    public int isAnimalLikedOrDisliked(Long userId, Long animalId){
+        InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
+        if(ih == null) return 0;
+
+        InteractionPoint relevantPoint = ih.getInteractionPoints()
+                .stream()
+                .filter(p-> p.getType()==InteractionType.ANIMAL_ID && p.getName().equals(animalId.toString()))
+                .findFirst().orElse(null);
+
+        return relevantPoint == null ? 0 : relevantPoint.getScore();
+    }
+
+    public long[] getLikedAnimals(Long userId){
+        InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
+        if(ih == null) return null;
+        MappedInteractionHistory mh = new MappedInteractionHistory(ih);
+        return mh.animalHistory.keySet().stream().mapToLong(Long::parseLong).toArray();
+    }
+
     public boolean resetHistory(Long userId){
         InteractionHistory history = interactionRepository.findByUserId(userId).orElse(null);
         if(history != null){
@@ -206,6 +226,11 @@ public class RecommendationsService {
         }
 
         InteractionHistory history = findOrMakeByUser(userId);
+
+        //add record of the animal id - (increment is always  1 or -1)
+        modifyAttribute(history, InteractionType.ANIMAL_ID,animalId.toString(), numInteractions/abs(numInteractions));
+
+        // record rest of modifications
         modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
         modifyAttribute(history, InteractionType.BREED, animal.getBreed(), numInteractions);
         if(animal.getSex()!= null)
@@ -217,6 +242,8 @@ public class RecommendationsService {
         modifyAttribute(history, InteractionType.STATE,center.getState(), numInteractions);
         modifyAttribute(history, InteractionType.CITY, center.getCity(), numInteractions);
         modifyAttribute(history, InteractionType.CENTER_ID,center.getId().toString(), numInteractions);
+
+
 
         if(numInteractions >0){
             history.setAvgAge(modifyAverage(history.getAvgAge(), history.getTotalLikes(), animal.getAge(),numInteractions));
