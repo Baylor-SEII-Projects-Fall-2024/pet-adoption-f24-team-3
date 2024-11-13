@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### IP Resource File ###
-src/main/resources/application.properties
+# src/main/resources/application.properties
