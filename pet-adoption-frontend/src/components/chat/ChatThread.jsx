@@ -114,7 +114,7 @@ export default function ChatThread(props) {
       openInbox(); //return to the inbox if there is no currentChatID
     }
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${apiUrl}/ws`);
     let client = Stomp.over(socket);
 
     // Disable logging
@@ -190,8 +190,7 @@ export default function ChatThread(props) {
     if (!message) {
       return;
     }
-
-    if (!message.isRead) {
+    if (message.senderID != currentUserId && !message.isRead) {
       const result = await updateMessageStatus(message.messageID, true);
     }
   };
