@@ -71,11 +71,11 @@ if confirm != 'y':
     sys.exit(0)
 
 # Delete existing JSON files
-for file in ["MOCK_CENTERS.json",
-             "MOCK_OWNERS.json",
-             "MOCK_PETS.json",
-             "MOCK_EVENTS.json",
-             "MOCK_PREFERENCES.json"]:
+for file in [f"{environment}_MOCK_CENTERS.json",
+             f"{environment}_MOCK_OWNERS.json",
+             f"{environment}_MOCK_PETS.json",
+             f"{environment}_MOCK_EVENTS.json",
+             f"{environment}_MOCK_PREFERENCES.json"]:
     if os.path.exists(file):
         os.remove(file)
         print(f"Deleted existing file: {file}")
@@ -91,8 +91,8 @@ potential_owners = static_owners.copy()
 adoption_centers.extend([generate_adoption_center() for _ in range(0, num_centers)])
 potential_owners.extend([generate_potential_owner() for _ in range(0, num_owners)])
 
-save_pretty_json(adoption_centers, "MOCK_CENTERS.json")
-save_pretty_json(potential_owners, "MOCK_OWNERS.json")
+save_pretty_json(adoption_centers, f"{environment}_MOCK_CENTERS.json")
+save_pretty_json(potential_owners, f"{environment}_MOCK_OWNERS.json")
 
 for owner in potential_owners:
     try:
@@ -105,7 +105,7 @@ for owner in potential_owners:
         # Generate a preference for this user
         preference = generate_preference(user_id)
         print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
-        append_pretty_json([preference], "MOCK_PREFERENCES.json")
+        append_pretty_json([preference], f"{environment}_MOCK_PREFERENCES.json")
         api_post(url, f"api/update/preferences/{user_id}", preference)
     except Exception as e:
         print(f"Error adding owner. Reason: {e}")
@@ -124,8 +124,8 @@ for center in adoption_centers:
 
         pets = [generate_pet(user_id) for _ in range(num_pets)]
         events = [generate_event(user_id) for _ in range(num_events)]
-        append_pretty_json(pets, "MOCK_PETS.json")
-        append_pretty_json(events, "MOCK_EVENTS.json")
+        append_pretty_json(pets, f"{environment}_MOCK_PETS.json")
+        append_pretty_json(events, f"{environment}_MOCK_EVENTS.json")
 
         response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id))
         response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id))
