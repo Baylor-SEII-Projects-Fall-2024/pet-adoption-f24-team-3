@@ -23,7 +23,7 @@ if environment not in valid_environments:
 
 API_BASE_URL = API_URLS.get(environment)
 
-print(f"You are about to CLEAR data from {API_BASE_URL}")
+print(f"You are about to CLEAR data from {environment.upper()} environment at {API_BASE_URL}")
 confirm = input("Do you want to continue? (y/n): ").strip().lower()
 if confirm != 'y':
     print("Operation cancelled")

@@ -64,7 +64,7 @@ elif size in ['large', 'l']:
     max_events_per_center = 15
 
 size_full = {'small': 'small', 's': 'small', 'medium': 'medium', 'm': 'medium', 'large': 'large', 'l': 'large'}
-print(f"You are about to generate data in {url} with a '{size_full[size]}' size.")
+print(f"You are about to generate data in {environment.upper()} at {url} with a '{size_full[size]}' size.")
 confirm = input("Do you want to continue? (y/n): ").strip().lower()
 if confirm != 'y':
     print("Operation cancelled")
