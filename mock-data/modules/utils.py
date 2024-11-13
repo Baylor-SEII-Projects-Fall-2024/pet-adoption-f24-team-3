@@ -2,26 +2,25 @@ import requests
 import json
 import os
 import shutil
-from .config import API_BASE_URL
 
-def api_post_img(endpoint: str, imageFile: str):
-    print(f"Sending request to {API_BASE_URL}/{endpoint}")
+def api_post_img(url: str, endpoint: str, imageFile: str):
+    print(f"Sending request to {url}/{endpoint}")
 
     # Open file in binary mode to read and send
     with open(imageFile, "rb") as imgFile:
         files = {"imageFile": imgFile}
-        response = requests.post(f"{API_BASE_URL}/{endpoint}", files=files)
+        response = requests.post(f"{url}/{endpoint}", files=files)
     response.raise_for_status()
     return response.json()
 
-def api_post(endpoint: str, data: json):
-    print(f"Sending request to {API_BASE_URL}/{endpoint}")
-    response = requests.post(f"{API_BASE_URL}/{endpoint}", json=data)
+def api_post(url: str, endpoint: str, data: json):
+    print(f"Sending request to {url}/{endpoint}")
+    response = requests.post(f"{url}/{endpoint}", json=data)
     response.raise_for_status()
     return response.json()
 
-def api_get(endpoint):
-    response = requests.get(f"{API_BASE_URL}/{endpoint}")
+def api_get(url: str, endpoint: str):
+    response = requests.get(f"{url}/{endpoint}")
     response.raise_for_status()
     return response.json()
 
