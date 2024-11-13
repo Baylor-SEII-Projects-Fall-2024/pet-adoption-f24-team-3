@@ -1,5 +1,7 @@
 package petadoption.api.recommendations;
 
+import petadoption.api.annotation.GlobalCrossOrigin;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
 @RequestMapping("/api/recommendations")
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000"})
+@GlobalCrossOrigin
 public class RecommendationsController {
     @Autowired
     RecommendationsService recommendationsService;

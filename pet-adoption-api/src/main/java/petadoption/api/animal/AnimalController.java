@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.user.dtos.OwnerDto;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/animals")
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
+@GlobalCrossOrigin
 public class AnimalController {
     @Autowired
     private AnimalService animalService;
