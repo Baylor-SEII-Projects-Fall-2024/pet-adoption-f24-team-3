@@ -13,7 +13,7 @@ import petadoption.api.event.EventService;
  * Just using this for testing.
  */
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://34.132.214.70:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
 @RestController
 public class ClearDataController {
 
