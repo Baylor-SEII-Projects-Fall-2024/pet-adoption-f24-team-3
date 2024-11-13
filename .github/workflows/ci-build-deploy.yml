@@ -14,8 +14,6 @@
 # If we need to change runners, go to github > settings > actions > runners,
 # and add the prod label to whatever runner we are switching to.
 
-name: Build & Deploy
-
 on:
   push:
     branches:
@@ -23,7 +21,12 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, prod]
+    name: Build & Deploy to ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: [prod, backup]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -31,7 +34,21 @@ jobs:
         run: |
           docker image prune -af
 
-      - name: Build
+      - name: Set IP Address
+        run: |
+          cd pet-adoption-frontend
+          if [ "${{ matrix.runner }}" == "dev" ]; then
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.DEV_IP_ADDRESS }}:8080" > .env.production
+          elif [ "${{ matrix.runner }}" == "prod" ]; then
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.PROD_IP_ADDRESS }}:8080" > .env.production
+          elif [ "${{ matrix.runner }}" == "backup" ]; then
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.BACKUP_IP_ADDRESS }}:8080" > .env.production
+          else
+            echo "Error: Unknown runner label '${{ matrix.runner }}'"
+            exit 1
+          fi
+
+      - name: Build ${{ matrix.runner }}
         # This step builds both the frontend and backend docker images using
         # Docker Compose. To change how the images are built or their actual
         # buildscripts, modify the corresponding files in the docker/ directory.
@@ -40,7 +57,7 @@ jobs:
         run: |
           docker compose -f docker/ci.docker-compose.yml build
 
-      - name: Deploy
+      - name: Deploy to ${{ matrix.runner }}
         # This script simply runs the images that were built in the previous step.
         # This uses the same Docker Compose file in the previous step.
         #
