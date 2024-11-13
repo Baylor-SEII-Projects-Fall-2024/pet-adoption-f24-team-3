@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
 @RequestMapping("/api/recommendations")
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://34.132.214.70:3000"})
 public class RecommendationsController {
     @Autowired
     RecommendationsService recommendationsService;
