@@ -38,11 +38,11 @@ jobs:
         run: |
           cd pet-adoption-frontend
           if [ "${{ matrix.runner }}" == "dev" ]; then
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.DEV_IP_ADDRESS }}" > .env.production
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.DEV_IP_ADDRESS }}:8080" > .env.production
           elif [ "${{ matrix.runner }}" == "prod" ]; then
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.PROD_IP_ADDRESS }}" > .env.production
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.PROD_IP_ADDRESS }}:8080" > .env.production
           elif [ "${{ matrix.runner }}" == "backup" ]; then
-            echo "NEXT_PUBLIC_API_URL=${{ secrets.BACKUP_IP_ADDRESS }}" > .env.production
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.BACKUP_IP_ADDRESS }}:8080" > .env.production
           else
             echo "Error: Unknown runner label '${{ matrix.runner }}'"
             exit 1
