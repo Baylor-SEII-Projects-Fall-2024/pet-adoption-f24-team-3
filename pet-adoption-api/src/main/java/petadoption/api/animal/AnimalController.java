@@ -65,6 +65,21 @@ public class AnimalController {
         }
     }
 
+    @PostMapping("/liked")
+    public ResponseEntity<List<AnimalCardResponse>> getLikedAnimals(@RequestParam("pageSize") Integer pageSize,@RequestParam Long userId,
+                                                                     @RequestBody List<Long> alreadyDisplayedIds) {
+        try {
+            List<Animal> animals = animalService.getLikedAnimals(pageSize, alreadyDisplayedIds, userId);
+            List<AnimalCardResponse> responses =  animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+            return new ResponseEntity<>(responses,HttpStatus.OK);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/center/{id}")
     public List<AnimalCardResponse> findAnimalsByCenter(@PathVariable Long id) {
         List<Animal> animals = animalService.findAnimalsByCenterId(id);

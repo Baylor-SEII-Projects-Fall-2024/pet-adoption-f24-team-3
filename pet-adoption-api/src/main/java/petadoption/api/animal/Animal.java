@@ -60,5 +60,7 @@ public class Animal {
     private Double weight;
 
     @Transient
-    private double score;
+    public  boolean isLiked = false;
+    @Transient
+    public boolean isDisliked = false;
 }

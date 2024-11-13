@@ -49,20 +49,15 @@ public class RecommendationsService {
     public int isAnimalLikedOrDisliked(Long userId, Long animalId){
         InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
         if(ih == null) return 0;
-
-        InteractionPoint relevantPoint = ih.getInteractionPoints()
-                .stream()
-                .filter(p-> p.getType()==InteractionType.ANIMAL_ID && p.getName().equals(animalId.toString()))
-                .findFirst().orElse(null);
-
-        return relevantPoint == null ? 0 : relevantPoint.getScore();
+        return getAnimalInteractionStatus(ih,animalId);
     }
 
-    public long[] getLikedAnimals(Long userId){
+    public List<Long> getLikedAnimals(Long userId){
         InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
         if(ih == null) return null;
         MappedInteractionHistory mh = new MappedInteractionHistory(ih);
-        return mh.animalHistory.keySet().stream().mapToLong(Long::parseLong).toArray();
+        long[] ids =  mh.animalHistory.keySet().stream().mapToLong(Long::parseLong).toArray();
+        return Arrays.stream(ids).boxed().toList();
     }
 
     public boolean resetHistory(Long userId){
@@ -86,7 +81,12 @@ public class RecommendationsService {
         Map<Long,Double> animalRatings = new HashMap<>();
         for(Animal a : animals){
             double score = calculateCompatibilityScore(a,mappedHistory);
-            a.setScore(score);
+
+            //set if the animal is liked or disliked, or neither
+            double likedStatus = getAnimalInteractionStatus(history,a.getId());
+            if(likedStatus > 0) a.isLiked = true;
+            else if(likedStatus < 0 ) a.isDisliked = true;
+
             animalRatings.put(a.getId(),score);
         }
 
@@ -228,7 +228,7 @@ public class RecommendationsService {
         InteractionHistory history = findOrMakeByUser(userId);
 
         //add record of the animal id - (increment is always  1 or -1)
-        modifyAttribute(history, InteractionType.ANIMAL_ID,animalId.toString(), numInteractions/abs(numInteractions));
+        modifyAttribute(history, InteractionType.ANIMAL_ID,animalId.toString(), 1);
 
         // record rest of modifications
         modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
@@ -280,5 +280,13 @@ public class RecommendationsService {
         return newSum / newTotal;
     }
 
+    private int getAnimalInteractionStatus(InteractionHistory history, Long animalId){
+        InteractionPoint relevantPoint = history.getInteractionPoints()
+                .stream()
+                .filter(p-> p.getType()==InteractionType.ANIMAL_ID && p.getName().equals(animalId.toString()))
+                .findFirst().orElse(null);
+
+        return relevantPoint == null ? 0 : relevantPoint.getScore();
+    }
 
 }

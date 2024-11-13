@@ -15,8 +15,6 @@ public class AnimalCardResponse {
     public Integer age;
     public String breed;
     public AnimalSex sex;
-    public Double score;
-
     public boolean isLiked = false;
     public boolean isDisliked = false;
 
@@ -28,7 +26,8 @@ public class AnimalCardResponse {
         this.age=sourceAnimal.getAge();
         this.breed=sourceAnimal.getBreed();
         this.sex=sourceAnimal.getSex();
-        this.score = sourceAnimal.getScore();
+        this.isLiked = sourceAnimal.isLiked;
+        this.isDisliked = sourceAnimal.isDisliked;
 
 
     }
