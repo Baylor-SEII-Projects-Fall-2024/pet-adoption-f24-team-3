@@ -76,7 +76,7 @@ export default function PetCard(props) {
               paddingLeft: "10%",
               paddingRight: "10%",
             }}>
-            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} />
+            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} initiallyLiked={pet.isLiked} initiallyDisliked={pet.isDisiked} />
           </div>
         </CardActions>
       )}

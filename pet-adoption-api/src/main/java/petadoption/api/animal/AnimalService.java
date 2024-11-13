@@ -60,7 +60,7 @@ public class AnimalService {
 
         List<Animal> likedAnimals = animalRepository.findAllById(displayableIds);
         likedAnimals.forEach(a -> a.isLiked=true);
-        return likedAnimals;
+        return likedAnimals.stream().limit(pageSize).collect(Collectors.toList());
     }
 
     public void deleteAnimal(Long animalId) throws Exception{

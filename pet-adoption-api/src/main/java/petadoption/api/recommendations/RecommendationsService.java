@@ -56,8 +56,11 @@ public class RecommendationsService {
         InteractionHistory ih =  interactionRepository.findByUserId(userId).orElse(null);
         if(ih == null) return null;
         MappedInteractionHistory mh = new MappedInteractionHistory(ih);
-        long[] ids =  mh.animalHistory.keySet().stream().mapToLong(Long::parseLong).toArray();
-        return Arrays.stream(ids).boxed().toList();
+        return mh.animalHistory.entrySet().stream()// go through the history of Ids
+                .filter(entry->entry.getValue()>0) //filter for liked ones (score is positive)
+                .map(Map.Entry::getKey) //get just the keys
+                .mapToLong(Long::parseLong) // convert them to longs
+                .boxed().toList(); // convert to list
     }
 
     public boolean resetHistory(Long userId){
@@ -228,7 +231,7 @@ public class RecommendationsService {
         InteractionHistory history = findOrMakeByUser(userId);
 
         //add record of the animal id - (increment is always  1 or -1)
-        modifyAttribute(history, InteractionType.ANIMAL_ID,animalId.toString(), 1);
+        modifyAttribute(history, InteractionType.ANIMAL_ID,animalId.toString(), numInteractions/abs(numInteractions));
 
         // record rest of modifications
         modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
