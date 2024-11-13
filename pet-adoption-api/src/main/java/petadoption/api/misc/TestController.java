@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://34.57.220.165:3000", "http://35.224.27.57:3000", "http://35.208.60.16:3000"})
 public class TestController {
 
     @GetMapping("/test")
