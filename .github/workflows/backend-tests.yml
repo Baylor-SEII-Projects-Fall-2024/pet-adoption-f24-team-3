@@ -7,12 +7,7 @@
 
 name: Run Backend Tests
 
-# on: [pull_request]
-on:
-  push:
-    branches:
-      - ickoxii/test-workflows
-
+on: [pull_request]
 
 jobs:
   test-backend:
