@@ -1,5 +1,6 @@
 package petadoption.api.recommendations;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -253,5 +254,10 @@ public class RecommendationsService {
         return newSum / newTotal;
     }
 
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        interactionRepository.deleteAll();
+    }
 
 }

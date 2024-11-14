@@ -1,5 +1,6 @@
 package petadoption.api.chat;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,4 +49,9 @@ public class MessageService {
         return messageRepository.countMessageByRecipientIDAndIsReadFalse(userID);
     }
 
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        messageRepository.deleteAll();
+    }
 }

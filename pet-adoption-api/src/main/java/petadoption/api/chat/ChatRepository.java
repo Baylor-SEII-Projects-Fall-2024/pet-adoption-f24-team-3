@@ -24,7 +24,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Query("SELECT c FROM Chat c WHERE (c.userIDFirst = :userID) OR (c.userIDSecond = :userID) ORDER BY c.lastUpdated DESC")
     List<Chat> findChatsByUserID(Long userID, Pageable pageable);
 
-
+    void deleteAll();
 
 
 }
