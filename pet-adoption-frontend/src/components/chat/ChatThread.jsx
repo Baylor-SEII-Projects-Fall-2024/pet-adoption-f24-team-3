@@ -83,10 +83,19 @@ export default function ChatThread(props) {
       return;
     }
     let recipientId = 0;
-    if (currentChat.userIDFirst != currentUserId) {
-      recipientId = currentChat.userIDFirst;
-    } else {
+
+    // if the current user is the first id, the second id is the recipient.
+    if (currentChat.userIDFirst == currentUserId) {
       recipientId = currentChat.userIDSecond;
+    }
+    // if the current user is the second id, the first id is the recipient.
+    else if (currentChat.userIDSecond == currentUserId) {
+      recipientId = currentChat.userIDFirst;
+    }
+    //if the current user is neither, they are not authorized to view this chat.
+    //boot them to their inbox.
+    else {
+      openInbox();
     }
 
     await getGenericUserInfo(recipientId)
@@ -118,7 +127,7 @@ export default function ChatThread(props) {
     let client = Stomp.over(socket);
 
     // Disable logging
-    client.debug = () => {};
+    client.debug = () => { };
 
     async function setup() {
       await getChat();
