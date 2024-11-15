@@ -270,7 +270,7 @@ export default function ViewPetPage() {
                     </>
                   ) : (
                     <>
-                      <ContactCard contactee={animal.centerId} sender={currentUserId} />
+                      <ContactCard contactee={animal.centerId} sender={currentUserId} defaultMessage={`Hello! I'd like to learn more about ${animal.name}, are they still available?`} />
                     </>
                   )}
                 </Box>

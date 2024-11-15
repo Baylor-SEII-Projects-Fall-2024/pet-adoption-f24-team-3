@@ -9,25 +9,26 @@ const ChatContext = createContext();
 export const ChatProvider = ({ children }) => {
     const [isChatDialogOpen, setIsChatDialogOpen] = useState(false);
     const [currentChatId, setCurrentChatId] = React.useState(null);
+    const [myMessage, setMyMessage] = useState("");
     const [currentChatPage, setCurrentChatPage] = React.useState("INBOX");
     const { getOrCreateChat } = chatService();
 
     //opens the chat dialog with the specified user. Creates a chat if DNE
-    const openChatByUser = async (senderID,receiverID) => {
+    const openChatByUser = async (senderID, receiverID, defaultMessage = "") => {
         //TODO: CALL a service function to get or create a chat based on the other user's id
 
-        await getOrCreateChat(senderID,receiverID)
-        .then((result)=>{
-            if(result != null){
-                openChat(result.id);
-            }else{
-                console.error("ERROR fetching chat!");
-            }
-        })
-        .catch((error)=>{
-            console.error("Error creating or fetching chat:",error);
+        await getOrCreateChat(senderID, receiverID)
+            .then((result) => {
+                if (result != null) {
+                    openChat(result.id, defaultMessage);
+                } else {
+                    console.error("ERROR fetching chat!");
+                }
+            })
+            .catch((error) => {
+                console.error("Error creating or fetching chat:", error);
 
-        }); // Async function wait for result
+            }); // Async function wait for result
 
     };
 
@@ -41,9 +42,10 @@ export const ChatProvider = ({ children }) => {
     };
 
     //opens the chat dialog (if closed) to the chat with the specified chat ID
-    const openChat = (chatId) => {
+    const openChat = (chatId, defaultMessage = "") => {
         setCurrentChatId(chatId);
         setCurrentChatPage("CHAT");
+        setMyMessage(defaultMessage);
         setIsChatDialogOpen(true);
     }
     //opens the chat dialog (if closed) to the inbox
@@ -57,13 +59,20 @@ export const ChatProvider = ({ children }) => {
         <ChatContext.Provider
             value={{
                 isChatDialogOpen,
+
                 currentChatId,
+                setCurrentChatId,
+
                 currentChatPage,
                 openChat,
                 openChatByUser,
                 openInbox,
+
                 openChatDialog,
-                closeChatDialog
+                closeChatDialog,
+
+                myMessage,
+                setMyMessage,
             }}>
             {children}
         </ChatContext.Provider>

@@ -4,7 +4,7 @@ import { Message } from "@mui/icons-material";
 
 export default function ContactCard(props) {
     /*  */
-    const { contactee, sender } = props; /* Passing in sender if needed for later */
+    const { contactee, sender, defaultMessage = "" } = props; /* Passing in sender if needed for later */
     const { openChatByUser } = useChat();
 
     const handleContact = async (event) => {
@@ -13,7 +13,7 @@ export default function ContactCard(props) {
         if (contactee == null) {
             return
         }
-        openChatByUser(sender, contactee) /* Opens a chat with contactee as receiver */
+        openChatByUser(sender, contactee, defaultMessage) /* Opens a chat with contactee as receiver */
 
 
     }

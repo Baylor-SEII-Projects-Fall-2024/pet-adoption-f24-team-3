@@ -20,7 +20,7 @@ import { ArrowBack, Send } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatThread(props) {
-  const { currentChatId, openInbox } = useChat();
+  const { currentChatId, openInbox, myMessage, setMyMessage } = useChat();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const currentUserFullName = useSelector(
     (state) => state.currentUser.currentUserFullName
@@ -43,7 +43,6 @@ export default function ChatThread(props) {
     It sets the stompClient which is necessary for connecting to the websocket and sending messages */
   const [stompClient, setStompClient] = useState(null);
   const isSubscribed = useRef(false);
-  const [myMessage, setMyMessage] = useState("");
 
   async function getChat() {
     if (currentChatId == null) {
@@ -282,7 +281,7 @@ export default function ChatThread(props) {
       </Box>
       <Box
         sx={{
-          height: "5rem",
+          minHeight: "5rem",
           width: "100%",
           backgroundColor: "#f4f4f4",
           pr: "10px",
@@ -294,9 +293,14 @@ export default function ChatThread(props) {
           sx={{
             //width: "80%",
             ml: "20px",
+            mt: "10px",
+            mb: "10px",
             backgroundColor: "white",
+
           }}
           fullWidth
+          multiline
+          maxRows={4}
           onChange={handleChange}
           onKeyDown={handleSendKeyContact}
           value={myMessage}
