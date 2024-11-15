@@ -20,7 +20,7 @@ import { ArrowBack, Send } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatThread(props) {
-  const { currentChatId, openInbox } = useChat();
+  const { currentChatId, openInbox, myMessage, setMyMessage } = useChat();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const currentUserFullName = useSelector(
     (state) => state.currentUser.currentUserFullName
@@ -43,7 +43,6 @@ export default function ChatThread(props) {
     It sets the stompClient which is necessary for connecting to the websocket and sending messages */
   const [stompClient, setStompClient] = useState(null);
   const isSubscribed = useRef(false);
-  const [myMessage, setMyMessage] = useState("");
 
   async function getChat() {
     if (currentChatId == null) {
@@ -83,10 +82,19 @@ export default function ChatThread(props) {
       return;
     }
     let recipientId = 0;
-    if (currentChat.userIDFirst != currentUserId) {
-      recipientId = currentChat.userIDFirst;
-    } else {
+
+    // if the current user is the first id, the second id is the recipient.
+    if (currentChat.userIDFirst == currentUserId) {
       recipientId = currentChat.userIDSecond;
+    }
+    // if the current user is the second id, the first id is the recipient.
+    else if (currentChat.userIDSecond == currentUserId) {
+      recipientId = currentChat.userIDFirst;
+    }
+    //if the current user is neither, they are not authorized to view this chat.
+    //boot them to their inbox.
+    else {
+      openInbox();
     }
 
     await getGenericUserInfo(recipientId)
@@ -118,7 +126,7 @@ export default function ChatThread(props) {
     let client = Stomp.over(socket);
 
     // Disable logging
-    client.debug = () => {};
+    client.debug = () => { };
 
     async function setup() {
       await getChat();
@@ -273,7 +281,7 @@ export default function ChatThread(props) {
       </Box>
       <Box
         sx={{
-          height: "5rem",
+          minHeight: "5rem",
           width: "100%",
           backgroundColor: "#f4f4f4",
           pr: "10px",
@@ -285,9 +293,14 @@ export default function ChatThread(props) {
           sx={{
             //width: "80%",
             ml: "20px",
+            mt: "10px",
+            mb: "10px",
             backgroundColor: "white",
+
           }}
           fullWidth
+          multiline
+          maxRows={4}
           onChange={handleChange}
           onKeyDown={handleSendKeyContact}
           value={myMessage}

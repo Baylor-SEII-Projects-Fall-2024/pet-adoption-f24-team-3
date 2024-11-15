@@ -2,12 +2,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
+import { useChat } from '../contexts/chatContext';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = () => {
     const dispatch = useDispatch();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const { uploadProfilePic, uploadCenterBanner } = imageService();
+    const { setCurrentChatId } = useChat();
+
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
@@ -163,6 +166,8 @@ const userService = () => {
         //remove cookies
         Cookies.remove("userId");
         Cookies.remove("authenticationToken");
+        //reset the chat
+        setCurrentChatId(null);
     };
 
     const getUserInfo = async (userId) => {

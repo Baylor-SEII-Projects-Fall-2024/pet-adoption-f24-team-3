@@ -50,8 +50,14 @@ export default function ChatMessage(props) {
                         {formatDate(message.timestamp)}
                     </Typography>
                 </Box>
-
-                <p>{message.content}</p>
+                <Typography variant="body1"
+                    sx={{
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word',
+                    }}
+                >
+                    {message.content}
+                </Typography>
             </Box>
         </Box>
 

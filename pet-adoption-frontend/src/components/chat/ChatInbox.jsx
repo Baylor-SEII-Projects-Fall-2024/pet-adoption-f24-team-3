@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, List, ListItem, Typography, Avatar } from "@mui/material";
+import { Box, Button, List, ListItem, Typography, Avatar, IconButton } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import chatService from "@/utils/services/chatService";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "@/components/Loading";
+import { Close, Message } from "@mui/icons-material";
+
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const truncateText = (text, maxLength) => {
@@ -15,7 +18,7 @@ const truncateText = (text, maxLength) => {
 };
 
 export default function ChatInbox() {
-  const { openChat } = useChat();
+  const { openChat, closeChatDialog } = useChat();
   const { getChatInfoByUserId } = chatService();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
@@ -91,102 +94,129 @@ export default function ChatInbox() {
         flexDirection: "column",
       }}
     >
-      <Typography alignSelf="center" variant="h4" gutterBottom>
-        Inbox
-      </Typography>
-      <hr />
-      {chatData.length > 0 ? (
-        <InfiniteScroll
-          dataLength={chatData.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<Loading doneLoading={!hasMore} page={page} />}
-          scrollableTarget="scrollableDiv"
-        >
-          <List
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
+      <Box
+        direction="row"
+        sx={{
+          height: "4rem",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          backgroundColor: "primary.main",
+          pt: "10px",
+          pb: "10px",
+          borderBottom: "2px solid #a8a8a8",
+        }}
+      >
+        <Message fontSize="large" sx={{ color: "white" }}></Message>
+        <Typography variant="h3" noWrap sx={{ color: "white" }}>
+          Messages
+        </Typography>
+        <IconButton
+          sx={{
+            color: "white",
+            position: "absolute",
+            right: "10px",
+            top: 0,
+            bottom: 0,
+          }} onClick={closeChatDialog}>
+          <Close fontSize="large" />
+        </IconButton>
+      </Box>
+      {
+        chatData.length > 0 ? (
+          <InfiniteScroll
+            dataLength={chatData.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={<Loading doneLoading={!hasMore} page={page} />}
+            scrollableTarget="scrollableDiv"
           >
-            {chatData.map((chat) => (
-              <ListItem
-                key={chat.chatID}
-                divider
-                sx={{
-                  padding: "0px",
-                  margin: "0",
-                }}
-              >
-                <Button
-                  fullWidth
-                  onClick={() => handleChatClick(chat.chatID)}
+            <List
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {chatData.map((chat) => (
+                <ListItem
+                  key={chat.chatID}
+                  divider
                   sx={{
-                    justifyContent: "flex-start",
-                    textAlign: "left",
+                    padding: "0px",
+                    margin: "0",
                   }}
                 >
-                  <Box
+                  <Button
+                    fullWidth
+                    onClick={() => handleChatClick(chat.chatID)}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      width: "15%",
-                      mr: 3,
+                      justifyContent: "flex-start",
+                      textAlign: "left",
                     }}
                   >
-                    {/* Display senders avatar */}
-                    <Avatar
+                    <Box
                       sx={{
-                        bgcolor: "#a3b18a",
-                        width: 60,
-                        height: 60,
-                        border: "1px solid #000",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: "15%",
+                        mr: 3,
                       }}
-                      alt="Sender Avatar"
-                      src={`${apiUrl}/api/images/users/${chat.otherUserID}/profile`}
-                    />
-                  </Box>
-                  <Box>
-                    {
-                      <Typography variant="body1">
-                        {chat.otherUserName}
-                      </Typography>
-                    }
-                    {
-                      <>
-                        {chat.hasUnread ? (
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "bold" }}
-                            color="textPrimary"
-                          >
-                            {truncateText(chat.mostRecentContent, 30)}
-                          </Typography>
-                        ) : (
-                          <Typography variant="body2" color="textPrimary">
-                            {truncateText(chat.mostRecentContent, 30)}
-                          </Typography>
-                        )}
-                        <Typography variant="caption" color="textSecondary">
-                          {new Date(chat.timestamp).toLocaleString()}
+                    >
+                      {/* Display senders avatar */}
+                      <Avatar
+                        sx={{
+                          bgcolor: "#a3b18a",
+                          width: 60,
+                          height: 60,
+                          border: "1px solid #000",
+                        }}
+                        alt="Sender Avatar"
+                        src={`${apiUrl}/api/images/users/${chat.otherUserID}/profile`}
+                      />
+                    </Box>
+                    <Box>
+                      {
+                        <Typography variant="body1">
+                          {chat.otherUserName}
                         </Typography>
-                      </>
-                    }
-                  </Box>
-                </Button>
-              </ListItem>
-            ))}
-          </List>
-        </InfiniteScroll>
-      ) : (
-        <>
-          <br />
-          <Typography variant="body1" align="center">
-            No messages found
-          </Typography>
-        </>
-      )}
-    </Box>
+                      }
+                      {
+                        <>
+                          {chat.hasUnread ? (
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold" }}
+                              color="textPrimary"
+                            >
+                              {truncateText(chat.mostRecentContent, 30)}
+                            </Typography>
+                          ) : (
+                            <Typography variant="body2" color="textPrimary">
+                              {truncateText(chat.mostRecentContent, 30)}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" color="textSecondary">
+                            {new Date(chat.timestamp).toLocaleString()}
+                          </Typography>
+                        </>
+                      }
+                    </Box>
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+          </InfiniteScroll>
+        ) : (
+          <>
+            <br />
+            <Typography variant="body1" align="center">
+              No messages found
+            </Typography>
+          </>
+        )
+      }
+    </Box >
   );
 }

@@ -19,12 +19,14 @@ export default function ChatBox(props) {
                 border: "4px grey"
             }}
         >
-            {currentChatPage == "INBOX" &&
-                <ChatInbox openChat={openChat} />
 
-            }
-            {currentChatPage == "CHAT" && currentChatId != null &&
-                <ChatThread openInbox={openInbox} chatId={currentChatId} />
+            {(currentChatPage == "CHAT" && currentChatId != null) ?
+                (
+                    <ChatThread openInbox={openInbox} chatId={currentChatId} />
+                )
+                : (
+                    <ChatInbox openChat={openChat} />
+                )
             }
 
         </Box>
