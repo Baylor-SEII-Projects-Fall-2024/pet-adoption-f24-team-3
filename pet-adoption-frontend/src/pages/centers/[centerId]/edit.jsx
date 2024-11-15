@@ -168,7 +168,6 @@ export default function EditProfilePage() {
                     onChange={handleChange}
                   />
                   <TextField
-                    required
                     fullWidth
                     multiline
                     label="Description"

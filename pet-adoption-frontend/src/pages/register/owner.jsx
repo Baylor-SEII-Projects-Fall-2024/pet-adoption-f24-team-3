@@ -18,7 +18,6 @@ export default function RegisterOwnerPage() {
         firstName: "",
         lastName: "",
         email: "",
-        username: "",
         password: "",
         confirmPassword: "",
     });
@@ -42,7 +41,6 @@ export default function RegisterOwnerPage() {
                     case 'firstName': return 'First Name';
                     case 'lastName': return 'Last Name';
                     case 'email': return 'Email';
-                    case 'username': return 'Username';
                     case 'password': return 'Password';
                     case 'confirmPassword': return 'Confirm Password';
                     default: return field;
@@ -86,7 +84,6 @@ export default function RegisterOwnerPage() {
                     <TextField fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
                     <TextField fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
                     <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
-                    <TextField fullWidth label='Username' name="username" size="small" margin="dense" value={formData.username} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
                     <TextField
