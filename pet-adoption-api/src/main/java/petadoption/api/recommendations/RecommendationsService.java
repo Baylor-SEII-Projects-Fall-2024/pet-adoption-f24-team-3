@@ -98,36 +98,26 @@ public class RecommendationsService {
 
         double score = 0;
         Random randomNum = new Random();
-        //AdoptionCenter adoptionCenter = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
-        //if (adoptionCenter == null) {
-        //    throw new Exception("AdoptionCenter not found!");
-        //}
+
         if(animal.getSex()!=null)
             score += calculateCompatibility(mappedHistory.getSexHistory(), animal.getSex().toString(), 1.2);
-        //log.info("Sex:"+score);
         if(animal.getBreed()!=null)
             score += calculateCompatibility(mappedHistory.getBreedHistory(), animal.getBreed(), 1.5);
-        //log.info("Breed:"+score);
         if(animal.getSpecies()!=null)
             score += calculateCompatibility(mappedHistory.getSpeciesHistory(), animal.getSpecies(), 2);
-        //log.info("Species:"+score);
         if(animal.getCenterId()!=null)
             score += calculateCompatibility(mappedHistory.getCenterHistory(), animal.getCenterId().toString(), 0.4);
-        //log.info("Center:"+score);
-        //score += calculateCompatibility(mappedHistory.getStateHistory(), adoptionCenter.getState(), 0.6);
-        //score += calculateCompatibility(mappedHistory.getCityHistory(), adoptionCenter.getCity(), 0.6);
+        if(animal.getState() != null)
+            score += calculateCompatibility(mappedHistory.getStateHistory(), animal.getState(), 0.6);
+        if(animal.getCity()!= null)
+            score += calculateCompatibility(mappedHistory.getCityHistory(), animal.getCity(), 0.6);
         if(animal.getAgeClass()!=null)
             score += getAgeClassCompatibility(animal, mappedHistory.getAgeClassHistory(), 2);
-        //log.info("Age Class:"+score);
         score += getHeightCompatibility(animal, mappedHistory, 0.6);
-        //log.info("Height:"+score);
         score += getWeightCompatibility(animal, mappedHistory, 0.6);
-        //log.info("Weight:"+score);
         score += getAgeCompatibility(animal, mappedHistory, 1.2);
-        //log.info("Age:"+score);
         if(animal.getSize()!=null)
             score += getSizeCompatibility(animal, mappedHistory.getSizeHistory(), 1);
-        //log.info("Size:"+score);
         score += randomNum.nextDouble(2.0);
         //log.info("Random:"+score);
         return score;
@@ -201,10 +191,6 @@ public class RecommendationsService {
             throw new Exception("Animal not found!");
         }
 
-        AdoptionCenter center = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
-        if(center == null){
-            throw new Exception("Center not found!");
-        }
 
         InteractionHistory history = findOrMakeByUser(userId);
         modifyAttribute(history, InteractionType.SPECIES, animal.getSpecies(), numInteractions);
@@ -215,9 +201,9 @@ public class RecommendationsService {
             modifyAttribute(history, InteractionType.AGE_CLASS, animal.getAgeClass().toString(), numInteractions);
         if(animal.getSize()!= null)
             modifyAttribute(history, InteractionType.SIZE, animal.getSize().toString(), numInteractions);
-        modifyAttribute(history, InteractionType.STATE,center.getState(), numInteractions);
-        modifyAttribute(history, InteractionType.CITY, center.getCity(), numInteractions);
-        modifyAttribute(history, InteractionType.CENTER_ID,center.getId().toString(), numInteractions);
+        modifyAttribute(history, InteractionType.STATE,animal.getState(), numInteractions);
+        modifyAttribute(history, InteractionType.CITY, animal.getCity(), numInteractions);
+        modifyAttribute(history, InteractionType.CENTER_ID,animal.getCenterId().toString(), numInteractions);
 
         if(numInteractions >0){
             history.setAvgAge(modifyAverage(history.getAvgAge(), history.getTotalLikes(), animal.getAge(),numInteractions));
