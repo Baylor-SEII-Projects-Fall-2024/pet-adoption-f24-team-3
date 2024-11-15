@@ -9,17 +9,14 @@ faker = Faker()
 faker.seed_instance(420)
 random.seed(69)
 
-# Production - Brendon's Runner
-# API_BASE_URL = "http://35.184.141.85:8080"
+# modules/config.py
 
-# Icko's First Runner
-# API_BASE_URL = "http://http://35.224.27.57:8080"
-
-# Remote Dev - Icko's woofrunner
-# API_BASE_URL = "http://35.184.141.85:8080"
-
-# Local Development
-API_BASE_URL = "http://localhost:8080"
+API_URLS = {
+    'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
+    'dev':    "http://35.224.27.57:8080",   # Remote Dev - ixiwoofrunner-001
+    'backup': "http://34.57.220.165:8080",  # Backup - Icko's First Runner
+    'local':  "http://localhost:8080"       # Local Development
+}
 
 # Cities and States for generation
 city_state_map = {
