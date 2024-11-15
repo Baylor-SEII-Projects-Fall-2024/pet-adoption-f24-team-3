@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.event.responseObjects.EventCardResponse;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
+@GlobalCrossOrigin
 public class EventController {
     @Autowired
     private EventService eventService;

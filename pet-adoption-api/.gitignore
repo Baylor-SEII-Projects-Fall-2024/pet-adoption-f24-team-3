@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### IP Resource File ###
+# src/main/resources/application.properties

@@ -2,6 +2,9 @@
 # Author: Icko Iben
 # Date Created: 09/17/2024
 #
+# Modified:       11/13/2024
+#   - Added IP as github secrets
+#   - Use matrix strategy to build to multiple runners at once
 # Modified:       10/21/2024
 #   - Remove action on pull request so we don't deploy changes we don't want
 # Modified:       09/24/2024
@@ -11,10 +14,8 @@
 #   - Copied from template actions yml file
 #   - Changed to docker/ci.docker-compose.yml file
 #
-# If we need to change runners, go to github > settings > actions > runners,
-# and add the prod label to whatever runner we are switching to.
-
-name: Build & Deploy
+# If we need to add a runner, add new label to workflow file and add IP address
+# to matrix runner
 
 on:
   push:
@@ -23,7 +24,12 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, prod]
+    name: Build & Deploy to ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: [prod, backup, dev]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -31,7 +37,26 @@ jobs:
         run: |
           docker image prune -af
 
-      - name: Build
+      - name: Set IP Address
+        run: |
+          if [ "${{ matrix.runner }}" == "dev" ]; then
+            echo "Setting IP Address to DEV"
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.DEV_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
+            echo "cors.allowed-origin=http://${{ secrets.DEV_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
+          elif [ "${{ matrix.runner }}" == "prod" ]; then
+            echo "Setting IP Address to PROD"
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.PROD_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
+            echo "cors.allowed-origin=http://${{ secrets.PROD_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
+          elif [ "${{ matrix.runner }}" == "backup" ]; then
+            echo "Setting IP Address to BACKUP"
+            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.BACKUP_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
+            echo "cors.allowed-origin=http://${{ secrets.BACKUP_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
+          else
+            echo "Error: Unknown runner label '${{ matrix.runner }}'"
+            exit 1
+          fi
+
+      - name: Build ${{ matrix.runner }}
         # This step builds both the frontend and backend docker images using
         # Docker Compose. To change how the images are built or their actual
         # buildscripts, modify the corresponding files in the docker/ directory.
@@ -40,7 +65,7 @@ jobs:
         run: |
           docker compose -f docker/ci.docker-compose.yml build
 
-      - name: Deploy
+      - name: Deploy to ${{ matrix.runner }}
         # This script simply runs the images that were built in the previous step.
         # This uses the same Docker Compose file in the previous step.
         #

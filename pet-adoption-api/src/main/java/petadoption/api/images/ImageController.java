@@ -9,8 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import petadoption.api.animal.Animal;
 import petadoption.api.animal.AnimalService;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.event.Event;
 import petadoption.api.event.EventService;
 import petadoption.api.user.AdoptionCenter;
@@ -23,7 +25,7 @@ import java.nio.file.Paths;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
+@GlobalCrossOrigin
 @RequestMapping("/api/images")
 public class ImageController {
     @Autowired

@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import petadoption.api.annotation.GlobalCrossOrigin;
+
 @Log4j2
 @RestController
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@GlobalCrossOrigin
 public class TestController {
 
     @GetMapping("/test")

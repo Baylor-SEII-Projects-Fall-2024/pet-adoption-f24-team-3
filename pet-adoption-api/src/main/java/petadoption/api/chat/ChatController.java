@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.chat.responseObjects.ChatInfoResponse;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/chats")
-@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000", "http://35.208.60.16:3000" })
+@GlobalCrossOrigin
 public class ChatController {
 
     @Autowired
