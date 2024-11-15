@@ -11,6 +11,8 @@ public class EventCardResponse {
     public Date datePosted;
     public Date dateStart;
     public Date dateEnd;
+    public String city;
+    public String state;
 
     public EventCardResponse(Event sourceEvent) {
         this.id = sourceEvent.getId();
@@ -19,5 +21,7 @@ public class EventCardResponse {
         this.datePosted = sourceEvent.getDatePosted();
         this.dateStart = sourceEvent.getDateStart();
         this.dateEnd = sourceEvent.getDateEnd();
+        this.city = sourceEvent.getCity();
+        this.state = sourceEvent.getState();
     }
 }

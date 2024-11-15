@@ -169,9 +169,16 @@ export default function ViewEventPage() {
                         </td>
                         <td>
                           <Typography>{adoptionCenter.name}</Typography>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <Typography>Address: </Typography>
+                        </td>
+                        <td>
                           <Typography>
-                            {adoptionCenter.address}, {adoptionCenter.city},{" "}
-                            {adoptionCenter.state}
+                            {event.address}, {event.city},{" "}
+                            {event.state}
                           </Typography>
                         </td>
                       </tr>

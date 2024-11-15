@@ -39,6 +39,9 @@ public class EventService {
         getEvent.setDescription(newEvent.getDescription());
         getEvent.setDateStart(newEvent.getDateStart());
         getEvent.setDateEnd(newEvent.getDateEnd());
+        getEvent.setAddress(newEvent.getAddress());
+        getEvent.setCity(newEvent.getCity());
+        getEvent.setState(newEvent.getState());
         return eventRepository.save(getEvent).getId();
     }
     public List<Event> getEventsByCenterId(Long centerId) { return eventRepository.getEventsByCenterId(centerId); }
