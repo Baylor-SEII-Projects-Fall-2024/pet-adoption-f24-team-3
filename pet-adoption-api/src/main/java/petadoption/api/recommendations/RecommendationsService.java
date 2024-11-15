@@ -1,5 +1,6 @@
 package petadoption.api.recommendations;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -155,22 +156,22 @@ public class RecommendationsService {
     public double getAgeCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgAge = history.getAvgAge();
         if(avgAge == 0) return 0.0;
-        double score =  weight - ((animal.getAge() - avgAge)/avgAge);
-        return Math.clamp(score,-weight, weight);
+        double score =  weight - abs((animal.getAge() - avgAge)/avgAge);
+        return Math.clamp(score,0, weight);
     }
 
     public double getWeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgWeight = history.getAvgWeight();
         if(avgWeight == 0) return 0.0;
-        double score =  weight - ((animal.getWeight() - avgWeight)/avgWeight);
-        return Math.clamp(score,-weight, weight);
+        double score =  weight - abs((animal.getWeight() - avgWeight)/avgWeight);
+        return Math.clamp(score,0, weight);
     }
 
     public double getHeightCompatibility(Animal animal, MappedInteractionHistory history, double weight) throws Exception{
         double avgHeight = history.getAvgHeight();
         if(avgHeight == 0) return 0.0;
-        double score =  weight - ((animal.getHeight() - avgHeight)/avgHeight);
-        return Math.clamp(score,-weight, weight);
+        double score =  weight - abs((animal.getHeight() - avgHeight)/avgHeight);
+        return Math.clamp(score,0, weight);
     }
 
     public double getSizeCompatibility(Animal animal, Map<String, Integer> history, double weight) throws Exception {
@@ -253,5 +254,10 @@ public class RecommendationsService {
         return newSum / newTotal;
     }
 
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        interactionRepository.deleteAll();
+    }
 
 }

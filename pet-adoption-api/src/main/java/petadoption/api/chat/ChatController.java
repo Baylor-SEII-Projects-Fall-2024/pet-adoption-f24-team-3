@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/chats")
-@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://35.184.141.85:3000", "http://35.208.60.16:3000" })
 public class ChatController {
 
     @Autowired
@@ -40,20 +40,25 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend("/topic/messages/" + chatID, savedMessage);
     }
 
+    @GetMapping("/{chatId}")
+    public Chat getChatById(@PathVariable Long chatId) {
+        return chatService.getChatByID(chatId).orElse(null);
+    }
+
     // Gets a chat between two users based on their ids
-    @GetMapping("/by-users")
+    @GetMapping("/byUsers")
     public ResponseEntity<Chat> getChatByUserIDs(@RequestParam Long userID1, @RequestParam Long userID2) {
         var chat = chatService.getChatByUserIDs(userID1, userID2);
         return chat.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/by-user")
+    @GetMapping("/byUser")
     public List<Chat> getChatsByUserID(@RequestParam Long userID) {
         return chatService.getChatsByUserID(userID);
     }
 
     // Gets a list of messages by the chatID ordered chronologically
-    @GetMapping("/by-chatID")
+    @GetMapping("/byChatID")
     public List<Message> getMessagesByChatID(@RequestParam Long chatID,
                                              @RequestParam(required = false) Optional<Integer> pageSize,
                                              @RequestParam(required = false) Optional<Integer> pageNumber) {
@@ -65,13 +70,13 @@ public class ChatController {
         }
     }
 
-    @GetMapping("/unread-count")
+    @GetMapping("/unreadCount")
     public Integer getUnreadMessageCount(@RequestParam("userID") Long userID) {
         return messageService.getUnreadMessageCount(userID);
     }
 
     // Gets a list of chat infos for a user id, with optional pagination
-    @GetMapping("/chat-info-by-user")
+    @GetMapping("/chatInfoByUser")
     public List<ChatInfoResponse> getChatInfoByUserID(@RequestParam Long userID,
                                                       @RequestParam(required = false) Optional<Integer> pageSize,
                                                       @RequestParam(required = false) Optional<Integer> pageNumber) {
@@ -84,12 +89,12 @@ public class ChatController {
     }
 
     // Creates a chat between two users. If the chat already exists, it just returns the existing chat
-    @PostMapping("/get-or-create")
+    @PostMapping("/getOrCreate")
     public Chat getOrCreateChat(@RequestParam Long senderID, @RequestParam Long receiverID) {
         return chatService.createChat(senderID, receiverID);
     }
 
-    @PutMapping("/message-read-status")
+    @PutMapping("/messageReadStatus")
     public ResponseEntity<Map<String, Object>> updateMessageStatus(@RequestParam Long messageID, @RequestParam Boolean status) {
         Optional<Message> msg = messageService.updateMessageStatus(messageID, status);
         Map<String, Object> response = new HashMap<>();

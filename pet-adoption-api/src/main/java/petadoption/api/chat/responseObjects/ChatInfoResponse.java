@@ -5,21 +5,24 @@ import petadoption.api.chat.Chat;
 import petadoption.api.chat.Message;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 public class ChatInfoResponse {
     public Long chatID;
-    public Long senderID;
+    public Long otherUserID;
+    public String otherUserName;
     public String mostRecentContent;
     public Boolean hasUnread;
     public Date timestamp;
 
     // Creates a response assuming the message is the newest message in the chat
-    public ChatInfoResponse(Chat chat, Message message) {
+    public ChatInfoResponse(Chat chat, Message message, String otherUserName, Long otherUserID) {
         this.chatID = chat.getId();
-        this.senderID = message.getSenderID();
+        this.otherUserID = otherUserID;
+        this.otherUserName = otherUserName;
         this.mostRecentContent = message.getContent();
-        this.hasUnread = !(message.getIsRead());    // If the message is unread, then isRead = false -> hasUnread = true
         this.timestamp = message.getTimestamp();
+        this.hasUnread = Objects.equals(message.getSenderID(), otherUserID) && !(message.getIsRead());
     }
 }

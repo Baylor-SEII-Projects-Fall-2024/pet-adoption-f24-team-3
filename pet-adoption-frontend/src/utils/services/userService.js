@@ -215,6 +215,23 @@ const userService = () => {
             return null;
         }
     }
+    const getGenericUserInfo = async (userid) => {
+        const response = await fetch(`${apiUrl}/api/users/${userid}/generic`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Get generic user info failed: ${result.message}`);
+            return null;
+        }
+    };
+
 
     const getCenterDetails = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/centers/${centerId}/details`, {
@@ -331,6 +348,7 @@ const userService = () => {
         logOut,
         getUserInfo,
         getOwnerInfo,
+        getGenericUserInfo,
         getCenterInfo,
         getCentersByPage,
         updateOwner,

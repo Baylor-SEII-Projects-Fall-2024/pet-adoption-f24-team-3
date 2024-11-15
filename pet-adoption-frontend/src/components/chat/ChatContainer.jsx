@@ -2,17 +2,24 @@ import React, { useEffect, useState } from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
 import ChatBox from "./ChatBox";
+import { useRouter } from "next/router";
 import { Box, IconButton, Stack } from "@mui/material";
 import { useChat } from "@/utils/contexts/chatContext";
 import { useSelector } from "react-redux";
 import chatService from "@/utils/services/chatService";
 
 export default function ChatContainer(props) {
-  const { isChatDialogOpen, openChatDialog, closeChatDialog } = useChat();
+  const router = useRouter();
+  const { isChatDialogOpen, openChatDialog, closeChatDialog, currentChatId } =
+    useChat();
   const { getUnreadMessages } = chatService();
   const [unreadMessages, setUnreadMessages] = useState(null);
   const [loading, setLoading] = useState(true);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+
+  useEffect(() => {
+    closeChatDialog();
+  }, [router]);
 
   useEffect(() => {
     if (currentUserId) {
@@ -35,7 +42,7 @@ export default function ChatContainer(props) {
       };
       fetchUnread();
     }
-  }, [currentUserId]);
+  }, [currentUserId, router, currentChatId]);
 
   if (!isChatDialogOpen && !loading) {
     return (

@@ -9,6 +9,7 @@ import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
 import petadoption.api.user.responseObjects.AdoptionCenterCardResponse;
+import petadoption.api.user.responseObjects.GenericUserDataResponse;
 import petadoption.api.user.responseObjects.SessionUserDataResponse;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
 public class UserController {
     @Autowired
     private UserService userService;
@@ -87,6 +88,27 @@ public class UserController {
             log.warn("Adoption Center not found");
         }
         return center;
+    }
+
+    @GetMapping("/users/{id}/generic")
+    public ResponseEntity<GenericUserDataResponse> findUserGeneric(@PathVariable Long id){
+        User user = userService.findUser(id).orElse(null);
+        if(user==null){
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        }
+        GenericUserDataResponse response = new GenericUserDataResponse();
+        response.id = user.getId();
+        response.emailAddress= user.getEmailAddress();
+        response.accountType = user.getAccountType();
+        if(user instanceof PotentialOwner){
+            PotentialOwner owner = (PotentialOwner) user;
+            response.name = owner.getNameFirst() + " " + owner.getNameLast();
+        }
+        else if(user instanceof  AdoptionCenter){
+            AdoptionCenter center = (AdoptionCenter) user;
+            response.name = center.getName();
+        }
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping("/centers/paginated")

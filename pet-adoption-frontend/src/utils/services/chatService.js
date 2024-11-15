@@ -3,7 +3,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const chatService = () => {
 
-    function chatList({ userId }) {
+    function chatList(userId) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState(null);
@@ -11,8 +11,8 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/by-user?userID={userId}`);
-                    if(!response.ok) {
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`);
+                    if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
                     const data = await response.json();
@@ -27,8 +27,8 @@ const chatService = () => {
             fetchChats();
         }, [userId]);
 
-        if(loading) return <div>Loading...</div>;
-        if(error) return <div>Error: {error}</div>;
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error}</div>;
 
         return (
             <div>
@@ -40,9 +40,9 @@ const chatService = () => {
         );
     }
 
-    function getChatInfoByUserId({ userID }) {
+    function getChatInfoByUserId(userID, pageSize, pageNumber) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chat-info-by-user?userID=${userID}`;
+            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
             fetch(url)
                 .then(response => {
@@ -59,9 +59,9 @@ const chatService = () => {
         });
     }
 
-    function getChatByChatId({ currentChatId }) {
+    function getMessagesByChatId(currentChatId) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/by-chatID?chatID=${currentChatId}`;
+            let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
             fetch(url)
                 .then(response => {
@@ -77,9 +77,9 @@ const chatService = () => {
                 });
         });
     }
-    /* ========== */
+
     const getUnreadMessages = async (userId) => {
-        const response = await fetch(`${apiUrl}/api/chats/unread-count?userID=${userId}`, {
+        const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -94,22 +94,20 @@ const chatService = () => {
             return null;
         }
     }
-    const sendMessage = async(chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
+    const sendMessage = async (chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
         if (stompClient) {
-          const chatMessage = {
-            chatID: chatID,
-            senderID: sender,
-            recipientID: contactee,
-            content: content,
-          };
-          console.log("Sending message:", chatMessage);
-          stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
-        //   setMessage("");
+            const chatMessage = {
+                chatID: chatID,
+                senderID: sender,
+                recipientID: contactee,
+                content: content,
+            };
+            stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
         }
     };
 
-    const getOrCreateChat = async(senderID, receiverID) => {
-        const response = await fetch(`${apiUrl}/api/chats/get-or-create?senderID=${senderID}&receiverID=${receiverID}`, {
+    const getOrCreateChat = async (senderID, receiverID) => {
+        const response = await fetch(`${apiUrl}/api/chats/getOrCreate?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -123,7 +121,7 @@ const chatService = () => {
             return null;
         }
     }
-    const getByChatID = async(chatId) => {
+    const getChatByChatID = async (chatId) => {
         const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
             method: "GET",
             headers: {
@@ -139,14 +137,31 @@ const chatService = () => {
         }
     }
 
-    return{
+    const updateMessageStatus = async (messageID, status) => {
+        const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Updating message failed: ${result.message}`);
+            return null;
+        }
+    }
+
+    return {
         chatList,
         getChatInfoByUserId,
-        getChatByChatId,
+        getMessagesByChatId,
         getUnreadMessages,
         sendMessage,
         getOrCreateChat,
-        getByChatID
+        getChatByChatID,
+        updateMessageStatus,
     };
 };
 

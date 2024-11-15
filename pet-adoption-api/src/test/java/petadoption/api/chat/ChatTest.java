@@ -126,11 +126,13 @@ public class ChatTest {
 
         Message message1 = new Message();
         message1.setSenderID(userID);
+        message1.setRecipientID(2L);
         message1.setContent("Hello in chat1");
         messageService.saveMessage(message1, chat1.getId());
 
         Message message2 = new Message();
         message2.setSenderID(userID);
+        message2.setRecipientID(3L);
         message2.setContent("Hello in chat2");
         messageService.saveMessage(message2, chat2.getId());
 
@@ -158,12 +160,14 @@ public class ChatTest {
         Message message1 = new Message();
         message1.setChatID(chat1.getId());
         message1.setSenderID(userID);
+        message1.setRecipientID(2L);
         message1.setContent("Hello in chat1");
         messageService.saveMessage(message1, chat1.getId());
 
         Message message2 = new Message();
         message2.setChatID(chat2.getId());
         message2.setSenderID(userID);
+        message2.setRecipientID(3L);
         message2.setContent("Hello in chat2");
         messageService.saveMessage(message2, chat2.getId());
 

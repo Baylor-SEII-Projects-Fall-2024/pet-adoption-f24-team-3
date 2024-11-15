@@ -1,26 +1,26 @@
 import requests
 import json
 import os
-from .config import API_BASE_URL
+import shutil
 
-def api_post_img(endpoint: str, imageFile: str):
-    print(f"Sending request to {API_BASE_URL}/{endpoint}")
+def api_post_img(url: str, endpoint: str, imageFile: str):
+    print(f"Sending request to {url}/{endpoint}")
 
     # Open file in binary mode to read and send
     with open(imageFile, "rb") as imgFile:
         files = {"imageFile": imgFile}
-        response = requests.post(f"{API_BASE_URL}/{endpoint}", files=files)
+        response = requests.post(f"{url}/{endpoint}", files=files)
     response.raise_for_status()
     return response.json()
 
-def api_post(endpoint: str, data: json):
-    print(f"Sending request to {API_BASE_URL}/{endpoint}")
-    response = requests.post(f"{API_BASE_URL}/{endpoint}", json=data)
+def api_post(url: str, endpoint: str, data: json):
+    print(f"Sending request to {url}/{endpoint}")
+    response = requests.post(f"{url}/{endpoint}", json=data)
     response.raise_for_status()
     return response.json()
 
-def api_get(endpoint):
-    response = requests.get(f"{API_BASE_URL}/{endpoint}")
+def api_get(url: str, endpoint: str):
+    response = requests.get(f"{url}/{endpoint}")
     response.raise_for_status()
     return response.json()
 
@@ -44,3 +44,21 @@ def append_pretty_json(data, filename):
             f.truncate()
     else:
         save_pretty_json(data, filename)
+
+def clean_uploads(uploads_dir):
+    if not os.path.exists(uploads_dir):
+        print(f"    {uploads_dir} does not exist")
+    else:
+        count = 0
+        for filename in os.listdir(uploads_dir):
+            file_path = os.path.join(uploads_dir, filename)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                    count += 1
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+                    count += 1
+            except Exception as e:
+                print(f"      Failed to delete {file_path}. Reason: {e}")
+        print(f"  Removed {count} files/directories from {uploads_dir}")
