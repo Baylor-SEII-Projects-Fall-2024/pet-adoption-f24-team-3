@@ -1,3 +1,5 @@
+# modules/models.py
+
 from enum import Enum
 
 class ImageType(Enum):

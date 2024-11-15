@@ -1,6 +1,8 @@
-from datetime import datetime, timedelta
+# modules/generators.py
+
 import random
-from .config import faker, city_state_map, species_classifications, species_breeds
+from datetime import datetime, timedelta
+from .config import faker, city_state_map, species_weights, species_classifications, species_breeds
 from .models import Sex, AgeClass, Size
 
 def get_classification(value, ranges):
@@ -42,12 +44,12 @@ def generate_potential_owner():
     }
 
 def generate_animal_data(species: str):
-    age = random.uniform(0 ,species_classifications[species]["age"][-1][1])
-    weight = random.uniform(0 ,species_classifications[species]["size"][-1][1])
-    height = random.randint(10 ,100) # Simplified height generation
+    age = random.uniform(0, species_classifications[species]["age"][-1][1])
+    weight = random.uniform(0, species_classifications[species]["size"][-1][1])
+    height = random.randint(10, 100) # Simplified height generation
     
-    age_class = get_classification(age ,species_classifications[species]["age"])
-    size = get_classification(weight ,species_classifications[species]["size"])
+    age_class = get_classification(age, species_classifications[species]["age"])
+    size = get_classification(weight, species_classifications[species]["size"])
     
     return age, age_class, weight, size, height
 
@@ -69,28 +71,31 @@ def generate_preference(id: int):
     }
 
 def generate_pet(center_id: int):
-    species = random.choice(list(species_classifications.keys()))
+    weighted_species = []
+    for species, weight in species_weights.items():
+        weighted_species.extend([species] * int(weight * 10))
+    species = random.choice(weighted_species)
     age, age_class, weight, size, height = generate_animal_data(species)
     breed = random.choice(species_breeds.get(species, "Unknown"))
     
     return {
-        "datePosted": (datetime.now() - timedelta(days=random.randint(0 ,365))).isoformat(),
+        "datePosted": (datetime.now() - timedelta(days=random.randint(0, 365))).isoformat(),
         "name": faker.pet_first() + " " + faker.pet_last(),
         "species": species,
         "breed": breed,
         "sex": random.choice(list(Sex)).value,
-        "age": round(age ,1),
+        "age": round(age, 1),
         "ageClass": age_class.value,
         "size": size.value,
         "height": height,
-        "weight": round(weight ,1),
+        "weight": round(weight, 1),
         "description": faker.sentence(),
         "centerId": center_id,
     }
 
 def generate_event(center_id: int):
-    start_date = datetime.now() + timedelta(days=random.randint(1 ,30))
-    end_date = start_date + timedelta(days=random.randint(1 ,7))
+    start_date = datetime.now() + timedelta(days=random.randint(1, 30))
+    end_date = start_date + timedelta(days=random.randint(1, 7))
 
     # species_names e.g. Cat
     # event_actions e.g. Adoption
