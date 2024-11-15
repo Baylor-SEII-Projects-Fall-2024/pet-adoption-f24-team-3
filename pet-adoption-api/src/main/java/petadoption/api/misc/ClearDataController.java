@@ -11,12 +11,13 @@ import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.UserService;
 import petadoption.api.animal.AnimalService;
 import petadoption.api.event.EventService;
+import petadoption.api.annotation.GlobalCrossOrigin;
 
 /**
  * Just using this for testing.
  */
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://130.211.116.230:3000", "http://34.69.88.79:3000", "http://35.208.60.16:3000" })
+@GlobalCrossOrigin
 @RestController
 public class ClearDataController {
 

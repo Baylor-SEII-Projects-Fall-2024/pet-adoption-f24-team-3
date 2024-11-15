@@ -1,3 +1,5 @@
+# modules/config.py
+
 import random
 from faker import Faker
 from faker.providers import DynamicProvider
@@ -6,10 +8,9 @@ from .models import Sex, AgeClass, Size
 faker = Faker()
 
 # Comment for non-deterministic generation
-faker.seed_instance(420)
-random.seed(69)
-
-# modules/config.py
+# Uncomment to have some fun!
+# faker.seed_instance(420)
+# random.seed(69)
 
 API_URLS = {
     'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
@@ -121,6 +122,16 @@ pet_last_provider = DynamicProvider(
               "the Hurty of Tummies"],
 )
 faker.add_provider(pet_last_provider)
+
+# Define weights for pet species generation
+species_weights = {
+    "Cat": 3,
+    "Dog": 3,
+    "Duck": 1,
+    "Fox": 1,
+    "Frog": 0.5,
+    "Raccoon": 0.5
+}
 
 # Define age and size classifications for different species
 species_classifications = {

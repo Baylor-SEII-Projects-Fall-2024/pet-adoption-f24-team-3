@@ -1,3 +1,5 @@
+# modules/static.py
+
 def generate_static_accounts():
     static_centers = [
         {
