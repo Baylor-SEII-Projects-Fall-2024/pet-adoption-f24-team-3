@@ -1,10 +1,13 @@
+# modules/utils.py
+
 import requests
 import json
 import os
 import shutil
+from .logger import logger
 
-def api_post_img(url: str, endpoint: str, imageFile: str):
-    print(f"Sending request to {url}/{endpoint}")
+def api_post_img(url: str, endpoint: str, imageFile: str, indent: str):
+    logger.info(f"{indent}Sending request to {url}/{endpoint}")
 
     # Open file in binary mode to read and send
     with open(imageFile, "rb") as imgFile:
@@ -13,8 +16,8 @@ def api_post_img(url: str, endpoint: str, imageFile: str):
     response.raise_for_status()
     return response.json()
 
-def api_post(url: str, endpoint: str, data: json):
-    print(f"Sending request to {url}/{endpoint}")
+def api_post(url: str, endpoint: str, data: json, indent:str):
+    logger.info(f"{indent}Sending request to {url}/{endpoint}")
     response = requests.post(f"{url}/{endpoint}", json=data)
     response.raise_for_status()
     return response.json()
@@ -47,7 +50,7 @@ def append_pretty_json(data, filename):
 
 def clean_uploads(uploads_dir):
     if not os.path.exists(uploads_dir):
-        print(f"    {uploads_dir} does not exist")
+        logger.warning(f"    {uploads_dir} does not exist")
     else:
         count = 0
         for filename in os.listdir(uploads_dir):
@@ -60,5 +63,5 @@ def clean_uploads(uploads_dir):
                     shutil.rmtree(file_path)
                     count += 1
             except Exception as e:
-                print(f"      Failed to delete {file_path}. Reason: {e}")
-        print(f"  Removed {count} files/directories from {uploads_dir}")
+                logger.error(f"      Failed to delete {file_path}. Reason: {e}")
+        logger.info(f"  Removed {count} files/directories from {uploads_dir}")

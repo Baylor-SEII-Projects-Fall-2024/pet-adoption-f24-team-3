@@ -1,3 +1,5 @@
+# modules/generate.py
+
 import os
 import sys
 from modules.config import API_URLS, faker, random, center_names_provider
@@ -14,6 +16,8 @@ from modules.utils import api_post, api_get, api_post_img
 from modules.utils import save_pretty_json, append_pretty_json, pretty_print_json
 from modules.utils import clean_uploads
 from modules.images import generate_image, ImageType, generate_animal_image
+from collections import Counter
+from modules.logger import logger
 
 valid_environments = ['local', 'dev', 'prod', 'backup']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l']
@@ -64,10 +68,10 @@ elif size in ['large', 'l']:
     max_events_per_center = 15
 
 size_full = {'small': 'small', 's': 'small', 'medium': 'medium', 'm': 'medium', 'large': 'large', 'l': 'large'}
-print(f"You are about to generate data in {environment.upper()} at {url} with a '{size_full[size]}' size.")
+logger.info(f"You are about to generate data in {environment.upper()} at {url} with a '{size_full[size]}' size.")
 confirm = input("Do you want to continue? (y/n): ").strip().lower()
 if confirm != 'y':
-    print("Operation cancelled")
+    logger.info("Operation cancelled")
     sys.exit(0)
 
 # Delete existing JSON files
@@ -78,7 +82,7 @@ for file in [f"{environment}_MOCK_CENTERS.json",
              f"{environment}_MOCK_PREFERENCES.json"]:
     if os.path.exists(file):
         os.remove(file)
-        print(f"Deleted existing file: {file}")
+        logger.info(f"Deleted existing file: {file}")
 
 
 # Generate static values
@@ -96,64 +100,80 @@ save_pretty_json(potential_owners, f"{environment}_MOCK_OWNERS.json")
 
 for owner in potential_owners:
     try:
-        print(f"Saving {owner['nameFirst']} {owner['nameLast']}")
-        response = api_post(url, "api/owners", owner)
+        logger.info(f"Saving {owner['nameFirst']} {owner['nameLast']}")
+        response = api_post(url, "api/owners", owner, "  ")
         user_id = response['userid']
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id))
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id), "  ")
 
         # Generate a preference for this user
         preference = generate_preference(user_id)
-        print(f"Saving preference to {owner['nameFirst']} {owner['nameLast']}")
+        logger.info(f"  Saving preference to {owner['nameFirst']} {owner['nameLast']}")
         append_pretty_json([preference], f"{environment}_MOCK_PREFERENCES.json")
-        api_post(url, f"api/update/preferences/{user_id}", preference)
+        api_post(url, f"api/update/preferences/{user_id}", preference, "    ")
     except Exception as e:
-        print(f"Error adding owner. Reason: {e}")
+        logger.error(f"Error adding owner. Reason: {e}")
 
-print("\n==========\n")
+logger.info("\n==========\n")
+
+species_counter = Counter()
 
 for center in adoption_centers:
     try:
-        print(f"Saving {center['name']}")
-        response = api_post(url, "api/centers", center)
+        logger.info(f"Saving {center['name']}")
+        response = api_post(url, "api/centers", center, "  ")
         user_id = response['userid']
 
         # Generate some pets and events for this center
         num_pets = random.randint(min_pets_per_center, max_pets_per_center)
         num_events = random.randint(min_events_per_center, max_events_per_center)
 
-        pets = [generate_pet(user_id) for _ in range(num_pets)]
-        events = [generate_event(user_id) for _ in range(num_events)]
+        pets = []
+        events = []
+        for _ in range(num_pets):
+            pet = generate_pet(user_id)
+            pets.append(pet)
+            species_counter[pet['species']] += 1
+        for _ in range(num_events):
+            event = generate_event(user_id)
+            events.append(event)
         append_pretty_json(pets, f"{environment}_MOCK_PETS.json")
         append_pretty_json(events, f"{environment}_MOCK_EVENTS.json")
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id))
-        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id))
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id), "    ")
+        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id), "    ")
 
         for pet in pets:
-            print(f"  Saving pet {pet['name']} to {center['name']}")
-            response = api_post(url, "api/animals/", pet)
+            logger.info(f"  Saving pet {pet['name']} to {center['name']}")
+            response = api_post(url, "api/animals/", pet, "    ")
             pet_id = response['id']
 
             try:
                 img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
                 if img_url:
-                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url)
-                    print(f"    Successfully added image for pet {pet_id}")
+                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url, "      ")
+                    logger.info(f"      Successfully added image for pet {pet_id}")
                 else:
-                    print(f"    No image generated for pet {pet_id}")
+                    logger.warning(f"      No image generated for pet {pet_id}")
             except Exception as e:
-                print(f"    Failed to generate image {pet_id}")
+                logger.error(f"      Failed to generate image {pet_id}")
                 continue # Skip to next pet
 
         for event in events:
-            print(f"  Saving event {event['name']} to {center['name']}")
-            response = api_post(url, "api/events/", event)
+            logger.info(f"  Saving event {event['name']} to {center['name']}")
+            response = api_post(url, "api/events/", event, "    ")
             event_id = response['eventID']
-            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id))
+            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id), "    ")
     except Exception as e:
-        print(f"Error while adding center. Reason: {e}")
+        logger.error(f"Error while adding center. Reason: {e}")
 
-print("Cleaning up uploads directory")
+logger.info("Species Distributions:")
+total_pets = sum(species_counter.values())
+logger.info(f"total pets generated: {total_pets}")
+for species, count in species_counter.items():
+    percentage = (count / total_pets) * 100
+    logger.info(f"{species}: {count} ({percentage:.2f}%)")
+
+logger.info("Cleaning up uploads directory")
 clean_uploads("uploads")
-print("All files inside uploads/ have been deleted.")
+logger.info("All files inside uploads/ have been deleted.")
