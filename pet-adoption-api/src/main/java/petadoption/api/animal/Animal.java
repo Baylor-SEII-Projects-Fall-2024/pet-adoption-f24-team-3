@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.Where;
 
 import java.util.Date;
 
@@ -58,6 +62,9 @@ public class Animal {
 
     @Column(name = "WEIGHT")
     private Double weight;
+
+    @Column(name = "IS_ADOPTED")
+    private boolean isAdopted = false;
 
     @Transient
     private double score;
