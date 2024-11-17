@@ -57,7 +57,7 @@ public class AnimalService {
         }
         animal.setAdopted(status);
         Animal updatedAnimal = animalRepository.save(animal);
-        if (!Objects.equals(status, updatedAnimal.adopted())) {
+        if (!Objects.equals(status, updatedAnimal.isAdopted())) {
             throw new Exception("Unexpected status for id " + id);
         }
     }

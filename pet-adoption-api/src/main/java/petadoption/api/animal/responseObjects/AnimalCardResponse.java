@@ -25,7 +25,7 @@ public class AnimalCardResponse {
         this.age=sourceAnimal.getAge();
         this.breed=sourceAnimal.getBreed();
         this.sex=sourceAnimal.getSex();
-        this.adopted=sourceAnimal.adopted();
+        this.adopted=sourceAnimal.isAdopted();
         this.score = sourceAnimal.getScore();
     }
 

@@ -102,7 +102,6 @@ export default function ViewPetPage() {
           .then((result) => {
             if (result != null) {
               setAnimal(result);
-              console.log(result);
             } else {
               console.error(`Error loading animal ${petId}:`, result);
               setIsError(true);
