@@ -66,7 +66,7 @@ export default function ViewPetPage() {
       await updateAdoptionStatus(petId, true)
         .then((result) => {
           if (result == true) {
-            router.push(`/pets`);
+            router.push(`/centers/${adoptionCenter.id}`);
           } else console.error("There was an error updating adoption status!");
         })
         .catch((error) => {
@@ -86,7 +86,7 @@ export default function ViewPetPage() {
       await updateAdoptionStatus(petId, false)
         .then((result) => {
           if (result == true) {
-            router.push(`/pets`);
+            router.push(`/centers/${adoptionCenter.id}`);
           } else console.error("There was an error updating adoption status!");
         })
         .catch((error) => {
