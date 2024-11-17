@@ -26,7 +26,7 @@ export default function ViewPetPage() {
     (state) => state.currentUser.currentUserType
   );
 
-  const { getAnimal, deleteAnimal } = animalService();
+  const { getAnimal, updateAdoptionStatus, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
   const { formatSize, formatSex } = formatter();
 
@@ -63,14 +63,14 @@ export default function ViewPetPage() {
         `Are you sure you want mark ${animal.name} as adopted? They will stop showing up on the pets feed.`
       )
     ) {
-      await deleteAnimal(petId)
+      await updateAdoptionStatus(petId, true)
         .then((result) => {
           if (result == true) {
             router.push(`/pets`);
-          } else console.error("There was an error deleting this animal!");
+          } else console.error("There was an error updating adoption status!");
         })
         .catch((error) => {
-          console.error("There was an error deleting animal:", error);
+          console.error("There was an error updating adoption status:", error);
         });
     }
   };
@@ -80,17 +80,17 @@ export default function ViewPetPage() {
 
     if (
       window.confirm(
-        `Are you sure you want to delete ${animal.name}? They will be gone forever...`
+        `Are you sure you want to mark ${animal.name} as not adopted? They will be placed back on the pets feed.`
       )
     ) {
-      await deleteAnimal(petId)
+      await updateAdoptionStatus(petId, false)
         .then((result) => {
           if (result == true) {
             router.push(`/pets`);
-          } else console.error("There was an error deleting this animal!");
+          } else console.error("There was an error updating adoption status!");
         })
         .catch((error) => {
-          console.error("There was an error deleting animal:", error);
+          console.error("There was an error updating adoption status:", error);
         });
     }
   };
@@ -102,6 +102,7 @@ export default function ViewPetPage() {
           .then((result) => {
             if (result != null) {
               setAnimal(result);
+              console.log(result);
             } else {
               console.error(`Error loading animal ${petId}:`, result);
               setIsError(true);
@@ -307,7 +308,7 @@ export default function ViewPetPage() {
                       >
                         Delete Pet
                       </Button>
-                      {animal.isAdopted ? (
+                      {animal.adopted ? (
                         <Button
                           variant="contained"
                           color="primary"

@@ -97,6 +97,23 @@ const animalService = () => {
         }
     };
 
+    const updateAdoptionStatus = async (animalId, status) => {
+        const response = await fetch(`${apiUrl}/api/animals/updateAdoptStatus/${animalId}?status=${status}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Updating adoption status failed: ${result.message}`);
+            return null;
+        }
+    };
+
     const deleteAnimal = async (animalId) => {
         const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
             method: "DELETE",
@@ -175,6 +192,7 @@ const animalService = () => {
         getCenterAnimals,
         getCenterAdoptedAnimals,
         getAnimal,
+        updateAdoptionStatus,
         deleteAnimal,
         getRecommendedAnimals,
         updateAnimal,
