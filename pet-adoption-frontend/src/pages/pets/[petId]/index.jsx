@@ -55,6 +55,46 @@ export default function ViewPetPage() {
     }
   };
 
+  const onAdoptAnimal = async () => {
+    if (!animal) return;
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${animal.name}? They will be gone forever...`
+      )
+    ) {
+      await deleteAnimal(petId)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/pets`);
+          } else console.error("There was an error deleting this animal!");
+        })
+        .catch((error) => {
+          console.error("There was an error deleting animal:", error);
+        });
+    }
+  };
+
+  const onUnadoptAnimal = async () => {
+    if (!animal) return;
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${animal.name}? They will be gone forever...`
+      )
+    ) {
+      await deleteAnimal(petId)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/pets`);
+          } else console.error("There was an error deleting this animal!");
+        })
+        .catch((error) => {
+          console.error("There was an error deleting animal:", error);
+        });
+    }
+  };
+
   React.useEffect(() => {
     if (petId) {
       async function fetchAnimal() {
@@ -267,10 +307,33 @@ export default function ViewPetPage() {
                       >
                         Delete Pet
                       </Button>
+                      {animal.isAdopted ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={onUnadoptAnimal}
+                          sx={{ width: "150px" }}
+                        >
+                          Unmark as Adopted
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={onAdoptAnimal}
+                          sx={{ width: "150px" }}
+                        >
+                          Mark as Adopted
+                        </Button>
+                      )}
                     </>
                   ) : (
                     <>
-                      <ContactCard contactee={animal.centerId} sender={currentUserId} defaultMessage={`Hello! I'd like to learn more about ${animal.name}, are they still available?`} />
+                      <ContactCard
+                        contactee={animal.centerId}
+                        sender={currentUserId}
+                        defaultMessage={`Hello! I'd like to learn more about ${animal.name}, are they still available?`}
+                      />
                     </>
                   )}
                 </Box>
