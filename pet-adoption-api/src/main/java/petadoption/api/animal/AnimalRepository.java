@@ -19,6 +19,9 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     @Query("SELECT a FROM Animal a WHERE a.centerId = :centerId AND a.isAdopted = false")
     List<Animal> findAnimalsByCenterId(Long centerId);
 
+    @Query("SELECT a from Animal a where a.centerId = :centerId AND a.isAdopted = true")
+    List<Animal> findAdoptedAnimalsByCenterId(Long centerId);
+
     @Query("SELECT a FROM Animal a WHERE a.id NOT IN :previouslyDisplayedIds and a.isAdopted = false")
     List<Animal> findAllNotRetrieved(List<Long> previouslyDisplayedIds);
 

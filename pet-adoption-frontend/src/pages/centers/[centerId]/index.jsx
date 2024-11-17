@@ -51,6 +51,7 @@ function PetsAndEventsTabs(props) {
       >
         <Tab value="one" label="Availible Pets" />
         <Tab value="two" label="Upcoming Events" />
+        {isLoggedInCenter && <Tab value="three" label="Adopted Pets" />}
       </Tabs>
       <TabPanel value={value} index="one">
         {isLoggedInCenter && (
@@ -100,6 +101,22 @@ function PetsAndEventsTabs(props) {
           ))}
         </Grid>
       </TabPanel>
+      {isLoggedInCenter && (
+        <TabPanel value={value} index="three">
+          <Grid container spacing={5}>
+            {events.map((event) => (
+              <Grid item xs={11} sm={5} md={3} key={event.id}>
+                <Box
+                  onClick={() => handleEventClick(event.id)}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <EventCard event={event} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </TabPanel>
+      )}
     </Box>
   );
 }
