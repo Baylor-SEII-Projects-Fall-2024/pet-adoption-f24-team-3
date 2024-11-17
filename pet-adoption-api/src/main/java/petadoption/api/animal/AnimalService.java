@@ -45,6 +45,10 @@ public class AnimalService {
         return animalRepository.findAnimalsByCenterId(centerId);
     }
 
+    public List<Animal> findAdoptedAnimalsByCenterId(Long centerId) {
+        return animalRepository.findAdoptedAnimalsByCenterId(centerId);
+    }
+
     public List<Animal> recommendAnimals(Integer pageSize, List<Long> alreadyDisplayedIds,Long userId) throws Exception {
         List<Animal> initialAnimalList = animalRepository.findAllNotRetrieved(alreadyDisplayedIds);
         return recommendationsService.orderByCompatibilityScore(initialAnimalList,userId)

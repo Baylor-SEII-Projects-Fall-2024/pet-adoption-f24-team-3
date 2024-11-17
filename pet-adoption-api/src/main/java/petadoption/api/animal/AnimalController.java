@@ -69,6 +69,12 @@ public class AnimalController {
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 
+    @GetMapping("/centerAdopted/{id}")
+    public List<AnimalCardResponse> findAdoptedAnimalsByCenter(@PathVariable Long id) {
+        List<Animal> animals = animalService.findAdoptedAnimalsByCenterId(id);
+        return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+    }
+
     @PostMapping("/")
     public Animal saveAnimal(@RequestBody Animal animal) {
         return animalService.saveAnimal(animal);
