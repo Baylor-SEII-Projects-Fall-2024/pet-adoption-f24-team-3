@@ -75,6 +75,18 @@ public class AnimalController {
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 
+    @PostMapping("/updateAdoptStatus/{id}")
+    public ResponseEntity<Object> updateAdoptStatus(@PathVariable Long id, @RequestParam Boolean status) {
+        try {
+            animalService.updateAdoptStatus(id, status);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Unable to update adoption status: {}", e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/")
     public Animal saveAnimal(@RequestBody Animal animal) {
         return animalService.saveAnimal(animal);

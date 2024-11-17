@@ -60,7 +60,7 @@ export default function ViewPetPage() {
 
     if (
       window.confirm(
-        `Are you sure you want to delete ${animal.name}? They will be gone forever...`
+        `Are you sure you want mark ${animal.name} as adopted? They will stop showing up on the pets feed.`
       )
     ) {
       await deleteAnimal(petId)
