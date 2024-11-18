@@ -23,7 +23,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
-  const { pets, events, router, isLoggedInCenter } = props;
+  const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -51,6 +51,7 @@ function PetsAndEventsTabs(props) {
       >
         <Tab value="one" label="Availible Pets" />
         <Tab value="two" label="Upcoming Events" />
+        {isLoggedInCenter && <Tab value="three" label="Adopted Pets" />}
       </Tabs>
       <TabPanel value={value} index="one">
         {isLoggedInCenter && (
@@ -100,6 +101,22 @@ function PetsAndEventsTabs(props) {
           ))}
         </Grid>
       </TabPanel>
+      {isLoggedInCenter && (
+        <TabPanel value={value} index="three">
+          <Grid container spacing={5}>
+            {adoptedAnimals.map((animal) => (
+              <Grid item xs={11} sm={5} md={3} key={animal.id}>
+                <Box
+                  onClick={() => handlePetClick(animal.id)}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <PetCard pet={animal} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </TabPanel>
+      )}
     </Box>
   );
 }
@@ -114,9 +131,11 @@ export default function CenterPage() {
   ); // get the current session user
   const { getCenterInfo } = userService();
   const { getCenterAnimals } = animalService();
+  const { getCenterAdoptedAnimals } = animalService();
   const { getCenterEvents } = eventService();
   const [centerInfo, setCenterInfo] = useState(null);
   const [pets, setPets] = useState(null);
+  const [adoptedAnimals, setAdoptedAnimals] = useState(null);
   const [events, setEvents] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -127,12 +146,16 @@ export default function CenterPage() {
         try {
           const centerResult = await getCenterInfo(centerId);
           const animalsResult = await getCenterAnimals(centerId);
+          const adoptedAnimalsResult = await getCenterAdoptedAnimals(centerId);
           const eventsResult = await getCenterEvents(centerId);
           if (centerResult !== null) {
             setCenterInfo(centerResult);
           }
           if (animalsResult !== null) {
             setPets(animalsResult);
+          }
+          if (adoptedAnimalsResult !== null) {
+            setAdoptedAnimals(adoptedAnimalsResult);
           }
           if (eventsResult !== null) {
             setEvents(eventsResult);
@@ -221,6 +244,7 @@ export default function CenterPage() {
       />
       <PetsAndEventsTabs
         pets={pets}
+        adoptedAnimals={adoptedAnimals}
         events={events}
         router={router}
         isLoggedInCenter={currentUserId == centerId}

@@ -59,6 +59,9 @@ public class Animal {
     @Column(name = "WEIGHT")
     private Double weight;
 
+    @Column(name = "IS_ADOPTED")
+    private boolean adopted = false;
+
     @Transient
     private double score;
 }
