@@ -1,6 +1,7 @@
 package petadoption.api.recommendations;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -299,4 +300,81 @@ public class RecommendationTests {
 
     }
 
+    @Test
+    void testLikeAnimal() throws Exception{
+        //create owner and make sure their interaction history is blank
+        Long ownerId = registerOwner("example@example.com", "New First", "New Last");
+
+        InteractionHistory history = recommendationsService.findByUser(ownerId);
+        assertEquals(history.getTotalLikes(),0);
+        assertEquals(history.getInteractionPoints().size(),0);
+
+
+        //create some centers with animals, and like two, dislike 1, dont do anything for one
+        Long centerOneId = createAdoptionCenter("example@example.com", "Old Address", "Old City", "Old State", "1234");
+        Long centerTwoId = createAdoptionCenter("other@example.com", "Other Address", "Other City", "Other State", "5678");
+
+
+        Long likedAnimalOneId = createAndSaveAnimal(centerOneId, "Charles", 4, AnimalSex.MALE, AnimalSize.MEDIUM, AnimalAgeClass.BABY, "Shitzu", "Dog");
+        Long likedAnimalTwoId = createAndSaveAnimal(centerTwoId, "Alakazam", 7, AnimalSex.FEMALE, AnimalSize.MEDIUM, AnimalAgeClass.ADULT, "Shitzu", "Dog");
+        Long dislikedAnimalId = createAndSaveAnimal(centerTwoId, "Sam", 4, AnimalSex.FEMALE, AnimalSize.LARGE, AnimalAgeClass.ADULT, "Golden Retriever", "Dog");
+        Long notInteractedAnimalId = createAndSaveAnimal(centerOneId, "Fredrick", 6, AnimalSex.MALE, AnimalSize.SMALL, AnimalAgeClass.ADOLESCENT, "Tabby", "Cat");
+
+
+        recommendationsService.likeAnimal(ownerId, likedAnimalOneId);
+        recommendationsService.likeAnimal(ownerId, likedAnimalTwoId);
+        recommendationsService.dislikeAnimal(ownerId, dislikedAnimalId);
+
+        //get the new mapped history of the liked animals
+        MappedInteractionHistory mappedHistory = recommendationsService.findByUserMapped(ownerId);
+
+        //check sex
+        assertEquals(mappedHistory.getSexHistory().get("MALE"),1);
+        assertEquals(mappedHistory.getSexHistory().get("FEMALE"),0);
+
+        //check size
+        assertEquals(mappedHistory.getSizeHistory().get("MEDIUM"),2);
+        assertEquals(mappedHistory.getSizeHistory().get("LARGE"),-1);
+
+        //check age class
+        assertEquals(mappedHistory.getAgeClassHistory().get("BABY"),1);
+        assertEquals(mappedHistory.getAgeClassHistory().get("ADULT"),0);
+
+        //check breed
+        assertEquals(mappedHistory.getBreedHistory().get("Shitzu"),2);
+        assertEquals(mappedHistory.getBreedHistory().get("Golden Retriever"),-1);
+
+        //check species
+        assertEquals(mappedHistory.getSpeciesHistory().get("Dog"),1);
+
+        //check average age
+        double avgAge = (double) (4 + 7) /2.0;
+        assertEquals(mappedHistory.getAvgAge(),avgAge);
+
+        //check city
+        assertEquals(mappedHistory.getCityHistory().get("Old City"),1);
+        assertEquals(mappedHistory.getCityHistory().get("Other City"),0);
+
+        //check state
+        assertEquals(mappedHistory.getStateHistory().get("Old State"),1);
+        assertEquals(mappedHistory.getStateHistory().get("Other State"),0);
+
+        //check the ids have been stored (or not stored)
+        assertNotNull(mappedHistory.getAnimalHistory().get(likedAnimalOneId.toString()));
+        assertNotNull(mappedHistory.getAnimalHistory().get(likedAnimalTwoId.toString()));
+        assertNotNull(mappedHistory.getAnimalHistory().get(dislikedAnimalId.toString()));
+        assertNull(mappedHistory.getAnimalHistory().get(notInteractedAnimalId.toString()));
+
+
+        //check the scores stored for each animal
+        int score1 = recommendationsService.isAnimalLikedOrDisliked(ownerId,likedAnimalOneId);
+        assertEquals(score1,1);
+        int score2 = recommendationsService.isAnimalLikedOrDisliked(ownerId,likedAnimalTwoId);
+        assertEquals(score2,1);
+        int score3 = recommendationsService.isAnimalLikedOrDisliked(ownerId,dislikedAnimalId);
+        assertEquals(score3,-1);
+        int score4 = recommendationsService.isAnimalLikedOrDisliked(ownerId,notInteractedAnimalId);
+        assertEquals(score4,0);
+
+    }
 }
