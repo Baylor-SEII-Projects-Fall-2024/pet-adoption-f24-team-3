@@ -64,7 +64,7 @@ const animalService = () => {
     }
 
     const getCenterAdoptedAnimals = async (centerId) => {
-        const response = await fetch(`${apiUrl}/api/animals/centerAdopted/${centerId}`, {
+        const response = await fetch(`${apiUrl}/api/animals/center/${centerId}/adopted`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -98,7 +98,7 @@ const animalService = () => {
     };
 
     const updateAdoptionStatus = async (animalId, status) => {
-        const response = await fetch(`${apiUrl}/api/animals/updateAdoptStatus/${animalId}?status=${status}`, {
+        const response = await fetch(`${apiUrl}/api/animals/${animalId}/updateAdoptionStatus?status=${status}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

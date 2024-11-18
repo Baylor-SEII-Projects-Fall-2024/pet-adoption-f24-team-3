@@ -69,13 +69,13 @@ public class AnimalController {
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/centerAdopted/{id}")
+    @GetMapping("/center/{id}/adopted")
     public List<AnimalCardResponse> findAdoptedAnimalsByCenter(@PathVariable Long id) {
         List<Animal> animals = animalService.findAdoptedAnimalsByCenterId(id);
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
     }
 
-    @PostMapping("/updateAdoptStatus/{id}")
+    @PostMapping("/{id}/updateAdoptionStatus")
     public ResponseEntity<Object> updateAdoptStatus(@PathVariable Long id, @RequestParam Boolean status) {
         try {
             animalService.updateAdoptStatus(id, status);
