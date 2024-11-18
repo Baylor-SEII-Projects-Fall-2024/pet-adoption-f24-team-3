@@ -9,10 +9,13 @@ import {
   Stack,
   Typography,
   TextField,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { UploadFile } from "@mui/icons-material";
-import { toFormData } from "axios";
+import stateNames from "@/utils/lists";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -38,6 +41,11 @@ export default function EditProfilePage() {
     zipCode: "",
   });
 
+  const handleSelectChange = (event, fieldName) => {
+    const { value } = event.target;
+    setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -62,6 +70,7 @@ export default function EditProfilePage() {
             let elm = document.getElementById("errorLabel");
             elm.innerHTML = "Profile Settings Saved!";
             elm.style = "color: green;";
+            router.push(`/centers/${currentUserId}`);
           } else {
             let elm = document.getElementById("errorLabel");
             elm.innerHTML = "An error occured, try again!";
@@ -190,7 +199,6 @@ export default function EditProfilePage() {
                   />
                   <TextField
                     required
-                    fullWidth
                     label="City"
                     name="city"
                     size="small"
@@ -198,19 +206,26 @@ export default function EditProfilePage() {
                     value={formData.city}
                     onChange={handleChange}
                   />
+                  <FormControl sx={{ m: "10px" }}>
+                    <InputLabel id="state-select-label">State</InputLabel>
+                    <Select
+                      required
+                      labelId="state-select-label"
+                      id="state-select"
+                      value={formData.state}
+                      size="small"
+                      margin="dense"
+                      onChange={(event) => handleSelectChange(event, 'state')}
+                      sx={{ width: "10em" }}
+                    >
+                      <MenuItem value={""}>Please Select</MenuItem>
+                      {stateNames.map((state, index) => (
+                        <MenuItem key={index} value={state}>{state}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   <TextField
                     required
-                    fullWidth
-                    label="State"
-                    name="state"
-                    size="small"
-                    margin="dense"
-                    value={formData.state}
-                    onChange={handleChange}
-                  />
-                  <TextField
-                    required
-                    fullWidth
                     label="Zip Code"
                     name="zipCode"
                     size="small"

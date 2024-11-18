@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Paper, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
-import imageService from "@/utils/services/imageService";
 
 export default function RegisterOwnerPage() {
     const router = useRouter();
     const { registerOwner } = userService();
-    const { uploadProfilePic } = imageService();
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
@@ -21,6 +19,11 @@ export default function RegisterOwnerPage() {
         password: "",
         confirmPassword: "",
     });
+
+    const handleSelectChange = (event, fieldName) => {
+        const { value } = event.target;
+        setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;

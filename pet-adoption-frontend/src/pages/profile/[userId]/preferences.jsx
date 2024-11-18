@@ -14,9 +14,8 @@ import {
     TextField
 } from '@mui/material';
 import { useSelector } from 'react-redux';
-
-import userService from "@/utils/services/userService";
 import preferenceService from "@/utils/services/preferenceService";
+import stateNames from '@/utils/lists';
 
 export default function EditPreferencesPage() {
     const router = useRouter();
@@ -210,24 +209,33 @@ export default function EditPreferencesPage() {
                                     </FormControl>
 
                                     <TextField
-                                        fullWidth
                                         label="Pet City"
                                         name="city"
                                         size="small"
                                         margin="dense"
                                         value={formData.city}
+                                        sx={{ mt: "10px" }}
                                         onChange={handleFormChange}
                                     />
 
-                                    <TextField
-                                        fullWidth
-                                        label="Pet State"
-                                        name="state"
-                                        size="small"
-                                        margin="dense"
-                                        value={formData.state}
-                                        onChange={handleFormChange}
-                                    />
+                                    <FormControl sx={{ m: "10px" }}>
+                                        <InputLabel id="state-select-label">State</InputLabel>
+                                        <Select
+                                            required
+                                            labelId="state-select-label"
+                                            id="state-select"
+                                            value={formData.state}
+                                            size="small"
+                                            margin="dense"
+                                            onChange={(event) => handleSelectChange(event, 'state')}
+                                            sx={{ width: "10em" }}
+                                        >
+                                            <MenuItem value={""}>Please Select</MenuItem>
+                                            {stateNames.map((state, index) => (
+                                                <MenuItem key={index} value={state}>{state}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
 
                                     <br></br>
 
