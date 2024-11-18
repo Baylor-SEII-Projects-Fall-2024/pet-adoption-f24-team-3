@@ -42,12 +42,15 @@ public class AnimalService {
     }
 
     public Animal saveAnimal(Animal animal) {
-        AdoptionCenter center = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
-        if(center!= null){
-            animal.setCity(center.getCity());
-            animal.setState(center.getState());
-        }
+        //if the animal has a center ID, fetch the center's city and state, and store those in the animal
+        if(animal.getCenterId() != null){
+            AdoptionCenter center = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
 
+            if(center!= null){
+                animal.setCity(center.getCity());
+                animal.setState(center.getState());
+            }
+        }
         return animalRepository.save(animal);
     }
 
