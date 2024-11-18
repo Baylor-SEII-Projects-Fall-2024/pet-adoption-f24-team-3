@@ -1,6 +1,7 @@
 package petadoption.api.chat;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,11 @@ public class MessageTest {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @AfterEach
+    void tearDown() {
+        messageRepository.deleteAll();
+    }
 
     @Test
     void testSaveMessage() {
