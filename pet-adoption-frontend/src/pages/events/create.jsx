@@ -110,12 +110,11 @@ export default function CreateEventPage() {
                 <form onSubmit={handleSubmit}>
                     <TextField required fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
                     <TextField required multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
-                    <TextField fullWidth required label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
-                    <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" required value={formData.city} onChange={handleChange} />
+                    <TextField fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
+                    <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
                     <FormControl sx={{ m: "10px" }}>
                         <InputLabel id="state-select-label">State</InputLabel>
                         <Select
-                            required
                             labelId="state-select-label"
                             id="state-select"
                             value={formData.state}

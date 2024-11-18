@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import petadoption.api.animal.Animal;
 import petadoption.api.images.ImageService;
+import petadoption.api.user.AdoptionCenter;
+import petadoption.api.user.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,10 @@ import java.util.Optional;
 public class EventService {
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    @Lazy
+    UserService userService;
 
     ImageService imageService;
 
@@ -30,6 +36,21 @@ public class EventService {
         return eventRepository.findById(eventId);
     }
     public Event saveEvent(Event event) {
+
+        //if the event is missing address info, default to the center's address info
+        if(event.getCenterId()!=null) {
+            AdoptionCenter center = userService.findAdoptionCenter(event.getCenterId()).orElse(null);
+            if(center != null){
+                if(event.getAddress() == null)
+                    event.setAddress(center.getAddress());
+                if(event.getCity() == null)
+                    event.setCity(center.getCity());
+                if(event.getState() == null)
+                    event.setState(center.getState());
+            }
+
+        }
+
         return eventRepository.save(event);
     }
 
