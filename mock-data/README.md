@@ -18,24 +18,29 @@ somewhat realistic values.
 
 [back to top](#generating-mock-data-and-populating-our-database)
 
-Set the appropriate URL in `modules/config.py`
-
-```py
-# Production build
-API_BASE_URL = "http://<ipaddr>:8080"
-
-# Local testing
-API_BASE_URL = "http://localhost:8080"
-```
-
 Load the python virtual environment, download dependencies, and run the script.
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python3 generate.py
+python3 generate.py <environment> <size>
 ```
+
+Valid Environments
+
+| Environment | Desc |
+| --- | --- |
+| `local` | localhost |
+| `prod` | Production runner |
+| `backup` | Backup runner |
+| `dev` | Development runner |
+
+Valid Sizes
+
+* `small` or `s`
+* `medium` or `m`
+* `large` or `l`
 
 ---
 
@@ -47,17 +52,19 @@ python3 generate.py
 
 While the backend is still running, clear all existing tables and remove
 uploads directories from the api directory. This can be done by running
-the following script
+the following script.
 
 ***USE THIS SCRIPT WITH EXTREME CAUTION***
 
 ***DOUBLE CHECK YOU ARE USING THE LOCALHOST URL***
 
 ```bash
-python3 clear-db.py
+python3 clear-db.py <environment>
 ```
 
-If on local host, you may have to stop the database, clear it, then restart
+See above for valid environment calls.
+
+If on local host, you may have to stop the database, clear it, then restart it.
 
 ```bash
 COMPOSE_CMD := docker compose -f

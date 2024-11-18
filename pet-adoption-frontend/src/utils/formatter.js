@@ -37,11 +37,26 @@ const formatter = () => {
                 return text; // Return the original text if no match is found
         }
     };
+    const formatAge = (text) => {
+        switch (text) {
+            case 'BABY':
+                return 'Baby';
+            case 'ADOLESCENT':
+                return 'Adolescent';
+            case 'ADULT':
+                return 'Adult';
+            case 'OLD':
+                return 'Old';
+            default:
+                return text; // Return the original text if no match is found
+        }
+    };
 
     return {
         camelCaseToReadable,
         formatSize,
         formatSex,
+        formatAge,
     };
 }
 

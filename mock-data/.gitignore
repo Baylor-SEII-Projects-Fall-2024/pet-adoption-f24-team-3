@@ -4,7 +4,9 @@ venv
 __pycache__
 *.pyc
 uploads/
+testuploads/
 .env
 test.py
-testuploads
 *.bak*
+distributions.jpg
+logs/

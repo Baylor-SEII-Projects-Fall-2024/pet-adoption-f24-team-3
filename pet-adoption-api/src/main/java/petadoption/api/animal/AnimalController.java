@@ -7,18 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
 import petadoption.api.recommendations.RecommendationsService;
-import petadoption.api.user.dtos.OwnerDto;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/animals")
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@GlobalCrossOrigin
 public class AnimalController {
     @Autowired
     private AnimalService animalService;
@@ -84,6 +80,24 @@ public class AnimalController {
     public List<AnimalCardResponse> findAnimalsByCenter(@PathVariable Long id) {
         List<Animal> animals = animalService.findAnimalsByCenterId(id);
         return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/center/{id}/adopted")
+    public List<AnimalCardResponse> findAdoptedAnimalsByCenter(@PathVariable Long id) {
+        List<Animal> animals = animalService.findAdoptedAnimalsByCenterId(id);
+        return animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{id}/updateAdoptionStatus")
+    public ResponseEntity<Object> updateAdoptStatus(@PathVariable Long id, @RequestParam Boolean status) {
+        try {
+            animalService.updateAdoptStatus(id, status);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Unable to update adoption status: {}", e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/")

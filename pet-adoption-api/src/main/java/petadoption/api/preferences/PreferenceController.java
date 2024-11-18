@@ -12,11 +12,12 @@ import java.util.Map;
 import java.util.HashMap;
 
 import petadoption.api.user.dtos.PreferenceDto;
+import petadoption.api.annotation.GlobalCrossOrigin;
 
 @Log4j2
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@GlobalCrossOrigin
 public class PreferenceController {
     @Autowired
     private PreferenceService preferenceService;

@@ -8,4 +8,5 @@ import java.util.Optional;
 @Repository
 public interface InteractionRepository extends JpaRepository<InteractionHistory, Long> {
     Optional<InteractionHistory> findByUserId(Long userId);
+    void deleteAll();
 }

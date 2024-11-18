@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.LoginDto;
 import petadoption.api.user.dtos.OwnerDto;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@GlobalCrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;

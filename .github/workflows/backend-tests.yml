@@ -1,0 +1,29 @@
+# File: .github/workflows/backend-tests.yml
+# Author: Icko Iben
+# Date Created: 10/31/2024
+#
+# Modified: 11/12/2024
+#   - Run backend tests on pull requests
+
+name: Run Backend Tests
+
+on: [pull_request]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      
+      - name: Run backend tests
+        working-directory: ./pet-adoption-api
+        run: ./gradlew test

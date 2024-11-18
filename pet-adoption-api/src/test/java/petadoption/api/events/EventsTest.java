@@ -35,7 +35,7 @@ public class EventsTest {
         date.setTime(2000);
         event.setDateStart(date);
         date.setTime(2000);
-        event.setDateEnd(date.toString());
+        event.setDateEnd(date);
         assertEquals(event, eventService.saveEvent(event));
     }
     @AfterEach

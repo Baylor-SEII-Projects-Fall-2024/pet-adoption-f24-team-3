@@ -4,16 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import petadoption.api.chat.ChatService;
+import petadoption.api.chat.MessageService;
 import petadoption.api.preferences.PreferenceService;
+import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.UserService;
 import petadoption.api.animal.AnimalService;
 import petadoption.api.event.EventService;
+import petadoption.api.annotation.GlobalCrossOrigin;
 
 /**
  * Just using this for testing.
  */
 
-@CrossOrigin(origins = { "http://localhost:3000", "http://34.172.7.53:3000", "http://34.69.88.79:3000" })
+@GlobalCrossOrigin
 @RestController
 public class ClearDataController {
 
@@ -28,6 +32,15 @@ public class ClearDataController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private ChatService chatService;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private RecommendationsService recommendationsService;
 
     @PostMapping("/clear-table-users")
     public String clearUsers() {
@@ -61,5 +74,23 @@ public class ClearDataController {
     public String clearEvents() {
         eventService.clearData();
         return "Events table emptied";
+    }
+
+    @PostMapping("/clear-table-chats")
+    public String clearChats() {
+        chatService.clearData();
+        return "Chats table emptied";
+    }
+
+    @PostMapping("/clear-table-messages")
+    public String clearMessages() {
+        messageService.clearData();
+        return "Messages table emptied";
+    }
+
+    @PostMapping("/clear-table-interactions")
+    public String clearInteractions() {
+        recommendationsService.clearData();
+        return "Interactions table emptied";
     }
 }

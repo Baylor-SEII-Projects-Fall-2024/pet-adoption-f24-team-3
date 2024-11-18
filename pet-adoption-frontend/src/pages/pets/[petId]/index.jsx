@@ -25,7 +25,7 @@ export default function ViewPetPage() {
     (state) => state.currentUser.currentUserType
   );
 
-  const { getAnimal, deleteAnimal } = animalService();
+  const { getAnimal, updateAdoptionStatus, deleteAnimal } = animalService();
   const { getCenterDetails } = userService();
   const { formatSize, formatSex } = formatter();
 
@@ -50,6 +50,46 @@ export default function ViewPetPage() {
         })
         .catch((error) => {
           console.error("There was an error deleting animal:", error);
+        });
+    }
+  };
+
+  const onAdoptAnimal = async () => {
+    if (!animal) return;
+
+    if (
+      window.confirm(
+        `Are you sure you want mark ${animal.name} as adopted? They will stop showing up on the pets feed.`
+      )
+    ) {
+      await updateAdoptionStatus(petId, true)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/centers/${adoptionCenter.id}`);
+          } else console.error("There was an error updating adoption status!");
+        })
+        .catch((error) => {
+          console.error("There was an error updating adoption status:", error);
+        });
+    }
+  };
+
+  const onUnadoptAnimal = async () => {
+    if (!animal) return;
+
+    if (
+      window.confirm(
+        `Are you sure you want to mark ${animal.name} as not adopted? They will be placed back on the pets feed.`
+      )
+    ) {
+      await updateAdoptionStatus(petId, false)
+        .then((result) => {
+          if (result == true) {
+            router.push(`/centers/${adoptionCenter.id}`);
+          } else console.error("There was an error updating adoption status!");
+        })
+        .catch((error) => {
+          console.error("There was an error updating adoption status:", error);
         });
     }
   };
@@ -259,10 +299,33 @@ export default function ViewPetPage() {
                       >
                         Delete Pet
                       </Button>
+                      {animal.adopted ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={onUnadoptAnimal}
+                          sx={{ width: "150px" }}
+                        >
+                          Unmark as Adopted
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={onAdoptAnimal}
+                          sx={{ width: "150px" }}
+                        >
+                          Mark as Adopted
+                        </Button>
+                      )}
                     </>
                   ) : (
                     <>
-                      <ContactCard contactee={animal.centerId} sender={currentUserId} />
+                      <ContactCard
+                        contactee={animal.centerId}
+                        sender={currentUserId}
+                        defaultMessage={`Hello! I'd like to learn more about ${animal.name}, are they still available?`}
+                      />
                     </>
                   )}
                 </Box>

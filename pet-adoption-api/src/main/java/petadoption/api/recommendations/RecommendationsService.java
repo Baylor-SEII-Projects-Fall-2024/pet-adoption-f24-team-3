@@ -1,5 +1,6 @@
 package petadoption.api.recommendations;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.max;
-
 
 @Service
 @Log4j2
@@ -283,13 +282,20 @@ public class RecommendationsService {
         return newSum / newTotal;
     }
 
-    private int getAnimalInteractionStatus(InteractionHistory history, Long animalId){
+
+    private int getAnimalInteractionStatus(InteractionHistory history, Long animalId) {
         InteractionPoint relevantPoint = history.getInteractionPoints()
                 .stream()
-                .filter(p-> p.getType()==InteractionType.ANIMAL_ID && p.getName().equals(animalId.toString()))
+                .filter(p -> p.getType() == InteractionType.ANIMAL_ID && p.getName().equals(animalId.toString()))
                 .findFirst().orElse(null);
 
         return relevantPoint == null ? 0 : relevantPoint.getScore();
+    }
+
+    // USED TO CLEAR TABLE FOR TESTING: See misc/ClearDataController
+    @Transactional
+    public void clearData() {
+        interactionRepository.deleteAll();
     }
 
 }
