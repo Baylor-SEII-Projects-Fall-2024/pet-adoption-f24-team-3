@@ -21,19 +21,19 @@ API_URLS = {
 
 # Cities and States for generation
 city_state_map = {
-    "New York City": "NY",
-    "Los Angeles": "CA",
-    "Santa Clara": "CA",
-    "San Jose": "CA",
-    "San Diego": "CA",
-    "Chicago": "IL",
-    "Houston": "TX",
-    "Dallas": "TX",
-    "Austin": "TX",
-    "Waco": "TX",
-    "Pheonix": "AZ",
-    "Springfield": "IL",
-    "West Haven": "CT"
+    "New York City": "New York",
+    "Los Angeles": "California",
+    "Santa Clara": "California",
+    "San Jose": "California",
+    "San Diego": "California",
+    "Chicago": "Illinois",
+    "Houston": "Texas",
+    "Dallas": "Texas",
+    "Austin": "Texas",
+    "Waco": "Texas",
+    "Pheonix": "Arizona",
+    "Springfield": "Illinois",
+    "West Haven": "Connecticut"
 }
 
 # Sample center names
