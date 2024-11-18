@@ -65,6 +65,9 @@ public class Animal {
     @Column(name = "STATE")
     private String state;
 
+    @Column(name = "IS_ADOPTED")
+    private boolean adopted = false;
+
     @Transient
     private double score;
 }

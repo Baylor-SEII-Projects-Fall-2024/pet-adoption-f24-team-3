@@ -63,6 +63,23 @@ const animalService = () => {
         }
     }
 
+    const getCenterAdoptedAnimals = async (centerId) => {
+        const response = await fetch(`${apiUrl}/api/animals/center/${centerId}/adopted`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Getting adopted pets failed ${result.message}`);
+            return null;
+        }
+    }
+
     const getAnimal = async (animalId) => {
         const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
             method: "GET",
@@ -76,6 +93,23 @@ const animalService = () => {
             return result;
         } else {
             console.error(`Get animal failed: ${result.message}`);
+            return null;
+        }
+    };
+
+    const updateAdoptionStatus = async (animalId, status) => {
+        const response = await fetch(`${apiUrl}/api/animals/${animalId}/updateAdoptionStatus?status=${status}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            alert(`Updating adoption status failed: ${result.message}`);
             return null;
         }
     };
@@ -156,7 +190,9 @@ const animalService = () => {
         createPet,
         getAnimal,
         getCenterAnimals,
+        getCenterAdoptedAnimals,
         getAnimal,
+        updateAdoptionStatus,
         deleteAnimal,
         getRecommendedAnimals,
         updateAnimal,

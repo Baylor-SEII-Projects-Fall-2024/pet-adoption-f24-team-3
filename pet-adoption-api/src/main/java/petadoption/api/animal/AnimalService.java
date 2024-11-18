@@ -10,6 +10,7 @@ import petadoption.api.user.AdoptionCenter;
 import petadoption.api.user.UserService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,22 @@ public class AnimalService {
 
     public List<Animal> findAnimalsByCenterId(Long centerId) {
         return animalRepository.findAnimalsByCenterId(centerId);
+    }
+
+    public List<Animal> findAdoptedAnimalsByCenterId(Long centerId) {
+        return animalRepository.findAdoptedAnimalsByCenterId(centerId);
+    }
+
+    public void updateAdoptStatus(Long id, Boolean status) throws Exception {
+        Animal animal = animalRepository.findById(id).orElse(null);
+        if (animal == null) {
+            throw new Exception("No animal found with id " + id);
+        }
+        animal.setAdopted(status);
+        Animal updatedAnimal = animalRepository.save(animal);
+        if (!Objects.equals(status, updatedAnimal.isAdopted())) {
+            throw new Exception("Unexpected status for id " + id);
+        }
     }
 
     public List<Animal> recommendAnimals(Integer pageSize, List<Long> alreadyDisplayedIds,Long userId) throws Exception {
