@@ -11,6 +11,10 @@ import {
   Grid,
   Box,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -18,6 +22,7 @@ import Loading from "@/components/Loading";
 import eventService from "@/utils/services/eventService";
 import userService from "@/utils/services/userService";
 import EventCard from "@/components/EventCard";
+import stateNames from "@/utils/lists";
 
 const quantityPerPage = 12;
 
@@ -87,7 +92,7 @@ export default function EventsPage() {
             const newEventsWithCenters = await fetchCenterData(result);
             const newEventData = [...eventData, ...newEventsWithCenters];
             setEventData(newEventData);
-            applyFilters(newEventData, stateFilter); 
+            applyFilters(newEventData); 
             setPage((currentPage) => currentPage + 1);
           }
         } else {
@@ -102,40 +107,34 @@ export default function EventsPage() {
       });
   };
 
+  useEffect(() => {
+    applyFilters();
+  }, [stateFilter, cityFilter, eventData]);
 
-  const applyFilters = (events) => {
-    if (!stateFilter && !cityFilter) {
-      setFilteredEvents(events);
-      return;
-    }
-  
-    const filtered = events.filter((event) => {
+  const applyFilters = () => {
+    const filtered = eventData.filter((event) => {
       const matchesState =
-        stateFilter.length > 1
+        stateFilter.length > 0
           ? event.center?.state.toLowerCase() === stateFilter.toLowerCase()
           : true;
-  
+
       const matchesCity =
-        cityFilter.length > 1
+        cityFilter.length > 0
           ? event.center?.city.toLowerCase() === cityFilter.toLowerCase()
           : true;
-  
+
       return matchesState && matchesCity;
     });
-  
+
     setFilteredEvents(filtered);
   };
 
   const handleStateFilterChange = (e) => {
-    const filter = e.target.value;
-    setStateFilter(filter);
-    applyFilters(eventData);
+    setStateFilter(e.target.value);
   };
 
   const handleCityFilterChange = (e) => {
-    const filter = e.target.value;
-    setCityFilter(filter);
-    applyFilters(eventData);
+    setCityFilter(e.target.value);
   };
 
   return (
@@ -170,22 +169,45 @@ export default function EventsPage() {
                   Post New Event
                 </Button>
               )}
-              <TextField
-                label="Filter by State"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={stateFilter}
-                onChange={handleStateFilterChange}
-              />
+              <Box 
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 2,
+                  flexWrap: "wrap",
+                  marginTop: "20px"
+                }}
+                >
+              <FormControl sx={{ minWidth: "100px", height: "40px" }}>
+                        <InputLabel id="state-select-label">State</InputLabel>
+                        <Select
+                            labelId="state-select-label"
+                            id="state-select"
+                            value={stateFilter}
+                            size="small"
+                            onChange={(event) => handleStateFilterChange(event)}
+                            sx={{ width: "10em" }}
+                        >
+                            <MenuItem value={""}>Please Select</MenuItem>
+                            {stateNames.map((state, index) => (
+                                <MenuItem key={index} value={state}>{state}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
               <TextField
                 label="Filter by City"
                 variant="outlined"
-                fullWidth
-                margin="normal"
                 value={cityFilter}
                 onChange={handleCityFilterChange}
+                sx={{ minWidth: "100px", 
+                  height: "40px", 
+                  "& .MuiInputBase-root": {
+                    height: "40px", // Control the input box height
+                  }, 
+                }}
               />
+              </Box>
             </CardContent>
           </Card>
           <Box
