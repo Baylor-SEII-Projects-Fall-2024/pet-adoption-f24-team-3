@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.animal.*;
+import petadoption.api.user.AdoptionCenter;
+import petadoption.api.user.UserService;
 
 import java.util.Date;
 
@@ -19,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnimalsTest {
     @Autowired
     AnimalService animalService;
+    @Autowired
+    UserService userService;
 
     Animal animal;
 
@@ -129,5 +133,43 @@ public class AnimalsTest {
         animalService.updateAnimal(animal, animal.getId());
         assertFalse(animalService.findAnimal(animal.getId()).isEmpty());
         assertEquals(animal, animalService.findAnimal(animal.getId()).get());
+    }
+
+    @Test
+    public void testAnimalLocation(){
+        AdoptionCenter center = new AdoptionCenter();
+        center.setName("Test Center");
+
+        //test with city and state not set
+        center = (AdoptionCenter) userService.saveUser(center);
+        assertNotNull(center.getId());
+
+        animal.setName("ANIMAL");
+        animal.setCenterId(center.getId());
+        animal = animalService.saveAnimal(animal);
+
+        assertNotNull(animal.getId());
+        assertEquals(animal.getState(),center.getState());
+        assertEquals(animal.getCity(),center.getCity());
+
+        //set the center city and state, and test again
+
+        center.setCity("CITY");
+        center.setState("STATE");
+
+        center = (AdoptionCenter) userService.saveUser(center);
+        assertEquals(center.getState(),"STATE");
+        assertEquals(center.getCity(),"CITY");
+
+        animal = new Animal();
+        animal.setName("ANIMAL");
+        animal.setCenterId(center.getId());
+
+        animal = animalService.saveAnimal(animal);
+
+        assertNotNull(animal.getId());
+        assertEquals(animal.getState(),center.getState());
+        assertEquals(animal.getCity(),center.getCity());
+
     }
 }

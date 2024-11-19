@@ -17,7 +17,10 @@ const eventService = () => {
                 name: formData.name,
                 description: formData.description,
                 dateStart: formData.dateStart,
-                dateEnd: formData.dateEnd
+                dateEnd: formData.dateEnd,
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
             })
         });
 
@@ -69,6 +72,9 @@ const eventService = () => {
                 description: formData.description,
                 dateStart: formData.dateStart,
                 dateEnd: formData.dateEnd,
+                address: formData.address,
+                city: formData.city,
+                state: formData.state,
             })
         });
 

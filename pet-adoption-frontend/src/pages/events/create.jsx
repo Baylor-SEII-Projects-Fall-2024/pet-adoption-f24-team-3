@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
+import { Grid, Paper, FormControl, MenuItem, Select, InputLabel, Typography, TextField, Button } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import stateNames from "@/utils/lists";
 
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
@@ -31,6 +32,9 @@ export default function CreateEventPage() {
         description: "",
         dateStart: null,
         dateEnd: null,
+        address: "",
+        city: "",
+        state: "",
     });
 
     React.useEffect(() => {
@@ -51,6 +55,11 @@ export default function CreateEventPage() {
         }));
     };
 
+    const handleSelectChange = (event, fieldName) => {
+        const { value } = event.target;
+        setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
+    };
+
     const handleThumbnailUpload = (e) => {
         setThumbnailFile(e.target.files[0]);
     }
@@ -58,21 +67,6 @@ export default function CreateEventPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-
-        if (emptyFields.length > 0) {
-            const emptyFieldNames = emptyFields.map(field => {
-                switch (field) {
-                    case 'name': return 'Name';
-                    case 'description': return 'Description';
-                    case 'dateStart': return 'Start Date';
-                    case 'dateEnd': return 'End Date';
-                    default: return field;
-                }
-            });
-            alert(`Please fill in the following fields: ${emptyFieldNames.join(', ')}`);
-            return;
-        }
 
         try {
             setIsUploading(true);
@@ -93,15 +87,33 @@ export default function CreateEventPage() {
 
     return (
         <Grid>
-            <Paper elevation={20} style={paperStyle}>
+            <Paper elevation={10} style={paperStyle} sx={{ minWidth: "50%" }}>
                 <Grid align='center'>
-
-                    <h2 style={headerStyle}>New Event</h2>
-                    <Typography variant="caption">Please fill this form to create a new event!</Typography>
+                    <Typography variant="h3">New Event</Typography>
+                    <Typography variant="h5">Please fill this form to create a new event!</Typography>
                 </Grid>
                 <form onSubmit={handleSubmit}>
                     <TextField required fullWidth label='Event Name' name="name" size="small" margin="dense" value={formData.name} onChange={handleChange} />
                     <TextField required multiline fullWidth label='Description' name="description" size="small" margin="dense" value={formData.description} onChange={handleChange} />
+                    <TextField fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
+                    <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
+                    <FormControl sx={{ m: "10px" }}>
+                        <InputLabel id="state-select-label">State</InputLabel>
+                        <Select
+                            labelId="state-select-label"
+                            id="state-select"
+                            value={formData.state}
+                            size="small"
+                            margin="dense"
+                            onChange={(event) => handleSelectChange(event, 'state')}
+                            sx={{ width: "10em" }}
+                        >
+                            <MenuItem value={""}>Please Select</MenuItem>
+                            {stateNames.map((state, index) => (
+                                <MenuItem key={index} value={state}>{state}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div style={{ marginBottom: '8px', marginTop: '6px' }}>
                             <DateTimePicker
@@ -130,7 +142,7 @@ export default function CreateEventPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleThumbnailUpload} />
-
+                    <br />
                     {isUploading ?
                         <Typography> Creating Event...</Typography>
                         :

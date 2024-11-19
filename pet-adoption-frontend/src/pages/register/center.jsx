@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Grid, Paper, Avatar, Typography, TextField, Button } from '@mui/material'
+import { Grid, Paper, FormControl, InputLabel, MenuItem, Select, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
-import imageService from "@/utils/services/imageService";
+import stateNames from "@/utils/lists";
 
 export default function RegisterCenterPage() {
     const router = useRouter();
     const { registerCenter } = userService();
-    const { uploadProfilePic, uploadCenterBanner } = imageService();
-
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
@@ -28,6 +26,11 @@ export default function RegisterCenterPage() {
         confirmPassword: "",
     });
 
+    const handleSelectChange = (event, fieldName) => {
+        const { value } = event.target;
+        setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
@@ -39,6 +42,7 @@ export default function RegisterCenterPage() {
     const handleBannerImageUpload = (e) => {
         setBannerImage(e.target.files[0]);
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -87,7 +91,7 @@ export default function RegisterCenterPage() {
 
     return (
         <Grid>
-            <Paper elevation={20} style={paperStyle}>
+            <Paper elevation={20} style={paperStyle} sx={{ minWidth: "50%" }}>
                 <Grid align='center'>
 
                     <h2 style={headerStyle}>Register</h2>
@@ -97,9 +101,26 @@ export default function RegisterCenterPage() {
                     <TextField fullWidth label='Center Name' name="centerName" size="small" margin="dense" value={formData.centerName} onChange={handleChange} />
                     <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
                     <TextField fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
-                    <TextField fullWidth label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
-                    <TextField fullWidth label='State' name="state" size="small" margin="dense" value={formData.state} onChange={handleChange} />
-                    <TextField fullWidth label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
+                    <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
+                    <FormControl sx={{ m: "10px" }}>
+                        <InputLabel id="state-select-label">State</InputLabel>
+                        <Select
+                            required
+                            labelId="state-select-label"
+                            id="state-select"
+                            value={formData.state}
+                            size="small"
+                            margin="dense"
+                            onChange={(event) => handleSelectChange(event, 'state')}
+                            sx={{ width: "10em" }}
+                        >
+                            <MenuItem value={""}>Please Select</MenuItem>
+                            {stateNames.map((state, index) => (
+                                <MenuItem key={index} value={state}>{state}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField sx={{ mt: "10px" }} label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
                     <TextField
@@ -107,6 +128,7 @@ export default function RegisterCenterPage() {
                         label='Profile Picture'
                         name="profilePicture"
                         size="small" margin="dense"
+                        sx={{ mr: "15px" }}
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleProfileImageUpload} />

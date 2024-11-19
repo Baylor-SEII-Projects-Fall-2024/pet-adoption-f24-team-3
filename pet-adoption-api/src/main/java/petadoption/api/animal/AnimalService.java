@@ -3,12 +3,11 @@ package petadoption.api.animal;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import petadoption.api.event.Event;
 import petadoption.api.images.ImageService;
 import petadoption.api.recommendations.RecommendationsService;
+import petadoption.api.user.AdoptionCenter;
+import petadoption.api.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,11 @@ public class AnimalService {
     @Autowired
     @Lazy
     RecommendationsService recommendationsService;
+
+    @Autowired
+    @Lazy
+    UserService userService;
+
     ImageService imageService;
 
     //only creates the image service when it needs it - prevents cyclical loading
@@ -40,6 +44,15 @@ public class AnimalService {
     }
 
     public Animal saveAnimal(Animal animal) {
+        //if the animal has a center ID, fetch the center's city and state, and store those in the animal
+        if(animal.getCenterId() != null){
+            AdoptionCenter center = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
+
+            if(center!= null){
+                animal.setCity(center.getCity());
+                animal.setState(center.getState());
+            }
+        }
         return animalRepository.save(animal);
     }
 
@@ -124,6 +137,13 @@ public class AnimalService {
         if(newAnimal.getSize() != null){
             animal.setSize(newAnimal.getSize());
         }
+
+        AdoptionCenter center = userService.findAdoptionCenter(animal.getCenterId()).orElse(null);
+        if(center!= null){
+            animal.setCity(center.getCity());
+            animal.setState(center.getState());
+        }
+
 
         return animalRepository.save(animal).getId();
     }

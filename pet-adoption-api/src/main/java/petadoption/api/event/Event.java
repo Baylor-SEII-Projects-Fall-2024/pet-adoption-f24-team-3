@@ -41,4 +41,13 @@ public class Event {
     @Column(name = "THUMBNAIL_PATH")
     private String thumbnailPath;
 
+    @Column(name = "ADDRESS")
+    private String address;
+
+    @Column(name = "CITY")
+    private String city;
+
+    @Column(name = "STATE")
+    private String state;
+
 }

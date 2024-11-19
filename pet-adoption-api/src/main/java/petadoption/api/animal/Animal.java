@@ -59,6 +59,12 @@ public class Animal {
     @Column(name = "WEIGHT")
     private Double weight;
 
+    @Column(name = "CITY")
+    private String city;
+
+    @Column(name = "STATE")
+    private String state;
+
     @Column(name = "IS_ADOPTED")
     private boolean adopted = false;
 
