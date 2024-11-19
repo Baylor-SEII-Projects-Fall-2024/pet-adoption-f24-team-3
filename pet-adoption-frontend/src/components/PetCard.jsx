@@ -63,9 +63,6 @@ export default function PetCard(props) {
           <Typography>
             {formatSex(pet.sex)} {pet.breed}
           </Typography>
-          <Typography>
-            {pet.score}
-          </Typography>
         </Box>
       </CardContent>
       {currentUserType == "Owner" && (
@@ -76,7 +73,7 @@ export default function PetCard(props) {
               paddingLeft: "10%",
               paddingRight: "10%",
             }}>
-            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} />
+            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} initiallyLiked={pet.isLiked} initiallyDisliked={pet.isDisiked} />
           </div>
         </CardActions>
       )}

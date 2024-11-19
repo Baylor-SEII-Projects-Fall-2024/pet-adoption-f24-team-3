@@ -1,6 +1,7 @@
 package petadoption.api.animal.responseObjects;
 
 
+import org.springframework.security.core.parameters.P;
 import petadoption.api.animal.Animal;
 import petadoption.api.animal.AnimalSex;
 
@@ -14,8 +15,9 @@ public class AnimalCardResponse {
     public Integer age;
     public String breed;
     public AnimalSex sex;
+    public boolean isLiked = false;
+    public boolean isDisliked = false;
     public Boolean adopted;
-    public Double score;
 
     public AnimalCardResponse(Animal sourceAnimal){
         this.id=sourceAnimal.getId();
@@ -25,8 +27,9 @@ public class AnimalCardResponse {
         this.age=sourceAnimal.getAge();
         this.breed=sourceAnimal.getBreed();
         this.sex=sourceAnimal.getSex();
+        this.isLiked = sourceAnimal.isLiked;
+        this.isDisliked = sourceAnimal.isDisliked;
         this.adopted=sourceAnimal.isAdopted();
-        this.score = sourceAnimal.getScore();
     }
 
 }

@@ -67,21 +67,6 @@ export default function CreateEventPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-
-        if (emptyFields.length > 0) {
-            const emptyFieldNames = emptyFields.map(field => {
-                switch (field) {
-                    case 'name': return 'Name';
-                    case 'description': return 'Description';
-                    case 'dateStart': return 'Start Date';
-                    case 'dateEnd': return 'End Date';
-                    default: return field;
-                }
-            });
-            alert(`Please fill in the following fields: ${emptyFieldNames.join(', ')}`);
-            return;
-        }
 
         try {
             setIsUploading(true);

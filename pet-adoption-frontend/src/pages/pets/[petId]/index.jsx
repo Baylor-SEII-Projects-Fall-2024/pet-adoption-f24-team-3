@@ -15,7 +15,6 @@ import ContactCard from "@/components/ContactCard";
 import animalService from "@/utils/services/animalService";
 import userService from "@/utils/services/userService";
 import formatter from "@/utils/formatter";
-import LikeButtons from "@/components/LikeButtons";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ViewPetPage() {
@@ -205,13 +204,6 @@ export default function ViewPetPage() {
                 />
                 <Stack direction="column" sx={{ display: "flex", flex: 1 }}>
                   <Typography variant="h3">{animal.name}</Typography>
-
-                  {currentUserType == "Owner" && (
-                    <Box sx={{ width: "50%", height: "60px", mt: "5px" }}>
-                      <LikeButtons userId={currentUserId} petId={petId} />
-                    </Box>
-                  )}
-
                   <Typography variant="h5">Quick Facts</Typography>
                   <table>
                     <tbody>
