@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import petadoption.api.user.dtos.CenterDto;
-import petadoption.api.user.dtos.LoginDto;
-import petadoption.api.user.dtos.OwnerDto;
+import petadoption.api.security.requestObjects.CenterDto;
+import petadoption.api.security.requestObjects.LoginDto;
+import petadoption.api.security.requestObjects.OwnerDto;
 
 import java.util.Map;
 import java.util.Optional;

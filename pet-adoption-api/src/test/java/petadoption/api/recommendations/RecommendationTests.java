@@ -1,15 +1,14 @@
 package petadoption.api.recommendations;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import petadoption.api.animal.*;
 import petadoption.api.user.*;
-import petadoption.api.user.dtos.CenterDto;
-import petadoption.api.user.dtos.OwnerDto;
+import petadoption.api.security.requestObjects.CenterDto;
+import petadoption.api.security.requestObjects.OwnerDto;
 import static org.junit.jupiter.api.Assertions.*;
 
 

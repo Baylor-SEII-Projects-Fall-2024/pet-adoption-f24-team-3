@@ -1,15 +1,10 @@
 package petadoption.api.preferences;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import petadoption.api.user.AdoptionCenter;
 import petadoption.api.user.PotentialOwner;
-import petadoption.api.user.User;
 import petadoption.api.user.UserService;
-import petadoption.api.user.dtos.CenterDto;
 import petadoption.api.user.dtos.PreferenceDto;
 
 import java.util.List;

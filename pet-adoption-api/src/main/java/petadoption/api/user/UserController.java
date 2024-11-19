@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.annotation.GlobalCrossOrigin;
-import petadoption.api.user.dtos.CenterDto;
-import petadoption.api.user.dtos.LoginDto;
-import petadoption.api.user.dtos.OwnerDto;
+import petadoption.api.security.JwtService;
+import petadoption.api.security.requestObjects.CenterDto;
+import petadoption.api.security.requestObjects.LoginDto;
+import petadoption.api.security.requestObjects.OwnerDto;
 import petadoption.api.user.responseObjects.AdoptionCenterCardResponse;
 import petadoption.api.user.responseObjects.GenericUserDataResponse;
+import petadoption.api.security.responseObjects.LoginResponse;
 import petadoption.api.user.responseObjects.SessionUserDataResponse;
 
 import java.util.HashMap;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping("/users")
     public List<User> findAllUsers() {
@@ -117,49 +121,6 @@ public class UserController {
             @RequestParam("pageNumber") Integer pageNumber) {
         List<AdoptionCenter> centers = userService.paginateCenters(pageSize, pageNumber);
         return centers.stream().map(AdoptionCenterCardResponse::new).collect(Collectors.toList());
-    }
-
-    @PostMapping("/centers")
-    public ResponseEntity<Map<String, Object>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
-        Long newUserId = userService.registerCenter(centerDto);
-        Map<String, Object> response = new HashMap<>();
-
-        if (newUserId != null) {
-            response.put("userid", newUserId);
-            return ResponseEntity.ok(response); // Return success message as JSON
-        } else {
-            response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
-                                                                                           // JSON
-        }
-    }
-
-    @PostMapping("/owners")
-    public ResponseEntity<Map<String, Object>> savePotentialOwner(@RequestBody OwnerDto ownerDto) {
-        Long newOwnerId = userService.registerOwner(ownerDto);
-        Map<String, Object> response = new HashMap<>();
-
-        if (newOwnerId != null) {
-            response.put("userid", newOwnerId);
-            return ResponseEntity.ok(response); // Return success message as JSON
-        } else {
-            response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
-                                                                                           // JSON
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Long>> loginUser(@RequestBody LoginDto loginDto) {
-        Map<String, Long> response = new HashMap<>();
-        long uid = userService.loginUser(loginDto);
-        if (uid > 0) {
-            response.put("userid", uid);
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", -1L);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
     }
 
     @PostMapping("/update/owner/{id}")
