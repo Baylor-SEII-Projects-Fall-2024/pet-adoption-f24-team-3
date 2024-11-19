@@ -41,6 +41,17 @@ public class RecommendationsController {
             return HttpStatus.BAD_REQUEST;
         }
     }
+    @PutMapping("/{userId}/like/{animalId}/undo")
+    public HttpStatus undoLikeAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
+        try {
+            recommendationsService.dislikeAnimal(userId, animalId);
+            return HttpStatus.OK;
+        } catch (Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
     @PutMapping("/{userId}/dislike/{animalId}")
     public HttpStatus dislikeAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
         try {
@@ -53,4 +64,15 @@ public class RecommendationsController {
         }
     }
 
+    @PutMapping("/{userId}/dislike/{animalId}/undo")
+    public HttpStatus undoDislikeAnimal(@PathVariable Long userId, @PathVariable Long animalId) throws Exception {
+        try {
+            recommendationsService.likeAnimal(userId, animalId);
+            return HttpStatus.OK;
+        } catch (Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
 }

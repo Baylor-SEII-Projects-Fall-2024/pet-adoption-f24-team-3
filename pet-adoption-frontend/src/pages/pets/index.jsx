@@ -106,7 +106,7 @@ export default function PetsPage() {
                 Like or dislike a pet based on your preferences, WOOF will learn
                 as you go and show you more pets you may be interesed in!
               </Typography>
-              {currentUserType == "Center" && (
+              {currentUserType == "Center" ? (
                 <Button
                   variant="contained"
                   color="secondary"
@@ -119,6 +119,20 @@ export default function PetsPage() {
                   }}
                 >
                   Post New Pet
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => router.push(`/pets/liked`)}
+                  sx={{
+                    width: 200,
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                  }}
+                >
+                  Liked Pets
                 </Button>
               )}
             </CardContent>

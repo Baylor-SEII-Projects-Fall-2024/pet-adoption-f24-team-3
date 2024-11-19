@@ -149,6 +149,26 @@ const animalService = () => {
             return null;
         }
     }
+
+    const getLikedAnimals = async (userId, pageSize, alreadyDisplayedIds) => {
+
+        const response = await fetch(`${apiUrl}/api/animals/liked?pageSize=${pageSize}&userId=${userId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(alreadyDisplayedIds)
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting pets failed ${result.message}`);
+            return null;
+        }
+    }
+
     const updateAnimal = async (formData, animalPic, petId) => {
         const response = await fetch(`${apiUrl}/api/animals/${petId}`, {
             method: "PUT",
@@ -195,6 +215,7 @@ const animalService = () => {
         updateAdoptionStatus,
         deleteAnimal,
         getRecommendedAnimals,
+        getLikedAnimals,
         updateAnimal,
     };
 

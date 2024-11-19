@@ -18,6 +18,23 @@ const recommendationService = () => {
         }
     };
 
+    const undoLikePet = async (userId, petId) => {
+        const response = await fetch(`${apiUrl}/api/recommendations/${userId}/like/${petId}/undo`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Undo Like pet failed: ${result.message}`);
+            return null;
+        }
+    };
+
     const dislikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}`, {
             method: "PUT",
@@ -35,9 +52,29 @@ const recommendationService = () => {
         }
     };
 
+    const undoDislikePet = async (userId, petId) => {
+        const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}/undo`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Undo Dislike pet failed: ${result.message}`);
+            return null;
+        }
+    };
+
+
     return {
         likePet,
-        dislikePet
+        undoLikePet,
+        dislikePet,
+        undoDislikePet,
     };
 };
 export default recommendationService;

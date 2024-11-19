@@ -10,6 +10,7 @@ import petadoption.api.event.Event;
 import petadoption.api.images.ImageService;
 import petadoption.api.recommendations.RecommendationsService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,6 +67,17 @@ public class AnimalService {
         List<Animal> initialAnimalList = animalRepository.findAllNotRetrieved(alreadyDisplayedIds);
         return recommendationsService.orderByCompatibilityScore(initialAnimalList,userId)
                 .stream().limit(pageSize).collect(Collectors.toList());
+    }
+
+    public List<Animal> getLikedAnimals(Integer pageSize, List<Long> alreadyDisplayedIds,Long userId) throws Exception {
+        List<Long> likedAnimalIds = recommendationsService.getLikedAnimals(userId);
+
+        List<Long> displayableIds = new ArrayList<>(likedAnimalIds);
+        displayableIds.removeAll(alreadyDisplayedIds);
+
+        List<Animal> likedAnimals = animalRepository.findAllById(displayableIds);
+        likedAnimals.forEach(a -> a.isLiked=true);
+        return likedAnimals.stream().limit(pageSize).collect(Collectors.toList());
     }
 
     public void deleteAnimal(Long animalId) throws Exception{
