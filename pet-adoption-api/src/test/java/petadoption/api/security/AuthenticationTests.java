@@ -45,8 +45,11 @@ public class AuthenticationTests {
         assert foundUser != null;
         loginDto.setPassword(ownerDto.getPassword());
 
-        assertNotEquals( -1, authenticationService.loginUser(loginDto));
-        assertEquals(foundUser.getId(), authenticationService.loginUser(loginDto));
+        User loggedInUser = authenticationService.loginUser(loginDto);
+
+        assertNotNull( loggedInUser);
+        assertNotNull(loggedInUser.getId());
+        assertEquals(foundUser.getId(), loggedInUser.getId());
     }
 
 }
