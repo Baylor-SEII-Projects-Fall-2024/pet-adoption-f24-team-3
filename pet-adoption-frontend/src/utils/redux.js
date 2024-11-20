@@ -14,6 +14,11 @@ export const setCurrentUserId = (userId) => ({
     payload: userId,
 });
 
+export const setAuthenticationToken = (token) => ({
+    type: 'SET_AUTHENTICATION_TOKEN',
+    payload: token,
+});
+
 
 function currentUserReducer(state = { currentUserId: null }, action) {
     switch (action.type) {
@@ -28,9 +33,20 @@ function currentUserReducer(state = { currentUserId: null }, action) {
     }
 }
 
+function authenticationTokenReducer(state = { token: null }, action) {
+    switch (action.type) {
+        case 'SET_AUTHENTICATION_TOKEN':
+            return { ...state, token: action.payload };
+
+        default:
+            return state;
+    }
+}
+
 const reducers = combineReducers({
     events: eventsReducer,
-    currentUser: currentUserReducer
+    currentUser: currentUserReducer,
+    authenticationToken: authenticationTokenReducer,
 });
 
 export const buildStore = (initialState) => {

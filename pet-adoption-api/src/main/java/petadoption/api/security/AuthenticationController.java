@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.security.requestObjects.CenterDto;
 import petadoption.api.security.requestObjects.LoginDto;
 import petadoption.api.security.requestObjects.OwnerDto;
@@ -16,6 +17,7 @@ import petadoption.api.user.UserService;
 
 @RequestMapping("/api/auth")
 @RestController
+@GlobalCrossOrigin
 public class AuthenticationController {
 
     @Autowired

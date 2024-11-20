@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentUserId } from '@/utils/redux';
+import { setAuthenticationToken, setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
 import { useChat } from '../contexts/chatContext';
@@ -7,15 +7,14 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = () => {
     const dispatch = useDispatch();
-    const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    const authenticationToken = useSelector((state) => state.authenticationToken.token);
     const { uploadProfilePic, uploadCenterBanner } = imageService();
     const { setCurrentChatId } = useChat();
 
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
-        console.log("API URL being used:", apiUrl);  // Log the URL for debugging
-        const response = await fetch(`${apiUrl}/api/login`, {
+        const response = await fetch(`${apiUrl}/api/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -28,8 +27,8 @@ const userService = () => {
         const result = await response.json();
 
         if (response.ok) {
-            saveCurrentUserToRedux(result.userid);
-            setAuthenticationCookies(result.userid);
+            saveCurrentUserToRedux(result.userid, result, token);
+            setUserCookies(result.userId, result.token);
 
             return result.userid;
         } else {
@@ -40,7 +39,7 @@ const userService = () => {
 
     // registers and logs in a new center
     const registerCenter = async (formData, profilePic, bannerPic) => {
-        const response = await fetch(`${apiUrl}/api/centers`, {
+        const response = await fetch(`${apiUrl}/api/auth/register/center`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -72,8 +71,8 @@ const userService = () => {
                     return null;
                 }
             }
-            saveCurrentUserToRedux(result.userid);
-            setAuthenticationCookies(result.userid);
+            saveCurrentUserToRedux(result.userid, result.token);
+            setUserCookies(result.userId, result.token);
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -84,7 +83,7 @@ const userService = () => {
     const registerOwner = async (formData, profilePic) => {
         console.log('registerOwner function called')
         console.log(`apiUrl: ${apiUrl}`)
-        const response = await fetch(`${apiUrl}/api/owners`, {
+        const response = await fetch(`${apiUrl}/api/auth/register/owner`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -106,8 +105,8 @@ const userService = () => {
                     return null;
                 }
             }
-            saveCurrentUserToRedux(result.userid);
-            setAuthenticationCookies(result.userid);
+            saveCurrentUserToRedux(result.userid, result.token);
+            setUserCookies(result.userId, result.token);
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -117,12 +116,14 @@ const userService = () => {
 
     //fetch a few pieces of user data to retain across the session for ease of access
     //also sets the user id in redux, which is needded to access restricted pages
-    const saveCurrentUserToRedux = async (userid) => {
+    const saveCurrentUserToRedux = async (userid, token) => {
         dispatch(setCurrentUserId(userid));
+        dispatch(setAuthenticationToken(token));
         const getSessionUserData = await fetch(`${apiUrl}/api/users/${userid}/sessionData`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -136,10 +137,10 @@ const userService = () => {
 
     };
 
-    const setAuthenticationCookies = async (userid) => {
+    const setUserCookies = async (userId, token) => {
         // TODO: Add API request to generate authentication token
-        Cookies.set('userId', userid, { expires: 100 });
-        Cookies.set('authenticationToken', 1, { expires: 100 });
+        Cookies.set('userId', userId, { expires: 7 });
+        Cookies.set('authenticationToken', token, { expires: 7 });
     }
 
     // validates the user using user id and authentication token stored in cookie
@@ -149,7 +150,7 @@ const userService = () => {
 
         //TODO: Add API request to verify Auth Token
         if (userIdCookie && authTokenCookie) {
-            saveCurrentUserToRedux(userIdCookie);
+            saveCurrentUserToRedux(userIdCookie, authTokenCookie);
             return true;
         }
         else {
@@ -164,8 +165,8 @@ const userService = () => {
         dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: null });
         dispatch({ type: 'SET_CURRENT_USER_PROFILE_PIC_PATH', payload: null });
         //remove cookies
-        Cookies.remove("userId");
         Cookies.remove("authenticationToken");
+        Cookies.remove("userId")
         //reset the chat
         setCurrentChatId(null);
     };
@@ -174,7 +175,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/users/?id=${userId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -191,7 +193,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/owners/${userid}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -208,7 +211,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/centers/${centerId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -224,7 +228,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/users/${userid}/generic`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -242,7 +247,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/centers/${centerId}/details`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -260,6 +266,7 @@ const userService = () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -276,7 +283,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/update/owner/${userid}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 accountType: "Owner",
@@ -307,7 +315,8 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/update/center/${userid}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 accountType: "Center",
