@@ -1,18 +1,14 @@
-import { useSelector } from "react-redux";
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const imageService = () => {
-    const authenticationToken = useSelector((state) => state.authenticationToken.token);
-
     // uploads a profile picture. Returns True or error
     const uploadProfilePic = async (imageFile, userId) => {
         const formData = new FormData();
         formData.append("imageFile", imageFile);
         const response = await fetch(`${apiUrl}/api/images/users/${userId}/profile`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: formData
         });
@@ -33,8 +29,8 @@ const imageService = () => {
         formData.append("imageFile", imageFile);
         const response = await fetch(`http://localhost:8080/api/images/animals/${animalId}/profile`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: formData
         });
@@ -54,8 +50,8 @@ const imageService = () => {
         formData.append("imageFile", imageFile);
         const response = await fetch(`${apiUrl}/api/images/users/${userId}/banner`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: formData
         });
@@ -75,8 +71,8 @@ const imageService = () => {
         formData.append("imageFile", imageFile);
         const response = await fetch(`${apiUrl}/api/images/animals/${petId}`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: formData
         });
@@ -96,8 +92,8 @@ const imageService = () => {
         formData.append("imageFile", imageFile);
         const response = await fetch(`${apiUrl}/api/images/events/${eventId}`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: formData
         });

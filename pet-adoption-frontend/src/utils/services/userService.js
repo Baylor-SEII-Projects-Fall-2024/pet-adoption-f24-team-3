@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setAuthenticationToken, setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
@@ -7,7 +7,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = () => {
     const dispatch = useDispatch();
-    const authenticationToken = useSelector((state) => state.authenticationToken.token);
     const { uploadProfilePic, uploadCenterBanner } = imageService();
     const { setCurrentChatId } = useChat();
 
@@ -82,8 +81,6 @@ const userService = () => {
     };
 
     const registerOwner = async (formData, profilePic) => {
-        console.log('registerOwner function called')
-        console.log(`apiUrl: ${apiUrl}`)
         const response = await fetch(`${apiUrl}/api/auth/register/owner`, {
             method: "POST",
             headers: {
@@ -118,14 +115,13 @@ const userService = () => {
 
     //fetch a few pieces of user data to retain across the session for ease of access
     //also sets the user id in redux, which is needded to access restricted pages
-    const saveCurrentUserToRedux = async (userid, token) => {
+    const saveCurrentUserToRedux = async (userid) => {
         dispatch(setCurrentUserId(userid));
-        dispatch(setAuthenticationToken(token));
         const getSessionUserData = await fetch(`${apiUrl}/api/users/${userid}/sessionData`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
             }
         });
 
@@ -176,9 +172,9 @@ const userService = () => {
     const getUserInfo = async (userId) => {
         const response = await fetch(`${apiUrl}/api/users/?id=${userId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -194,9 +190,9 @@ const userService = () => {
     const getOwnerInfo = async (userid) => {
         const response = await fetch(`${apiUrl}/api/owners/${userid}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -212,9 +208,9 @@ const userService = () => {
     const getCenterInfo = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/centers/${centerId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -229,9 +225,9 @@ const userService = () => {
     const getGenericUserInfo = async (userid) => {
         const response = await fetch(`${apiUrl}/api/users/${userid}/generic`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -248,9 +244,9 @@ const userService = () => {
     const getCenterDetails = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/centers/${centerId}/details`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -266,9 +262,9 @@ const userService = () => {
     const getCentersByPage = async (pageSize, pageNumber) => {
         const response = await fetch(`${apiUrl}/api/centers/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -284,9 +280,9 @@ const userService = () => {
     const updateOwner = async (formData, profilePic, userid) => {
         const response = await fetch(`${apiUrl}/api/update/owner/${userid}`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 accountType: "Owner",
@@ -316,9 +312,9 @@ const userService = () => {
     const updateCenter = async (formData, profilePic, bannerPic, userid) => {
         const response = await fetch(`${apiUrl}/api/update/center/${userid}`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 accountType: "Center",

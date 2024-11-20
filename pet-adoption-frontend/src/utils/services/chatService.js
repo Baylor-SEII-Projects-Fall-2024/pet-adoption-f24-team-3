@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from "react-redux";
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 const chatService = () => {
-    const authenticationToken = useSelector((state) => state.authenticationToken.token);
-
     function chatList(userId) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
@@ -17,9 +13,8 @@ const chatService = () => {
                 try {
                     const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`, {
                         method: 'GET',
+                        credentials: "include",
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${authenticationToken}`,
                         },
                     });
                     if (!response.ok) {
@@ -54,9 +49,8 @@ const chatService = () => {
         return new Promise((resolve, reject) => {
             fetch(`${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`, {
                 method: 'GET',
+                credentials: "include",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${authenticationToken}`,
                 },
             })
                 .then(response => {
@@ -79,9 +73,8 @@ const chatService = () => {
 
             fetch(url, {
                 method: 'GET',
+                credentials: "include",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${authenticationToken}`,
                 },
             })
                 .then(response => {
@@ -101,9 +94,8 @@ const chatService = () => {
     const getUnreadMessages = async (userId) => {
         const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -130,9 +122,8 @@ const chatService = () => {
     const getOrCreateChat = async (senderID, receiverID) => {
         const response = await fetch(`${apiUrl}/api/chats/getOrCreate?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();
@@ -146,9 +137,8 @@ const chatService = () => {
     const getChatByChatID = async (chatId) => {
         const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();
@@ -163,9 +153,8 @@ const chatService = () => {
     const updateMessageStatus = async (messageID, status) => {
         const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();

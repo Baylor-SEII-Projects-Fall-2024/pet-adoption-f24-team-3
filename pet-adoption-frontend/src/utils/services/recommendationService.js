@@ -1,16 +1,13 @@
-import { useSelector } from "react-redux";
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const recommendationService = () => {
-    const authenticationToken = useSelector((state) => state.authenticationToken.token);
 
     const likePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/like/${petId}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -26,9 +23,9 @@ const recommendationService = () => {
     const undoLikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/like/${petId}/undo`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -44,9 +41,9 @@ const recommendationService = () => {
     const dislikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -62,6 +59,7 @@ const recommendationService = () => {
     const undoDislikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}/undo`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${authenticationToken}`,

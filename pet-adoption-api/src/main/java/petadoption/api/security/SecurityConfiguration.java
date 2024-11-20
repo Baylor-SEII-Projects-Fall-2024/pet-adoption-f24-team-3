@@ -55,6 +55,10 @@ public class SecurityConfiguration {
 
         // Allow all HTTP methods
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));
+
+        // Enable sending cookies with requests
+        configuration.setAllowCredentials(true);
+
         configuration.addAllowedOriginPattern("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
