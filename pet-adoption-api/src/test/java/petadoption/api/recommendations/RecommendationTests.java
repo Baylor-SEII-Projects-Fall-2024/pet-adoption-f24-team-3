@@ -52,7 +52,7 @@ public class RecommendationTests {
         ownerDto.setPassword("Newpassword");
         ownerDto.setNameFirst(firstName);
         ownerDto.setNameLast(lastName);
-        return userService.registerOwner(ownerDto);
+        return userService.registerOwner(ownerDto).getId();
     }
 
     private Long createAndSaveAnimal(Long centerId, String name, int age, AnimalSex sex, AnimalSize size, AnimalAgeClass ageClass, String breed, String species) {
@@ -98,7 +98,7 @@ public class RecommendationTests {
         centerDto.setEmailAddress("test@test78r6645t87");
         centerDto.setPassword("Woof");
 
-        Long dtoCenterId = userService.registerCenter(centerDto);
+        Long dtoCenterId = userService.registerCenter(centerDto).getId();
         InteractionHistory dtoCenterHistory = recommendationsService.findByUser(dtoCenterId);
         assertNotNull(dtoCenterHistory);
         assertEquals(dtoCenterId, dtoCenterHistory.getUserId());
@@ -109,7 +109,7 @@ public class RecommendationTests {
         ownerDto.setEmailAddress("test@test6567575747535456543424354657");
         ownerDto.setPassword("Woof");
 
-        Long dtoOwnerId = userService.registerOwner(ownerDto);
+        Long dtoOwnerId = userService.registerOwner(ownerDto).getId();
         InteractionHistory dtoOwnerHistory = recommendationsService.findByUser(dtoOwnerId);
         assertNotNull(dtoOwnerHistory);
         assertEquals(dtoOwnerId, dtoOwnerHistory.getUserId());

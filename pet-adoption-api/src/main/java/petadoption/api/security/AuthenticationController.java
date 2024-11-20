@@ -10,6 +10,7 @@ import petadoption.api.security.requestObjects.CenterDto;
 import petadoption.api.security.requestObjects.LoginDto;
 import petadoption.api.security.requestObjects.OwnerDto;
 import petadoption.api.security.responseObjects.LoginResponse;
+import petadoption.api.user.AdoptionCenter;
 import petadoption.api.user.User;
 import petadoption.api.user.UserService;
 
@@ -26,22 +27,24 @@ public class AuthenticationController {
 
 
     @PostMapping("/register/center")
-    public ResponseEntity<Long> registerAdoptionCenter(@RequestBody CenterDto centerDto) {
-        Long newUserId = userService.registerCenter(centerDto);
+    public ResponseEntity<LoginResponse> registerAdoptionCenter(@RequestBody CenterDto centerDto) {
+        User newCenter = userService.registerCenter(centerDto);
 
-        if (newUserId != null) {
-            return ResponseEntity.ok(newUserId); // Return success message as JSON
+        if (newCenter != null) {
+            LoginResponse authenticationResponse = generateLoginResponse(newCenter);
+            return ResponseEntity.ok(authenticationResponse); // Return success message as JSON
         } else {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST); // Return error message as
             // JSON
         }
     }
     @PostMapping("/register/owner")
-    public ResponseEntity<Long> registerPotentialOwner(@RequestBody OwnerDto ownerDto) {
-        Long newOwnerId = userService.registerOwner(ownerDto);
+    public ResponseEntity<LoginResponse> registerPotentialOwner(@RequestBody OwnerDto ownerDto) {
+        User newOwner = userService.registerOwner(ownerDto);
 
-        if (newOwnerId != null) {
-            return ResponseEntity.ok(newOwnerId); // Return success message as JSON
+        if (newOwner != null) {
+            LoginResponse authenticationResponse = generateLoginResponse(newOwner);
+            return ResponseEntity.ok(authenticationResponse); // Return success message as JSON
         } else {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST); // Return error message as
             // JSON
@@ -51,14 +54,17 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginDto) {
         User authenticatedUser = authenticationService.loginUser(loginDto);
+        LoginResponse loginResponse = generateLoginResponse(authenticatedUser);
+        return ResponseEntity.ok(loginResponse);
+    }
 
+    private LoginResponse generateLoginResponse(User authenticatedUser){
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
         loginResponse.setUserId(authenticatedUser.getId());
-
-        return ResponseEntity.ok(loginResponse);
+        return loginResponse;
     }
 }

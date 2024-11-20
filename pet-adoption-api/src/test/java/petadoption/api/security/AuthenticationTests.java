@@ -36,20 +36,20 @@ public class AuthenticationTests {
         ownerDto.setNameFirst("New First");
         ownerDto.setNameLast("New Last");
 
-        Long newID = userService.registerOwner(ownerDto);
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
+        PotentialOwner newUser = userService.registerOwner(ownerDto);
 
         LoginDto loginDto = new LoginDto();
         loginDto.setEmailAddress(ownerDto.getEmailAddress());
 
-        assert foundUser != null;
+        assertNotNull(newUser);
+        assertNotNull(newUser.getId());
         loginDto.setPassword(ownerDto.getPassword());
 
         User loggedInUser = authenticationService.loginUser(loginDto);
 
         assertNotNull( loggedInUser);
         assertNotNull(loggedInUser.getId());
-        assertEquals(foundUser.getId(), loggedInUser.getId());
+        assertEquals(newUser.getId(), loggedInUser.getId());
     }
 
 }

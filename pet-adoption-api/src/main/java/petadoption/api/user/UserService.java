@@ -58,7 +58,7 @@ public class UserService {
         return userRepository.findUserByEmailAddress(userEmail);
     }
 
-    public Long registerOwner(OwnerDto ownerDto) {
+    public PotentialOwner registerOwner(OwnerDto ownerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
 
@@ -76,7 +76,7 @@ public class UserService {
         recommendationsService.createHistory(savedUser.getId());
 
         // Return status of registration
-        return savedUser.getId();
+        return savedUser;
     }
 
     private static PotentialOwner getPotentialOwner(OwnerDto ownerDto, String encodedPassword) {
@@ -118,7 +118,7 @@ public class UserService {
         return potentialOwnerRepository.save(updateOwner).getId();
     }
 
-    public Long registerCenter(CenterDto centerDto) {
+    public AdoptionCenter registerCenter(CenterDto centerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
 
@@ -135,7 +135,7 @@ public class UserService {
         AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
         recommendationsService.createHistory(savedUser.getId());
         // Return status of registration
-        return savedUser.getId();
+        return savedUser;
     }
 
     private static AdoptionCenter getAdoptionCenter(CenterDto centerDto, String encodedPassword) {

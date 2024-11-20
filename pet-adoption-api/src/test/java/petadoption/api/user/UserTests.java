@@ -150,15 +150,14 @@ public class UserTests {
         ownerDto.setNameFirst("New First");
         ownerDto.setNameLast("New Last");
 
-        Long newID = userService.registerOwner(ownerDto);
+        PotentialOwner newOwner = userService.registerOwner(ownerDto);
 
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
-
-        assertNotNull(foundUser);
-        assertEquals(ownerDto.getEmailAddress(), foundUser.emailAddress);
-        assertTrue(passwordEncoder.matches(ownerDto.getPassword(), foundUser.getPassword()));
-        assertEquals(ownerDto.getNameFirst(), foundUser.getNameFirst());
-        assertEquals(ownerDto.getNameLast(), foundUser.getNameLast());
+        assertNotNull(newOwner);
+        assertNotNull(newOwner.getId());
+        assertEquals(ownerDto.getEmailAddress(), newOwner.emailAddress);
+        assertTrue(passwordEncoder.matches(ownerDto.getPassword(), newOwner.getPassword()));
+        assertEquals(ownerDto.getNameFirst(), newOwner.getNameFirst());
+        assertEquals(ownerDto.getNameLast(), newOwner.getNameLast());
 
     }
 
@@ -173,16 +172,15 @@ public class UserTests {
         centerDto.setState("New State");
         centerDto.setZipCode("5678");
 
-        Long newID = userService.registerCenter(centerDto);
+        AdoptionCenter newCenter = userService.registerCenter(centerDto);
 
-        assertNotNull(newID);
-        AdoptionCenter foundUser = adoptionCenterRepository.findById(newID).orElse(null);
-        assertNotNull(foundUser);
-        assertEquals(centerDto.getEmailAddress(), foundUser.emailAddress);
-        assertEquals(centerDto.getAddress(), foundUser.getAddress());
-        assertEquals(centerDto.getCity(), foundUser.getCity());
+        assertNotNull(newCenter);
+        assertNotNull(newCenter.getId());
+        assertEquals(centerDto.getEmailAddress(), newCenter.emailAddress);
+        assertEquals(centerDto.getAddress(), newCenter.getAddress());
+        assertEquals(centerDto.getCity(), newCenter.getCity());
 
-        assertTrue(passwordEncoder.matches(centerDto.getPassword(), foundUser.getPassword()));
+        assertTrue(passwordEncoder.matches(centerDto.getPassword(), newCenter.getPassword()));
 
 
     }
