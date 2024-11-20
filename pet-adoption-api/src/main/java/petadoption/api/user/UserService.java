@@ -32,9 +32,8 @@ public class UserService {
     @Autowired
     private AdoptionCenterRepository adoptionCenterRepository;
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
     @Autowired
     @Lazy
     private RecommendationsService recommendationsService;
@@ -190,18 +189,6 @@ public class UserService {
         }
 
         return adoptionCenterRepository.save(updateCenter).getId();
-    }
-
-    public User loginUser(LoginDto loginDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmailAddress(),
-                        loginDto.getPassword()
-                )
-        );
-
-        return userRepository.findUserByEmailAddress(loginDto.getEmailAddress())
-                .orElseThrow();
     }
 
     public Map<String, Object> getCenterDetails(Long centerId){

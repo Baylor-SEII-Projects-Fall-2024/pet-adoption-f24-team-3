@@ -13,15 +13,16 @@ import petadoption.api.security.responseObjects.LoginResponse;
 import petadoption.api.user.User;
 import petadoption.api.user.UserService;
 
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RestController
 public class AuthenticationController {
 
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
 
     @PostMapping("/register/center")
@@ -49,7 +50,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginDto) {
-        User authenticatedUser = userService.loginUser(loginDto);
+        User authenticatedUser = authenticationService.loginUser(loginDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 

@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private JwtService jwtService;
 
     @GetMapping("/users")
     public List<User> findAllUsers() {

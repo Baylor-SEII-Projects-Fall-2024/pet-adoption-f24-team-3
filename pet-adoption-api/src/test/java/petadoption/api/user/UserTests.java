@@ -186,27 +186,4 @@ public class UserTests {
 
 
     }
-
-    @Test
-    void testLogin(){
-        OwnerDto ownerDto = new OwnerDto();
-        ownerDto.setAccountType("OWNER");
-        ownerDto.setEmailAddress("example@example.com");
-        ownerDto.setPassword("Newpassword");
-        ownerDto.setNameFirst("New First");
-        ownerDto.setNameLast("New Last");
-
-        Long newID = userService.registerOwner(ownerDto);
-        PotentialOwner foundUser = potentialOwnerRepository.findById(newID).orElse(null);
-
-        LoginDto loginDto = new LoginDto();
-        loginDto.setEmailAddress(ownerDto.getEmailAddress());
-
-        assert foundUser != null;
-        loginDto.setPassword(ownerDto.getPassword());
-
-        assertNotEquals( -1, userService.loginUser(loginDto));
-        assertEquals(foundUser.id, userService.loginUser(loginDto));
-    }
-
 }
