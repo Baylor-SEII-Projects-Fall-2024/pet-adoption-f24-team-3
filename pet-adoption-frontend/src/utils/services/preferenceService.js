@@ -1,12 +1,16 @@
+import { useSelector } from "react-redux";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const preferenceService = () => {
+    const authenticationToken = useSelector((state) => state.authenticationToken.token);
 
     const getPreferences = async (userId) => {
         const response = await fetch(`${apiUrl}/api/preferences/${userId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -24,7 +28,8 @@ const preferenceService = () => {
         const response = await fetch(`${apiUrl}/api/update/preferences/${userid}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 userId: userid,

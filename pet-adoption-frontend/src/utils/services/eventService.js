@@ -1,15 +1,19 @@
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 import imageService from './imageService';
+import { useSelector } from "react-redux";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const eventService = () => {
     const { uploadEventThumbnail } = imageService();
+    const authenticationToken = useSelector((state) => state.authenticationToken.token);
 
     const createEvent = async (formData, thumbnailImage, centerId) => {
         console.log("Creating new event:", formData, centerId, thumbnailImage);
         const response = await fetch(`${apiUrl}/api/events/`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 centerId: centerId,
@@ -44,7 +48,8 @@ const eventService = () => {
         const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -63,7 +68,8 @@ const eventService = () => {
         const response = await fetch(`${apiUrl}/api/events/update/${eventID}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
             body: JSON.stringify({
                 centerId: formData.centerId,
@@ -97,7 +103,8 @@ const eventService = () => {
         const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -114,7 +121,8 @@ const eventService = () => {
         const response = await fetch(`${apiUrl}/api/events/center/${centerId}`, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
         });
         const result = await response.json();
@@ -130,7 +138,8 @@ const eventService = () => {
         const response = await fetch(`${apiUrl}/api/events/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             },
         });
 

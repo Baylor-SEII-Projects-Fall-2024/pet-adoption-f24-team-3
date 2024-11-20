@@ -17,7 +17,7 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/auth/login`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 emailAddress: email,
@@ -25,12 +25,12 @@ const userService = () => {
             })
         });
         const result = await response.json();
-
+        console.log(result);
         if (response.ok) {
-            saveCurrentUserToRedux(result.userid, result, token);
+            saveCurrentUserToRedux(result.userId, result.token);
             setUserCookies(result.userId, result.token);
 
-            return result.userid;
+            return result.userId;
         } else {
             return null;
         }
@@ -42,7 +42,7 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/auth/register/center`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 accountType: "Center",
@@ -59,6 +59,8 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
+            await saveCurrentUserToRedux(result.userId, result.token);
+            await setUserCookies(result.userId, result.token);
             if (profilePic != null) {
                 const profilePicResult = await uploadProfilePic(profilePic, result.userid);
                 if (!profilePicResult) {
@@ -71,8 +73,7 @@ const userService = () => {
                     return null;
                 }
             }
-            saveCurrentUserToRedux(result.userid, result.token);
-            setUserCookies(result.userId, result.token);
+
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -86,7 +87,7 @@ const userService = () => {
         const response = await fetch(`${apiUrl}/api/auth/register/owner`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 accountType: "Owner",
@@ -99,14 +100,15 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
+            saveCurrentUserToRedux(result.userId, result.token);
+            setUserCookies(result.userId, result.token);
             if (profilePic != null) {
                 const imageResult = await uploadProfilePic(profilePic, result.userid);
                 if (!imageResult) {
                     return null;
                 }
             }
-            saveCurrentUserToRedux(result.userid, result.token);
-            setUserCookies(result.userId, result.token);
+
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -123,16 +125,16 @@ const userService = () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
+                "Authorization": `Bearer ${token}`,
             }
         });
 
-        const result = await getSessionUserData.json();
         if (getSessionUserData.ok) {
+            const result = await getSessionUserData.json();
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
             dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.accountType });
         } else {
-            console.error("Error: Unable to fetch session data for user!")
+            console.error("Error: User authentication failed!")
         }
 
     };

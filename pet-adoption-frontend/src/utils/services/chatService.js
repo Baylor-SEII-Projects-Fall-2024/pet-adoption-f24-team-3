@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+
 const chatService = () => {
+    const authenticationToken = useSelector((state) => state.authenticationToken.token);
 
     function chatList(userId) {
         const [chats, setChats] = useState([]);
@@ -11,7 +15,13 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`);
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${authenticationToken}`,
+                        },
+                    });
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
@@ -42,9 +52,13 @@ const chatService = () => {
 
     function getChatInfoByUserId(userID, pageSize, pageNumber) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-            fetch(url)
+            fetch(`${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authenticationToken}`,
+                },
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch chat info');
@@ -63,7 +77,13 @@ const chatService = () => {
         return new Promise((resolve, reject) => {
             let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
-            fetch(url)
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authenticationToken}`,
+                },
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chat by id = ${chatID}`)
@@ -82,7 +102,8 @@ const chatService = () => {
         const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 
@@ -110,7 +131,8 @@ const chatService = () => {
         const response = await fetch(`${apiUrl}/api/chats/getOrCreate?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();
@@ -125,7 +147,8 @@ const chatService = () => {
         const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();
@@ -141,7 +164,8 @@ const chatService = () => {
         const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
         const result = await response.json();
