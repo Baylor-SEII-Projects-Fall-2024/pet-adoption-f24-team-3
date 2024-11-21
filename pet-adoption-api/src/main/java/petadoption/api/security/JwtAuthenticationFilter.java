@@ -86,12 +86,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    throw new SecurityException("Invalid or tampered JWT");
                 }
             }
 
             filterChain.doFilter(request, response);
-        } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+        } catch (SecurityException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // Respond with 403 for bad token
+            response.getWriter().write("Invalid or expired authentication token");
+            return;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // Respond with 500 for other issues
+            response.getWriter().write("An error occurred during authentication");
+            return;
         }
     }
 }

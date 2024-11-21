@@ -29,7 +29,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/register/center")
-    public ResponseEntity<LoginResponse> registerAdoptionCenter(@RequestBody CenterDto centerDto) {
+    public ResponseEntity<LoginResponse> registerAdoptionCenter(@RequestBody CenterDto centerDto)   {
         User newCenter = userService.registerCenter(centerDto);
 
         if (newCenter != null) {

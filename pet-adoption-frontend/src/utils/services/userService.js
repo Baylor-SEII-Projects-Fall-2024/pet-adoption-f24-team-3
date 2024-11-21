@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
 import { setAuthenticationToken, setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
@@ -6,6 +7,7 @@ import { useChat } from '../contexts/chatContext';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const userService = () => {
+    const router = useRouter();
     const dispatch = useDispatch();
     const { uploadProfilePic, uploadCenterBanner } = imageService();
     const { setCurrentChatId } = useChat();
@@ -26,8 +28,8 @@ const userService = () => {
         const result = await response.json();
         console.log(result);
         if (response.ok) {
-            saveCurrentUserToRedux(result.userId, result.token);
-            setUserCookies(result.userId, result.token);
+            setAuthenticationCookie(result.token);
+            await saveCurrentUserToRedux(result.token);
 
             return result.userId;
         } else {
@@ -58,16 +60,16 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
-            await saveCurrentUserToRedux(result.userId, result.token);
-            await setUserCookies(result.userId, result.token);
+            await setAuthenticationCookie(result.token);
+            await saveCurrentUserToRedux(result.token);
             if (profilePic != null) {
-                const profilePicResult = await uploadProfilePic(profilePic, result.userid);
+                const profilePicResult = await uploadProfilePic(profilePic, result.userId);
                 if (!profilePicResult) {
                     return null;
                 }
             }
             if (bannerPic != null) {
-                const bannerPicResult = await uploadCenterBanner(bannerPic, result.userid);
+                const bannerPicResult = await uploadCenterBanner(bannerPic, result.userId);
                 if (!bannerPicResult) {
                     return null;
                 }
@@ -97,15 +99,14 @@ const userService = () => {
 
         const result = await response.json();
         if (response.ok) {
-            saveCurrentUserToRedux(result.userId, result.token);
-            setUserCookies(result.userId, result.token);
+            setAuthenticationCookie(result.token);
+            await saveCurrentUserToRedux(result.token);
             if (profilePic != null) {
-                const imageResult = await uploadProfilePic(profilePic, result.userid);
+                const imageResult = await uploadProfilePic(profilePic, result.userId);
                 if (!imageResult) {
                     return null;
                 }
             }
-
             return result;
         } else {
             alert(`Registration failed: ${result.message}`);
@@ -115,46 +116,64 @@ const userService = () => {
 
     //fetch a few pieces of user data to retain across the session for ease of access
     //also sets the user id in redux, which is needded to access restricted pages
-    const saveCurrentUserToRedux = async (userid) => {
-        dispatch(setCurrentUserId(userid));
-        const getSessionUserData = await fetch(`${apiUrl}/api/users/${userid}/sessionData`, {
+    const saveCurrentUserToRedux = async (token) => {
+
+        const getSessionUserData = await fetch(`${apiUrl}/api/users/sessionData`, {
             method: "GET",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
+                "Authentication": `Bearer: ${token}`,
             }
         });
 
         if (getSessionUserData.ok) {
             const result = await getSessionUserData.json();
+            dispatch(setCurrentUserId(result.userId));
             dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: result.userFullName });
             dispatch({ type: 'SET_CURRENT_USER_TYPE', payload: result.accountType });
+            return true;
         } else {
             console.error("Error: User authentication failed!")
+            return false;
         }
 
     };
 
-    const setUserCookies = async (userId, token) => {
+    const setAuthenticationCookie = async (token) => {
         // TODO: Add API request to generate authentication token
-        Cookies.set('userId', userId, { expires: 7 });
         Cookies.set('authenticationToken', token, { expires: 7 });
     }
 
     // validates the user using user id and authentication token stored in cookie
     const authenticateFromCookie = async () => {
-        const userIdCookie = Cookies.get('userId');
         const authTokenCookie = Cookies.get('authenticationToken');
 
         //TODO: Add API request to verify Auth Token
-        if (userIdCookie && authTokenCookie) {
-            saveCurrentUserToRedux(userIdCookie, authTokenCookie);
-            return true;
+        if (authTokenCookie) {
+            saveCurrentUserToRedux(authTokenCookie)
+                .then((result) => {
+                    if (!result) onAuthenticationFailed();
+                    return result;
+                })
+                .catch((error) => {
+                    console.error("Error authenticating from cookie:", error);
+                    onAuthenticationFailed();
+                    return false;
+                })
         }
         else {
+            //dont want to change their routing, in case they never logged in at all
+            logOut();
             return false;
         }
     };
+    const onAuthenticationFailed = () => {
+        // if authentication failed, logout and route to login screen
+        logOut();
+        console.log("Auth failed, kicking to login");
+        router.push("/login");
+    }
 
     const logOut = () => {
         //remove from redux
@@ -167,6 +186,7 @@ const userService = () => {
         Cookies.remove("userId")
         //reset the chat
         setCurrentChatId(null);
+
     };
 
     const getUserInfo = async (userId) => {

@@ -4,6 +4,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.security.JwtService;
@@ -42,23 +44,25 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/users/{id}/sessionData")
-    public SessionUserDataResponse getUserSessionData(@PathVariable Long id) {
-        var user = userService.findUser(id).orElse(null);
+    @GetMapping("/users/sessionData")
+    public SessionUserDataResponse getUserSessionData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (user == null) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        if (currentUser == null) {
             log.warn("User not found");
             return null;
         }
 
         SessionUserDataResponse sessionUser = new SessionUserDataResponse();
-        sessionUser.userId = user.getId();
-        sessionUser.accountType = user.getAccountType();
-        sessionUser.profilePicPath = user.getProfilePicPath();
-        if (user instanceof PotentialOwner) {
-            sessionUser.userFullName = ((PotentialOwner) user).nameFirst + " " + ((PotentialOwner) user).nameLast;
-        } else if (user instanceof AdoptionCenter) {
-            sessionUser.userFullName = ((AdoptionCenter) user).getName();
+        sessionUser.userId = currentUser.getId();
+        sessionUser.accountType = currentUser.getAccountType();
+        sessionUser.profilePicPath = currentUser.getProfilePicPath();
+        if (currentUser instanceof PotentialOwner) {
+            sessionUser.userFullName = ((PotentialOwner) currentUser).nameFirst + " " + ((PotentialOwner) currentUser).nameLast;
+        } else if (currentUser instanceof AdoptionCenter) {
+            sessionUser.userFullName = ((AdoptionCenter) currentUser).getName();
         }
 
         return sessionUser;

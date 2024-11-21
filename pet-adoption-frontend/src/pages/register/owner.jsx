@@ -65,7 +65,7 @@ export default function RegisterOwnerPage() {
                 .then(async (result) => {
                     if (result !== null) {
                         setIsUploading(false);
-                        router.push(`/profile/${result.userid}`);
+                        router.push(`/pets`);
                     }
                 });
         } catch (error) {
