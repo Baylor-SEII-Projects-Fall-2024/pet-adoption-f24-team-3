@@ -31,7 +31,7 @@ city_state_map = {
     "Dallas": "Texas",
     "Austin": "Texas",
     "Waco": "Texas",
-    "Pheonix": "Arizona",
+    "Phoenix": "Arizona",
     "Springfield": "Illinois",
     "West Haven": "Connecticut"
 }

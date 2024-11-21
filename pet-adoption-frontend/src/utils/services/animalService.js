@@ -12,6 +12,7 @@ const animalService = () => {
     const createPet = async (formData, petPic) => {
         const response = await fetch(`${apiUrl}/api/animals/`, {
             method: 'POST',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -49,6 +50,7 @@ const animalService = () => {
     const getCenterAnimals = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/animals/center/${centerId}`, {
             method: 'GET',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -66,6 +68,7 @@ const animalService = () => {
     const getCenterAdoptedAnimals = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/animals/center/${centerId}/adopted`, {
             method: 'GET',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -83,6 +86,7 @@ const animalService = () => {
     const getAnimal = async (animalId) => {
         const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -100,6 +104,7 @@ const animalService = () => {
     const updateAdoptionStatus = async (animalId, status) => {
         const response = await fetch(`${apiUrl}/api/animals/${animalId}/updateAdoptionStatus?status=${status}`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -117,6 +122,7 @@ const animalService = () => {
     const deleteAnimal = async (animalId) => {
         const response = await fetch(`${apiUrl}/api/animals/${animalId}`, {
             method: "DELETE",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -135,6 +141,7 @@ const animalService = () => {
 
         const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${userId}`, {
             method: 'POST',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -154,6 +161,7 @@ const animalService = () => {
 
         const response = await fetch(`${apiUrl}/api/animals/liked?pageSize=${pageSize}&userId=${userId}`, {
             method: 'POST',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -172,6 +180,7 @@ const animalService = () => {
     const updateAnimal = async (formData, animalPic, petId) => {
         const response = await fetch(`${apiUrl}/api/animals/${petId}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },

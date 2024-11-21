@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import petadoption.api.recommendations.InteractionRepository;
 import petadoption.api.recommendations.RecommendationsService;
-import petadoption.api.user.dtos.*;
+import petadoption.api.security.requestObjects.CenterDto;
+import petadoption.api.security.requestObjects.LoginDto;
+import petadoption.api.security.requestObjects.OwnerDto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,7 @@ public class UserService {
     @Autowired
     private AdoptionCenterRepository adoptionCenterRepository;
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
     @Autowired
     @Lazy
@@ -54,7 +58,7 @@ public class UserService {
         return userRepository.findUserByEmailAddress(userEmail);
     }
 
-    public Long registerOwner(OwnerDto ownerDto) {
+    public PotentialOwner registerOwner(OwnerDto ownerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(ownerDto.getPassword());
 
@@ -72,7 +76,7 @@ public class UserService {
         recommendationsService.createHistory(savedUser.getId());
 
         // Return status of registration
-        return savedUser.getId();
+        return savedUser;
     }
 
     private static PotentialOwner getPotentialOwner(OwnerDto ownerDto, String encodedPassword) {
@@ -114,7 +118,7 @@ public class UserService {
         return potentialOwnerRepository.save(updateOwner).getId();
     }
 
-    public Long registerCenter(CenterDto centerDto) {
+    public AdoptionCenter registerCenter(CenterDto centerDto) {
         // Encode password using BCrypt
         String encodedPassword = passwordEncoder.encode(centerDto.getPassword());
 
@@ -131,7 +135,7 @@ public class UserService {
         AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
         recommendationsService.createHistory(savedUser.getId());
         // Return status of registration
-        return savedUser.getId();
+        return savedUser;
     }
 
     private static AdoptionCenter getAdoptionCenter(CenterDto centerDto, String encodedPassword) {
@@ -185,25 +189,6 @@ public class UserService {
         }
 
         return adoptionCenterRepository.save(updateCenter).getId();
-    }
-
-    public long loginUser(LoginDto loginDto) {
-        // See if there is a user under the email provided
-        var userOptional = findUserByEmail(loginDto.getEmailAddress());
-        // If user not found, return false and log it
-        if (userOptional.isEmpty()) {
-            log.warn("Username not found for login: {}", loginDto.getEmailAddress());
-            return -1;
-        }
-
-        // Extract user from optional
-        User user = userOptional.get();
-
-        // Compare encoded password with the one provided
-        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            return -1;
-        }
-        return user.id;
     }
 
     public Map<String, Object> getCenterDetails(Long centerId){

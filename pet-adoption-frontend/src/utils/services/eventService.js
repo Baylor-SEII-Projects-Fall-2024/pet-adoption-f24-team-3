@@ -8,6 +8,7 @@ const eventService = () => {
         console.log("Creating new event:", formData, centerId, thumbnailImage);
         const response = await fetch(`${apiUrl}/api/events/`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -43,6 +44,7 @@ const eventService = () => {
     const getEventInfo = async (eventID) => {
         const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -62,6 +64,7 @@ const eventService = () => {
     const updateEvent = async (formData, thumbnail, eventID) => {
         const response = await fetch(`${apiUrl}/api/events/update/${eventID}`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -96,6 +99,7 @@ const eventService = () => {
     const deleteEvent = async (eventID) => {
         const response = await fetch(`${apiUrl}/api/events/${eventID}`, {
             method: "DELETE",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -113,6 +117,7 @@ const eventService = () => {
     const getCenterEvents = async (centerId) => {
         const response = await fetch(`${apiUrl}/api/events/center/${centerId}`, {
             method: 'GET',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -129,6 +134,7 @@ const eventService = () => {
     const getEventsByPage = async (pageSize, pageNumber) => {
         const response = await fetch(`${apiUrl}/api/events/paginated?pageSize=${pageSize}&pageNumber=${pageNumber}`, {
             method: 'GET',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },

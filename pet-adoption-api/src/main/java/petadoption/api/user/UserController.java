@@ -4,13 +4,17 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.annotation.GlobalCrossOrigin;
-import petadoption.api.user.dtos.CenterDto;
-import petadoption.api.user.dtos.LoginDto;
-import petadoption.api.user.dtos.OwnerDto;
+import petadoption.api.security.JwtService;
+import petadoption.api.security.requestObjects.CenterDto;
+import petadoption.api.security.requestObjects.LoginDto;
+import petadoption.api.security.requestObjects.OwnerDto;
 import petadoption.api.user.responseObjects.AdoptionCenterCardResponse;
 import petadoption.api.user.responseObjects.GenericUserDataResponse;
+import petadoption.api.security.responseObjects.LoginResponse;
 import petadoption.api.user.responseObjects.SessionUserDataResponse;
 
 import java.util.HashMap;
@@ -40,23 +44,25 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/users/{id}/sessionData")
-    public SessionUserDataResponse getUserSessionData(@PathVariable Long id) {
-        var user = userService.findUser(id).orElse(null);
+    @GetMapping("/users/sessionData")
+    public SessionUserDataResponse getUserSessionData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (user == null) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        if (currentUser == null) {
             log.warn("User not found");
             return null;
         }
 
         SessionUserDataResponse sessionUser = new SessionUserDataResponse();
-        sessionUser.userId = user.getId();
-        sessionUser.accountType = user.getAccountType();
-        sessionUser.profilePicPath = user.getProfilePicPath();
-        if (user instanceof PotentialOwner) {
-            sessionUser.userFullName = ((PotentialOwner) user).nameFirst + " " + ((PotentialOwner) user).nameLast;
-        } else if (user instanceof AdoptionCenter) {
-            sessionUser.userFullName = ((AdoptionCenter) user).getName();
+        sessionUser.userId = currentUser.getId();
+        sessionUser.accountType = currentUser.getAccountType();
+        sessionUser.profilePicPath = currentUser.getProfilePicPath();
+        if (currentUser instanceof PotentialOwner) {
+            sessionUser.userFullName = ((PotentialOwner) currentUser).nameFirst + " " + ((PotentialOwner) currentUser).nameLast;
+        } else if (currentUser instanceof AdoptionCenter) {
+            sessionUser.userFullName = ((AdoptionCenter) currentUser).getName();
         }
 
         return sessionUser;
@@ -117,49 +123,6 @@ public class UserController {
             @RequestParam("pageNumber") Integer pageNumber) {
         List<AdoptionCenter> centers = userService.paginateCenters(pageSize, pageNumber);
         return centers.stream().map(AdoptionCenterCardResponse::new).collect(Collectors.toList());
-    }
-
-    @PostMapping("/centers")
-    public ResponseEntity<Map<String, Object>> saveAdoptionCenter(@RequestBody CenterDto centerDto) {
-        Long newUserId = userService.registerCenter(centerDto);
-        Map<String, Object> response = new HashMap<>();
-
-        if (newUserId != null) {
-            response.put("userid", newUserId);
-            return ResponseEntity.ok(response); // Return success message as JSON
-        } else {
-            response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
-                                                                                           // JSON
-        }
-    }
-
-    @PostMapping("/owners")
-    public ResponseEntity<Map<String, Object>> savePotentialOwner(@RequestBody OwnerDto ownerDto) {
-        Long newOwnerId = userService.registerOwner(ownerDto);
-        Map<String, Object> response = new HashMap<>();
-
-        if (newOwnerId != null) {
-            response.put("userid", newOwnerId);
-            return ResponseEntity.ok(response); // Return success message as JSON
-        } else {
-            response.put("message", "Registration failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // Return error message as
-                                                                                           // JSON
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Long>> loginUser(@RequestBody LoginDto loginDto) {
-        Map<String, Long> response = new HashMap<>();
-        long uid = userService.loginUser(loginDto);
-        if (uid > 0) {
-            response.put("userid", uid);
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", -1L);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
     }
 
     @PostMapping("/update/owner/{id}")

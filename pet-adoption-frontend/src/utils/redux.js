@@ -14,7 +14,6 @@ export const setCurrentUserId = (userId) => ({
     payload: userId,
 });
 
-
 function currentUserReducer(state = { currentUserId: null }, action) {
     switch (action.type) {
         case 'SET_CURRENT_USER_ID':
@@ -28,9 +27,10 @@ function currentUserReducer(state = { currentUserId: null }, action) {
     }
 }
 
+
 const reducers = combineReducers({
     events: eventsReducer,
-    currentUser: currentUserReducer
+    currentUser: currentUserReducer,
 });
 
 export const buildStore = (initialState) => {

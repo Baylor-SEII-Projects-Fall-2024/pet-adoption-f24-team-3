@@ -22,25 +22,24 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            await validateLogin(formData.email, formData.password)
-                .then((userId) => {
-                    //if user id is not null, that is handled in the hook below
-                    if (userId !== null) {
-                        router.push(`/profile/${userId}`);
-                    }
-                    else {
-                        let elm = document.getElementById("errorLabel");
-                        elm.innerHTML = "Invalid credentials!";
-                        elm.style = "color: red;"
-                    }
-                })
-
-
-        } catch (error) {
-            console.error("Error: ", error);
-            alert("An error occured during login.");
-        }
+        await validateLogin(formData.email, formData.password)
+            .then((userId) => {
+                //if user id is not null, that is handled in the hook below
+                if (userId !== null) {
+                    router.push(`/profile/${userId}`);
+                }
+                else {
+                    let elm = document.getElementById("errorLabel");
+                    elm.innerHTML = "Invalid credentials!";
+                    elm.style = "color: red;"
+                }
+            })
+            .catch((error) => {
+                let elm = document.getElementById("errorLabel");
+                elm.innerHTML = "Invalid credentials!";
+                elm.style = "color: red;"
+                console.error("Error logging in:", error);
+            });
     };
 
     return (

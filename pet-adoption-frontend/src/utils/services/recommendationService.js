@@ -1,11 +1,13 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const recommendationService = () => {
+
     const likePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/like/${petId}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         });
 
@@ -21,8 +23,9 @@ const recommendationService = () => {
     const undoLikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/like/${petId}/undo`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         });
 
@@ -38,8 +41,9 @@ const recommendationService = () => {
     const dislikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         });
 
@@ -55,8 +59,9 @@ const recommendationService = () => {
     const undoDislikePet = async (userId, petId) => {
         const response = await fetch(`${apiUrl}/api/recommendations/${userId}/dislike/${petId}/undo`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         });
 

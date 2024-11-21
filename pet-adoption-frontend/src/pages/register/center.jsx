@@ -72,20 +72,18 @@ export default function RegisterCenterPage() {
             return;
         }
 
-        try {
-            setIsUploading(true);
-            await registerCenter(formData, profileImage, bannerImage)
-                .then(async (result) => {
-                    if (result !== null) {
-                        setIsUploading(false);
-                        router.push(`/`);
-                    }
-                });
-
-        } catch (error) {
-            console.error("Error: ", error);
-            alert("An error occured during registration.");
-        }
+        setIsUploading(true);
+        await registerCenter(formData, profileImage, bannerImage)
+            .then(async (result) => {
+                if (result !== null) {
+                    setIsUploading(false);
+                    router.push(`/centers/${result.userId}`);
+                }
+            })
+            .catch((error) => {
+                console.error("Error: ", error);
+                alert("An error occured during registration.");
+            });
     };
 
 
