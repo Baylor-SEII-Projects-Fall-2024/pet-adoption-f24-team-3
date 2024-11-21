@@ -62,7 +62,6 @@ const recommendationService = () => {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${authenticationToken}`,
             }
         });
 

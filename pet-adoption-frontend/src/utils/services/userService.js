@@ -26,7 +26,6 @@ const userService = () => {
             })
         });
         const result = await response.json();
-        console.log(result);
         if (response.ok) {
             setAuthenticationCookie(result.token);
             await saveCurrentUserToRedux(result.token);
@@ -141,7 +140,6 @@ const userService = () => {
     };
 
     const setAuthenticationCookie = async (token) => {
-        // TODO: Add API request to generate authentication token
         Cookies.set('authenticationToken', token, { expires: 7 });
     }
 
@@ -149,7 +147,6 @@ const userService = () => {
     const authenticateFromCookie = async () => {
         const authTokenCookie = Cookies.get('authenticationToken');
 
-        //TODO: Add API request to verify Auth Token
         if (authTokenCookie) {
             saveCurrentUserToRedux(authTokenCookie)
                 .then((result) => {
