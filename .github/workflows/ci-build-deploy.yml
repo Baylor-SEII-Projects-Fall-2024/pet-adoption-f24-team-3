@@ -21,6 +21,7 @@ on:
   push:
     branches:
       - main
+      - jarpletz/improved-jwt-security
 
 jobs:
   build-and-deploy:
@@ -28,7 +29,8 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        runner: [prod, backup, dev]
+        runner: [prod]
+        #runner: [prod, backup, dev]
 
     steps:
       - uses: actions/checkout@v3
