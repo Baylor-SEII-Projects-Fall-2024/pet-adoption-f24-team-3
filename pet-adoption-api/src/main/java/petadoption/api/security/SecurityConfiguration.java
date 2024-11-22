@@ -20,7 +20,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Value("${cors.allowed-origins}")
+    @Value("${cors.allowed-origin}")
     private String crossOrigin;
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

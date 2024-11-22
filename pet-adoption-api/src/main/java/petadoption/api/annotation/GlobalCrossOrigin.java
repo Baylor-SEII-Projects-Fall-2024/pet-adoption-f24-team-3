@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @CrossOrigin
 public @interface GlobalCrossOrigin {
-    @Value("${cors.allowed-origins}")
+    @Value("${cors.allowed-origin}")
     String[] origins() default {};
 }
