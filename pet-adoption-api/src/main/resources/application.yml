@@ -26,8 +26,7 @@ upload:
 security:
   jwt:
     secret-key: "aad2528687ff6a9eaee35fe10bf883810427f0f0a4beb054b0ea5e8a93039941"
-    # 1 week in millisecond
-    expiration-time: 2592000000
+    expiration-time: 2592000000 # 1 week in millisecond
 
 logging:
   level:
