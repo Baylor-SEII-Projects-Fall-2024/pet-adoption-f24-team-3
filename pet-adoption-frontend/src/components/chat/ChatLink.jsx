@@ -71,7 +71,6 @@ export default function ChatLink(props) {
         setPhotoUrl(
           `${apiUrl}/api/images/animals/${extractNumber(message.link)}`
         );
-        console.log(photoUrl);
       } else {
         console.error(`Error loading pet ${petID}: No result`);
       }

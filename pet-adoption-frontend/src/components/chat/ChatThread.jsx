@@ -192,6 +192,10 @@ export default function ChatThread(props) {
   const handleMessageSend = async () => {
     if (myMessage != "") {
       if (recipient.id == null) return;
+      console.log(msgLink);
+      if (msgLink && msgLink == "") {
+        setMsgLink(null);
+      }
       sendMessage(
         currentChatId,
         currentUserId,
