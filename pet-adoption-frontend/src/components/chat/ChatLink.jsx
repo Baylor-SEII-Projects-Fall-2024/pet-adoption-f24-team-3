@@ -16,7 +16,7 @@ export default function ChatLink(props) {
   const router = useRouter();
 
   const { getEventInfo } = eventService();
-  const { getPetInfo } = animalService();
+  const { getAnimal } = animalService();
 
   const extractNumber = (str) => {
     const match = str.match(/\/(\d+)$/);
@@ -57,12 +57,13 @@ export default function ChatLink(props) {
 
   async function fetchPet(petID) {
     try {
-      const result = await getPetInfo(petID);
+      const result = await getAnimal(petID);
       if (result) {
         setLinkedName(result.name);
         setPhotoUrl(
           `${apiUrl}/api/images/animals/${extractNumber(message.link)}`
         );
+        console.log(photoUrl)
       } else {
         console.error(`Error loading pet ${petID}: No result`);
       }
@@ -104,7 +105,7 @@ export default function ChatLink(props) {
             display: "flex",
           }}
         >
-          {photoUrl && <Avatar alt={linkedName} src={`${photoUrl}`}></Avatar>}
+          {photoUrl && <Avatar alt={linkedName} src={photoUrl}></Avatar>}
           <Box
             sx={{
               margin: "auto",
