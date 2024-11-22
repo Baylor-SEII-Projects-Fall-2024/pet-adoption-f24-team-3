@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Avatar } from "@mui/material";
+import { useRouter } from "next/router";
 import eventService from "@/utils/services/eventService";
 import animalService from "@/utils/services/animalService";
 
@@ -11,6 +12,8 @@ export default function ChatLink(props) {
   const [linkedName, setLinkedName] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [id, setId] = useState(null);
+
+  const router = useRouter();
 
   const { getEventInfo } = eventService();
   const { getPetInfo } = animalService();
@@ -40,7 +43,9 @@ export default function ChatLink(props) {
       const result = await getEventInfo(eventID);
       if (result) {
         setLinkedName(result.name);
-        setPhotoUrl(`${apiUrl}/api/images/events/${id}`);
+        setPhotoUrl(
+          `${apiUrl}/api/images/events/${extractNumber(message.link)}`
+        );
         console.log(photoUrl);
       } else {
         console.error(`Error loading event ${eventID}: No result`);
@@ -55,7 +60,9 @@ export default function ChatLink(props) {
       const result = await getPetInfo(petID);
       if (result) {
         setLinkedName(result.name);
-        setPhotoUrl(`${apiUrl}/api/images/animals/${id}`);
+        setPhotoUrl(
+          `${apiUrl}/api/images/animals/${extractNumber(message.link)}`
+        );
       } else {
         console.error(`Error loading pet ${petID}: No result`);
       }
@@ -65,25 +72,56 @@ export default function ChatLink(props) {
   }
 
   return (
-    <Box
-      sx={{
+    <button
+      onClick={() => router.push(message.link)}
+      rel="noopener noreferrer"
+      style={{
+        textDecoration: "none",
+        color: "#333333",
         width: "100%",
-        display: "flex",
-        justifyContent: isSender ? "flex-end" : "flex-start",
+        background: "none",
+        border: "none",
+        cursor: "pointer",
       }}
     >
       <Box
-        key={message.messageID}
         sx={{
-          padding: "10px",
-          backgroundColor: isSender ? "#DCF8C6" : "#FFFFFF",
-          borderRadius: "10px",
-          maxWidth: "60%",
+          width: "100%",
+          display: "flex",
+          justifyContent: isSender ? "flex-end" : "flex-start",
         }}
       >
-        <Typography variant="body1">{linkedName}</Typography>
-        {photoUrl && <img src={photoUrl} alt={linkedName} />}
+        <Box
+          key={message.messageID}
+          sx={{
+            marginBottom: "10px",
+            padding: "5px 10px 5px 10px",
+
+            backgroundColor: isSender ? "#e6f7ff" : "#f0f0f0",
+            borderRadius: "4px",
+            minWidth: "60%",
+            maxWidth: "80%",
+            display: "flex",
+          }}
+        >
+          {photoUrl && <Avatar alt={linkedName} src={`${photoUrl}`}></Avatar>}
+          <Box
+            sx={{
+              margin: "auto",
+            }}
+          >
+            <Typography variant="body1" fontWeight="bold">
+              {linkedName}
+            </Typography>
+            <Typography variant="caption">
+              {linkType.replace(
+                linkType.charAt(0),
+                linkType.charAt(0).toUpperCase()
+              )}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </button>
   );
 }
