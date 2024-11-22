@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import { useRouter } from "next/router";
+import { useTheme } from "@mui/material/styles";
 import eventService from "@/utils/services/eventService";
 import animalService from "@/utils/services/animalService";
 
@@ -14,6 +15,7 @@ export default function ChatLink(props) {
   const [id, setId] = useState(null);
 
   const router = useRouter();
+  const theme = useTheme();
 
   const { getEventInfo } = eventService();
   const { getAnimal } = animalService();
@@ -21,6 +23,13 @@ export default function ChatLink(props) {
   const extractNumber = (str) => {
     const match = str.match(/\/(\d+)$/);
     return match ? match[1] : null;
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
   };
 
   useEffect(() => {
@@ -33,6 +42,8 @@ export default function ChatLink(props) {
       } else {
         fetchPet(extractedId);
       }
+
+      setLinkedName(truncateText(linkedName, 20));
     } else {
       console.error("Invalid link format:", message.link);
     }
@@ -46,7 +57,6 @@ export default function ChatLink(props) {
         setPhotoUrl(
           `${apiUrl}/api/images/events/${extractNumber(message.link)}`
         );
-        console.log(photoUrl);
       } else {
         console.error(`Error loading event ${eventID}: No result`);
       }
@@ -63,7 +73,7 @@ export default function ChatLink(props) {
         setPhotoUrl(
           `${apiUrl}/api/images/animals/${extractNumber(message.link)}`
         );
-        console.log(photoUrl)
+        console.log(photoUrl);
       } else {
         console.error(`Error loading pet ${petID}: No result`);
       }
@@ -94,21 +104,25 @@ export default function ChatLink(props) {
       >
         <Box
           key={message.messageID}
+          color="primary"
           sx={{
             marginBottom: "10px",
             padding: "5px 10px 5px 10px",
-
-            backgroundColor: isSender ? "#e6f7ff" : "#f0f0f0",
             borderRadius: "4px",
             minWidth: "60%",
             maxWidth: "80%",
             display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: theme.palette.secondary.main,
           }}
         >
-          {photoUrl && <Avatar alt={linkedName} src={photoUrl}></Avatar>}
           <Box
             sx={{
-              margin: "auto",
+              display: "flex",
+              alignItems: "flex-start",
+              flexDirection: "column",
             }}
           >
             <Typography variant="body1" fontWeight="bold">
@@ -121,6 +135,9 @@ export default function ChatLink(props) {
               )}
             </Typography>
           </Box>
+          {photoUrl && (
+            <Avatar variant="square" alt={linkedName} src={photoUrl}></Avatar>
+          )}
         </Box>
       </Box>
     </button>
