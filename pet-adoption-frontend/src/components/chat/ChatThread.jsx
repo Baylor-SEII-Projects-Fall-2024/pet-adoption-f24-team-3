@@ -184,7 +184,8 @@ export default function ChatThread(props) {
   };
 
   const handleSendKeyContact = async (event) => {
-    if (event.key == "Enter") {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default behavior of adding a newline
       handleMessageSend();
     }
   };
