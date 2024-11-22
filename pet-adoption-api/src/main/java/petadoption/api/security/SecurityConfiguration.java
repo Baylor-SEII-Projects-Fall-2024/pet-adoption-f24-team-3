@@ -1,5 +1,6 @@
 package petadoption.api.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,6 +20,8 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+    @Value("${cors.allowed-origins}")
+    private String crossOrigin;
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -59,6 +62,7 @@ public class SecurityConfiguration {
         // Enable sending cookies with requests
         configuration.setAllowCredentials(true);
 
+        configuration.setAllowedOrigins(List.of("http://woofadoption.homes/", crossOrigin));
         configuration.addAllowedOriginPattern("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
