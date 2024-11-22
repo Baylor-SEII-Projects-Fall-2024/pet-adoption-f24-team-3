@@ -47,7 +47,7 @@ jobs:
           elif [ "${{ matrix.runner }}" == "prod" ]; then
             echo "Setting IP Address to PROD"
             echo "NEXT_PUBLIC_API_URL=http://${{ secrets.PROD_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
-            echo "cors.allowed-origin=http://woofadoption.homes" > pet-adoption-api/src/main/resources/application.properties
+            echo "cors.allowed-origin=http://woofadoption.homes:80" > pet-adoption-api/src/main/resources/application.properties
           elif [ "${{ matrix.runner }}" == "backup" ]; then
             echo "Setting IP Address to BACKUP"
             echo "NEXT_PUBLIC_API_URL=http://${{ secrets.BACKUP_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
