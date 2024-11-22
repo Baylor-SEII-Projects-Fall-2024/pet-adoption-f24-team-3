@@ -42,8 +42,6 @@ export default function ChatLink(props) {
       } else {
         fetchPet(extractedId);
       }
-
-      setLinkedName(truncateText(linkedName, 20));
     } else {
       console.error("Invalid link format:", message.link);
     }
@@ -126,7 +124,7 @@ export default function ChatLink(props) {
             }}
           >
             <Typography variant="body1" fontWeight="bold">
-              {linkedName}
+              {truncateText(linkedName, 20)}
             </Typography>
             <Typography variant="caption">
               {linkType.replace(
@@ -136,7 +134,12 @@ export default function ChatLink(props) {
             </Typography>
           </Box>
           {photoUrl && (
-            <Avatar variant="square" alt={linkedName} src={photoUrl}></Avatar>
+            <Avatar
+              variant="square"
+              alt={linkedName}
+              src={photoUrl}
+              sx={{ marginLeft: "40px" }}
+            ></Avatar>
           )}
         </Box>
       </Box>
