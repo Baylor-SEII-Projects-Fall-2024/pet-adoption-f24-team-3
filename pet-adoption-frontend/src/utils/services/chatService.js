@@ -107,13 +107,14 @@ const chatService = () => {
             return null;
         }
     }
-    const sendMessage = async (chatID, sender, contactee, content, stompClient) => { /* Params will need to be cleaned up later */
+    const sendMessage = async (chatID, sender, contactee, content, link, stompClient) => { /* Params will need to be cleaned up later */
         if (stompClient) {
             const chatMessage = {
                 chatID: chatID,
                 senderID: sender,
                 recipientID: contactee,
                 content: content,
+                link: link,
             };
             stompClient.send(`/app/chat/${chatID}`, {}, JSON.stringify(chatMessage));
         }

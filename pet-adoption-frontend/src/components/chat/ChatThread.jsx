@@ -20,7 +20,7 @@ import { ArrowBack, Send } from "@mui/icons-material";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatThread(props) {
-  const { currentChatId, openInbox, myMessage, setMyMessage } = useChat();
+  const { currentChatId, openInbox, myMessage, setMyMessage, msgLink, setMsgLink } = useChat();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const currentUserFullName = useSelector(
     (state) => state.currentUser.currentUserFullName
@@ -188,8 +188,10 @@ export default function ChatThread(props) {
         currentUserId,
         recipient.id,
         myMessage,
+        msgLink,
         stompClient
       );
+      setMsgLink(null);
       setMyMessage("");
     }
   };

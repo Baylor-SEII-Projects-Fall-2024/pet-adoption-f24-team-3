@@ -251,7 +251,7 @@ export default function ViewEventPage() {
                       </Button>
                     </>
                   ) : (
-                    <ContactCard contactee={event.centerId} sender={currentUserId} defaultMessage={`Could you please tell me more about ${event.name}?`} />
+                    <ContactCard contactee={event.centerId} sender={currentUserId} defaultMessage={`Could you please tell me more about ${event.name}?`} link={`/events/${eventID}`}/>
                   )}
                 </Box>
               </Stack>
