@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,9 @@ public class MessageService {
         message.setTimestamp(new Date());
         message.setIsRead(false);
         message.setChatID(chatID);
+        if (Objects.equals(message.getLink(), "")) {
+            message.setLink(null);
+        }
         return messageRepository.save(message);
     }
 
