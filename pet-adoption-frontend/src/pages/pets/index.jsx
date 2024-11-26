@@ -10,12 +10,14 @@ import {
   Typography,
   Grid,
   Box,
+  Slider,
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import Loading from "@/components/Loading";
 import animalService from "@/utils/services/animalService";
 import PetCard from "@/components/PetCard";
+import MultipleSelect from "@/components/input/MultipleSelect";
 
 const quantityPerPage = 12;
 
@@ -28,6 +30,15 @@ export default function PetsPage() {
   const [animalData, setAnimalData] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
+
+  const [speciesFilter, setSpeciesFilter] = React.useState([]);
+  const [breedFilter, setBreedFilter] = React.useState([]);
+  const [stateFilter, setStateFilter] = React.useState("");
+  const [ageClassFilter, setAgeClassFilter] = React.useState([0, 3]);
+  const [sizeFilter, setSizeFilter] = React.useState([0, 4]);
+  const [sexFilter, setSexFilter] = React.useState([]);
+
+
 
   //get initial data. Have to do this separately, because infite scroll will only
   //load when you scroll to the bottom. This is why `page` starts at 1, if it started
@@ -137,33 +148,62 @@ export default function PetsPage() {
               )}
             </CardContent>
           </Card>
-          <Box
-            sx={{
-              width: "90%",
-              minHeight: "300px",
-              marginTop: "30px",
-            }}
-          >
-            <InfiniteScroll
-              dataLength={animalData.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<Loading doneLoading={!hasMore} page={page} />}
+          <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            <Card
+              sx={{
+                width: "20%",
+                height: "100vh",
+                margin: "15px",
+                padding: "15px",
+                justifyContent: "center",
+                display: "flex",
+                flexDirection: "column"
+              }}
             >
-              <Grid container spacing={4} sx={{ minHeight: "50px" }}>
-                {animalData.map((pet) => (
-                  <Grid item xs={11} sm={5} md={3} key={pet.id}>
-                    <Box
-                      onClick={() => router.push(`/pets/${pet.id}`)}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <PetCard pet={pet} />
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </InfiniteScroll>
-          </Box>
+              <Typography variant="h4">Fiters</Typography>
+              <MultipleSelect
+                name="Species"
+                items={["Dog", "Cat"]}
+                selectedItems={speciesFilter}
+                setSelectedItems={setSpeciesFilter}
+                sx={{ width: "100%", mt: "15px" }}
+              />
+              <MultipleSelect
+                name="Breed"
+                items={["Doberman", "German Shepherd", "Affenpinscher"]}
+                selectedItems={breedFilter}
+                setSelectedItems={setBreedFilter}
+                sx={{ width: "100%", mt: "15px" }}
+              />
+            </Card>
+            <Box
+              sx={{
+                width: "80%",
+                minHeight: "300px",
+                marginTop: "30px",
+              }}
+            >
+              <InfiniteScroll
+                dataLength={animalData.length}
+                next={fetchMoreData}
+                hasMore={hasMore}
+                loader={<Loading doneLoading={!hasMore} page={page} />}
+              >
+                <Grid container spacing={4} sx={{ minHeight: "50px" }}>
+                  {animalData.map((pet) => (
+                    <Grid item xs={11} sm={5} md={3} key={pet.id}>
+                      <Box
+                        onClick={() => router.push(`/pets/${pet.id}`)}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <PetCard pet={pet} />
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </InfiniteScroll>
+            </Box>
+          </Stack>
         </Stack>
       </main>
     </>

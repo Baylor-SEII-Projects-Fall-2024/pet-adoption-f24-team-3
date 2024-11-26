@@ -139,13 +139,16 @@ const animalService = () => {
 
     const getRecommendedAnimals = async (userId, pageSize, alreadyDisplayedIds) => {
 
-        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${userId}`, {
+        const response = await fetch(`${apiUrl}/api/animals/recommend?userId=${userId}`, {
             method: 'POST',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(alreadyDisplayedIds)
+            body: JSON.stringify({
+                "alreadyDisplayedIds": alreadyDisplayedIds,
+                "pageSize": pageSize,
+            })
         });
 
         const result = await response.json();
