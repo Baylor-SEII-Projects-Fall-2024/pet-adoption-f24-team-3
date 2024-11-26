@@ -8,11 +8,10 @@ import animalService from "@/utils/services/animalService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatLink(props) {
-  const { message, isSender, senderName } = props;
+  const { message, isSender } = props;
   const linkType = message.link.includes("event") ? "event" : "pet";
   const [linkedName, setLinkedName] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
-  const [id, setId] = useState(null);
 
   const router = useRouter();
   const theme = useTheme();
@@ -35,8 +34,6 @@ export default function ChatLink(props) {
   useEffect(() => {
     const extractedId = extractNumber(message.link);
     if (extractedId) {
-      setId(extractedId);
-
       if (linkType === "event") {
         fetchEvent(extractedId);
       } else {
@@ -52,9 +49,7 @@ export default function ChatLink(props) {
       const result = await getEventInfo(eventID);
       if (result) {
         setLinkedName(result.name);
-        setPhotoUrl(
-          `${apiUrl}/api/images/events/${extractNumber(message.link)}`
-        );
+        setPhotoUrl(`${apiUrl}/api/images/events/${eventID}`);
       } else {
         console.error(`Error loading event ${eventID}: No result`);
       }
@@ -68,9 +63,7 @@ export default function ChatLink(props) {
       const result = await getAnimal(petID);
       if (result) {
         setLinkedName(result.name);
-        setPhotoUrl(
-          `${apiUrl}/api/images/animals/${extractNumber(message.link)}`
-        );
+        setPhotoUrl(`${apiUrl}/api/images/animals/${petID}`);
       } else {
         console.error(`Error loading pet ${petID}: No result`);
       }

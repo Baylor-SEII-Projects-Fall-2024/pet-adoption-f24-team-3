@@ -178,6 +178,12 @@ export default function ChatThread(props) {
     });
   }, [messages]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMyMessage(value);
@@ -271,7 +277,6 @@ export default function ChatThread(props) {
       >
         <InfiniteScroll
           dataLength={messages.length}
-          //next={this.fetchMoreData}
           style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
           inverse={true} //
           hasMore={false}
@@ -304,7 +309,6 @@ export default function ChatThread(props) {
             </React.Fragment>
           ))}
         </InfiniteScroll>
-
         <div ref={messagesEndRef} />
       </Box>
       <Box
