@@ -21,7 +21,6 @@ on:
   push:
     branches:
       - main
-      - brendonnewt/dns
 
 jobs:
   build-and-deploy:
