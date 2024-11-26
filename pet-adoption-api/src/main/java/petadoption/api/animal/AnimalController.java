@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petadoption.api.animal.dtos.AnimalRequestFilter;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
 import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.annotation.GlobalCrossOrigin;
@@ -47,10 +48,10 @@ public class AnimalController {
     }
 
     @PostMapping("/recommend")
-    public ResponseEntity<List<AnimalCardResponse>> recommendAnimals(@RequestParam("pageSize") Integer pageSize,@RequestParam Long userId,
-            @RequestBody List<Long> alreadyDisplayedIds) {
+    public ResponseEntity<List<AnimalCardResponse>> recommendAnimals(@RequestParam Long userId,
+            @RequestBody AnimalRequestFilter requestFilter) {
         try {
-            List<Animal> animals = animalService.recommendAnimals(pageSize, alreadyDisplayedIds, userId);
+            List<Animal> animals = animalService.recommendAnimals(requestFilter, userId);
             List<AnimalCardResponse> responses =  animals.stream().map(AnimalCardResponse::new).collect(Collectors.toList());
             return new ResponseEntity<>(responses,HttpStatus.OK);
         }
