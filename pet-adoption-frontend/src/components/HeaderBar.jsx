@@ -70,7 +70,7 @@ export default function HeaderBar(props) {
 
   let styles = {
     headerBox: {
-      display: { xs: "none", md: "flex" },
+      display: { xs: "flex", md: "flex" },
       alignItems: "center",
     },
     leftBox: {
