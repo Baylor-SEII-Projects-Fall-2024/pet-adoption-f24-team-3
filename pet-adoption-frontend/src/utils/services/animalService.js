@@ -137,18 +137,15 @@ const animalService = () => {
         }
     };
 
-    const getRecommendedAnimals = async (userId, pageSize, alreadyDisplayedIds) => {
-
+    const getRecommendedAnimals = async (userId, requestFilter, previousIds = []) => {
+        requestFilter.alreadyDisplayedIds = previousIds;
         const response = await fetch(`${apiUrl}/api/animals/recommend?userId=${userId}`, {
             method: 'POST',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                "alreadyDisplayedIds": alreadyDisplayedIds,
-                "pageSize": pageSize,
-            })
+            body: JSON.stringify(requestFilter)
         });
 
         const result = await response.json();
