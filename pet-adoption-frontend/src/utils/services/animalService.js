@@ -152,7 +152,24 @@ const animalService = () => {
         if (response.ok) {
             return result;
         } else {
-            console.error(`Getting pets failed ${result.message}`);
+            console.error(`Getting recommended animals failed ${result.message}`);
+            return null;
+        }
+    }
+    const getUniqueAnimalTypes = async () => {
+        const response = await fetch(`${apiUrl}/api/animals/uniqueTypes`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting unique animal info failed ${result.message}`);
             return null;
         }
     }
@@ -224,6 +241,7 @@ const animalService = () => {
         updateAdoptionStatus,
         deleteAnimal,
         getRecommendedAnimals,
+        getUniqueAnimalTypes,
         getLikedAnimals,
         updateAnimal,
     };

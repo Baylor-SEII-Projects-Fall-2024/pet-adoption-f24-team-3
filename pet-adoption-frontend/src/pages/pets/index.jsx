@@ -24,23 +24,25 @@ import animalService from "@/utils/services/animalService";
 import PetCard from "@/components/PetCard";
 import MultipleSelect from "@/components/input/MultipleSelect";
 import infoLists from "@/utils/lists";
-import formatter from "@/utils/formatter";
 const quantityPerPage = 12;
 
 export default function PetsPage() {
   const router = useRouter();
-  const { getRecommendedAnimals } = animalService();
+  const { getRecommendedAnimals, getUniqueAnimalTypes } = animalService();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
-  const { stateNames, ageClassNames, sizeNames } = infoLists();
-  const { formatSize, formatAge } = formatter();
+  const { ageClassNames, sizeNames } = infoLists();
 
   const [animalData, setAnimalData] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(true);
 
+  const [existingSpecies, setExistingSpecies] = React.useState([]);
+  const [existingBreeds, setExistingBreeds] = React.useState([]);
+  const [existingStates, setExistingStates] = React.useState([]);
+
   const [speciesFilter, setSpeciesFilter] = React.useState([]);
-  const [breedFilter, setBreedFilter] = React.useState("");
+  const [breedFilter, setBreedFilter] = React.useState([]);
   const [stateFilter, setStateFilter] = React.useState("");
   const [ageClassFilter, setAgeClassFilter] = React.useState([0, 3]);
   const [sizeFilter, setSizeFilter] = React.useState([0, 4]);
@@ -95,6 +97,7 @@ export default function PetsPage() {
   React.useEffect(() => {
     async function load() {
       if (!currentUserId) return;
+      await fetchAnimalTypes();
       await updateRequestFilter();
       await fetchFirstData();
     }
@@ -150,13 +153,30 @@ export default function PetsPage() {
       });
   };
 
+  //fetch the possible species, states, etc. the animal could be
+  const fetchAnimalTypes = async () => {
+    await getUniqueAnimalTypes()
+      .then((result) => {
+        if (result != null) {
+          setExistingSpecies(result.existingSpecies);
+          setExistingBreeds(result.existingBreeds);
+          setExistingStates(result.existingStates);
+        } else {
+          console.error("There was an error fetching unique animal types, returned", result);
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error fetching unique animal types:", error);
+      });
+  }
+
   // updates the filter object to have the most recent value in the input fields
   const updateRequestFilter = async () => {
 
     let newFilter = {
       "pageSize": quantityPerPage,
       "species": speciesFilter,
-      "breeds": [breedFilter],//having this as a text field we convert to array until better solution
+      "breeds": breedFilter,
       "state": stateFilter,
       "sizeRange": sizeFilter,
       "ageClassRange": ageClassFilter
@@ -272,18 +292,17 @@ export default function PetsPage() {
               <Typography variant="h4">Fiters</Typography>
               <MultipleSelect
                 name="Species"
-                items={["Dog", "Cat"]}
+                items={existingSpecies}
                 selectedItems={speciesFilter}
                 setSelectedItems={setSpeciesFilter}
                 sx={{ width: "100%", mt: "15px" }}
               />
-              <TextField
+              <MultipleSelect
+                name="Breed"
+                items={existingBreeds}
+                selectedItems={breedFilter}
+                setSelectedItems={setBreedFilter}
                 sx={{ width: "100%", mt: "15px" }}
-                label="Breed"
-                name="breed"
-                margin="dense"
-                value={breedFilter}
-                onChange={(event) => setBreedFilter(event.target.value)}
               />
               <MultipleSelect
                 name="Sex"
@@ -302,7 +321,7 @@ export default function PetsPage() {
                   onChange={(event) => setStateFilter(event.target.value)}
                 >
                   <MenuItem value={""}>Please Select</MenuItem>
-                  {stateNames.map((state, index) => (
+                  {existingStates.map((state, index) => (
                     <MenuItem key={index} value={state}>{state}</MenuItem>
                   ))}
                 </Select>
@@ -344,7 +363,7 @@ export default function PetsPage() {
             </Card>
             <Box
               sx={{
-                width: "80%",
+                width: "70%",
                 minHeight: "300px",
                 marginTop: "30px",
               }}
@@ -362,7 +381,7 @@ export default function PetsPage() {
               >
                 <Grid container spacing={4} sx={{ minHeight: "50px" }}>
                   {animalData.map((pet) => (
-                    <Grid item xs={11} sm={5} md={3} key={pet.id}>
+                    <Grid item xs={11} sm={5} md={4} lg={4} key={pet.id}>
                       <Box
                         onClick={() => router.push(`/pets/${pet.id}`)}
                         sx={{ cursor: "pointer" }}

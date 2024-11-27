@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petadoption.api.animal.dtos.AnimalRequestFilter;
 import petadoption.api.animal.responseObjects.AnimalCardResponse;
+import petadoption.api.animal.responseObjects.AnimalUniqueTypesResponse;
 import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.annotation.GlobalCrossOrigin;
 import java.util.List;
@@ -117,4 +118,11 @@ public class AnimalController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/uniqueTypes")
+    public ResponseEntity<AnimalUniqueTypesResponse> getUniqueAnimalTypes(){
+        AnimalUniqueTypesResponse uniqueTypesResponse = animalService.getUniqueAnimalTypes();
+        return new ResponseEntity<>(uniqueTypesResponse,HttpStatus.OK);
+    }
+
 }

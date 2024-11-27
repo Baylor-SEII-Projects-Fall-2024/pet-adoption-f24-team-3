@@ -61,7 +61,7 @@ export default function MultipleSelect(props) {
           )}
           MenuProps={MenuProps}
         >
-          {items.map((name) => (
+          {items && items.length > 1 && items.map((name) => (
             <MenuItem
               key={name}
               value={name}

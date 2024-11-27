@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import petadoption.api.animal.dtos.AnimalRequestFilter;
+import petadoption.api.animal.responseObjects.AnimalUniqueTypesResponse;
 import petadoption.api.images.ImageService;
 import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.AdoptionCenter;
@@ -147,6 +148,18 @@ public class AnimalService {
 
 
         return animalRepository.save(animal).getId();
+    }
+
+    public AnimalUniqueTypesResponse getUniqueAnimalTypes(){
+        List<String> uniqueSpecies = animalRepository.findDistinctSpecies();
+        List<String> uniqueBreeds = animalRepository.findDistinctBreeds();
+        List<String> uniqueStates = animalRepository.findDistinctStates();
+        AnimalUniqueTypesResponse uniqueTypes = new AnimalUniqueTypesResponse();
+        uniqueTypes.setExistingSpecies(uniqueSpecies);
+        uniqueTypes.setExistingBreeds(uniqueBreeds);
+
+        uniqueTypes.setExistingStates(uniqueStates);
+        return uniqueTypes;
     }
 
     public void clearData() {

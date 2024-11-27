@@ -25,4 +25,11 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, AnimalRep
 
     @Query("SELECT a FROM Animal a WHERE a.adopted = false ORDER BY a.datePosted DESC")
     Page<Animal> findAllByOrderByDatePostedDesc(Pageable pageable);
+
+    @Query("SELECT DISTINCT a.species FROM Animal a WHERE a.adopted = false ORDER BY a.species")
+    List<String> findDistinctSpecies();
+    @Query("SELECT DISTINCT a.breed FROM Animal a WHERE a.adopted = false ORDER BY a.breed")
+    List<String> findDistinctBreeds();
+    @Query("SELECT DISTINCT a.state FROM Animal a WHERE a.adopted = false ORDER BY a.state")
+    List<String> findDistinctStates();
 }
