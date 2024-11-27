@@ -37,15 +37,16 @@ export default function EventsPage() {
   const [eventData, setEventData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [stateSort, setStateSort] = useState("");
-  const [citySort, setCitySort] = useState("");
+  const [stateFilter, setStateFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  const [filter, setFilter] = useState(false);
 
   useEffect(() => {
     async function load() {
       setPage(1); 
       setHasMore(true);
 
-      const result = await getEventsByPageSort(quantityPerPage, 0, stateSort, citySort);
+      const result = await getEventsByPageSort(quantityPerPage, 0, stateFilter, cityFilter);
       if (result && result.length > 0) {
         const eventCenters = await fetchCenterData(result);
         setEventData(eventCenters);
@@ -55,7 +56,7 @@ export default function EventsPage() {
       }
     }
     load();
-}, [stateSort, citySort]); 
+}, [filter]); 
 
 
   const fetchCenterData = async (events) => {
@@ -74,7 +75,7 @@ export default function EventsPage() {
     const nextPage = page;
     setPage(nextPage + 1);
   
-    const result = await getEventsByPageSort(quantityPerPage, nextPage, stateSort, citySort);
+    const result = await getEventsByPageSort(quantityPerPage, nextPage, stateFilter, cityFilter);
     if (result && result.length > 0) {
       const eventCenters = await fetchCenterData(result);
       setEventData((prevData) => [...prevData, ...eventCenters]);
@@ -86,16 +87,24 @@ export default function EventsPage() {
 
   const handleSortChangeState = (e) => {
     const value = e.target.value;
-    setStateSort(value); 
+    setStateFilter(value); 
     setPage(1);
   };
   
   const handleSortChangeCity = (e) => {
     const value = e.target.value;
-    setCitySort(value);
+    setCityFilter(value);
     setPage(1);
   };
   
+  const handleFilterChange = (e) => {
+    if(filter == false){
+      setFilter(true);
+    }else{
+      setFilter(false);
+    }
+    
+  }
 
   return (
     <>
@@ -144,7 +153,7 @@ export default function EventsPage() {
                         <Select
                             labelId="state-select-label"
                             id="state-select"
-                            value={stateSort}
+                            value={stateFilter}
                             size="small"
                             onChange={handleSortChangeState}
                             sx={{ width: "10em" }}
@@ -158,7 +167,7 @@ export default function EventsPage() {
               <TextField
                 label="Filter by City"
                 variant="outlined"
-                value={citySort}
+                value={cityFilter}
                 onChange={handleSortChangeCity}
                 sx={{ minWidth: "100px", 
                   height: "40px", 
@@ -167,6 +176,12 @@ export default function EventsPage() {
                   }, 
                 }}
               />
+              <Button 
+                onClick={handleFilterChange}
+                variant="contained"
+                color="secondary">
+                  Search
+              </Button>
               </Box>
             </CardContent>
           </Card>
