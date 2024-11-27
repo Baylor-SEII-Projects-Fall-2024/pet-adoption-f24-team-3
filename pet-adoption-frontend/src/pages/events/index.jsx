@@ -28,7 +28,7 @@ const quantityPerPage = 12;
 
 export default function EventsPage() {
   const router = useRouter();
-  const { getEventsByPage } = eventService();
+  const { getEventsByPageSort } = eventService();
   const { getCenterInfo } = userService();
   const currentUserType = useSelector(
     (state) => state.currentUser.currentUserType
@@ -37,37 +37,26 @@ export default function EventsPage() {
   const [eventData, setEventData] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  const [filteredEvents, setFilteredEvents] = useState([]);
-  const [stateFilter, setStateFilter] = useState("");
-  const [cityFilter, setCityFilter] = useState("");
-  
+  const [stateSort, setStateSort] = useState("");
+  const [citySort, setCitySort] = useState("");
 
   useEffect(() => {
     async function load() {
-      await getEventsByPage(quantityPerPage, 0)
-        .then(async (result) => {
-          if (result != null) {
-            if (result.length < 1) {
-              setHasMore(false);
-            } else {
-              const eventCenters = await fetchCenterData(result);
-              setEventData(eventCenters);
-              setFilteredEvents(eventCenters);
-            }
-          } else {
-            console.error(
-              "There was an error fetching more event data, returned",
-              result
-            );
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error fetching more event data: ", error);
-        });
+      setPage(1); // Reset page to 1
+      setHasMore(true); // Reset infinite scroll state
+
+      const result = await getEventsByPageSort(quantityPerPage, 0, stateSort, citySort);
+      if (result && result.length > 0) {
+        const eventCenters = await fetchCenterData(result);
+        setEventData(eventCenters);
+      } else {
+        setEventData([]); // No events found
+        setHasMore(false); // No more data to load
+      }
     }
     load();
-  }, []);
+}, [stateSort, citySort]); // Fetch when either of these values change
+
 
   const fetchCenterData = async (events) => {
     const eventCenters = await Promise.all(
@@ -80,62 +69,50 @@ export default function EventsPage() {
   };
 
   const fetchMoreData = async () => {
-    if (eventData.length === 0) {
-      setPage(0);
+    if (!hasMore) return; // If no more data, don't fetch
+  
+    // Increment page number only for the next fetch
+    const nextPage = page;
+    setPage(nextPage + 1); // Increment page number
+  
+    const result = await getEventsByPageSort(quantityPerPage, nextPage, stateSort, citySort);
+    if (result && result.length > 0) {
+      const eventCenters = await fetchCenterData(result);
+      setEventData((prevData) => [...prevData, ...eventCenters]); // Append new events to existing data
+    } else {
+      setHasMore(false); // No more data
     }
-    await getEventsByPage(quantityPerPage, page)
-      .then(async (result) => {
-        if (result != null) {
-          if (result.length < 1) {
-            setHasMore(false);
-          } else {
-            const newEventsWithCenters = await fetchCenterData(result);
-            const newEventData = [...eventData, ...newEventsWithCenters];
-            setEventData(newEventData);
-            applyFilters(newEventData); 
-            setPage((currentPage) => currentPage + 1);
-          }
-        } else {
-          console.error(
-            "There was an error fetching more event data, returned",
-            result
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error fetching more event info", error);
-      });
   };
+  
 
-  useEffect(() => {
-    applyFilters();
-  }, [stateFilter, cityFilter, eventData]);
-
-  const applyFilters = () => {
-    const filtered = eventData.filter((event) => {
-      const matchesState =
-        stateFilter.length > 0
-          ? event.center?.state.toLowerCase() === stateFilter.toLowerCase()
-          : true;
-
-      const matchesCity =
-        cityFilter.length > 0
-          ? event.center?.city.toLowerCase() === cityFilter.toLowerCase()
-          : true;
-
-      return matchesState && matchesCity;
-    });
-
-    setFilteredEvents(filtered);
+  const handleSortChangeState = (e) => {
+    const value = e.target.value;
+    setStateSort(value); // Update state sort
+    setPage(1); // Reset page to 1 when filters change
   };
-
-  const handleStateFilterChange = (e) => {
-    setStateFilter(e.target.value);
+  
+  const handleSortChangeCity = (e) => {
+    const value = e.target.value;
+    setCitySort(value); // Update city sort
+    setPage(1); // Reset page to 1 when filters change
   };
-
-  const handleCityFilterChange = (e) => {
-    setCityFilter(e.target.value);
-  };
+  
+  // const loadData = async (newStateSort, newCitySort) => {
+  //   try {
+  //     const result = await getEventsByPageSort(quantityPerPage, 0, newStateSort, newCitySort); // Get events from API
+  //     if (result && result.length > 0) {
+  //       const eventCenters = await fetchCenterData(result); // Fetch center data
+  //       setEventData(eventCenters); // Set the fetched data
+  //     } else {
+  //       setEventData([]); // Reset if no events are found
+  //       setHasMore(false); // Disable infinite scroll
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching events:", error);
+  //   }
+  // };
+  
+  
 
   return (
     <>
@@ -184,9 +161,9 @@ export default function EventsPage() {
                         <Select
                             labelId="state-select-label"
                             id="state-select"
-                            value={stateFilter}
+                            value={stateSort}
                             size="small"
-                            onChange={(event) => handleStateFilterChange(event)}
+                            onChange={handleSortChangeState}
                             sx={{ width: "10em" }}
                         >
                             <MenuItem value={""}>Please Select</MenuItem>
@@ -198,8 +175,8 @@ export default function EventsPage() {
               <TextField
                 label="Filter by City"
                 variant="outlined"
-                value={cityFilter}
-                onChange={handleCityFilterChange}
+                value={citySort}
+                onChange={handleSortChangeCity}
                 sx={{ minWidth: "100px", 
                   height: "40px", 
                   "& .MuiInputBase-root": {
@@ -218,13 +195,13 @@ export default function EventsPage() {
             }}
           >
             <InfiniteScroll
-              dataLength={filteredEvents.length}
+              dataLength={eventData.length}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={<Loading doneLoading={!hasMore} page={page} />}
             >
               <Grid container spacing={4} sx={{ minHeight: "50px" }}>
-                {filteredEvents.map((event) => (
+                {eventData.map((event) => (
                   <Grid item xs={11} sm={5} md={3} key={event.id}>
                     <Box
                       onClick={() => router.push(`/events/${event.id}`)}

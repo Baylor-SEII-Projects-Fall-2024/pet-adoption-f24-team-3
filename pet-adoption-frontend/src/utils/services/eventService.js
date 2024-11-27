@@ -143,6 +143,37 @@ const eventService = () => {
         }
     }
 
+    const getEventsByPageSort = async (pageSize, pageNumber, stateSort, citySort) => {
+        let url = `${apiUrl}/api/events/paginated/sort?pageSize=${pageSize}&pageNumber=${pageNumber}`;
+    
+        if (stateSort) {
+            url += `&stateSort=${encodeURIComponent(stateSort)}`;
+        }
+        if (citySort) {
+            url += `&citySort=${encodeURIComponent(citySort)}`;
+        }
+    
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+    
+        const result = await response.json();
+        console.log(url); // Log the URL being sent to the API
+        console.log(result); // Log the result returned by the API
+
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting events failed: ${result.message}`);
+            return null;
+        }
+    }
+    
+
 
     return {
         createEvent,
@@ -151,6 +182,7 @@ const eventService = () => {
         deleteEvent,
         getCenterEvents,
         getEventsByPage,
+        getEventsByPageSort,
     };
 
 };
