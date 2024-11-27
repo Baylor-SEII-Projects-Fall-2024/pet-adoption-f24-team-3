@@ -42,20 +42,20 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function load() {
-      setPage(1); // Reset page to 1
-      setHasMore(true); // Reset infinite scroll state
+      setPage(1); 
+      setHasMore(true);
 
       const result = await getEventsByPageSort(quantityPerPage, 0, stateSort, citySort);
       if (result && result.length > 0) {
         const eventCenters = await fetchCenterData(result);
         setEventData(eventCenters);
       } else {
-        setEventData([]); // No events found
-        setHasMore(false); // No more data to load
+        setEventData([]); 
+        setHasMore(false);
       }
     }
     load();
-}, [stateSort, citySort]); // Fetch when either of these values change
+}, [stateSort, citySort]); 
 
 
   const fetchCenterData = async (events) => {
@@ -69,49 +69,32 @@ export default function EventsPage() {
   };
 
   const fetchMoreData = async () => {
-    if (!hasMore) return; // If no more data, don't fetch
+    if (!hasMore) return; 
   
-    // Increment page number only for the next fetch
     const nextPage = page;
-    setPage(nextPage + 1); // Increment page number
+    setPage(nextPage + 1);
   
     const result = await getEventsByPageSort(quantityPerPage, nextPage, stateSort, citySort);
     if (result && result.length > 0) {
       const eventCenters = await fetchCenterData(result);
-      setEventData((prevData) => [...prevData, ...eventCenters]); // Append new events to existing data
+      setEventData((prevData) => [...prevData, ...eventCenters]);
     } else {
-      setHasMore(false); // No more data
+      setHasMore(false); 
     }
   };
   
 
   const handleSortChangeState = (e) => {
     const value = e.target.value;
-    setStateSort(value); // Update state sort
-    setPage(1); // Reset page to 1 when filters change
+    setStateSort(value); 
+    setPage(1);
   };
   
   const handleSortChangeCity = (e) => {
     const value = e.target.value;
-    setCitySort(value); // Update city sort
-    setPage(1); // Reset page to 1 when filters change
+    setCitySort(value);
+    setPage(1);
   };
-  
-  // const loadData = async (newStateSort, newCitySort) => {
-  //   try {
-  //     const result = await getEventsByPageSort(quantityPerPage, 0, newStateSort, newCitySort); // Get events from API
-  //     if (result && result.length > 0) {
-  //       const eventCenters = await fetchCenterData(result); // Fetch center data
-  //       setEventData(eventCenters); // Set the fetched data
-  //     } else {
-  //       setEventData([]); // Reset if no events are found
-  //       setHasMore(false); // Disable infinite scroll
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching events:", error);
-  //   }
-  // };
-  
   
 
   return (
