@@ -15,13 +15,14 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import preferenceService from "@/utils/services/preferenceService";
-import stateNames from '@/utils/lists';
+import infoLists from '@/utils/lists';
 
 export default function EditPreferencesPage() {
     const router = useRouter();
     const { userId } = router.query; //get user ID from the routing
     const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
     const { updatePreferences, getPreferences } = preferenceService();
+    const { stateNames } = infoLists();
 
     const [loading, setLoading] = useState(true);
     const [preferences, setPreferences] = useState(null);

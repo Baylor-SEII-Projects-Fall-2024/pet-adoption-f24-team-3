@@ -7,12 +7,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
-import stateNames from "@/utils/lists";
-
+import infoLists
+    from "@/utils/lists";
 export default function EditEvent() {
     const router = useRouter();
     const { eventID } = router.query;
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+    const { stateNames } = infoLists();
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
 
