@@ -147,10 +147,10 @@ const eventService = () => {
         let url = `${apiUrl}/api/events/paginated/sort?pageSize=${pageSize}&pageNumber=${pageNumber}`;
     
         if (stateSort) {
-            url += `&stateSort=${encodeURIComponent(stateSort)}`;
+            url += `&state=${encodeURIComponent(stateSort)}`;
         }
         if (citySort) {
-            url += `&citySort=${encodeURIComponent(citySort)}`;
+            url += `&city=${encodeURIComponent(citySort)}`;
         }
     
         

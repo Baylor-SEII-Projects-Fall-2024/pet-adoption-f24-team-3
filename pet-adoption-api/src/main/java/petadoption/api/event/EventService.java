@@ -74,9 +74,9 @@ public class EventService {
     }
 
     public List<Event> paginateEvents(Integer pageSize, Integer pageNumber, String state, String city) {
+        System.out.println("Filtering by State: " + state + " City: " + city);  // Log to check values
+
         Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
-
-
         return eventRepository.findByStateAndCity(state, city, pagingRequest).getContent();
     }
 
