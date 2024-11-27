@@ -29,7 +29,7 @@ public class AnimalCardResponse {
         this.sex=sourceAnimal.getSex();
         this.isLiked = sourceAnimal.isLiked;
         this.isDisliked = sourceAnimal.isDisliked;
-        this.adopted=sourceAnimal.isAdopted();
+        this.adopted=sourceAnimal.getAdopted();
     }
 
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const chatService = () => {
 
+const chatService = () => {
     function chatList(userId) {
         const [chats, setChats] = useState([]);
         const [loading, setLoading] = useState(true);
@@ -11,7 +11,12 @@ const chatService = () => {
         useEffect(() => {
             const fetchChats = async () => {
                 try {
-                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`);
+                    const response = await fetch(`${apiUrl}/api/chats/byUser?userID=${userId}`, {
+                        method: 'GET',
+                        credentials: "include",
+                        headers: {
+                        },
+                    });
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chats for {userId}`);
                     }
@@ -42,9 +47,12 @@ const chatService = () => {
 
     function getChatInfoByUserId(userID, pageSize, pageNumber) {
         return new Promise((resolve, reject) => {
-            let url = `${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-            fetch(url)
+            fetch(`${apiUrl}/api/chats/chatInfoByUser?userID=${userID}&pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                },
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch chat info');
@@ -63,7 +71,12 @@ const chatService = () => {
         return new Promise((resolve, reject) => {
             let url = `${apiUrl}/api/chats/byChatID?chatID=${currentChatId}`;
 
-            fetch(url)
+            fetch(url, {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                },
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Failed to fetch chat by id = ${chatID}`)
@@ -81,8 +94,8 @@ const chatService = () => {
     const getUnreadMessages = async (userId) => {
         const response = await fetch(`${apiUrl}/api/chats/unreadCount?userID=${userId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
             }
         });
 
@@ -109,8 +122,8 @@ const chatService = () => {
     const getOrCreateChat = async (senderID, receiverID) => {
         const response = await fetch(`${apiUrl}/api/chats/getOrCreate?senderID=${senderID}&receiverID=${receiverID}`, {
             method: "POST",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
             }
         });
         const result = await response.json();
@@ -124,8 +137,8 @@ const chatService = () => {
     const getChatByChatID = async (chatId) => {
         const response = await fetch(`${apiUrl}/api/chats/${chatId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
             }
         });
         const result = await response.json();
@@ -140,8 +153,8 @@ const chatService = () => {
     const updateMessageStatus = async (messageID, status) => {
         const response = await fetch(`${apiUrl}/api/chats/messageReadStatus?messageID=${messageID}&status=${status}`, {
             method: "PUT",
+            credentials: "include",
             headers: {
-                "Content-Type": "application/json"
             }
         });
         const result = await response.json();

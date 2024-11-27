@@ -66,7 +66,7 @@ public class Animal {
     private String state;
 
     @Column(name = "IS_ADOPTED")
-    private boolean adopted = false;
+    private Boolean adopted = false;
 
     @Transient
     public  boolean isLiked = false;

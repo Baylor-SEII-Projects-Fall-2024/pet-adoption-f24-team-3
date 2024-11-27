@@ -5,6 +5,7 @@ const preferenceService = () => {
     const getPreferences = async (userId) => {
         const response = await fetch(`${apiUrl}/api/preferences/${userId}`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             }
@@ -23,6 +24,7 @@ const preferenceService = () => {
     const updatePreferences = async (formData, userid) => {
         const response = await fetch(`${apiUrl}/api/update/preferences/${userid}`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
