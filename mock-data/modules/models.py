@@ -12,6 +12,9 @@ class ImageType(Enum):
 class Sex(Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
+    NEUTERED_MALE="NEUTERED_MALE"
+    SPAYED_FEMALE="SPAYED_FEMALE"
+
 
 class AgeClass(Enum):
     BABY = "BABY"

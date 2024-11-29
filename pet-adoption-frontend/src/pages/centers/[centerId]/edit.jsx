@@ -15,13 +15,14 @@ import {
   InputLabel,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import stateNames from "@/utils/lists";
+import infoLists from "@/utils/lists";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { centerId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const { updateCenter, getCenterInfo } = userService();
+  const { stateNames } = infoLists();
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
