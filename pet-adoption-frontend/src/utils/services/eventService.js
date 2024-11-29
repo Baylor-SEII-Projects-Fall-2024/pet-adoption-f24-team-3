@@ -160,22 +160,19 @@ const eventService = () => {
         }
     
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
-    
-        const result = await response.json();
-        console.log(url); // Log the URL being sent to the API
-        console.log(result); // Log the result returned by the API
-
-        if (response.ok) {
-            return result;
-        } else {
-            console.error(`Getting events failed: ${result.message}`);
-            return null;
+        try {
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                console.error("Failed to fetch events:", response.status, response.statusText);
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error("Error fetching events:", error);
+            throw error; // or handle as needed
         }
     }
     
