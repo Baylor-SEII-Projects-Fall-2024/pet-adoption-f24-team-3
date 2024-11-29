@@ -137,22 +137,39 @@ const animalService = () => {
         }
     };
 
-    const getRecommendedAnimals = async (userId, pageSize, alreadyDisplayedIds) => {
-
-        const response = await fetch(`${apiUrl}/api/animals/recommend?pageSize=${pageSize}&userId=${userId}`, {
+    const getRecommendedAnimals = async (userId, requestFilter, previousIds = []) => {
+        requestFilter.alreadyDisplayedIds = previousIds;
+        const response = await fetch(`${apiUrl}/api/animals/recommend?userId=${userId}`, {
             method: 'POST',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(alreadyDisplayedIds)
+            body: JSON.stringify(requestFilter)
         });
 
         const result = await response.json();
         if (response.ok) {
             return result;
         } else {
-            console.error(`Getting pets failed ${result.message}`);
+            console.error(`Getting recommended animals failed ${result.message}`);
+            return null;
+        }
+    }
+    const getUniqueAnimalTypes = async () => {
+        const response = await fetch(`${apiUrl}/api/animals/uniqueTypes`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            return result;
+        } else {
+            console.error(`Getting unique animal info failed ${result.message}`);
             return null;
         }
     }
@@ -224,6 +241,7 @@ const animalService = () => {
         updateAdoptionStatus,
         deleteAnimal,
         getRecommendedAnimals,
+        getUniqueAnimalTypes,
         getLikedAnimals,
         updateAnimal,
     };

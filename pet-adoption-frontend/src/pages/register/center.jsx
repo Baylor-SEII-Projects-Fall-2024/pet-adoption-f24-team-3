@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Paper, FormControl, InputLabel, MenuItem, Select, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
-import stateNames from "@/utils/lists";
+import infoLists from "@/utils/lists";
 
 export default function RegisterCenterPage() {
     const router = useRouter();
     const { registerCenter } = userService();
-
+    const { stateNames } = infoLists();
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 

@@ -29,7 +29,8 @@ const themeOptions = {
                     border: '2px solid'
                 },
                 outlinedSecondary: {
-                    border: '2px solid'
+                    color: "#5F4B59",
+                    border: '2px solid #c5a5bf  '
                 },
                 containedPrimary: {
                     backgroundColor: '#a3b18a',

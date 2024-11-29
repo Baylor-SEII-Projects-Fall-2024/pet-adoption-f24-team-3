@@ -18,6 +18,14 @@ export default function PetCard(props) {
     setHasInteracted(buttonPressed);
   }
 
+  let styles = {
+    noOverflow: {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    },
+  };
+
   return (
     <Card
       key={pet.id}
@@ -40,7 +48,7 @@ export default function PetCard(props) {
           sx={{
             flex: 0.8,
             width: "100%",
-            height: "300px",
+            //height: "300px",
             overflow: "hidden",
           }}
         >
@@ -57,11 +65,14 @@ export default function PetCard(props) {
           />
         </Box>
         <Box>
-          <Typography variant="h5">
-            {pet.name}, {pet.age}
+          <Typography variant="h5" sx={styles.noOverflow}>
+            {pet.name}
           </Typography>
-          <Typography>
-            {formatSex(pet.sex)} {pet.breed}
+          <Typography sx={styles.noOverflow}>
+            {pet.age} yr. old {formatSex(pet.sex)}
+          </Typography>
+          <Typography sx={styles.noOverflow}  >
+            {pet.breed}
           </Typography>
         </Box>
       </CardContent>

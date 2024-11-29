@@ -5,7 +5,7 @@ import { Grid, Paper, FormControl, MenuItem, Select, InputLabel, Typography, Tex
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import stateNames from "@/utils/lists";
+import infoLists from "@/utils/lists";
 
 import dayjs from 'dayjs';
 import eventService from "@/utils/services/eventService";
@@ -16,6 +16,7 @@ export default function CreateEventPage() {
     const { createEvent } = eventService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const currentUserType = useSelector((state) => state.currentUser.currentUserType);
+    const { stateNames } = infoLists();
 
     const currDate = new Date().toISOString();
 
