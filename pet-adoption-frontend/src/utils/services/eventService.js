@@ -172,7 +172,7 @@ const eventService = () => {
             return data;
         } catch (error) {
             console.error("Error fetching events:", error);
-            throw error; // or handle as needed
+            throw error; 
         }
     }
     
