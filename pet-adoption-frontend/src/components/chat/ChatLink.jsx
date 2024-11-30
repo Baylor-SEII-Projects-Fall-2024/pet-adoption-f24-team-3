@@ -106,6 +106,9 @@ export default function ChatLink(props) {
               display: "flex",
               alignItems: "flex-start",
               flexDirection: "column",
+              flexGrow: 1,
+              flexShrink: 1,
+              minWidth: 0,
             }}
           >
             <Typography
@@ -131,7 +134,7 @@ export default function ChatLink(props) {
               variant="square"
               alt={linkedName}
               src={photoUrl}
-              sx={{ marginLeft: "40px" }}
+              sx={{ marginLeft: "10px", width: "60px", height: "60px" }}
             ></Avatar>
           )}
         </Box>
