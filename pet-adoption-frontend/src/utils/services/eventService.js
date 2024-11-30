@@ -161,7 +161,13 @@ const eventService = () => {
     
         
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
             
             if (!response.ok) {
                 console.error("Failed to fetch events:", response.status, response.statusText);

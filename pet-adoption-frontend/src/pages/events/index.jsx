@@ -22,7 +22,7 @@ import Loading from "@/components/Loading";
 import eventService from "@/utils/services/eventService";
 import userService from "@/utils/services/userService";
 import EventCard from "@/components/EventCard";
-import stateNames from "@/utils/lists";
+import infoLists from "@/utils/lists";
 
 const quantityPerPage = 12;
 
@@ -41,6 +41,8 @@ export default function EventsPage() {
   const [cityFilter, setCityFilter] = useState("");
   const [filter, setFilter] = useState(false);
 
+  const stateNames = infoLists().stateNames
+
   useEffect(() => {
     async function load() {
       setPage(1); 
@@ -48,8 +50,7 @@ export default function EventsPage() {
 
       const result = await getEventsByPageSort(quantityPerPage, 0, stateFilter, cityFilter);
       if (result && result.length > 0) {
-        const eventCenters = await fetchCenterData(result);
-        setEventData(eventCenters);
+        setEventData(result);
       } else {
         setEventData([]); 
         setHasMore(false);
@@ -59,16 +60,6 @@ export default function EventsPage() {
 }, [filter]); 
 
 
-  const fetchCenterData = async (events) => {
-    const eventCenters = await Promise.all(
-      events.map(async (event) => {
-        const center = await getCenterInfo(event.centerId);
-        return { ...event, center };
-      })
-    );
-    return eventCenters;
-  };
-
   const fetchMoreData = async () => {
     if (!hasMore) return; 
   
@@ -77,8 +68,7 @@ export default function EventsPage() {
   
     const result = await getEventsByPageSort(quantityPerPage, nextPage, stateFilter, cityFilter);
     if (result && result.length > 0) {
-      const eventCenters = await fetchCenterData(result);
-      setEventData((prevData) => [...prevData, ...eventCenters]);
+      setEventData((prevData) => [...prevData, ...result]);
     } else {
       setHasMore(false); 
     }

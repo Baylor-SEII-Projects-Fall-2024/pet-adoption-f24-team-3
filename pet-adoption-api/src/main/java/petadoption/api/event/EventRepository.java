@@ -12,8 +12,6 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> getEventsByCenterId(Long centerId);
-    List<Event> getEventsByState(String state);
-    Page<Event> findByState(String state, Pageable pageable);
 
     @Query("SELECT e FROM Event e " +
             "WHERE (:state IS NULL OR e.state = :state) " +
