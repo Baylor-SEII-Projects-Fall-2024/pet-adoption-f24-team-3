@@ -24,13 +24,6 @@ export default function ChatLink(props) {
     return match ? match[1] : null;
   };
 
-  const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
-    }
-    return text;
-  };
-
   useEffect(() => {
     const extractedId = extractNumber(message.link);
     if (extractedId) {
@@ -115,8 +108,16 @@ export default function ChatLink(props) {
               flexDirection: "column",
             }}
           >
-            <Typography variant="body1" fontWeight="bold">
-              {truncateText(linkedName, 20)}
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {linkedName}
             </Typography>
             <Typography variant="caption">
               {linkType.replace(

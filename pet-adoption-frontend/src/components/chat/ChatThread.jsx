@@ -198,7 +198,7 @@ export default function ChatThread(props) {
   const handleMessageSend = async () => {
     if (myMessage != "") {
       if (recipient.id == null) return;
-      console.log(msgLink);
+
       if (msgLink && msgLink == "") {
         setMsgLink(null);
       }
@@ -284,7 +284,7 @@ export default function ChatThread(props) {
           scrollableTarget="messageDiv"
         >
           {messages.map((message, index) => (
-            <React.Fragment key={index}>
+            <Box key={index}>
               <ChatMessage
                 message={message}
                 isSender={message.senderID == currentUserId}
@@ -306,7 +306,7 @@ export default function ChatThread(props) {
                   }
                 />
               )}
-            </React.Fragment>
+            </Box>
           ))}
         </InfiniteScroll>
         <div ref={messagesEndRef} />
