@@ -15,7 +15,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e " +
             "WHERE (:state IS NULL OR e.state = :state) " +
-            "AND (:city IS NULL OR e.city = :city)")
+            "AND (:city IS NULL OR e.city LIKE :city)")
     Page<Event> findByStateAndCity(
             @Param("state") String state,
             @Param("city") String city,

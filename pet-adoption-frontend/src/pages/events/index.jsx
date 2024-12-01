@@ -78,13 +78,13 @@ export default function EventsPage() {
   const handleSortChangeState = (e) => {
     const value = e.target.value;
     setStateFilter(value); 
-    setPage(1);
+    setPage(0);
   };
   
   const handleSortChangeCity = (e) => {
     const value = e.target.value;
     setCityFilter(value);
-    setPage(1);
+    setPage(0);
   };
   
   const handleFilterChange = (e) => {

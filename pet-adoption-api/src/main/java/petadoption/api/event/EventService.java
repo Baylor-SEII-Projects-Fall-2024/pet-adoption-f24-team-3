@@ -74,7 +74,10 @@ public class EventService {
     }
 
     public List<Event> paginateEvents(Integer pageSize, Integer pageNumber, String state, String city) {
-
+        if(city != null){
+            city = city + "%";
+            city = "%" + city;
+        }
         Pageable pagingRequest = PageRequest.of(pageNumber, pageSize);
         return eventRepository.findByStateAndCity(state, city, pagingRequest).getContent();
     }
