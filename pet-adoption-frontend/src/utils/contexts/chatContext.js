@@ -10,17 +10,18 @@ export const ChatProvider = ({ children }) => {
     const [isChatDialogOpen, setIsChatDialogOpen] = useState(false);
     const [currentChatId, setCurrentChatId] = React.useState(null);
     const [myMessage, setMyMessage] = useState("");
+    const [msgLink, setMsgLink] = useState("");
     const [currentChatPage, setCurrentChatPage] = React.useState("INBOX");
     const { getOrCreateChat } = chatService();
 
     //opens the chat dialog with the specified user. Creates a chat if DNE
-    const openChatByUser = async (senderID, receiverID, defaultMessage = "") => {
+    const openChatByUser = async (senderID, receiverID, defaultMessage = "", link = "") => {
         //TODO: CALL a service function to get or create a chat based on the other user's id
 
         await getOrCreateChat(senderID, receiverID)
             .then((result) => {
                 if (result != null) {
-                    openChat(result.id, defaultMessage);
+                    openChat(result.id, defaultMessage, link);
                 } else {
                     console.error("ERROR fetching chat!");
                 }
@@ -42,10 +43,11 @@ export const ChatProvider = ({ children }) => {
     };
 
     //opens the chat dialog (if closed) to the chat with the specified chat ID
-    const openChat = (chatId, defaultMessage = "") => {
+    const openChat = (chatId, defaultMessage = "", link = "") => {
         setCurrentChatId(chatId);
         setCurrentChatPage("CHAT");
         setMyMessage(defaultMessage);
+        setMsgLink(link);
         setIsChatDialogOpen(true);
     }
     //opens the chat dialog (if closed) to the inbox
@@ -73,6 +75,9 @@ export const ChatProvider = ({ children }) => {
 
                 myMessage,
                 setMyMessage,
+
+                msgLink,
+                setMsgLink,
             }}>
             {children}
         </ChatContext.Provider>

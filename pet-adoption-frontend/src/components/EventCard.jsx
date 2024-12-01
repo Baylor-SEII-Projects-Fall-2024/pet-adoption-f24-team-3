@@ -42,7 +42,7 @@ export default function EventCard(props) {
         >
           <Typography variant="h5">{event.name}</Typography>
           {format(new Date(event.dateStart), "MM dd yyyy") ===
-            format(new Date(event.dateEnd), "MM dd yyyy") ? (
+          format(new Date(event.dateEnd), "MM dd yyyy") ? (
             <>
               <Typography>
                 {format(new Date(event.dateStart), "MMM dd, yyyy")}
@@ -59,9 +59,10 @@ export default function EventCard(props) {
             </Typography>
           )}
           {event.city && event.state && (
-            <Typography>{event.city}, {event.state}</Typography>)
-          }
-
+            <Typography>
+              {event.city}, {event.state}
+            </Typography>
+          )}
         </Box>
       </CardContent>
     </Card>

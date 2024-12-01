@@ -17,10 +17,18 @@ import { useChat } from "@/utils/contexts/chatContext";
 import userService from "@/utils/services/userService";
 import chatService from "@/utils/services/chatService";
 import { ArrowBack, Send } from "@mui/icons-material";
+import ChatLink from "./ChatLink";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ChatThread(props) {
-  const { currentChatId, openInbox, myMessage, setMyMessage } = useChat();
+  const {
+    currentChatId,
+    openInbox,
+    myMessage,
+    setMyMessage,
+    msgLink,
+    setMsgLink,
+  } = useChat();
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const currentUserFullName = useSelector(
     (state) => state.currentUser.currentUserFullName
@@ -126,7 +134,7 @@ export default function ChatThread(props) {
     let client = Stomp.over(socket);
 
     // Disable logging
-    client.debug = () => { };
+    client.debug = () => {};
 
     async function setup() {
       await getChat();
@@ -170,26 +178,39 @@ export default function ChatThread(props) {
     });
   }, [messages]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMyMessage(value);
   };
 
   const handleSendKeyContact = async (event) => {
-    if (event.key == "Enter") {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default behavior of adding a newline
       handleMessageSend();
     }
   };
   const handleMessageSend = async () => {
     if (myMessage != "") {
       if (recipient.id == null) return;
+
+      if (msgLink && msgLink == "") {
+        setMsgLink(null);
+      }
       sendMessage(
         currentChatId,
         currentUserId,
         recipient.id,
         myMessage,
+        msgLink,
         stompClient
       );
+      setMsgLink(null);
       setMyMessage("");
     }
   };
@@ -256,7 +277,6 @@ export default function ChatThread(props) {
       >
         <InfiniteScroll
           dataLength={messages.length}
-          //next={this.fetchMoreData}
           style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
           inverse={true} //
           hasMore={false}
@@ -264,19 +284,31 @@ export default function ChatThread(props) {
           scrollableTarget="messageDiv"
         >
           {messages.map((message, index) => (
-            <ChatMessage
-              key={index}
-              message={message}
-              isSender={message.senderID == currentUserId}
-              senderName={
-                message.senderID == currentUserId
-                  ? currentUserFullName
-                  : recipient.name
-              }
-            />
+            <Box key={index}>
+              <ChatMessage
+                message={message}
+                isSender={message.senderID == currentUserId}
+                senderName={
+                  message.senderID == currentUserId
+                    ? currentUserFullName
+                    : recipient.name
+                }
+              />
+              {message.link != null && (
+                <ChatLink
+                  link={message.link}
+                  message={message}
+                  isSender={message.senderID == currentUserId}
+                  senderName={
+                    message.senderID == currentUserId
+                      ? currentUserFullName
+                      : recipient.name
+                  }
+                />
+              )}
+            </Box>
           ))}
         </InfiniteScroll>
-
         <div ref={messagesEndRef} />
       </Box>
       <Box
@@ -296,7 +328,6 @@ export default function ChatThread(props) {
             mt: "10px",
             mb: "10px",
             backgroundColor: "white",
-
           }}
           fullWidth
           multiline

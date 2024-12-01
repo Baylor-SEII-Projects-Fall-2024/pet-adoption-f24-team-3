@@ -32,6 +32,9 @@ public class Message {
     @Column(name = "CONTENT")
     private String content;
 
+    @Column(name = "LINK")
+    private String link = null;
+
     @Column(name = "TIMESTAMP")
     private Date timestamp;
 
