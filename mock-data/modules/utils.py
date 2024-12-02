@@ -12,7 +12,7 @@ def api_post_img(url: str, endpoint: str, imageFile: str, indent: str,token:str)
     # Open file in binary mode to read and send
     with open(imageFile, "rb") as imgFile:
         files = {"imageFile": imgFile}
-        response = requests.post(f"{url}/{endpoint}", files=files,headers={'Authorization': f'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3RlbnRpYWxPd25lckBleGFtcGxlLmNvbSIsImlhdCI6MTczMjczMDY3MSwiZXhwIjoxNzM1MzIyNjcxfQ.GN4MLCCVI7QCA8CwyeIx-mZuy21-qjFty6vs10FpOdc'})
+        response = requests.post(f"{url}/{endpoint}", files=files,headers={'Authorization': f'Bearer {token}'})
     response.raise_for_status()
     return response.json()
 
