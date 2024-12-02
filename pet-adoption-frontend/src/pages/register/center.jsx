@@ -17,6 +17,8 @@ export default function RegisterCenterPage() {
     const [profileImage, setProfileImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState();
 
     const [formData, setFormData] = useState({
         centerName: "",
@@ -36,8 +38,8 @@ export default function RegisterCenterPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        let elm = document.getElementById("errorLabel");
-        elm.innerHTML = "";
+        setFormError(null);
+        setFormSuccess(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
@@ -51,18 +53,14 @@ export default function RegisterCenterPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-        let elm = document.getElementById("errorLabel");
         if(usernameRegex.test(formData.centerName)){
-            elm.innerHTML = "Name contains special characters!";
-            elm.style = "color: red;"
+            setFormError("Name contains special characters!");
             return;
         }
 
         if(passwordRegex.test(formData.password)){
-            elm.innerHTML = "Password has invalid characters!";
-            elm.style = "color: red;"
+            setFormError("Password has invalid characters!");
             return;
         }
 
@@ -155,7 +153,6 @@ export default function RegisterCenterPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleBannerImageUpload} />
-                    <label id="errorLabel"></label>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :
@@ -163,9 +160,13 @@ export default function RegisterCenterPage() {
 
                     }
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
-
-
                 </form>
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}         
             </Paper>
         </Grid>
     )

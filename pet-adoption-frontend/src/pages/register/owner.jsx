@@ -15,6 +15,8 @@ export default function RegisterOwnerPage() {
 
     const [profileImage, setProfileImage] = useState(null);
     const [isUploading, setIsUploading] = useState(null);
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState();
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -29,9 +31,9 @@ export default function RegisterOwnerPage() {
     };
 
     const handleChange = (e) => {
-        let elm = document.getElementById("errorLabel");
-        elm.innerHTML = "";
         const { name, value } = e.target;
+        setFormError(null);
+        setFormSuccess(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
     const handleProfileImageUpload = (e) => {
@@ -41,15 +43,12 @@ export default function RegisterOwnerPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-        let elm = document.getElementById("errorLabel");
         if(usernameRegex.test(formData.firstName) || usernameRegex.test(formData.lastName)){
-            elm.innerHTML = "Name contains special characters!";
-            elm.style = "color: red;"
+            setFormError("Name contains special characters!");
             return;
         }
         if(passwordRegex.test(formData.password)){
-            elm.innerHTML = "Password has invalid characters!";
-            elm.style = "color: red;"
+            setFormError("Password has invalid characters!");
             return;
         }
         if (emptyFields.length > 0) {
@@ -110,8 +109,6 @@ export default function RegisterOwnerPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleProfileImageUpload} />
-
-                    <label id="errorLabel"></label>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :
@@ -119,8 +116,13 @@ export default function RegisterOwnerPage() {
                     }
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
 
-
                 </form>
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}         
             </Paper>
         </Grid>
     )

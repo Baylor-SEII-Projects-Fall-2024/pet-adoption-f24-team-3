@@ -31,11 +31,12 @@ export default function PetsPage() {
     const { createPet } = animalService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
     
-    const usernameRegex = RegExp('[^a-zA-Z]');
+    const fieldRegex = RegExp('[^a-zA-Z]');
 
     const [petPicture, setPetPicture] = useState(null);
     const [isUploading, setIsUploading] = useState(null);
     const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState();
     const [formData, setFormData] = useState({
         name: "",
         species: "",
@@ -52,8 +53,8 @@ export default function PetsPage() {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
-        let elm = document.getElementById("errorLabel");
-        elm.innerHTML = "";
+        setFormError(null);
+        setFormSuccess(null);
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
@@ -68,13 +69,11 @@ export default function PetsPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let elm = document.getElementById("errorLabel");
         // Loop through name, breed, and species for validation
         for(let field in formData){
-            if((field=="name" || field=="breed"||field=="species") 
-                    && usernameRegex.test(formData[field])){
-                elm.innerHTML = `${field} has special characters!`; 
-                elm.style = "color: red;"
+            if((field=="name" || field=="breed"|| field=="species") 
+                    && fieldRegex.test(formData[field])){
+                setFormError(`${field} has special characters!`); 
                 return;
             }
         }
@@ -260,6 +259,12 @@ export default function PetsPage() {
                                         <Button type='submit' variant='contained' color='primary'  >Save</Button>
                                     }
                                 </form>
+                                {formError && (
+                                <Typography color="error">{formError}</Typography>
+                                )}
+                                {formSuccess && (
+                                <Typography color="success">{formSuccess}</Typography>
+                                )}   
                             </Stack>
                         </CardContent>
                     </Card>

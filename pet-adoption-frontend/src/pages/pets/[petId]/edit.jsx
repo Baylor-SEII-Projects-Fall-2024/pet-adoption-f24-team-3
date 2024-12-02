@@ -11,8 +11,12 @@ export default function EditPetPage() {
   const { getAnimal, updateAnimal } = animalService();
   const [loading, setLoading] = useState(true);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
-  const [imageFile, setImageFile] = useState(null);
 
+  const fieldRegex = RegExp('[^a-zA-Z]');
+
+  const [imageFile, setImageFile] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState();
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -28,6 +32,8 @@ export default function EditPetPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormError(null);
+    setFormSuccess(null);
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
 
@@ -38,20 +44,24 @@ export default function EditPetPage() {
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    for(let field in formData){
+      if((field=="name" || field=="breed"|| field=="species") 
+              && fieldRegex.test(formData[field])){
+          setFormError(`${field} has special characters!`); 
+          return;
+      }
+  }
     try {
       await updateAnimal(formData, imageFile, petId)
         .then((petId) => {
           //if user id is not null, that is handled in the hook below
           if (petId !== null) {
-            let elm = document.getElementById("errorLabel");
-            elm.innerHTML = "Pet Settings Saved!";
-            elm.style = "color: green;"
+            setFormError(null);
+            setFormSuccess("Pet Settings Saved!");
           }
           else {
-            let elm = document.getElementById("errorLabel");
-            elm.innerHTML = "An error occured, try again!";
-            elm.style = "color: red;"
+            setFormSuccess(null);
+            setFormError("An error occured, try again!");
           }
         })
 
@@ -245,7 +255,12 @@ export default function EditPetPage() {
                   Save
                 </Button>
               </form>
-              <label id="errorLabel"></label>
+              {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}         
             </Card>
             </Stack>
           </Stack>
