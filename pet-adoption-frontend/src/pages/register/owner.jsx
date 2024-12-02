@@ -7,6 +7,9 @@ export default function RegisterOwnerPage() {
     const router = useRouter();
     const { registerOwner } = userService();
 
+    const passwordRegex = RegExp('[^ -~]');
+    const usernameRegex = RegExp('[^a-zA-Z]');
+
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
@@ -26,6 +29,8 @@ export default function RegisterOwnerPage() {
     };
 
     const handleChange = (e) => {
+        let elm = document.getElementById("errorLabel");
+        elm.innerHTML = "";
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
@@ -35,9 +40,18 @@ export default function RegisterOwnerPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-
+        let elm = document.getElementById("errorLabel");
+        if(usernameRegex.test(formData.firstName) || usernameRegex.test(formData.lastName)){
+            elm.innerHTML = "Name contains special characters!";
+            elm.style = "color: red;"
+            return;
+        }
+        if(passwordRegex.test(formData.password)){
+            elm.innerHTML = "Password has invalid characters!";
+            elm.style = "color: red;"
+            return;
+        }
         if (emptyFields.length > 0) {
             const emptyFieldNames = emptyFields.map(field => {
                 switch (field) {
@@ -57,7 +71,6 @@ export default function RegisterOwnerPage() {
             alert("Passwords do not match!");
             return;
         }
-
 
         try {
             setIsUploading(true);
@@ -98,7 +111,7 @@ export default function RegisterOwnerPage() {
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleProfileImageUpload} />
 
-
+                    <label id="errorLabel"></label>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :

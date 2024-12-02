@@ -11,6 +11,9 @@ export default function RegisterCenterPage() {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
+    const passwordRegex = RegExp('[^ -~]');
+    const usernameRegex = RegExp('[^a-zA-Z]');
+
     const [profileImage, setProfileImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -33,6 +36,8 @@ export default function RegisterCenterPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let elm = document.getElementById("errorLabel");
+        elm.innerHTML = "";
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
@@ -48,6 +53,18 @@ export default function RegisterCenterPage() {
         e.preventDefault();
 
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
+        let elm = document.getElementById("errorLabel");
+        if(usernameRegex.test(formData.centerName)){
+            elm.innerHTML = "Name contains special characters!";
+            elm.style = "color: red;"
+            return;
+        }
+
+        if(passwordRegex.test(formData.password)){
+            elm.innerHTML = "Password has invalid characters!";
+            elm.style = "color: red;"
+            return;
+        }
 
         if (emptyFields.length > 0) {
             const emptyFieldNames = emptyFields.map(field => {
@@ -138,7 +155,7 @@ export default function RegisterCenterPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleBannerImageUpload} />
-
+                    <label id="errorLabel"></label>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :
