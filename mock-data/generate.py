@@ -23,7 +23,7 @@ valid_environments = ['local', 'dev', 'prod', 'backup']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l']
 
 def usage():
-    print("Usage: python3 generate.py <environment> <size>")
+    print("Usage: python3 generate.py <environment> <size>c<bearer token>")
     print("  environments = [local, dev, prod, backup]")
     print("  size         = [small | s, medium | m, large | l]")
     print("  authorizationToken =[authorization token like the one used in postman]")
