@@ -31,6 +31,7 @@ public class AnimalsTest {
     public void testCreateAnimal() {
         try {
             animal = new Animal();
+
             animal.setCenterId(1L);
             animal.setDatePosted(new Date());
             animal.setName("testName");
@@ -47,6 +48,7 @@ public class AnimalsTest {
         }catch (Exception e) {
             fail("Exception thrown " + e.getMessage());
         }
+
     }
     @Test
     @AfterEach
@@ -117,15 +119,7 @@ public class AnimalsTest {
     public void testFindAnimalsByCenterId() {
         assertFalse(animalService.findAnimalsByCenterId(animal.getCenterId()).isEmpty());
     }
-
-    @Test
-    public void testRecommendAnimal(){
-        try {
-        //    assertFalse(animalService.recommendAnimals(1, new ArrayList<Long>()).isEmpty());
-        }catch (Exception e){
-            fail("Exception thrown" + e.getMessage());
-        }
-    }
+    
 
     @Test
     public void testUpdateAnimal(){
