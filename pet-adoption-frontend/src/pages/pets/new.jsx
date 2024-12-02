@@ -30,6 +30,8 @@ export default function PetsPage() {
     const router = useRouter();
     const { createPet } = animalService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
+    
+    const usernameRegex = RegExp('[^a-zA-Z]');
 
     const [petPicture, setPetPicture] = useState(null);
     const [isUploading, setIsUploading] = useState(null);
@@ -50,6 +52,8 @@ export default function PetsPage() {
 
     const handleFormChange = (e) => {
         const { name, value } = e.target;
+        let elm = document.getElementById("errorLabel");
+        elm.innerHTML = "";
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
@@ -64,7 +68,16 @@ export default function PetsPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        let elm = document.getElementById("errorLabel");
+        // Loop through name, breed, and species for validation
+        for(let field in formData){
+            if((field=="name" || field=="breed"||field=="species") 
+                    && usernameRegex.test(formData[field])){
+                elm.innerHTML = `${field} has special characters!`; 
+                elm.style = "color: red;"
+                return;
+            }
+        }
         try {
             setIsUploading(true);
             await createPet(formData, petPicture).then((result) => {
@@ -240,6 +253,7 @@ export default function PetsPage() {
                                         onChange={handlePetImageUpload} />
 
                                     <br></br>
+                                    <label id="errorLabel"></label>
                                     {isUploading ?
                                         <Typography>Creating Pet...</Typography>
                                         :
