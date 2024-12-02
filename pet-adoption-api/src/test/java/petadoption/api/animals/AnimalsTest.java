@@ -119,7 +119,7 @@ public class AnimalsTest {
     public void testFindAnimalsByCenterId() {
         assertFalse(animalService.findAnimalsByCenterId(animal.getCenterId()).isEmpty());
     }
-    
+
 
     @Test
     public void testUpdateAnimal(){
