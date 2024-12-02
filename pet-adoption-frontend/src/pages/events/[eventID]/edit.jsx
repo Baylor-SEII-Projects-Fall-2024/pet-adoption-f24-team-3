@@ -55,6 +55,11 @@ export default function EditEvent() {
     };
 
     const handleDateChange = (date, fieldName) => {
+        setFormError(null);
+        setFormSuccess(null);
+        if(!dayjs(date).isValid()){
+            return;
+        }
         setFormData(prevState => ({
             ...prevState,
             [fieldName]: date ? dayjs(date).toISOString() : null
@@ -66,6 +71,10 @@ export default function EditEvent() {
         e.preventDefault();
         if(fieldRegex.test(formData.name)){
             setFormError("Event name has special characters!");
+            return;
+        }
+        if(dayjs(formData.dateEnd) < dayjs(formData.dateStart)){
+            setFormError("Event cannot end before it starts!");
             return;
         }
         try {
@@ -103,7 +112,10 @@ export default function EditEvent() {
                             datePosted: result.datePosted,
                             description: result.description,
                             dateStart: result.dateStart,
-                            dateEnd: result.dateEnd
+                            dateEnd: result.dateEnd,
+                            address: result.address,
+                            city: result.city,
+                            state: result.state
                         }));
                     }
                 } catch (error) {

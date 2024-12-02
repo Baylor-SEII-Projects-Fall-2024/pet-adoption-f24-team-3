@@ -52,7 +52,8 @@ export default function CreateEventPage() {
     };
 
     const handleDateChange = (date, fieldName) => {
-        if(dayjs(date).isValid){
+        setFormError(null);
+        if(!dayjs(date).isValid()){
             return;
         }
         setFormData(prevState => ({
@@ -72,12 +73,17 @@ export default function CreateEventPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if(fieldRegex.test(formData.name)){
             setFormError("Event name has special characters!");
             return;
         }
-
+        if(dayjs(formData.dateEnd) < dayjs(formData.dateStart)){
+            setFormError("Event cannot end before it starts!");
+            return;
+        }
+        
+        
         try {
             setIsUploading(true);
             await createEvent(formData, thumbnailFile, currentUserId)
