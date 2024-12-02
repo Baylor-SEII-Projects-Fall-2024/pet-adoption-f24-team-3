@@ -50,7 +50,7 @@ export default function EditPetPage() {
           setFormError(`${field} has special characters!`); 
           return;
       }
-  }
+    }
     try {
       await updateAnimal(formData, imageFile, petId)
         .then((petId) => {
