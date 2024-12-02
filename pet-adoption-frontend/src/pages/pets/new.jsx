@@ -252,7 +252,6 @@ export default function PetsPage() {
                                         onChange={handlePetImageUpload} />
 
                                     <br></br>
-                                    <label id="errorLabel"></label>
                                     {isUploading ?
                                         <Typography>Creating Pet...</Typography>
                                         :
