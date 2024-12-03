@@ -19,6 +19,10 @@ export default function CenterProfileCard(props) {
     router.push(`/centers/${centerId}/edit`);
   };
 
+  const handleChangePasswordClick = () => {
+    router.push(`/centers/${centerId}/change-password`);
+  };
+
   return (
     <Box>
       {/* Create card to display centers name and avatar */}
@@ -43,18 +47,39 @@ export default function CenterProfileCard(props) {
           <Typography variant="h4">{centerInfo.name}</Typography>
           {/* Display edit button if user is viewing their own page */}
           {String(centerId) === String(currentUserId) ? (
-            <Button
-              variant="contained"
-              color="secondary"
+            <Box
               sx={{
-                padding: "12px 12px",
-                fontSize: "14px",
-                minWidth: "150px",
+                display: "flex",
+                justifyContent: "flex-end",
+                flexDirection: "column",
+                mt: 2
               }}
-              onClick={handleEditInfoClick}
             >
-              Edit Info
-            </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  padding: "12px 12px",
+                  fontSize: "16px",
+                  minWidth: "200px",
+                }}
+                onClick={handleEditInfoClick}
+              >
+                Edit Info
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  padding: "12px 12px",
+                  fontSize: "16px",
+                  minWidth: "200px",
+                }}
+                onClick={handleChangePasswordClick}
+              >
+                Change Password
+              </Button>
+            </Box>
           ) : (
             <ContactCard contactee={centerId} sender={currentUserId} />
           )}
