@@ -23,17 +23,19 @@ valid_environments = ['local', 'dev', 'prod', 'backup']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l']
 
 def usage():
-    print("Usage: python3 generate.py <environment> <size>")
+    print("Usage: python3 generate.py <environment> <size>c<bearer token>")
     print("  environments = [local, dev, prod, backup]")
     print("  size         = [small | s, medium | m, large | l]")
+    print("  authorizationToken =[authorization token like the one used in postman]")
 
 # Parse arguments
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     usage()
     sys.exit(1)
 
 environment = sys.argv[1]
 size = sys.argv[2]
+authToken= sys.argv[3]
 
 if environment not in valid_environments:
     usage()
@@ -101,16 +103,16 @@ save_pretty_json(potential_owners, f"{environment}_MOCK_OWNERS.json")
 for owner in potential_owners:
     try:
         logger.info(f"Saving {owner['nameFirst']} {owner['nameLast']}")
-        response = api_post(url, "api/owners", owner, "  ")
-        user_id = response['userid']
+        response = api_post(url, "api/auth/register/owner", owner, "  ")
+        user_id = response['userId']
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id), "  ")
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id), "  ",authToken)
 
         # Generate a preference for this user
         preference = generate_preference(user_id)
         logger.info(f"  Saving preference to {owner['nameFirst']} {owner['nameLast']}")
         append_pretty_json([preference], f"{environment}_MOCK_PREFERENCES.json")
-        api_post(url, f"api/update/preferences/{user_id}", preference, "    ")
+        api_post(url, f"api/update/preferences/{user_id}", preference, "    ",authToken)
     except Exception as e:
         logger.error(f"Error adding owner. Reason: {e}")
 
@@ -121,8 +123,8 @@ species_counter = Counter()
 for center in adoption_centers:
     try:
         logger.info(f"Saving {center['name']}")
-        response = api_post(url, "api/centers", center, "  ")
-        user_id = response['userid']
+        response = api_post(url, "api/auth/register/center", center, "  ")
+        user_id = response['userId']
 
         # Generate some pets and events for this center
         num_pets = random.randint(min_pets_per_center, max_pets_per_center)
@@ -140,18 +142,18 @@ for center in adoption_centers:
         append_pretty_json(pets, f"{environment}_MOCK_PETS.json")
         append_pretty_json(events, f"{environment}_MOCK_EVENTS.json")
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id), "    ")
-        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id), "    ")
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id), "    ",authToken)
+        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id), "    ",authToken)
 
         for pet in pets:
             logger.info(f"  Saving pet {pet['name']} to {center['name']}")
-            response = api_post(url, "api/animals/", pet, "    ")
+            response = api_post(url, "api/animals/", pet, "    ",authToken)
             pet_id = response['id']
 
             try:
                 img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
                 if img_url:
-                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url, "      ")
+                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url, "      ",authToken)
                     logger.info(f"      Successfully added image for pet {pet_id}")
                 else:
                     logger.warning(f"      No image generated for pet {pet_id}")
@@ -161,9 +163,9 @@ for center in adoption_centers:
 
         for event in events:
             logger.info(f"  Saving event {event['name']} to {center['name']}")
-            response = api_post(url, "api/events/", event, "    ")
+            response = api_post(url, "api/events/", event, "    ",authToken)
             event_id = response['eventID']
-            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id), "    ")
+            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id), "    ",authToken)
     except Exception as e:
         logger.error(f"Error while adding center. Reason: {e}")
 
