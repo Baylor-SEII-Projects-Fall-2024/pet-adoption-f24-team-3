@@ -370,6 +370,50 @@ const userService = () => {
         }
     };
 
+    const checkOldPasswordAndChange = async (formData, userid) => {
+        // Check if old password matches database
+        const checkResponse = await fetch(`${apiUrl}/api/check-old-password/${userid}`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                oldPassword: formData.oldPassword, // Send the old password for verification
+            }),
+        });
+
+        const checkResult = await checkResponse.json();
+
+        if (!checkResponse.ok) {
+            // If old password check fails, return the error message
+            return { success: false, message: checkResult.message };
+        }
+
+        // If old password is correct, continue with changing password
+        const changeResponse = await fetch(`${apiUrl}/api/update/${userid}/password`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                oldPassword: formData.oldPassword,
+                newPassword: formData.newPassword,
+            }),
+        });
+
+        const changeResult = await changeResponse.json();
+
+        if (changeResponse.ok) {
+            // Return the success message if the password is successfully changed
+            return { success: true, message: "Password Changed!" };
+        } else {
+            // Return the error message if the password change fails
+            return { success: false, message: changeResult.message };
+        }
+    };
+
     return {
         validateLogin,
         registerCenter,
@@ -384,6 +428,7 @@ const userService = () => {
         updateCenter,
         authenticateFromCookie,
         getCenterDetails,
+        checkOldPasswordAndChange,
     };
 
 };
