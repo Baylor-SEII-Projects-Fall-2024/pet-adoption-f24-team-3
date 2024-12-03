@@ -383,11 +383,11 @@ const userService = () => {
             }),
         });
 
-        const checkResult = await checkResponse.json();
+        const checkResult = await checkResponse.text();
 
         // If old password check fails, return the error message
         if (!checkResponse.ok) {
-            return { success: false, message: checkResult.message };
+            return { success: false, message: checkResult };
         }
 
         // If old password is correct, continue with changing password
@@ -402,14 +402,14 @@ const userService = () => {
             }),
         });
 
-        const updateResult = await updateResponse.json();
+        const updateResult = await updateResponse.text();
 
         if (updateResponse.ok) {
             // Return success message
-            return { success: true, message: "Password updated successfully" };
+            return { success: true, message: updateResult };
         } else {
             // Return error message
-            return { success: false, message: updateResult.message || "Failed to update password" };
+            return { success: false, message: updateResult || "Failed to update password" };
         }
     };
 

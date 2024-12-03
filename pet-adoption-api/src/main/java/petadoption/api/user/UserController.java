@@ -166,25 +166,22 @@ public class UserController {
 
     // Request for verifying a user's old password -- used for password change preverification
     @PostMapping("/check-old-password/{userId}")
-    public ResponseEntity<Map<String, String>> checkOldPassword(
+    public ResponseEntity<String> checkOldPassword(
             @PathVariable Long userId,
             @RequestBody CheckOldPasswordDto checkOldPasswordDto) {
 
         boolean isPasswordValid = userService.checkOldPassword(userId, checkOldPasswordDto.getOldPassword());
 
-        Map<String, String> response = new HashMap<>();
         if (isPasswordValid) {
-            response.put("message", "Old password is correct");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok("Old password is correct");
         } else {
-            response.put("message", "Old password is incorrect");
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(400).body("Old password is incorrect");
         }
     }
 
     // Request for changing a users password
     @PostMapping("/change-password/{userId}")
-    public ResponseEntity<Map<String, String>> changePassword(
+    public ResponseEntity<String> changePassword(
             @PathVariable Long userId,
             @RequestBody ChangePasswordDto changePasswordDto) {
 
@@ -193,13 +190,10 @@ public class UserController {
 
         boolean isPasswordChanged = userService.changePassword(user, changePasswordDto.getNewPassword());
 
-        Map<String, String> response = new HashMap<>();
         if (isPasswordChanged) {
-            response.put("message", "Password updated successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok("Password updated successfully!");
         } else {
-            response.put("message", "Failed to update password");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update password");
         }
     }
 }
