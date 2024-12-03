@@ -49,6 +49,9 @@ export default function PetsPage() {
   const [sexFilter, setSexFilter] = React.useState([]);
   const [currentFilter, setCurrentFilter] = React.useState({ "pageSize": quantityPerPage });
 
+  const [totalDislikes, setTotalDislikes] = React.useState(0);
+  const [showEuthanization, setShowEuthanization] = React.useState(false);
+  const [fifthDislikedPetIds, setFifthDislikedPetIds] = React.useState([]);
 
   const ageSliderMarks = [
     {
@@ -221,10 +224,23 @@ export default function PetsPage() {
     const filter = await updateRequestFilter();
     await fetchFirstData(filter);
   }
+
   const onResetFilters = async () => {
     await resetAnimalData();
     const filter = await resetRequestFilter();
     await fetchFirstData(filter);
+  }
+
+  const updateTotalDislikes = (petId) => {
+    const updatedTotalDislikes = totalDislikes + 1;
+    console.log(`updating total dislike count to ${updatedTotalDislikes}`);
+    setTotalDislikes(updatedTotalDislikes);
+    if (updatedTotalDislikes >= 5) {
+      console.log(`Adding pet with id ${petId} to fifth disliked pets`);
+      setFifthDislikedPetIds([...fifthDislikedPetIds, petId]);
+      setShowEuthanization(true);
+      setTotalDislikes(0); // Reset dislike count after showing the message
+    }
   }
 
   return (
@@ -386,7 +402,11 @@ export default function PetsPage() {
                         onClick={() => router.push(`/pets/${pet.id}`)}
                         sx={{ cursor: "pointer" }}
                       >
-                        <PetCard pet={pet} />
+                        <PetCard
+                          pet={pet}
+                          updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+                          dislikedPetIds={fifthDislikedPetIds}
+                        />
                       </Box>
                     </Grid>
                   ))}
