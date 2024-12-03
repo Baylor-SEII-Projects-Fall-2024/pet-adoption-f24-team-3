@@ -24,6 +24,7 @@ import animalService from "@/utils/services/animalService";
 import PetCard from "@/components/PetCard";
 import MultipleSelect from "@/components/input/MultipleSelect";
 import infoLists from "@/utils/lists";
+import guiltService from "@/utils/services/guiltService";
 const quantityPerPage = 12;
 
 export default function PetsPage() {
@@ -49,9 +50,16 @@ export default function PetsPage() {
   const [sexFilter, setSexFilter] = React.useState([]);
   const [currentFilter, setCurrentFilter] = React.useState({ "pageSize": quantityPerPage });
 
+  const {
+    getDislikeCount,
+    incrementDislikeCount,
+    getEuthanizedPetIds,
+    updateEuthanizedPetIds,
+  } = guiltService();
+
   const [totalDislikes, setTotalDislikes] = React.useState(0);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
   const [showEuthanization, setShowEuthanization] = React.useState(false);
-  const [fifthDislikedPetIds, setFifthDislikedPetIds] = React.useState([]);
 
   const ageSliderMarks = [
     {
@@ -98,6 +106,23 @@ export default function PetsPage() {
   //load when you scroll to the bottom. This is why `page` starts at 1, if it started
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
+    async function initializeGuiltData() {
+      if (!currentUserId) return;
+      try {
+        console.log("Fetching dislike count...");
+        const dislikeCountResult = await getDislikeCount();
+        setTotalDislikes(dislikeCountResult);
+        console.log("Dislike count result: ", dislikeCountResult);
+
+        console.log("Fetching euthanized pets...");
+        const euthanizedPetIdsResult = await getEuthanizedPetIds();
+        setEuthanizedPetIds(euthanizedPetIdsResult);
+        console.log("Euthanized pet results: ", euthanizedPetIdsResult);
+      } catch (error) {
+        console.error("Error fetching guilt data:", error);
+      }
+    }
+    initializeGuiltData();
     async function load() {
       if (!currentUserId) return;
       await fetchAnimalTypes();
@@ -231,15 +256,24 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
-  const updateTotalDislikes = (petId) => {
-    const updatedTotalDislikes = totalDislikes + 1;
-    console.log(`updating total dislike count to ${updatedTotalDislikes}`);
-    setTotalDislikes(updatedTotalDislikes);
-    if (updatedTotalDislikes >= 5) {
-      console.log(`Adding pet with id ${petId} to fifth disliked pets`);
-      setFifthDislikedPetIds([...fifthDislikedPetIds, petId]);
-      setShowEuthanization(true);
-      setTotalDislikes(0); // Reset dislike count after showing the message
+  const updateTotalDislikes = async (petId) => {
+    try {
+      const incrementSuccess = await incrementDislikeCount();
+
+      if (incrementSuccess) {
+        // Fetch updated total dislikes
+        const updatedTotalDislikes = await getDislikeCount();
+        setTotalDislikes(updatedTotalDislikes);
+
+        if (updatedTotalDislikes % 5 === 0) {
+          await updateEuthanizedPetIds(petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds();
+          setEuthanizedPetIds(updatedEuthanizedIds);
+          setShowEuthanization(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating dislikes:", error);
     }
   }
 
@@ -405,7 +439,7 @@ export default function PetsPage() {
                         <PetCard
                           pet={pet}
                           updateTotalDislikes={() => updateTotalDislikes(pet.id)}
-                          dislikedPetIds={fifthDislikedPetIds}
+                          euthanizedPetIds={euthanizedPetIds}
                         />
                       </Box>
                     </Grid>

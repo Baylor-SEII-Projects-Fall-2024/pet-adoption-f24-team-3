@@ -71,7 +71,9 @@ function PetsAndEventsTabs(props) {
                 onClick={() => handlePetClick(pet.id)}
                 sx={{ cursor: "pointer" }}
               >
-                <PetCard pet={pet} />
+                <PetCard
+                  pet={pet}
+/>
               </Box>
             </Grid>
           ))}

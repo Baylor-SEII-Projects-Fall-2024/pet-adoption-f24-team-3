@@ -8,13 +8,13 @@ import LikeButtons from "./LikeButtons";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
-  const { pet, updateTotalDislikes, dislikedPetIds } = props;
+  const { pet, updateTotalDislikes, euthanizedPetIds} = props;
   const { formatSex } = formatter();
   const [hasInteracted, setHasInteracted] = React.useState(false);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
-  const isEuthanized = dislikedPetIds.includes(pet.id);
+  const isEuthanized = euthanizedPetIds.includes(pet.id);
 
   const onLikeInteraction = (buttonPressed) => {
     setHasInteracted(buttonPressed);
