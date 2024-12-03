@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
+    Alert,
     Button,
     Card,
     CardContent,
-    Stack,
-    Typography,
-    TextField,
     IconButton,
     InputAdornment,
+    Snackbar,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 import {
     Visibility,
@@ -34,6 +36,8 @@ export default function ChangePassword() {
         newPassword: "",
         confirmPassword: "",
     });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const handleTogglePasswordVisibility = () => {
         setShowPassword((prev) => !prev);
@@ -66,9 +70,14 @@ export default function ChangePassword() {
         const result = await checkOldPasswordAndChange(formData, userId);
 
         if (result.success) {
-            // If the password change is successful, show success message
-            setFormSuccess(result.message);
-            setFormError(null);  // Clear any previous errors
+            setSnackbarMessage(result.message);
+            setSnackbarOpen(true);
+            setFormError(null);
+
+            // Delay re-routing for 1.5 seconds
+            setTimeout(() => {
+                router.push(`/profile/${userId}`);
+            }, 1500);
         } else {
             // If the password change fails, show the error message
             setFormError(result.message);
@@ -201,6 +210,21 @@ export default function ChangePassword() {
                         </Card>
                     </Stack>
                 </Stack>
+
+                {/* Snackbar for success message */}
+                <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={1500}
+                    onClose={() => setSnackbarOpen(false)}
+                >
+                    <Alert
+                        onClose={() => setSnackbarOpen(false)}
+                        severity="success"
+                        sx={{ width: "100%" }}
+                    >
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar>
             </main>
         </>
     )
