@@ -45,6 +45,33 @@ const guiltService = () => {
     return await response.text();
   };
 
+  // Get specific users dislike count. This is because sometimes
+  // currentUserId cannot be set in time when reloading a page
+  // when already on your profile.
+  const getProfileDislikeCount = async (userId) => {
+    const authToken = getAuthToken();
+
+    if (!authToken) {
+      console.error("No auth token found");
+      return;
+    }
+
+    const response = await fetch(`${apiUrl}/api/grief/${userId}/dislikes`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`
+      },
+    });
+
+    if(!response.ok) {
+      console.error("Failed to get dislike count");
+      return null;
+    }
+
+    return await response.text();
+  };
+
   // Increment dislike count
   const incrementDislikeCount = async () => {
     const authToken = getAuthToken();
@@ -170,13 +197,39 @@ const guiltService = () => {
     return true;
   };
 
+  const getDislikeTitleAndMessage = (dislikeCount) => {
+    if (dislikeCount < 10) {
+      return {
+        title: "Burgeoning Sociopath",
+        message: "So you feel good about yourself?",
+      };
+    } else if (dislikeCount < 20) {
+      return {
+        title: "Adept Sociopath",
+        message: "Look at how many you've sentenced to death.",
+      };
+    } else if (dislikeCount < 30) {
+      return {
+        title: "Master Sociopath",
+        message: "Do you even care about their lives?",
+      };
+    } else {
+      return {
+        title: "Supreme Sociopath",
+        message: "Congratulations! You've made quite an impact!",
+      };
+    }
+  };
+
   return {
+    getProfileDislikeCount,
     getDislikeCount,
     incrementDislikeCount,
     decrementDislikeCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
     removeEuthanizedPetIds,
+    getDislikeTitleAndMessage,
   };
 };
 

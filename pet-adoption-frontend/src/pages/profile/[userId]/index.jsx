@@ -12,6 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import userService from "@/utils/services/userService";
+import guiltService from "@/utils/services/guiltService";
 import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -25,11 +26,13 @@ export default function ProfilePage() {
       : null
   ); // get the current session user
   const { getOwnerInfo, getUserInfo } = userService();
+  const { getProfileDislikeCount, getDislikeTitleAndMessage } = guiltService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { formatSize, formatSex, formatAge } = formatter();
 
+  const [dislikeCount, setDislikeCount] = useState(0);
 
   // Fetch user info when page renders
   useEffect(() => {
@@ -53,13 +56,32 @@ export default function ProfilePage() {
         } catch (error) {
           setError(`User information could not be found for user ${userId}`);
         } finally {
-          setLoading(false);
+          setLoading(false); // Set loading to false after fetching data
         }
       };
 
-      fetchData();
+      fetchData(); // Call the fetch function for user info
     }
   }, [userId]); // Rerender if userId changes
+
+  // Fetch dislike count when userId is available and defined
+  useEffect(() => {
+    const fetchDislikeCount = async () => {
+      if (userId) { // Check if userId is defined before fetching dislike count
+        try {
+          const dislikeResult = await getProfileDislikeCount(userId); // Fetch dislike count here
+          setDislikeCount(dislikeResult || 0); // Set dislike count or default to 0
+        } catch (error) {
+          console.error("Error fetching dislike count:", error);
+        }
+      }
+    };
+
+    fetchDislikeCount(); // Call the fetch function for dislikes
+  }, [userId]); // This effect runs whenever userId changes
+
+  // Determine a user's kill count
+  const { title, message } = getDislikeTitleAndMessage(dislikeCount);
 
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
@@ -69,7 +91,7 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
-  if ((loading || !userInfo) && !error)
+  if (loading) {
     return (
       // Create flex box to contain all components
       <Box
@@ -92,8 +114,34 @@ export default function ProfilePage() {
         </Card>
       </Box>
     );
+  }
 
-  if (error)
+  if (!userInfo) {
+    return (
+      // Create flex box to contain all components
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        {/* Create loading card */}
+        <Card sx={{ minWidth: 275, mb: 2 }}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              Loading...
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+
+  if (error) {
     return (
       // Create flex box to contain all components
       <Box
@@ -116,6 +164,7 @@ export default function ProfilePage() {
         </Card>
       </Box>
     );
+  }
 
   return (
     // Create flex box to contain all components
@@ -216,6 +265,24 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </Box>
+
+      {/* Create card to display dislike information */}
+      {dislikeCount >= 5 && ( // Only show this box if there are at least five dislikes
+        <Card sx={{ mb: 3, width: '70%' }}> {/* Set width to match preferences card */}
+          <CardContent sx={{ textAlign: "center", padding: 2 }}> {/* Center align text and add padding */}
+            {/* Conditionally render title and message based on dislike count */}
+            {title && (
+              <>
+                <Typography variant="h5">You have achieved the rank of: {title}</Typography>
+                <Typography variant="h6">{message}</Typography>
+                <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
+                <Typography variant="body1">{`This has resulted in ${Math.floor(dislikeCount / 5)} deaths.`}</Typography> {/* Use Math.floor for whole number */}
+              </>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Create card to display preferences */}
       <Card>
         <CardContent>
