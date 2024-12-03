@@ -45,7 +45,7 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function load() {
-      setPage(1); 
+      setPage(0); 
       setHasMore(true);
 
       const result = await getEventsByPageSort(quantityPerPage, 0, stateFilter, cityFilter);
@@ -88,6 +88,8 @@ export default function EventsPage() {
   };
   
   const handleFilterChange = (e) => {
+    setEventData([]);
+    fetchMoreData();
     if(filter == false){
       setFilter(true);
     }else{
