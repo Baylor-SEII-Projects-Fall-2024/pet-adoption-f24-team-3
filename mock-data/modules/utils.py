@@ -6,24 +6,30 @@ import os
 import shutil
 from .logger import logger
 
-def api_post_img(url: str, endpoint: str, imageFile: str, indent: str):
+def api_post_img(url: str, endpoint: str, imageFile: str, indent: str,token:str):
     logger.info(f"{indent}Sending request to {url}/{endpoint}")
 
     # Open file in binary mode to read and send
     with open(imageFile, "rb") as imgFile:
         files = {"imageFile": imgFile}
-        response = requests.post(f"{url}/{endpoint}", files=files)
+        response = requests.post(f"{url}/{endpoint}", files=files,headers={'Authorization': f'Bearer {token}'})
     response.raise_for_status()
     return response.json()
 
-def api_post(url: str, endpoint: str, data: json, indent:str):
+def api_post(url: str, endpoint: str, data: json, indent:str,token:str=None):
     logger.info(f"{indent}Sending request to {url}/{endpoint}")
-    response = requests.post(f"{url}/{endpoint}", json=data)
+    logger.info(f"{url}/{endpoint}")
+
+    headers={}
+    if token:
+        headers={'Authorization': f'Bearer {token}'}
+
+    response = requests.post(f"{url}/{endpoint}", json=data, headers=headers)
     response.raise_for_status()
     return response.json()
 
-def api_get(url: str, endpoint: str):
-    response = requests.get(f"{url}/{endpoint}")
+def api_get(url: str, endpoint: str,token:str):
+    response = requests.get(f"{url}/{endpoint}",headers={'Authorization': f'Bearer {token}'})
     response.raise_for_status()
     return response.json()
 

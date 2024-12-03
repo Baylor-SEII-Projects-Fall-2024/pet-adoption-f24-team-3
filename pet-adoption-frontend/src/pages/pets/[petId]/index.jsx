@@ -325,6 +325,7 @@ export default function ViewPetPage() {
                         contactee={animal.centerId}
                         sender={currentUserId}
                         defaultMessage={`Hello! I'd like to learn more about ${animal.name}, are they still available?`}
+                        link={`/pets/${petId}`}
                       />
                     </>
                   )}

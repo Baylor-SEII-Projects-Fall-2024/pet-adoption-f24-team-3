@@ -33,7 +33,11 @@ export default function ViewEventPage() {
   const onDeleteEvent = async () => {
     if (!event || !adoptionCenter) return;
 
-    if (window.confirm(`Are you sure you want to delete ${event.name}? It will be gone forever...`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${event.name}? It will be gone forever...`
+      )
+    ) {
       await deleteEvent(eventID)
         .then((result) => {
           if (result == true) {
@@ -177,8 +181,7 @@ export default function ViewEventPage() {
                         </td>
                         <td>
                           <Typography>
-                            {event.address}, {event.city},{" "}
-                            {event.state}
+                            {event.address}, {event.city}, {event.state}
                           </Typography>
                         </td>
                       </tr>
@@ -191,7 +194,7 @@ export default function ViewEventPage() {
                           {event.dateStart &&
                             event.dateEnd &&
                             (format(new Date(event.dateStart), "MM dd yyyy") ===
-                              format(new Date(event.dateEnd), "MM dd yyyy") ? (
+                            format(new Date(event.dateEnd), "MM dd yyyy") ? (
                               <>
                                 <Typography>
                                   {format(
@@ -251,7 +254,12 @@ export default function ViewEventPage() {
                       </Button>
                     </>
                   ) : (
-                    <ContactCard contactee={event.centerId} sender={currentUserId} defaultMessage={`Could you please tell me more about ${event.name}?`} />
+                    <ContactCard
+                      contactee={event.centerId}
+                      sender={currentUserId}
+                      defaultMessage={`Could you please tell me more about ${event.name}?`}
+                      link={`/events/${eventID}`}
+                    />
                   )}
                 </Box>
               </Stack>
