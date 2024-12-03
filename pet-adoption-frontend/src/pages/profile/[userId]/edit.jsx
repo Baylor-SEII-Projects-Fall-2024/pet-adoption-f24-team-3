@@ -19,6 +19,8 @@ export default function EditProfilePage() {
   const { userId } = router.query; // get user ID from the routing
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const { updateOwner, getUserInfo } = userService();
+  
+  const usernameRegex = RegExp('[^a-zA-Z]');
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
@@ -36,6 +38,8 @@ export default function EditProfilePage() {
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
+    setFormError(null);
+    setFormSuccess(null);
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -46,6 +50,10 @@ export default function EditProfilePage() {
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(usernameRegex.test(formData.nameFirst) || usernameRegex.test(formData.nameLast)){
+        setFormError("Name contains special characters!");
+        return;
+    }
 
     try {
       await updateOwner(formData, profileImage, userId).then((result) => {
@@ -172,7 +180,6 @@ export default function EditProfilePage() {
                     inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                     onChange={handleImageUpload}
                   />
-
                   {profileImage && (
                     <img
                       src={imagePreview}
@@ -184,7 +191,6 @@ export default function EditProfilePage() {
                     Save
                   </Button>
                 </form>
-
                 {formError && (
                   <Typography color="error">{formError}</Typography>
                 )}

@@ -113,7 +113,7 @@ export default function HomePage() {
             />
             <Typography variant='h3' align='center'>Adoption Centers, Glad you're here!</Typography>
             <Typography variant='body1' color='text.secondary'>Join WOOF today and gain access to a platform for advertising your pets and upcoming events like no other!</Typography>
-            <Button variant='contained' color='secondary' onClick={() => router.push("/register")} sx={{ width: 200 }}>Start Here!</Button>
+            <Button variant='contained' color='secondary' onClick={ currentUserId == null?() => router.push("/register"):()=>router.push("/pets")} sx={{ width: 200 }}>Start Here!</Button>
           </Stack>
         </Stack>
       </main >
