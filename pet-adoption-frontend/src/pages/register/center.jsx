@@ -12,7 +12,7 @@ export default function RegisterCenterPage() {
     const headerStyle = { margin: 0 }
 
     const passwordRegex = RegExp('[^ -~]');
-    const usernameRegex = RegExp('[^a-zA-Z]');
+    const usernameRegex = RegExp('[^ a-zA-Z]');
 
     const [profileImage, setProfileImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);

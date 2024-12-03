@@ -24,7 +24,7 @@ export default function EditProfilePage() {
   const { updateCenter, getCenterInfo } = userService();
   const { stateNames } = infoLists();
 
-  const usernameRegex = RegExp('[^a-zA-Z]');
+  const usernameRegex = RegExp('[^ a-zA-Z]');
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);

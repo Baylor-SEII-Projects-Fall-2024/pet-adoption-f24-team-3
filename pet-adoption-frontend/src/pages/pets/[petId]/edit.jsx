@@ -12,7 +12,7 @@ export default function EditPetPage() {
   const [loading, setLoading] = useState(true);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
 
-  const fieldRegex = RegExp('[^a-zA-Z]');
+  const fieldRegex = RegExp('[^ a-zA-Z]');
 
   const [imageFile, setImageFile] = useState(null);
   const [formError, setFormError] = useState(null);
