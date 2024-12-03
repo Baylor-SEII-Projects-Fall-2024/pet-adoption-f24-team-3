@@ -4,22 +4,50 @@ import requests
 import shutil
 import sys
 from modules.config import API_URLS
+from dotenv import load_dotenv
+import argparse
 
-valid_environments = ['local', 'dev', 'prod', 'backup']
+# Load environment variables from .env file
+load_dotenv()
 
 def usage():
-    print("Usage: python3 clear-db.py <environment>")
+    print("Usage: python3 clear-db.py <environment> <bearer_token>")
     print("  environments = [local, dev, prod, backup]")
+    print("  bearer_token = [authorization token like the one used in postman]")
+
+# Define valid environments and sizes
+valid_environments = ['local', 'dev', 'prod', 'backup']
+
+# Function to validate environment
+def validate_environment(env):
+    if env not in valid_environments:
+        print(f"Error: Invalid environment '{env}'. Valid options are: {', '.join(valid_environments)}")
+        sys.exit(1)
+
+# Set up argparse to parse arguments
+parser = argparse.ArgumentParser(description="Generate script with environment  and optional auth token.")
+parser.add_argument("environment", help="The environment to use", choices=valid_environments)
+parser.add_argument("auth_token", help="The authorization token", nargs="?", default=None)  # Optional argument
 
 # Parse arguments
-if len(sys.argv) != 2:
+try:
+    args = parser.parse_args()
+except SystemExit:
     usage()
     sys.exit(1)
 
-environment = sys.argv[1]
+# Validate the environment and size (done with choices in argparse)
+validate_environment(args.environment)
+environment = args.environment
 
-if environment not in valid_environments:
-    usage()
+# Determine auth_token
+if args.auth_token:
+    auth_token = args.auth_token
+else:
+    auth_token = os.getenv("auth_token")  # Try to get from .env
+
+if not auth_token:
+    print("Error: auth_token is required and was not provided on the command line or in the .env file.")
     sys.exit(1)
 
 API_BASE_URL = API_URLS.get(environment)
@@ -29,6 +57,17 @@ confirm = input("Do you want to continue? (y/n): ").strip().lower()
 if confirm != 'y':
     print("Operation cancelled")
     sys.exit(0)
+
+# Clear _json files
+for file in [f"{environment}_MOCK_CENTERS.json",
+             f"{environment}_MOCK_OWNERS.json",
+             f"{environment}_MOCK_PETS.json",
+             f"{environment}_MOCK_EVENTS.json",
+             f"{environment}_MOCK_PREFERENCES.json"]:
+    filepath = os.path.join('_json', file)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+        print(f"Deleted existing file: {filepath}")
 
 endpoints = {
     "clear-table-users",
@@ -43,9 +82,10 @@ endpoints = {
 def clear(url: str, endpoint: str):
     table = endpoint.split('-')[-1].capitalize()
     full_url = f"{url}/{endpoint}"
+    headers = {"Authorization": f"Bearer {auth_token}"}
     print(f"> Posting to {full_url}")
     try:
-        response = requests.post(f"{url}/{endpoint}")
+        response = requests.post(f"{full_url}", headers=headers)
         response.raise_for_status()
         print(f"  Successfully cleared {endpoint}")
     except Exception as e:

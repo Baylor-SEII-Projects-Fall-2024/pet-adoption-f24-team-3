@@ -18,31 +18,68 @@ from modules.utils import clean_uploads
 from modules.images import generate_image, ImageType, generate_animal_image
 from collections import Counter
 from modules.logger import logger
+from dotenv import load_dotenv
+import argparse
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Define valid environments and sizes
 valid_environments = ['local', 'dev', 'prod', 'backup']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l']
 
 def usage():
-    print("Usage: python3 generate.py <environment> <size>c<bearer token>")
+    print("Usage: python3 generate.py <environment> <size> [<auth_token>]")
     print("  environments = [local, dev, prod, backup]")
     print("  size         = [small | s, medium | m, large | l]")
-    print("  authorizationToken =[authorization token like the one used in postman]")
+    print("  auth_token   = [authorization token like the one used in Postman]")
+    
+# Function to validate environment
+def validate_environment(env):
+    if env not in valid_environments:
+        print(f"Error: Invalid environment '{env}'. Valid options are: {', '.join(valid_environments)}")
+        sys.exit(1)
+
+# Function to validate size
+def validate_size(size):
+    if size not in valid_sizes:
+        print(f"Error: Invalid size '{size}'. Valid options are: {', '.join(valid_sizes)}")
+        sys.exit(1)
+
+# Set up argparse to parse arguments
+parser = argparse.ArgumentParser(description="Generate script with environment, size, and optional auth token.")
+parser.add_argument("environment", help="The environment to use", choices=valid_environments)
+parser.add_argument("size", help="The size to use", choices=valid_sizes)
+parser.add_argument("auth_token", help="The authorization token", nargs="?", default=None)  # Optional argument
 
 # Parse arguments
-if len(sys.argv) != 4:
+try:
+    args = parser.parse_args()
+except SystemExit:
     usage()
     sys.exit(1)
 
-environment = sys.argv[1]
-size = sys.argv[2]
-authToken= sys.argv[3]
+# Validate the environment and size (done with choices in argparse)
+validate_environment(args.environment)
+validate_size(args.size)
 
-if environment not in valid_environments:
-    usage()
+# Determine auth_token
+if args.auth_token:
+    auth_token = args.auth_token
+else:
+    auth_token = os.getenv("auth_token")  # Try to get from .env
+
+if not auth_token:
+    print("Error: auth_token is required and was not provided on the command line or in the .env file.")
     sys.exit(1)
-if size not in valid_sizes:
-    usage()
-    sys.exit(1)
+
+size = args.size
+environment = args.environment
+
+# Use the values
+print(f"Environment: {environment}")
+print(f"Size: {size}")
+print(f"Auth Token: {auth_token}")
 
 url = API_URLS.get(environment)
 
@@ -76,17 +113,6 @@ if confirm != 'y':
     logger.info("Operation cancelled")
     sys.exit(0)
 
-# Delete existing JSON files
-for file in [f"{environment}_MOCK_CENTERS.json",
-             f"{environment}_MOCK_OWNERS.json",
-             f"{environment}_MOCK_PETS.json",
-             f"{environment}_MOCK_EVENTS.json",
-             f"{environment}_MOCK_PREFERENCES.json"]:
-    if os.path.exists(file):
-        os.remove(file)
-        logger.info(f"Deleted existing file: {file}")
-
-
 # Generate static values
 static_centers, static_owners = generate_static_accounts()
 
@@ -106,13 +132,13 @@ for owner in potential_owners:
         response = api_post(url, "api/auth/register/owner", owner, "  ")
         user_id = response['userId']
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id), "  ",authToken)
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.OWNER, user_id), "  ",auth_token)
 
         # Generate a preference for this user
         preference = generate_preference(user_id)
         logger.info(f"  Saving preference to {owner['nameFirst']} {owner['nameLast']}")
         append_pretty_json([preference], f"{environment}_MOCK_PREFERENCES.json")
-        api_post(url, f"api/update/preferences/{user_id}", preference, "    ",authToken)
+        api_post(url, f"api/update/preferences/{user_id}", preference, "    ",auth_token)
     except Exception as e:
         logger.error(f"Error adding owner. Reason: {e}")
 
@@ -142,18 +168,18 @@ for center in adoption_centers:
         append_pretty_json(pets, f"{environment}_MOCK_PETS.json")
         append_pretty_json(events, f"{environment}_MOCK_EVENTS.json")
 
-        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id), "    ",authToken)
-        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id), "    ",authToken)
+        response = api_post_img(url, f"api/images/users/{user_id}/profile", generate_image(ImageType.CENTER, user_id), "    ",auth_token)
+        response = api_post_img(url, f"api/images/users/{user_id}/banner", generate_image(ImageType.BANNER, user_id), "    ",auth_token)
 
         for pet in pets:
             logger.info(f"  Saving pet {pet['name']} to {center['name']}")
-            response = api_post(url, "api/animals/", pet, "    ",authToken)
+            response = api_post(url, "api/animals/", pet, "    ",auth_token)
             pet_id = response['id']
 
             try:
                 img_url = generate_animal_image(pet['species'], pet['breed'], pet_id)
                 if img_url:
-                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url, "      ",authToken)
+                    response = api_post_img(url, f"api/images/animals/{pet_id}", img_url, "      ",auth_token)
                     logger.info(f"      Successfully added image for pet {pet_id}")
                 else:
                     logger.warning(f"      No image generated for pet {pet_id}")
@@ -163,9 +189,9 @@ for center in adoption_centers:
 
         for event in events:
             logger.info(f"  Saving event {event['name']} to {center['name']}")
-            response = api_post(url, "api/events/", event, "    ",authToken)
+            response = api_post(url, "api/events/", event, "    ",auth_token)
             event_id = response['eventID']
-            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id), "    ",authToken)
+            response = api_post_img(url, f"api/images/events/{event_id}", generate_image(ImageType.EVENT, event_id), "    ",auth_token)
     except Exception as e:
         logger.error(f"Error while adding center. Reason: {e}")
 
