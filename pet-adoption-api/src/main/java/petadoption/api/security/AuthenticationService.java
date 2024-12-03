@@ -6,6 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import petadoption.api.security.requestObjects.CenterDto;
 import petadoption.api.security.requestObjects.LoginDto;
 import petadoption.api.security.requestObjects.OwnerDto;
 import petadoption.api.user.*;
@@ -19,6 +21,8 @@ public class AuthenticationService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User loginUser(LoginDto loginDto) {
         authenticationManager.authenticate(
