@@ -15,13 +15,16 @@ export default function EditEvent() {
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const { stateNames } = infoLists();
 
+    const fieldRegex = RegExp('[^0-9a-zA-Z]');
+
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
 
     const { updateEvent, getEventInfo } = eventService();
 
     const [loading, setLoading] = useState(true);
     const [eventInfo, setEventInfo] = useState(null);
-
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState();
     const [thumbnailPath, setThumbnailPath] = useState(null);
     const [formData, setFormData] = useState({
         centerId: "",
@@ -37,6 +40,8 @@ export default function EditEvent() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormError(null);
+        setFormSuccess(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
@@ -50,6 +55,11 @@ export default function EditEvent() {
     };
 
     const handleDateChange = (date, fieldName) => {
+        setFormError(null);
+        setFormSuccess(null);
+        if(!dayjs(date).isValid()){
+            return;
+        }
         setFormData(prevState => ({
             ...prevState,
             [fieldName]: date ? dayjs(date).toISOString() : null
@@ -59,26 +69,31 @@ export default function EditEvent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        if(fieldRegex.test(formData.name)){
+            setFormError("Event name has special characters!");
+            return;
+        }
+        if(dayjs(formData.dateEnd) < dayjs(formData.dateStart)){
+            setFormError("Event cannot end before it starts!");
+            return;
+        }
         try {
             await updateEvent(formData, thumbnailPath, eventID)
                 .then((eventID) => {
                     if (eventID !== null) {
-                        let elm = document.getElementById("errorLabel");
-                        elm.innerHTML = "Event Details Saved!";
-                        elm.style = "color: green;"
+                        setFormError(null);
+                        setFormSuccess("Event Details Saved!");
                     }
                     else {
-                        let elm = document.getElementById("errorLabel");
-                        elm.innerHTML = "An error occured, try again!";
-                        elm.style = "color: red;"
+                        setFormSuccess(null);
+                        setFormError("An error occured, try again!");
                     }
                 })
 
 
         } catch (error) {
             console.error("Error: ", error);
-            alert("An error occured saving data.");
+            setFormError("An error occured saving data.");
         }
     };
 
@@ -97,7 +112,10 @@ export default function EditEvent() {
                             datePosted: result.datePosted,
                             description: result.description,
                             dateStart: result.dateStart,
-                            dateEnd: result.dateEnd
+                            dateEnd: result.dateEnd,
+                            address: result.address,
+                            city: result.city,
+                            state: result.state
                         }));
                     }
                 } catch (error) {
@@ -170,8 +188,12 @@ export default function EditEvent() {
                             onChange={handleThumbnailUpload} />
                         <Button type='submit' variant='contained' color='primary'>Save</Button>
                     </form>
-                    <label id="errorLabel"></label>
-
+                    {formError && (
+                    <Typography color="error">{formError}</Typography>
+                    )}
+                    {formSuccess && (
+                    <Typography color="success">{formSuccess}</Typography>
+                    )}   
                 </Paper>
             </Grid>
 

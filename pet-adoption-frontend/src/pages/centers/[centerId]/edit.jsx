@@ -24,15 +24,18 @@ export default function EditProfilePage() {
   const { updateCenter, getCenterInfo } = userService();
   const { stateNames } = infoLists();
 
+  const usernameRegex = RegExp('[^a-zA-Z]');
+
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [bannerImage, setBannerImage] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSuccess] = useState();
   const [formData, setFormData] = useState({
     accountType: "",
     emailAddress: "",
-    password: "",
     profilePicPath: null,
     name: "",
     description: "",
@@ -49,6 +52,8 @@ export default function EditProfilePage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormError(null);
+    setFormSuccess(null);
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -62,20 +67,22 @@ export default function EditProfilePage() {
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if(usernameRegex.test(formData.name)){
+        setFormError("Name contains special characters!");
+        return;
+    }
+    
     try {
       await updateCenter(formData, profileImage, bannerImage, centerId).then(
         (centerId) => {
           //if user id is not null, that is handled in the hook below
           if (centerId !== null) {
-            let elm = document.getElementById("errorLabel");
-            elm.innerHTML = "Profile Settings Saved!";
-            elm.style = "color: green;";
+            setFormError(null);
+            setFormSuccess("Saving changes...");
             router.push(`/centers/${currentUserId}`);
           } else {
-            let elm = document.getElementById("errorLabel");
-            elm.innerHTML = "An error occured, try again!";
-            elm.style = "color: red;";
+            setFormError("An error occured, try again!");
+            setFormSuccess(null);
           }
         }
       );
@@ -256,12 +263,18 @@ export default function EditProfilePage() {
                     inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                     onChange={handleBannerImageUpload}
                   />
+                  <br></br>
                   <Button type="submit" variant="contained" color="primary">
                     Save
                   </Button>
                 </form>
-                <label id="errorLabel"></label>
-              </Card>
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}              
+                </Card>
             </Stack>
           </Stack>
         </main>

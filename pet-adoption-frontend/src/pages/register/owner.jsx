@@ -7,11 +7,16 @@ export default function RegisterOwnerPage() {
     const router = useRouter();
     const { registerOwner } = userService();
 
+    const passwordRegex = RegExp('[^ -~]');
+    const usernameRegex = RegExp('[^a-zA-Z]');
+
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
     const [profileImage, setProfileImage] = useState(null);
     const [isUploading, setIsUploading] = useState(null);
+    const [formError, setFormError] = useState(null);
+    const [formSuccess, setFormSuccess] = useState();
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -27,6 +32,8 @@ export default function RegisterOwnerPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormError(null);
+        setFormSuccess(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
     const handleProfileImageUpload = (e) => {
@@ -35,9 +42,15 @@ export default function RegisterOwnerPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-
+        if(usernameRegex.test(formData.firstName) || usernameRegex.test(formData.lastName)){
+            setFormError("Name contains special characters!");
+            return;
+        }
+        if(passwordRegex.test(formData.password)){
+            setFormError("Password has invalid characters!");
+            return;
+        }
         if (emptyFields.length > 0) {
             const emptyFieldNames = emptyFields.map(field => {
                 switch (field) {
@@ -57,7 +70,6 @@ export default function RegisterOwnerPage() {
             alert("Passwords do not match!");
             return;
         }
-
 
         try {
             setIsUploading(true);
@@ -97,8 +109,6 @@ export default function RegisterOwnerPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleProfileImageUpload} />
-
-
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :
@@ -106,8 +116,13 @@ export default function RegisterOwnerPage() {
                     }
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
 
-
                 </form>
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
+                {formSuccess && (
+                  <Typography color="success">{formSuccess}</Typography>
+                )}         
             </Paper>
         </Grid>
     )
