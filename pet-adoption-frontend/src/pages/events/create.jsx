@@ -19,13 +19,14 @@ export default function CreateEventPage() {
     const { stateNames } = infoLists();
 
     const currDate = new Date().toISOString();
+    const fieldRegex = RegExp('[^0-9a-zA-Z ]');
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
     const [thumbnailFile, setThumbnailFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
-
+    const [formError, setFormError] = useState(null);
 
     const [formData, setFormData] = useState({
         datePosted: currDate,
@@ -46,10 +47,15 @@ export default function CreateEventPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormError(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleDateChange = (date, fieldName) => {
+        setFormError(null);
+        if(!dayjs(date).isValid()){
+            return;
+        }
         setFormData(prevState => ({
             ...prevState,
             [fieldName]: date ? dayjs(date).toISOString() : null
@@ -68,7 +74,16 @@ export default function CreateEventPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-
+        if(fieldRegex.test(formData.name)){
+            setFormError("Event name has special characters!");
+            return;
+        }
+        if(dayjs(formData.dateEnd) < dayjs(formData.dateStart)){
+            setFormError("Event cannot end before it starts!");
+            return;
+        }
+        
+        
         try {
             setIsUploading(true);
             await createEvent(formData, thumbnailFile, currentUserId)
@@ -81,7 +96,7 @@ export default function CreateEventPage() {
 
         } catch (error) {
             console.error("Error: ", error);
-            alert("An error occured during event creation.");
+            setFormError("An error occured during event creation.");
         }
     };
 
@@ -148,12 +163,12 @@ export default function CreateEventPage() {
                         <Typography> Creating Event...</Typography>
                         :
                         <Button type='submit' variant='contained' color='primary'>Post</Button>
-
                     }
                     <Button variant='contained' onClick={() => router.push("/events")}>Back</Button>
-
-
                 </form>
+                {formError && (
+                  <Typography color="error">{formError}</Typography>
+                )}
             </Paper>
         </Grid>
     )

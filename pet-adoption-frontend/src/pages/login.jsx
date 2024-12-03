@@ -9,8 +9,11 @@ export default function LoginPage() {
     const router = useRouter();
     const { validateLogin } = userService();
 
+    const [formError, setFormError] = useState(null);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormError(null);
         setFormData(prevState => ({ ...prevState, [name]: value }));
     };
     const [formData, setFormData] = useState({
@@ -29,15 +32,11 @@ export default function LoginPage() {
                     router.push(`/profile/${userId}`);
                 }
                 else {
-                    let elm = document.getElementById("errorLabel");
-                    elm.innerHTML = "Invalid credentials!";
-                    elm.style = "color: red;"
+                    setFormError("Invalid credentials!");
                 }
             })
             .catch((error) => {
-                let elm = document.getElementById("errorLabel");
-                elm.innerHTML = "Invalid credentials!";
-                elm.style = "color: red;"
+                setFormError("Invalid credentials!");
                 console.error("Error logging in:", error);
             });
     };
@@ -60,7 +59,7 @@ export default function LoginPage() {
                                 <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
                                 <Button type='submit' variant='contained' color='primary'>Login</Button>
                             </form>
-                            <label id="errorLabel"></label>
+                            {formError && (<Typography color="error">{formError}</Typography>)}
                         </CardContent>
                     </Card>
                 </Stack>
