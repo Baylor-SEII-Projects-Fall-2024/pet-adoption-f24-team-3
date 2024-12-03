@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import petadoption.api.annotation.GlobalCrossOrigin;
 import petadoption.api.security.requestObjects.CenterDto;
-import petadoption.api.security.requestObjects.ChangePasswordDto;
-import petadoption.api.security.requestObjects.CheckOldPasswordDto;
 import petadoption.api.security.requestObjects.LoginDto;
 import petadoption.api.security.requestObjects.OwnerDto;
 import petadoption.api.security.responseObjects.LoginResponse;
@@ -74,44 +72,5 @@ public class AuthenticationController {
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
         loginResponse.setUserId(authenticatedUser.getId());
         return loginResponse;
-    }
-
-    // Request for verifying a user's old password -- used for password change preverification
-    @PostMapping("/check-old-password/{userId}")
-    public ResponseEntity<Map<String, String>> checkOldPassword(
-            @PathVariable Long userId,
-            @RequestBody CheckOldPasswordDto checkOldPasswordDto) {
-
-        boolean isPasswordValid = authenticationService.checkOldPassword(userId, checkOldPasswordDto.getOldPassword());
-
-        Map<String, String> response = new HashMap<>();
-        if (isPasswordValid) {
-            response.put("message", "Old password is correct");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", "Old password is incorrect");
-            return ResponseEntity.status(400).body(response);
-        }
-    }
-
-    // Request for changing a users password
-    @PostMapping("/change-password/{userId}")
-    public ResponseEntity<Map<String, String>> changePassword(
-            @PathVariable Long userId,
-            @RequestBody ChangePasswordDto changePasswordDto) {
-
-        User user = userService.findUser(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        boolean isPasswordChanged = authenticationService.changePassword(user, changePasswordDto.getNewPassword());
-
-        Map<String, String> response = new HashMap<>();
-        if (isPasswordChanged) {
-            response.put("message", "Password updated successfully");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", "Failed to update password");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
 }

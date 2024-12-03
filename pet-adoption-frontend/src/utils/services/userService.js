@@ -372,7 +372,7 @@ const userService = () => {
 
     const checkOldPasswordAndChange = async (formData, userid) => {
         // Check if old password matches database
-        const checkResponse = await fetch(`${apiUrl}/api/auth/check-old-password/${userid}`, {
+        const checkResponse = await fetch(`${apiUrl}/api/check-old-password/${userid}`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -391,7 +391,7 @@ const userService = () => {
         }
 
         // If old password is correct, continue with changing password
-        const updateResponse = await fetch(`${apiUrl}/api/auth/change-password/${userid}`, {
+        const updateResponse = await fetch(`${apiUrl}/api/change-password/${userid}`, {
             method: "POST",
             credentials: "include",
             headers: {

@@ -1,4 +1,4 @@
-package petadoption.api.security.requestObjects;
+package petadoption.api.user.dtos;
 
 import lombok.Data;
 
