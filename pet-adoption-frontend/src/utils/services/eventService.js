@@ -149,6 +149,40 @@ const eventService = () => {
         }
     }
 
+    const getEventsByPageSort = async (pageSize, pageNumber, stateSort, citySort) => {
+        let url = `${apiUrl}/api/events/paginated/sort?pageSize=${pageSize}&pageNumber=${pageNumber}`;
+    
+        if (stateSort) {
+            url += `&state=${encodeURIComponent(stateSort)}`;
+        }
+        if (citySort) {
+            url += `&city=${encodeURIComponent(citySort)}`;
+        }
+    
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            
+            if (!response.ok) {
+                console.error("Failed to fetch events:", response.status, response.statusText);
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error("Error fetching events:", error);
+            throw error; 
+        }
+    }
+    
+
 
     return {
         createEvent,
@@ -157,6 +191,7 @@ const eventService = () => {
         deleteEvent,
         getCenterEvents,
         getEventsByPage,
+        getEventsByPageSort,
     };
 
 };
