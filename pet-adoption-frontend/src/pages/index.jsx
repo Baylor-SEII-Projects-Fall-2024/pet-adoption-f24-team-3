@@ -62,7 +62,13 @@ export default function HomePage() {
               textAlign: "center",
             }}>
             <Typography variant='h2' align='center'>WOOF helps you find your ideal pet</Typography>
-            <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend.<br></br> <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
+            <Typography variant='body1' color='text.secondary'>
+                <strong>WOOF</strong> learns on the fly to quickly match you with your new best friend.
+                <br />
+                <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!
+                <br />
+                You wouldn't want to condemn any of these forsaken pets to a life of unadoption, now, would you?
+            </Typography>
             <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px", fontSize: "20px"}}>Find Your Friend!</Button>
           </Stack>
           </div>
@@ -86,7 +92,7 @@ export default function HomePage() {
                 src={"homescreen_adopt.jpg"}
               />
               <Typography variant='h3' align='center'>Your local Adoption Centers. All in one place.</Typography>
-              <Typography variant='body1' color='text.secondary'>We collaborate with local adoption centers in your area to bring you the widest selection of pets. Find events happening at your local shelter, and join our mission to find every pet a loving home!</Typography>
+              <Typography variant='body1' color='text.secondary'>We collaborate with local adoption centers in your area to bring you the widest selection of pets. Find events happening at your local shelter, and join our mission to find every pet a loving home!<br></br>Don't leave home without a new pet! Otherwise they would be so so sad...</Typography>
               <Stack direction="row" sx={{ justifyContent: "center" }}>
                 <Button variant='contained' onClick={() => router.push("/events")} sx={{ width: 200 }}>Find Local Events</Button>
                 <Button variant='contained' color='secondary' onClick={() => router.push("/centers")} sx={{ width: 200 }}>Find your Adoption Center</Button>
