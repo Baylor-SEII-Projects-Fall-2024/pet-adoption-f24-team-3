@@ -1,3 +1,4 @@
+// GRIEF - Guilt-Ridden Interaction Engine for Fostering
 package petadoption.api.grief;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class Grief {
 
     @Column(name = "NUM_DISLIKES")
     private Integer numDislikes;
+
+    @Column(name = "KILL_COUNT")
+    private Integer killCount;
 
     @ElementCollection
     @CollectionTable(name = "euthanized_pets", joinColumns = @JoinColumn(name = "grief_id"))

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 @Log4j2
 @Service
@@ -63,31 +65,48 @@ public class GriefService {
         if (grief.isPresent()) {
             Grief griefRecord = grief.get();
             List<Long> euthanizedPets = griefRecord.getEuthanizedPets();
+
+            // Ensure killCount is not null
+            if (griefRecord.getKillCount() == null) {
+                griefRecord.setKillCount(0);
+            }
+
             if (!euthanizedPets.contains(petId)) {
                 euthanizedPets.add(petId);
                 griefRecord.setEuthanizedPets(euthanizedPets);
+                griefRecord.setKillCount(griefRecord.getKillCount() + 1);
                 griefRepository.save(griefRecord);
             }
         } else {
-            // If there's no Grief entry for the user, create a new one with the euthanized pet
+            // If there's no Grief entry for the user, create a new one with the euthanized
+            // pet
             Grief newGrief = new Grief();
             newGrief.setPotentialOwnerId(potentialOwnerId);
-            newGrief.setEuthanizedPets(List.of(petId));
+            newGrief.setEuthanizedPets(new ArrayList<>(List.of(petId)));
+            newGrief.setKillCount(1); // Initialize kill count
             griefRepository.save(newGrief);
         }
     }
 
-    // Remove a pet ID from the euthanized pets list for the specific user
-    public void removeEuthanizedPetId(Long potentialOwnerId, Long petId) {
+    // Get the number of euthanized pets for a user
+    public Integer getKillCount(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
-        if (grief.isPresent()) {
-            Grief griefRecord = grief.get();
-            List<Long> euthanizedPets = griefRecord.getEuthanizedPets();
-            if (euthanizedPets.contains(petId)) {
-                euthanizedPets.remove(petId);
-                griefRecord.setEuthanizedPets(euthanizedPets);
-                griefRepository.save(griefRecord);
-            }
+        return grief.map(Grief::getKillCount).orElse(0);
+        // return grief.map(g -> g.getEuthanizedPets().size()).orElse(0);
+    }
+
+    // Fetch leaderboards!
+    public List<Grief> getLeaderboard(String sortBy) {
+        // Fetch all Grief records
+        List<Grief> allGriefs = griefRepository.findAll();
+
+        // Sort based on the `sortBy` parameter
+        if ("kills".equalsIgnoreCase(sortBy)) {
+            allGriefs.sort(Comparator.comparing(Grief::getKillCount).reversed());
+        } else if ("dislikes".equalsIgnoreCase(sortBy)) {
+            allGriefs.sort(Comparator.comparing(Grief::getNumDislikes).reversed());
         }
+
+        return allGriefs;
     }
 }
