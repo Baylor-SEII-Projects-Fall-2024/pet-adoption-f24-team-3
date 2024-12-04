@@ -21,6 +21,37 @@ const guiltService = () => {
     return token;
   };
 
+  // Fetch user grief details (dislike count, kill count, rank title, etc.)
+  const getUserGrief = async (userId) => {
+    const authToken = getAuthToken();
+
+    if (!authToken) {
+      console.error("No auth token found");
+      return null;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/details`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch grief details");
+        return null;
+      }
+
+      const griefDetails = await response.json();
+      return griefDetails;
+    } catch (error) {
+      console.error("Error fetching grief details:", error);
+      return null;
+    }
+  };
+
   // Fetch dislike count
   const getDislikeCount = async (userId) => {
     const authToken = getAuthToken();
@@ -196,6 +227,7 @@ const guiltService = () => {
   };
 
   return {
+    getUserGrief,
     getDislikeCount,
     incrementDislikeCount,
     decrementDislikeCount,

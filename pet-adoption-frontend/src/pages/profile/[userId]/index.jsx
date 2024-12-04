@@ -16,7 +16,6 @@ import guiltService from "@/utils/services/guiltService";
 import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
@@ -25,8 +24,8 @@ export default function ProfilePage() {
       ? state.currentUser.currentUserId
       : null
   ); // get the current session user
-  const { getOwnerInfo, getUserInfo } = userService();
-  const { getDislikeCount, getKillCount, getDislikeTitleAndMessage } = guiltService();
+  const { getUserInfo } = userService();
+  const { getUserGrief } = guiltService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,8 +33,10 @@ export default function ProfilePage() {
 
   const [dislikeCount, setDislikeCount] = useState(0);
   const [killCount, setKillCount] = useState(0);
+  const [rankTitle, setRankTitle] = useState("");
+  const [rankMessage, setRankMessage] = useState("");
 
-  // Fetch user info when page renders
+  // Fetch user info and grief details when page renders
   useEffect(() => {
     if (userId) {
       const fetchData = async () => {
@@ -47,10 +48,15 @@ export default function ProfilePage() {
             return; // Exit early if redirected
           }
 
-          // Fetch owner info
-          const ownerInfoResult = await getOwnerInfo(userId);
-          if (ownerInfoResult !== null) {
-            setUserInfo(ownerInfoResult);
+          // Fetch user grief details using guiltService
+          const griefDetails = await getUserGrief(userId);
+
+          if (griefDetails) {
+            setUserInfo(griefDetails);
+            setDislikeCount(griefDetails.numDislikes || 0);
+            setKillCount(griefDetails.killCount || 0);
+            setRankTitle(griefDetails.rankTitle || "");
+            setRankMessage(griefDetails.rankMessage || "");
           } else {
             setError(`User information could not be found for user ${userId}`);
           }
@@ -65,27 +71,6 @@ export default function ProfilePage() {
     }
   }, [userId]); // Rerender if userId changes
 
-  // Fetch dislike count when userId is available and defined
-  useEffect(() => {
-    const fetchDislikeCount = async () => {
-      if (userId) { // Check if userId is defined before fetching dislike count
-        try {
-          const dislikeResult = await getDislikeCount(userId); // Fetch dislike count here
-          setDislikeCount(dislikeResult || 0); // Set dislike count or default to 0
-          const killResult = await getKillCount(userId);
-          setKillCount(killResult || 0);
-        } catch (error) {
-          console.error("Error fetching dislike count:", error);
-        }
-      }
-    };
-
-    fetchDislikeCount(); // Call the fetch function for dislikes
-  }, [userId]); // This effect runs whenever userId changes
-
-  // Determine a user's kill count
-  const { title, message } = getDislikeTitleAndMessage(dislikeCount);
-
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
   };
@@ -96,7 +81,6 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -107,7 +91,6 @@ export default function ProfilePage() {
           gap: 2,
         }}
       >
-        {/* Create loading card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -121,7 +104,6 @@ export default function ProfilePage() {
 
   if (!userInfo) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -132,7 +114,6 @@ export default function ProfilePage() {
           gap: 2,
         }}
       >
-        {/* Create loading card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -146,7 +127,6 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -157,7 +137,6 @@ export default function ProfilePage() {
           gap: 2,
         }}
       >
-        {/* Create error card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div" color="error">
@@ -170,7 +149,6 @@ export default function ProfilePage() {
   }
 
   return (
-    // Create flex box to contain all components
     <Box
       sx={{
         display: "flex",
@@ -180,14 +158,7 @@ export default function ProfilePage() {
         gap: 2,
       }}
     >
-      {/* Create flex box to contain Avatar and User Info cards */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        {/* Create card to display users name and avatar */}
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Card
           sx={{
             minWidth: 275,
@@ -202,20 +173,11 @@ export default function ProfilePage() {
             paddingBottom: 4,
           }}
         >
-          {/* Display users name */}
           <CardContent>
-            <Typography
-              variant="h3"
-              component="div"
-              sx={{
-                wordBreak: "break-word", // wrap should overflow occur
-                whiteSpace: "normal",
-              }}
-            >
+            <Typography variant="h3" component="div">
               {userInfo.nameFirst} {userInfo.nameLast}'s Profile
             </Typography>
           </CardContent>
-          {/* Display users avatar */}
           <Avatar
             sx={{
               bgcolor: "#a3b18a",
@@ -223,32 +185,22 @@ export default function ProfilePage() {
               height: 175,
               border: "2px solid #000",
             }}
-            alt={
-              userInfo
-                ? `${userInfo.nameFirst} ${userInfo.nameLast}`
-                : "User Avatar"
-            }
+            alt={`${userInfo.nameFirst} ${userInfo.nameLast}`}
             src={`${apiUrl}/api/images/users/${userId}/profile`}
           />
-          {/* Create card to display User Info */}
         </Card>
         <Card sx={{ mb: 3, mt: 3 }}>
           <CardContent>
-            {/* Title */}
             <Typography mb={2} variant="h5">
               User Info
             </Typography>
-            {/* Info and conditional edit button */}
             {userInfo && (
               <Stack spacing={3}>
                 <Typography>First Name: {userInfo.nameFirst}</Typography>
                 <Typography>Last Name: {userInfo.nameLast}</Typography>
                 <Typography>Email: {userInfo.emailAddress}</Typography>
-                {/* Display edit button if user is viewing their own page */}
                 {String(userId) === String(currentUserId) && (
-                  <Box
-                    sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}
-                  >
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                     <Button
                       variant="contained"
                       color="secondary"
@@ -269,31 +221,26 @@ export default function ProfilePage() {
         </Card>
       </Box>
 
-      {/* Create card to display dislike information */}
-      {dislikeCount >= 5 && ( // Only show this box if there are at least five dislikes
-        <Card sx={{ mb: 3, width: '70%' }}> {/* Set width to match preferences card */}
-          <CardContent sx={{ textAlign: "center", padding: 2 }}> {/* Center align text and add padding */}
-            {/* Conditionally render title and message based on dislike count */}
-            {title && (
+      {dislikeCount >= 5 && (
+        <Card sx={{ mb: 3, width: '70%' }}>
+          <CardContent sx={{ textAlign: "center", padding: 2 }}>
+            {rankTitle && (
               <>
-                <Typography variant="h5">You have achieved the rank of: {title}</Typography>
-                <Typography variant="h6">{message}</Typography>
+                <Typography variant="h5">You have achieved the rank of: {rankTitle}</Typography>
+                <Typography variant="h6">{rankMessage}</Typography>
                 <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
-                <Typography variant="body1">{`This has resulted in ${killCount} deaths.`}</Typography> {/* Use Math.floor for whole number */}
+                <Typography variant="body1">{`This has resulted in ${killCount} deaths.`}</Typography>
               </>
             )}
           </CardContent>
         </Card>
       )}
 
-      {/* Create card to display preferences */}
       <Card>
         <CardContent>
-          {/* Title */}
           <Typography mb={2} variant="h5">
             Preferences
           </Typography>
-          {/* Display info as grid */}
           {userInfo && userInfo.preference && (
             <Grid container spacing={2.5}>
               <Grid item xs={12} sm={6}>
@@ -319,7 +266,6 @@ export default function ProfilePage() {
               </Grid>
             </Grid>
           )}
-          {/* Conditional edit button if user is viewing their own page */}
           {String(userId) === String(currentUserId) && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
@@ -341,3 +287,4 @@ export default function ProfilePage() {
     </Box>
   );
 }
+

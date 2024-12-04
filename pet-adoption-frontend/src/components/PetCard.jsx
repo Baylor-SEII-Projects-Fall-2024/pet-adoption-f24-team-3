@@ -14,7 +14,7 @@ export default function PetCard(props) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
-  const isEuthanized = euthanizedPetIds.includes(pet.id);
+  const isEuthanized = (euthanizedPetIds && euthanizedPetIds.includes(pet.id)) || false;
 
   const onLikeInteraction = (buttonPressed) => {
     setHasInteracted(buttonPressed);

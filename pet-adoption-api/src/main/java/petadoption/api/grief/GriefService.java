@@ -46,9 +46,9 @@ public class GriefService {
         dto.setPotentialOwnerId(grief.getPotentialOwnerId());
         dto.setNumDislikes(grief.getNumDislikes());
         dto.setKillCount(grief.getKillCount());
-        dto.setRank(grief.getRank());
-        dto.setRankTitle(grief.getRank().getTitle());
-        dto.setRankMessage(grief.getRank().getMessage());
+        dto.setUserRank(grief.getUserRank());
+        dto.setRankTitle(grief.getUserRank().getTitle());
+        dto.setRankMessage(grief.getUserRank().getMessage());
 
         return dto;
     }

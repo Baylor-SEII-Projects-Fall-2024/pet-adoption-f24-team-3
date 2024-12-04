@@ -42,19 +42,20 @@ public class Grief {
      * The number of dislikes associated with the potential owner.
      */
     @Column(name = "NUM_DISLIKES")
-    private Integer numDislikes;
+    private Integer numDislikes = 0;
 
     /**
      * The count of euthanized pets associated with the potential owner.
      */
     @Column(name = "KILL_COUNT")
-    private Integer killCount;
+    private Integer killCount = 0;
 
     /**
      * The user's rank based on the number of euthanized pets.
      */
     @Enumerated(EnumType.STRING)
-    private UserRank rank;
+    @Column(name = "USER_RANK")
+    private UserRank userRank;
 
     /**
      * A list of IDs of euthanized pets associated with the potential owner.
@@ -71,7 +72,7 @@ public class Grief {
     @PreUpdate
     private void updateRank() {
         if (numDislikes != null) {
-            this.rank = UserRank.getRankByKillCount(killCount);
+            this.userRank = UserRank.getRankByKillCount(killCount);
         }
     }
 }

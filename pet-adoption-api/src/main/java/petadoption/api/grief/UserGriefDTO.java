@@ -30,7 +30,7 @@ public class UserGriefDTO {
     /**
      * The user's rank based on the number of euthanized pets.
      */
-    private UserRank rank;
+    private UserRank userRank;
 
     /**
      * The title of the user's rank.
