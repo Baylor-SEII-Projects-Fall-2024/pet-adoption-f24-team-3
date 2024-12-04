@@ -24,6 +24,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
   const {
@@ -51,16 +52,16 @@ function PetsAndEventsTabs(props) {
 
   const updateTotalDislikes = async (petId) => {
     try {
-      const incrementSuccess = await incrementDislikeCount();
+      const incrementSuccess = await incrementDislikeCount(currentUserId);
 
       if (incrementSuccess) {
         // Fetch updated total dislikes
-        const updatedTotalDislikes = await getDislikeCount();
+        const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
 
         if (updatedTotalDislikes % 5 === 0) {
-          await updateEuthanizedPetIds(petId);
-          const updatedEuthanizedIds = await getEuthanizedPetIds();
+          await updateEuthanizedPetIds(currentUserId, petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
         }
