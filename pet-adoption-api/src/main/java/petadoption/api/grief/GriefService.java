@@ -1,14 +1,25 @@
 package petadoption.api.grief;
 
+import petadoption.api.user.PotentialOwnerRepository;
+
 import lombok.extern.log4j.Log4j2;
+import petadoption.api.user.PotentialOwner;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Service for managing user grief-related operations, including tracking dislikes,
+ * euthanized pets, and generating leaderboard statistics.
+ */
 @Log4j2
 @Service
 public class GriefService {
@@ -16,7 +27,38 @@ public class GriefService {
     @Autowired
     private GriefRepository griefRepository;
 
-    // Get the number of dislikes for a specific user (potentialOwnerId)
+    @Autowired
+    private PotentialOwnerRepository potentialOwnerRepository;
+
+    /**
+     * Retrieves detailed grief statistics for a specific user.
+     *
+     * @param userId the unique identifier of the user.
+     * @return a {@link UserGriefDTO} containing the user's grief statistics, rank,
+     *         title, and message.
+     * @throws EntityNotFoundException if no grief record is found for the specified user ID.
+     */
+    public UserGriefDTO getGriefDetails(Long userId) {
+        Grief grief = griefRepository.findByPotentialOwnerId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Grief not found for user ID: " + userId));
+
+        UserGriefDTO dto = new UserGriefDTO();
+        dto.setPotentialOwnerId(grief.getPotentialOwnerId());
+        dto.setNumDislikes(grief.getNumDislikes());
+        dto.setKillCount(grief.getKillCount());
+        dto.setRank(grief.getRank());
+        dto.setRankTitle(grief.getRank().getTitle());
+        dto.setRankMessage(grief.getRank().getMessage());
+
+        return dto;
+    }
+
+    /**
+     * Retrieves the number of dislikes for a specific user.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     * @return the number of dislikes the user has received, or 0 if no record exists.
+     */
     public Integer getDislikeCount(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         if (grief.isPresent()) {
@@ -26,7 +68,11 @@ public class GriefService {
         }
     }
 
-    // Increment the dislike count for the specific user
+    /**
+     * Increments the dislike count for a specific user.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     */
     public void incrementDislikeCount(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         if (grief.isPresent()) {
@@ -41,7 +87,11 @@ public class GriefService {
         }
     }
 
-    // Decrement the dislike count for the specific user
+    /**
+     * Decrements the dislike count for a specific user if the count is greater than zero.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     */
     public void decrementDislikeCount(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         if (grief.isPresent()) {
@@ -53,13 +103,23 @@ public class GriefService {
         }
     }
 
-    // Get the list of euthanized pets for the specific user
+    /**
+     * Retrieves the list of euthanized pet IDs associated with a specific user.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     * @return a list of euthanized pet IDs, or an empty list if no record exists.
+     */
     public List<Long> getEuthanizedPetIds(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         return grief.map(Grief::getEuthanizedPets).orElse(List.of());
     }
 
-    // Add a pet ID to the euthanized pets list for the specific user
+    /**
+     * Adds a pet ID to the euthanized pets list for a specific user and increments the kill count.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     * @param petId            the unique identifier of the pet to be added.
+     */
     public void updateEuthanizedPetIds(Long potentialOwnerId, Long petId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         if (grief.isPresent()) {
@@ -78,8 +138,8 @@ public class GriefService {
                 griefRepository.save(griefRecord);
             }
         } else {
-            // If there's no Grief entry for the user, create a new one with the euthanized
-            // pet
+            // If there's no Grief entry for the user, create a new one
+            // with the euthanized pet
             Grief newGrief = new Grief();
             newGrief.setPotentialOwnerId(potentialOwnerId);
             newGrief.setEuthanizedPets(new ArrayList<>(List.of(petId)));
@@ -88,25 +148,77 @@ public class GriefService {
         }
     }
 
-    // Get the number of euthanized pets for a user
+    /**
+     * Retrieves the total kill count (number of euthanized pets) for a specific user.
+     *
+     * @param potentialOwnerId the unique identifier of the user.
+     * @return the kill count, or 0 if no record exists.
+     */
     public Integer getKillCount(Long potentialOwnerId) {
         Optional<Grief> grief = griefRepository.findByPotentialOwnerId(potentialOwnerId);
         return grief.map(Grief::getKillCount).orElse(0);
         // return grief.map(g -> g.getEuthanizedPets().size()).orElse(0);
     }
 
-    // Fetch leaderboards!
-    public List<Grief> getLeaderboard(String sortBy) {
-        // Fetch all Grief records
+    /**
+     * Generates a leaderboard of users based on the specified sorting criterion.
+     *
+     * <p>Sorting options:
+     * <ul>
+     *     <li><b>kills</b> (default): Sorts by the number of pets euthanized in descending order.</li>
+     *     <li><b>dislikes</b>: Sorts by the number of dislikes in descending order.</li>
+     *     <li><b>ownerid</b>: Sorts by user ID in ascending order.</li>
+     *     <li><b>firstname</b>: Sorts alphabetically by the user's first name.</li>
+     *     <li><b>lastname</b>: Sorts alphabetically by the user's last name.</li>
+     * </ul>
+     *
+     * @param sortBy the sorting criterion; defaults to "kills" if not specified.
+     * @return a list of {@link LeaderboardEntryDTO} representing the leaderboard entries.
+     */
+    public List<LeaderboardEntryDTO> getLeaderboard(String sortBy) {
         List<Grief> allGriefs = griefRepository.findAll();
 
         // Sort based on the `sortBy` parameter
-        if ("kills".equalsIgnoreCase(sortBy)) {
-            allGriefs.sort(Comparator.comparing(Grief::getKillCount).reversed());
-        } else if ("dislikes".equalsIgnoreCase(sortBy)) {
-            allGriefs.sort(Comparator.comparing(Grief::getNumDislikes).reversed());
+        switch (sortBy.toLowerCase()) {
+            case "kills":
+                allGriefs.sort(Comparator.comparing(Grief::getKillCount).reversed());
+                break;
+            case "dislikes":
+                allGriefs.sort(Comparator.comparing(Grief::getNumDislikes).reversed());
+                break;
+            case "ownerid":
+                allGriefs.sort(Comparator.comparing(Grief::getPotentialOwnerId));
+                break;
+            case "firstname":
+                allGriefs.sort(
+                        Comparator.comparing(grief -> potentialOwnerRepository.findById(grief.getPotentialOwnerId())
+                                .map(PotentialOwner::getNameFirst)
+                                .orElse("")));
+                break;
+            case "lastname":
+                allGriefs.sort(
+                        Comparator.comparing(grief -> potentialOwnerRepository.findById(grief.getPotentialOwnerId())
+                                .map(PotentialOwner::getNameLast)
+                                .orElse("")));
+                break;
+            default:
+                break; // Optionally handle invalid sort criteria
         }
 
-        return allGriefs;
+        // Convert Grief entities to GriefDTO
+        return allGriefs.stream()
+                .map(grief -> {
+                    LeaderboardEntryDTO dto = new LeaderboardEntryDTO();
+                    dto.setPotentialOwnerId(grief.getPotentialOwnerId());
+                    dto.setNumDislikes(grief.getNumDislikes());
+                    dto.setKillCount(grief.getKillCount());
+                    // Fetch owner details if available
+                    potentialOwnerRepository.findById(grief.getPotentialOwnerId()).ifPresent(owner -> {
+                        dto.setFirstName(owner.getNameFirst());
+                        dto.setLastName(owner.getNameLast());
+                    });
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }
