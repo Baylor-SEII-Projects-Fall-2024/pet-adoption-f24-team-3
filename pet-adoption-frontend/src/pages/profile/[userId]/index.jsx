@@ -24,7 +24,7 @@ export default function ProfilePage() {
       ? state.currentUser.currentUserId
       : null
   ); // get the current session user
-  const { getUserInfo } = userService();
+  const { getUserInfo, getOwnerInfo } = userService();
   const { getUserGrief } = guiltService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,11 +48,18 @@ export default function ProfilePage() {
             return; // Exit early if redirected
           }
 
-          // Fetch user grief details using guiltService
+          // Fetch owner info
+          const ownerInfoResult = await getOwnerInfo(userId);
+          if (ownerInfoResult !== null) {
+            setUserInfo(ownerInfoResult);
+          } else {
+            setError(`User information could not be found for user ${userId}`);
+          }
+
+          // Fetch user grief info
           const griefDetails = await getUserGrief(userId);
 
           if (griefDetails) {
-            setUserInfo(griefDetails);
             setDislikeCount(griefDetails.numDislikes || 0);
             setKillCount(griefDetails.killCount || 0);
             setRankTitle(griefDetails.rankTitle || "");
@@ -66,7 +73,6 @@ export default function ProfilePage() {
           setLoading(false); // Set loading to false after fetching data
         }
       };
-
       fetchData(); // Call the fetch function for user info
     }
   }, [userId]); // Rerender if userId changes
