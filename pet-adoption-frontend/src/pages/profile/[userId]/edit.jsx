@@ -20,7 +20,7 @@ export default function EditProfilePage() {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const { updateOwner, getUserInfo } = userService();
   
-  const usernameRegex = RegExp('[^a-zA-Z]');
+  const usernameRegex = RegExp('[^ a-zA-Z]');
 
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);

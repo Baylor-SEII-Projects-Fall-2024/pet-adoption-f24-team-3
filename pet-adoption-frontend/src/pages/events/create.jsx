@@ -19,7 +19,7 @@ export default function CreateEventPage() {
     const { stateNames } = infoLists();
 
     const currDate = new Date().toISOString();
-    const fieldRegex = RegExp('[^0-9a-zA-Z ]');
+    const fieldRegex = RegExp('[^ 0-9a-zA-Z ]');
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }

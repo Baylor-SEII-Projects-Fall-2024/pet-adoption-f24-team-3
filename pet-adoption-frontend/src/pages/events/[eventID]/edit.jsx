@@ -15,7 +15,7 @@ export default function EditEvent() {
     const currentUserId = useSelector((state) => state.currentUser.currentUserId);
     const { stateNames } = infoLists();
 
-    const fieldRegex = RegExp('[^0-9a-zA-Z]');
+    const fieldRegex = RegExp('[^ 0-9a-zA-Z]');
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
 

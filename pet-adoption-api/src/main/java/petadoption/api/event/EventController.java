@@ -2,6 +2,9 @@ package petadoption.api.event;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +79,21 @@ public class EventController {
         List<Event> events = eventService.paginateEvents(pageSize, pageNumber);
         return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
     }
+
+    @GetMapping("/paginated/sort")
+    public List<EventCardResponse> findByPageSort(
+            @RequestParam("pageSize") Integer pageSize,
+            @RequestParam("pageNumber") Integer pageNumber,
+            @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "city", required = false) String city) {
+
+
+        List<Event> events = eventService.paginateEvents(pageSize, pageNumber, state, city);
+
+        return events.stream().map(EventCardResponse::new).collect(Collectors.toList());
+    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
