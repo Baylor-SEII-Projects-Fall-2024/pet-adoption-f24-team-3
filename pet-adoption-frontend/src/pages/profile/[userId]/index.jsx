@@ -64,9 +64,8 @@ export default function ProfilePage() {
             setKillCount(griefDetails.killCount || 0);
             setRankTitle(griefDetails.rankTitle || "");
             setRankMessage(griefDetails.rankMessage || "");
-          } else {
-            setError(`User information could not be found for user ${userId}`);
           }
+          // Don't set error if no grief details -- we won't be displaying the box anyways
         } catch (error) {
           setError(`User information could not be found for user ${userId}`);
         } finally {
@@ -227,7 +226,7 @@ export default function ProfilePage() {
         </Card>
       </Box>
 
-      {dislikeCount >= 5 && (
+      {killCount >= 1 && (
         <Card sx={{ mb: 3, width: '70%' }}>
           <CardContent sx={{ textAlign: "center", padding: 2 }}>
             {rankTitle && (
