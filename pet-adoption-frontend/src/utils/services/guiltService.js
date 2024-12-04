@@ -118,33 +118,7 @@ const guiltService = () => {
       return null;
     }
 
-    return true;
-  };
-
-
-  // Increment kill count
-  const incrementKillCount = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanize`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      console.error("Failed to increment kill count");
-      return null;
-    }
-
-    return true;
+    return response.text();
   };
 
   // Fetch euthanized pet IDs
@@ -197,34 +171,6 @@ const guiltService = () => {
     return true;
   };
 
-  // We do not allow a pet to come back from the grave
-  /*
-  // Remove euthanized pet IDs
-  const removeEuthanizedPetIds = async (petId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
-    const response = await fetch(`${apiUrl}/api/grief/${currentUserId}/unEuthanizePet?petId=${petId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      console.error("Failed to remove euthanized pet IDs");
-      return null;
-    }
-
-    return true;
-  };
-  */
-
   const getDislikeTitleAndMessage = (dislikeCount) => {
     if (dislikeCount < 10) {
       return {
@@ -254,10 +200,9 @@ const guiltService = () => {
     incrementDislikeCount,
     decrementDislikeCount,
     getKillCount,
-    incrementKillCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
-    // removeEuthanizedPetIds,
+    // removeEuthanizedPetIds, -- we do not allow a pet to come back from the grave
     getDislikeTitleAndMessage,
   };
 };

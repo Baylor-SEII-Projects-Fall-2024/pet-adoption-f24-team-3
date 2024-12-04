@@ -26,13 +26,14 @@ export default function ProfilePage() {
       : null
   ); // get the current session user
   const { getOwnerInfo, getUserInfo } = userService();
-  const { getProfileDislikeCount, getDislikeTitleAndMessage } = guiltService();
+  const { getDislikeCount, getKillCount, getDislikeTitleAndMessage } = guiltService();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { formatSize, formatSex, formatAge } = formatter();
 
   const [dislikeCount, setDislikeCount] = useState(0);
+  const [killCount, setKillCount] = useState(0);
 
   // Fetch user info when page renders
   useEffect(() => {
@@ -69,8 +70,10 @@ export default function ProfilePage() {
     const fetchDislikeCount = async () => {
       if (userId) { // Check if userId is defined before fetching dislike count
         try {
-          const dislikeResult = await getProfileDislikeCount(userId); // Fetch dislike count here
+          const dislikeResult = await getDislikeCount(userId); // Fetch dislike count here
           setDislikeCount(dislikeResult || 0); // Set dislike count or default to 0
+          const killResult = await getKillCount(userId);
+          setKillCount(killResult || 0);
         } catch (error) {
           console.error("Error fetching dislike count:", error);
         }
@@ -276,7 +279,7 @@ export default function ProfilePage() {
                 <Typography variant="h5">You have achieved the rank of: {title}</Typography>
                 <Typography variant="h6">{message}</Typography>
                 <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
-                <Typography variant="body1">{`This has resulted in ${Math.floor(dislikeCount / 5)} deaths.`}</Typography> {/* Use Math.floor for whole number */}
+                <Typography variant="body1">{`This has resulted in ${killCount} deaths.`}</Typography> {/* Use Math.floor for whole number */}
               </>
             )}
           </CardContent>
