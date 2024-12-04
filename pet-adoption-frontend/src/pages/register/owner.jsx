@@ -8,7 +8,7 @@ export default function RegisterOwnerPage() {
     const { registerOwner } = userService();
 
     const passwordRegex = RegExp('[^ -~]');
-    const usernameRegex = RegExp('[^a-zA-Z]');
+    const usernameRegex = RegExp('[^ a-zA-Z]');
 
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }

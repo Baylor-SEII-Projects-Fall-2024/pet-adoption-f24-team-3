@@ -31,7 +31,7 @@ export default function PetsPage() {
     const { createPet } = animalService();
     const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
     
-    const fieldRegex = RegExp('[^a-zA-Z]');
+    const fieldRegex = RegExp('[^ a-zA-Z]');
 
     const [petPicture, setPetPicture] = useState(null);
     const [isUploading, setIsUploading] = useState(null);

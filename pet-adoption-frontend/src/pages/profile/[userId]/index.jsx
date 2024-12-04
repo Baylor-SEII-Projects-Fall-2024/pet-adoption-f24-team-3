@@ -84,6 +84,10 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/preferences`);
   };
 
+  const handleChangePasswordClick = () => {
+    router.push(`/profile/${userId}/change-password`);
+  };
+
   if (loading) {
     return (
       <Box
@@ -217,7 +221,14 @@ export default function ProfilePage() {
                 <Typography>Last Name: {userInfo.nameLast}</Typography>
                 <Typography>Email: {userInfo.emailAddress}</Typography>
                 {String(userId) === String(currentUserId) && (
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      flexDirection: "column",
+                      mt: 2
+                    }}
+                  >
                     <Button
                       variant="contained"
                       color="secondary"
@@ -229,6 +240,18 @@ export default function ProfilePage() {
                       onClick={handleEditInfoClick}
                     >
                       Edit Info
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={{
+                        padding: "12px 12px",
+                        fontSize: "16px",
+                        minWidth: "200px",
+                      }}
+                      onClick={handleChangePasswordClick}
+                    >
+                      Change Password
                     </Button>
                   </Box>
                 )}
