@@ -1,6 +1,7 @@
-package petadoption.api.grief;
+package petadoption.api.grief.dtos;
 
 import lombok.Data;
+import petadoption.api.grief.UserRank;
 
 /**
  * Data Transfer Object (DTO) for representing grief-related information of a user.

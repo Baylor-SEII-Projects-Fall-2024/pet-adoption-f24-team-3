@@ -3,6 +3,8 @@ package petadoption.api.grief;
 import petadoption.api.user.PotentialOwnerRepository;
 
 import lombok.extern.log4j.Log4j2;
+import petadoption.api.grief.dtos.LeaderboardEntryDTO;
+import petadoption.api.grief.dtos.UserGriefDTO;
 import petadoption.api.user.PotentialOwner;
 
 import org.springframework.beans.factory.annotation.Autowired;

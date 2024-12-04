@@ -1,4 +1,4 @@
-package petadoption.api.grief;
+package petadoption.api.grief.dtos;
 
 import lombok.Data;
 
