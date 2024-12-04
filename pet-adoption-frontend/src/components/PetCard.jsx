@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import formatter from "@/utils/formatter";
+import CreepyImage from "./CreepyImage";
 import LikeButtons from "./LikeButtons";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -59,10 +60,28 @@ export default function PetCard(props) {
               borderRadius: "2%",
               aspectRatio: 1,
               objectFit: "cover",
+              filter: "contrast(200%) brightness(120%) saturate(700%) hue-rotate(-30deg)",
+              transform: "translate3d(0, 0, 0)",
+              backfaceVisibility: "hidden",
+              perspective: " 1000px",
+              transform: "scale(1.2) rotate(-15deg)",
+              border: "5px solid #ff0000"
+
             }}
+            className='shake-animation'
             alt="Pet Photo"
             src={`${apiUrl}/api/images/animals/${pet.id}`}
           />
+          {/* <CreepyImage
+            src={`${apiUrl}/api/images/animals/${pet.id}`}
+            style={{
+              width: "100%",
+              maxHeight: "auto",
+              borderRadius: "2%",
+              aspectRatio: 1,
+              objectFit: "cover",
+            }}
+          /> */}
         </Box>
         <Box>
           <Typography variant="h5" sx={styles.noOverflow}>
