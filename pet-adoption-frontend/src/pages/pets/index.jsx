@@ -379,7 +379,7 @@ export default function PetsPage() {
                 hasMore={hasMore}
                 loader={<Loading doneLoading={!hasMore} page={page} />}
               >
-                <Grid container spacing={4} sx={{ minHeight: "50px" }}>
+                <Grid container spacing={4} sx={{ minHeight: "50px", padding: "10px" }}>
                   {animalData.map((pet) => (
                     <Grid item xs={11} sm={5} md={4} lg={4} key={pet.id}>
                       <Box

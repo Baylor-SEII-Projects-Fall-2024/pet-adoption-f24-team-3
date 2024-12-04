@@ -106,7 +106,12 @@ td {
   }
 }
 
-.shake-animation {
-  animation: shake 0.8s infinite linear;
-  /* Faster shake */
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.02);
+  }
 }
