@@ -11,6 +11,7 @@ import petadoption.api.recommendations.RecommendationsService;
 import petadoption.api.user.UserService;
 import petadoption.api.animal.AnimalService;
 import petadoption.api.event.EventService;
+import petadoption.api.grief.GriefService;
 import petadoption.api.annotation.GlobalCrossOrigin;
 
 /**
@@ -41,6 +42,9 @@ public class ClearDataController {
 
     @Autowired
     private RecommendationsService recommendationsService;
+
+    @Autowired
+    private GriefService griefService;
 
     @PostMapping("/clear-table-users")
     public String clearUsers() {
@@ -92,5 +96,24 @@ public class ClearDataController {
     public String clearInteractions() {
         recommendationsService.clearData();
         return "Interactions table emptied";
+    }
+
+    @PostMapping("/clear-grief")
+    public String clearGrief() {
+        griefService.clearData();
+        return "Grief table emptied";
+    }
+
+    @PostMapping("/clear-all")
+    public String clearAll() {
+        userService.clearData();
+        preferenceService.clearData();
+        animalService.clearData();
+        eventService.clearData();
+        chatService.clearData();
+        messageService.clearData();
+        recommendationsService.clearData();
+        griefService.clearData();
+        return "All tables emptied";
     }
 }

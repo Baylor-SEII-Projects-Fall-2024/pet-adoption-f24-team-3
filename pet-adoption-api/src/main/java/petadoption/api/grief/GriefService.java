@@ -275,4 +275,15 @@ public class GriefService {
             griefRepository.save(newGrief);
         }
     }
+
+    /**
+     * Clears all grief data from the system.
+     *
+     * This is just used in development and testing environments and should not be used in production.
+     *
+     * @see ClearDataController#deleteAll()
+     */
+    public void clearData() {
+        griefRepository.deleteAll();
+    }
 }
