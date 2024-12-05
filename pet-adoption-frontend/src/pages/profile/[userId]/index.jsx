@@ -16,7 +16,6 @@ import guiltService from "@/utils/services/guiltService";
 import formatter from "@/utils/formatter";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
 export default function ProfilePage() {
   const router = useRouter();
   const { userId } = router.query; // get user ID from the routing
@@ -25,16 +24,20 @@ export default function ProfilePage() {
       ? state.currentUser.currentUserId
       : null
   ); // get the current session user
-  const { getOwnerInfo, getUserInfo } = userService();
-  const { getProfileDislikeCount, getDislikeTitleAndMessage } = guiltService();
+  const { getUserInfo, getOwnerInfo } = userService();
+  const { getUserGrief } = guiltService();
+
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { formatSize, formatSex, formatAge } = formatter();
 
   const [dislikeCount, setDislikeCount] = useState(0);
+  const [killCount, setKillCount] = useState(0);
+  const [rankTitle, setRankTitle] = useState("");
+  const [rankMessage, setRankMessage] = useState("");
 
-  // Fetch user info when page renders
+  // Fetch user info and grief details when page renders
   useEffect(() => {
     if (userId) {
       const fetchData = async () => {
@@ -53,53 +56,41 @@ export default function ProfilePage() {
           } else {
             setError(`User information could not be found for user ${userId}`);
           }
+
+          // Fetch user grief info
+          const griefDetails = await getUserGrief(userId);
+
+          if (griefDetails) {
+            setDislikeCount(griefDetails.numDislikes || 0);
+            setKillCount(griefDetails.killCount || 0);
+            setRankTitle(griefDetails.rankTitle || "");
+            setRankMessage(griefDetails.rankMessage || "");
+          }
+          // Don't set error if no grief details -- we won't be displaying the box anyways
         } catch (error) {
           setError(`User information could not be found for user ${userId}`);
         } finally {
           setLoading(false); // Set loading to false after fetching data
         }
-      }, [userId]); // Rerender if userId changes
-
-  fetchData(); // Call the fetch function for user info
-}
+      };
+      fetchData(); // Call the fetch function for user info
+    }
   }, [userId]); // Rerender if userId changes
 
-// Fetch dislike count when userId is available and defined
-useEffect(() => {
-  const fetchDislikeCount = async () => {
-    if (userId) { // Check if userId is defined before fetching dislike count
-      try {
-        const dislikeResult = await getProfileDislikeCount(userId); // Fetch dislike count here
-        setDislikeCount(dislikeResult || 0); // Set dislike count or default to 0
-      } catch (error) {
-        console.error("Error fetching dislike count:", error);
-      }
-    }
+  const handleEditInfoClick = () => {
+    router.push(`/profile/${userId}/edit`);
   };
 
-  fetchDislikeCount(); // Call the fetch function for dislikes
-}, [userId]); // This effect runs whenever userId changes
+  const handleEditPreferencesClick = () => {
+    router.push(`/profile/${userId}/preferences`);
+  };
 
-// Determine a user's kill count
-const { title, message } = getDislikeTitleAndMessage(dislikeCount);
+  const handleChangePasswordClick = () => {
+    router.push(`/profile/${userId}/change-password`);
+  };
 
-const handleEditInfoClick = () => {
-  router.push(`/profile/${userId}/edit`);
-};
-
-const handleChangePasswordClick = () => {
-  router.push(`/profile/${userId}/change-password`);
-};
-
-<<<<<<< HEAD
-if ((loading || !userInfo) && !error)
-  return (
-    // Create flex box to contain all components
-    <Box
-=======
   if (loading) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -110,7 +101,6 @@ if ((loading || !userInfo) && !error)
           gap: 2,
         }}
       >
-        {/* Create loading card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -124,7 +114,6 @@ if ((loading || !userInfo) && !error)
 
   if (!userInfo) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -135,7 +124,6 @@ if ((loading || !userInfo) && !error)
           gap: 2,
         }}
       >
-        {/* Create loading card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
@@ -149,7 +137,6 @@ if ((loading || !userInfo) && !error)
 
   if (error) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -160,7 +147,6 @@ if ((loading || !userInfo) && !error)
           gap: 2,
         }}
       >
-        {/* Create error card */}
         <Card sx={{ minWidth: 275, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div" color="error">
@@ -173,24 +159,28 @@ if ((loading || !userInfo) && !error)
   }
 
   return (
-    // Create flex box to contain all components
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
-        minHeight: "100vh",
         flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        width: '100%',
         gap: 2,
       }}
     >
-      {/* Create flex box to contain Avatar and User Info cards */}
+      {/* Top Row: Profile and User Info */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          justifyContent: "space-between",
+          width: '90%', // Scale with window size
+          maxWidth: '1200px', // Max width to prevent stretching on large screens
+          gap: 2,
+          flexWrap: "wrap", // Allow wrapping on smaller screens
         }}
       >
-        {/* Create card to display users name and avatar */}
         <Card
           sx={{
             minWidth: 275,
@@ -203,22 +193,14 @@ if ((loading || !userInfo) && !error)
             justifyContent: "center",
             padding: 2,
             paddingBottom: 4,
+            width: '48%', // Make width of top cards similar to bottom ones
           }}
         >
-          {/* Display users name */}
           <CardContent>
-            <Typography
-              variant="h3"
-              component="div"
-              sx={{
-                wordBreak: "break-word", // wrap should overflow occur
-                whiteSpace: "normal",
-              }}
-            >
+            <Typography variant="h3" component="div">
               {userInfo.nameFirst} {userInfo.nameLast}'s Profile
             </Typography>
           </CardContent>
-          {/* Display users avatar */}
           <Avatar
             sx={{
               bgcolor: "#a3b18a",
@@ -226,31 +208,28 @@ if ((loading || !userInfo) && !error)
               height: 175,
               border: "2px solid #000",
             }}
-            alt={
-              userInfo
-                ? `${userInfo.nameFirst} ${userInfo.nameLast}`
-                : "User Avatar"
-            }
+            alt={`${userInfo.nameFirst} ${userInfo.nameLast}`}
             src={`${apiUrl}/api/images/users/${userId}/profile`}
           />
-          {/* Create card to display User Info */}
         </Card>
-        <Card sx={{ mb: 3, mt: 3 }}>
+        <Card sx={{ width: '48%', mb: 3, mt: 3 }}>
           <CardContent>
-            {/* Title */}
             <Typography mb={2} variant="h5">
               User Info
             </Typography>
-            {/* Info and conditional edit button */}
             {userInfo && (
               <Stack spacing={3}>
                 <Typography>First Name: {userInfo.nameFirst}</Typography>
                 <Typography>Last Name: {userInfo.nameLast}</Typography>
                 <Typography>Email: {userInfo.emailAddress}</Typography>
-                {/* Display edit button if user is viewing their own page */}
                 {String(userId) === String(currentUserId) && (
                   <Box
-                    sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      flexDirection: "column",
+                      mt: 2
+                    }}
                   >
                     <Button
                       variant="contained"
@@ -264,6 +243,18 @@ if ((loading || !userInfo) && !error)
                     >
                       Edit Info
                     </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={{
+                        padding: "12px 12px",
+                        fontSize: "16px",
+                        minWidth: "200px",
+                      }}
+                      onClick={handleChangePasswordClick}
+                    >
+                      Change Password
+                    </Button>
                   </Box>
                 )}
               </Stack>
@@ -272,275 +263,81 @@ if ((loading || !userInfo) && !error)
         </Card>
       </Box>
 
-      {/* Create card to display dislike information */}
-      {dislikeCount >= 5 && ( // Only show this box if there are at least five dislikes
-        <Card sx={{ mb: 3, width: '70%' }}> {/* Set width to match preferences card */}
-          <CardContent sx={{ textAlign: "center", padding: 2 }}> {/* Center align text and add padding */}
-            {/* Conditionally render title and message based on dislike count */}
-            {title && (
-              <>
-                <Typography variant="h5">You have achieved the rank of: {title}</Typography>
-                <Typography variant="h6">{message}</Typography>
-                <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
-                <Typography variant="body1">{`This has resulted in ${Math.floor(dislikeCount / 5)} deaths.`}</Typography> {/* Use Math.floor for whole number */}
-              </>
+      {/* Bottom Row: Conditional Kill Count and Preferences */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: '90%',
+          maxWidth: '1200px',
+          gap: 2
+        }}
+      >
+        {killCount >= 1 && (
+          <Card sx={{ width: '100%' }}>
+            <CardContent sx={{ textAlign: "center", padding: 2 }}>
+              {rankTitle && (
+                <>
+                  <Typography variant="h5">You have achieved the rank of: {rankTitle}</Typography>
+                  <Typography variant="h6">{rankMessage}</Typography>
+                  <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
+                  <Typography variant="body1">{`This has resulted in ${killCount} deaths.`}</Typography>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        <Card sx={{ width: '100%' }}>
+          <CardContent>
+            <Typography mb={2} variant="h5">
+              Preferences
+            </Typography>
+            {userInfo && userInfo.preference && (
+              <Grid container spacing={2.5}>
+                <Grid item xs={12} sm={6}>
+                  <Typography>City: {userInfo.preference.city}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>State: {userInfo.preference.state}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>Species: {userInfo.preference.species}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>Breed: {userInfo.preference.breed}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>Size: {formatSize(userInfo.preference.size)}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>Sex: {formatSex(userInfo.preference.sex)}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography>Age: {formatAge(userInfo.preference.ageClass)}</Typography>
+                </Grid>
+              </Grid>
+            )}
+            {String(userId) === String(currentUserId) && (
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    padding: "12px 12px",
+                    fontSize: "16px",
+                    minWidth: "200px",
+                  }}z
+                  onClick={handleEditPreferencesClick}
+                >
+                  Adjust Preferences
+                </Button>
+              </Box>
             )}
           </CardContent>
         </Card>
-      )}
-
-      {/* Create card to display preferences */}
-      <Card>
-        <CardContent>
-          {/* Title */}
-          <Typography mb={2} variant="h5">
-            Preferences
-          </Typography>
-          {/* Display info as grid */}
-          {userInfo && userInfo.preference && (
-            <Grid container spacing={2.5}>
-              <Grid item xs={12} sm={6}>
-                <Typography>City: {userInfo.preference.city}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>State: {userInfo.preference.state}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Species: {userInfo.preference.species}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Breed: {userInfo.preference.breed}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Size: {formatSize(userInfo.preference.size)}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Sex: {formatSex(userInfo.preference.sex)}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography>Age: {formatAge(userInfo.preference.ageClass)}</Typography>
-              </Grid>
-            </Grid>
-          )}
-          {/* Conditional edit button if user is viewing their own page */}
-          {String(userId) === String(currentUserId) && (
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button
-                variant="contained"
-                color="primary"
->>>>>>> ickoxii/guilt-trippin
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      {/* Create loading card */}
-      <Card sx={{ minWidth: 275, mb: 2 }}>
-        <CardContent>
-          <Typography variant="h5" component="div">
-            Loading...
-          </Typography>
-        </CardContent>
-      </Card>
+      </Box>
     </Box>
   );
-
-if (error)
-  return (
-    // Create flex box to contain all components
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        flexDirection: "column",
-        gap: 2,
-      }}
-    >
-      {/* Create error card */}
-      <Card sx={{ minWidth: 275, mb: 2 }}>
-        <CardContent>
-          <Typography variant="h5" component="div" color="error">
-            {error}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Box>
-  );
-
-return (
-  // Create flex box to contain all components
-  <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      minHeight: "100vh",
-      flexDirection: "column",
-      gap: 2,
-    }}
-  >
-    {/* Create flex box to contain Avatar and User Info cards */}
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
-      {/* Create card to display users name and avatar */}
-      <Card
-        sx={{
-          minWidth: 275,
-          mb: 3,
-          mt: 3,
-          mr: 2,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 2,
-          paddingBottom: 4,
-        }}
-      >
-        {/* Display users name */}
-        <CardContent>
-          <Typography
-            variant="h3"
-            component="div"
-            sx={{
-              wordBreak: "break-word", // wrap should overflow occur
-              whiteSpace: "normal",
-            }}
-          >
-            {userInfo.nameFirst} {userInfo.nameLast}'s Profile
-          </Typography>
-        </CardContent>
-        {/* Display users avatar */}
-        <Avatar
-          sx={{
-            bgcolor: "#a3b18a",
-            width: 175,
-            height: 175,
-            border: "2px solid #000",
-          }}
-          alt={
-            userInfo
-              ? `${userInfo.nameFirst} ${userInfo.nameLast}`
-              : "User Avatar"
-          }
-          src={`${apiUrl}/api/images/users/${userId}/profile`}
-        />
-        {/* Create card to display User Info */}
-      </Card>
-      <Card sx={{ mb: 3, mt: 3 }}>
-        <CardContent>
-          {/* Title */}
-          <Typography mb={2} variant="h5">
-            User Info
-          </Typography>
-          {/* Info and conditional edit button */}
-          {userInfo && (
-            <Stack spacing={3}>
-              <Typography>First Name: {userInfo.nameFirst}</Typography>
-              <Typography>Last Name: {userInfo.nameLast}</Typography>
-              <Typography>Email: {userInfo.emailAddress}</Typography>
-              {/* Display edit button if user is viewing their own page */}
-              {String(userId) === String(currentUserId) && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    flexDirection: "column",
-                    mt: 2
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    sx={{
-                      padding: "12px 12px",
-                      fontSize: "16px",
-                      minWidth: "200px",
-                    }}
-                    onClick={handleEditInfoClick}
-                  >
-                    Edit Info
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    sx={{
-                      padding: "12px 12px",
-                      fontSize: "16px",
-                      minWidth: "200px",
-                    }}
-                    onClick={handleChangePasswordClick}
-                  >
-                    Change Password
-                  </Button>
-                </Box>
-              )}
-            </Stack>
-          )}
-        </CardContent>
-      </Card>
-    </Box>
-    {/* Create card to display preferences */}
-    <Card>
-      <CardContent>
-        {/* Title */}
-        <Typography mb={2} variant="h5">
-          Preferences
-        </Typography>
-        {/* Display info as grid */}
-        {userInfo && userInfo.preference && (
-          <Grid container spacing={2.5}>
-            <Grid item xs={12} sm={6}>
-              <Typography>City: {userInfo.preference.city}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>State: {userInfo.preference.state}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>Species: {userInfo.preference.species}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>Breed: {userInfo.preference.breed}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>Size: {formatSize(userInfo.preference.size)}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>Sex: {formatSex(userInfo.preference.sex)}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography>Age: {formatAge(userInfo.preference.ageClass)}</Typography>
-            </Grid>
-          </Grid>
-        )}
-        {/* Conditional edit button if user is viewing their own page */}
-        {String(userId) === String(currentUserId) && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                padding: "12px 12px",
-                fontSize: "16px",
-                minWidth: "200px",
-              }}
-              onClick={handleEditPreferencesClick}
-            >
-              Adjust Preferences
-            </Button>
-          </Box>
-        )}
-      </CardContent>
-    </Card>
-  </Box>
-);
 }
+

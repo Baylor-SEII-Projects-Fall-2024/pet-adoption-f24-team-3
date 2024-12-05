@@ -109,15 +109,15 @@ export default function PetsPage() {
     async function initializeGuiltData() {
       if (!currentUserId) return;
       try {
-        console.log("Fetching dislike count...");
-        const dislikeCountResult = await getDislikeCount();
+        // console.log("Fetching dislike count...");
+        const dislikeCountResult = await getDislikeCount(currentUserId);
         setTotalDislikes(dislikeCountResult);
-        console.log("Dislike count result: ", dislikeCountResult);
+        // console.log("Dislike count result: ", dislikeCountResult);
 
-        console.log("Fetching euthanized pets...");
-        const euthanizedPetIdsResult = await getEuthanizedPetIds();
+        // console.log("Fetching euthanized pets...");
+        const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
         setEuthanizedPetIds(euthanizedPetIdsResult);
-        console.log("Euthanized pet results: ", euthanizedPetIdsResult);
+        // console.log("Euthanized pet results: ", euthanizedPetIdsResult);
       } catch (error) {
         console.error("Error fetching guilt data:", error);
       }
@@ -258,16 +258,16 @@ export default function PetsPage() {
 
   const updateTotalDislikes = async (petId) => {
     try {
-      const incrementSuccess = await incrementDislikeCount();
+      const incrementSuccess = await incrementDislikeCount(currentUserId);
 
       if (incrementSuccess) {
         // Fetch updated total dislikes
-        const updatedTotalDislikes = await getDislikeCount();
+        const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
 
         if (updatedTotalDislikes % 5 === 0) {
-          await updateEuthanizedPetIds(petId);
-          const updatedEuthanizedIds = await getEuthanizedPetIds();
+          await updateEuthanizedPetIds(currentUserId, petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
         }

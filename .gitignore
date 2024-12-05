@@ -16,3 +16,4 @@ pet-adoption-api/uploads/
 .editorconfig
 **/Makefile
 cronlogs/
+changelog.md
