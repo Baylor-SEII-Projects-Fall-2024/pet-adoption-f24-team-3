@@ -126,7 +126,7 @@ export default function EditPreferencesPage() {
         return (
             <>
                 <Head>
-                    <title>Edit Preferences Page</title>
+                    <title>Edit Preferences</title>
                 </Head>
 
                 <main>

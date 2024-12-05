@@ -230,7 +230,7 @@ export default function PetsPage() {
   return (
     <>
       <Head>
-        <title>View Pets</title>
+        <title>Pets</title>
       </Head>
 
       <main>

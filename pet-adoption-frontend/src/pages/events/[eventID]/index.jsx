@@ -99,7 +99,7 @@ export default function ViewEventPage() {
     return (
       <>
         <Head>
-          <title>View Event</title>
+          <title>Event</title>
         </Head>
         <main>
           <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
@@ -120,7 +120,7 @@ export default function ViewEventPage() {
     return (
       <>
         <Head>
-          <title>View Event</title>
+          <title>Event</title>
         </Head>
         <main>
           <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
@@ -194,7 +194,7 @@ export default function ViewEventPage() {
                           {event.dateStart &&
                             event.dateEnd &&
                             (format(new Date(event.dateStart), "MM dd yyyy") ===
-                            format(new Date(event.dateEnd), "MM dd yyyy") ? (
+                              format(new Date(event.dateEnd), "MM dd yyyy") ? (
                               <>
                                 <Typography>
                                   {format(

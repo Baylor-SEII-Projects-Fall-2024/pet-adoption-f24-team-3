@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Head from "next/head";
+
 import {
   Box,
   Tabs,
@@ -174,7 +176,6 @@ export default function CenterPage() {
 
   if ((loading || !centerInfo) && !error) {
     return (
-      // Create flex box to contain all components
       <Box
         sx={{
           display: "flex",
@@ -223,32 +224,39 @@ export default function CenterPage() {
   }
 
   return (
-    <Box sx={{ width: "100%", padding: 0 }}>
-      <AppBar
-        position="static"
-        sx={{
-          width: "100%",
-          padding: 0,
-        }}
-      >
-        <img
-          src={`${apiUrl}/api/images/users/${centerId}/banner`}
-          alt="Center Banner"
-          style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
-        />
-      </AppBar>
-      <CenterProfileCard
-        centerInfo={centerInfo}
-        centerId={centerId}
-        currentUserId={currentUserId}
-      />
-      <PetsAndEventsTabs
-        pets={pets}
-        adoptedAnimals={adoptedAnimals}
-        events={events}
-        router={router}
-        isLoggedInCenter={currentUserId == centerId}
-      />
-    </Box>
+    <>
+      <Head>
+        <title>{centerInfo.name}</title>
+      </Head>
+      <main>
+        <Box sx={{ width: "100%", padding: 0 }}>
+          <AppBar
+            position="static"
+            sx={{
+              width: "100%",
+              padding: 0,
+            }}
+          >
+            <img
+              src={`${apiUrl}/api/images/users/${centerId}/banner`}
+              alt="Center Banner"
+              style={{ width: "100%", maxHeight: 225, objectFit: "cover" }}
+            />
+          </AppBar>
+          <CenterProfileCard
+            centerInfo={centerInfo}
+            centerId={centerId}
+            currentUserId={currentUserId}
+          />
+          <PetsAndEventsTabs
+            pets={pets}
+            adoptedAnimals={adoptedAnimals}
+            events={events}
+            router={router}
+            isLoggedInCenter={currentUserId == centerId}
+          />
+        </Box>
+      </main>
+    </>
   );
 }
