@@ -9,7 +9,7 @@ import LikeButtons from "./LikeButtons";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
-  const { pet, updateTotalDislikes, euthanizedPetIds} = props;
+  const { pet, updateTotalDislikes, euthanizedPetIds } = props;
   const { formatSex } = formatter();
   const [hasInteracted, setHasInteracted] = React.useState(false);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
@@ -115,7 +115,7 @@ export default function PetCard(props) {
         </Box>
       </CardContent>
       {currentUserType == "Owner" && (
-        <CardActions sx={{ height: "60px" }}>
+        <CardActions sx={{ height: "60px", paddingTop: "5px" }}>
           <div className={`${!hasInteracted ? "hidden-button" : ""}`}
             style={{
               width: "100%",
@@ -123,19 +123,19 @@ export default function PetCard(props) {
               paddingRight: "10%",
             }}>
             {isEuthanized ? (
-              <div style={{ color: "red", fontFamily: "monospace", fontSize: "20px" }}>
+              <div style={{ color: "red", fontFamily: "monospace", fontSize: "clamp(0.8rem, 1.5vw, 2rem)" }}>
                 PROCESSED FOR EUTHANIZATION
               </div>
             ) : (
-                <LikeButtons
-                  petId={pet.id}
-                  userId={currentUserId}
-                  onInteract={onLikeInteraction}
-                  initiallyLiked={pet.isLiked}
-                  initiallyDisliked={pet.isDisiked}
-                  updateTotalDislikes={() => updateTotalDislikes(pet.id)}
-                />
-              )}
+              <LikeButtons
+                petId={pet.id}
+                userId={currentUserId}
+                onInteract={onLikeInteraction}
+                initiallyLiked={pet.isLiked}
+                initiallyDisliked={pet.isDisiked}
+                updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+              />
+            )}
           </div>
         </CardActions>
       )}
