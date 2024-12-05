@@ -16,6 +16,7 @@ import {
   CalendarMonth,
   Cottage,
   Inbox,
+  Leaderboard,
 } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
@@ -47,6 +48,11 @@ export default function HeaderBar(props) {
       name: "Adoption Centers",
       route: "/centers",
       icon: <Cottage />,
+    },
+    {
+      name: "Leaderboard",
+      route: "/leaderboard",
+      icon: <Leaderboard />,
     },
   ];
 
