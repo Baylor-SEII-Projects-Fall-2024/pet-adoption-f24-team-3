@@ -35,4 +35,9 @@ public class LeaderboardEntryDTO {
      * The number of pets euthanized by the potential owner.
      */
     private Integer killCount;
+
+    /**
+     * The user's rank based on the number of euthanized pets.
+     */
+    private String userRank;
 }

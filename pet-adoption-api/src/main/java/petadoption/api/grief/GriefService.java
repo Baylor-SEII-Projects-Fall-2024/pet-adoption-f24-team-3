@@ -169,7 +169,6 @@ public class GriefService {
      * <ul>
      *     <li><b>kills</b> (default): Sorts by the number of pets euthanized in descending order.</li>
      *     <li><b>dislikes</b>: Sorts by the number of dislikes in descending order.</li>
-     *     <li><b>ownerid</b>: Sorts by user ID in ascending order.</li>
      *     <li><b>firstname</b>: Sorts alphabetically by the user's first name.</li>
      *     <li><b>lastname</b>: Sorts alphabetically by the user's last name.</li>
      * </ul>
@@ -177,7 +176,7 @@ public class GriefService {
      * @param sortBy the sorting criterion; defaults to "kills" if not specified.
      * @return a list of {@link LeaderboardEntryDTO} representing the leaderboard entries.
      */
-    public List<LeaderboardEntryDTO> getLeaderboard(String sortBy) {
+    public List<LeaderboardEntryDTO> getLeaderboard(String sortBy, Integer count) {
         List<Grief> allGriefs = griefRepository.findAll();
 
         // Sort based on the `sortBy` parameter
@@ -187,9 +186,6 @@ public class GriefService {
                 break;
             case "dislikes":
                 allGriefs.sort(Comparator.comparing(Grief::getNumDislikes).reversed());
-                break;
-            case "ownerid":
-                allGriefs.sort(Comparator.comparing(Grief::getPotentialOwnerId));
                 break;
             case "firstname":
                 allGriefs.sort(
@@ -207,13 +203,18 @@ public class GriefService {
                 break; // Optionally handle invalid sort criteria
         }
 
+        // Limit entries returned to at most `count`
+        List<Grief> limitedGriefs = allGriefs.stream().limit(count).collect(Collectors.toList());
+
         // Convert Grief entities to GriefDTO
-        return allGriefs.stream()
+        return limitedGriefs.stream()
                 .map(grief -> {
                     LeaderboardEntryDTO dto = new LeaderboardEntryDTO();
                     dto.setPotentialOwnerId(grief.getPotentialOwnerId());
                     dto.setNumDislikes(grief.getNumDislikes());
                     dto.setKillCount(grief.getKillCount());
+                    dto.setUserRank(grief.getUserRank().getTitle());
+
                     // Fetch owner details if available
                     potentialOwnerRepository.findById(grief.getPotentialOwnerId()).ifPresent(owner -> {
                         dto.setFirstName(owner.getNameFirst());

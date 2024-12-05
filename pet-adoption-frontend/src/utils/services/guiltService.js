@@ -231,28 +231,38 @@ const guiltService = () => {
     return true;
   };
 
-  const getDislikeTitleAndMessage = (dislikeCount) => {
-    if (dislikeCount < 10) {
-      return {
-        title: "Burgeoning Sociopath",
-        message: "So you feel good about yourself?",
-      };
-    } else if (dislikeCount < 20) {
-      return {
-        title: "Adept Sociopath",
-        message: "Look at how many you've sentenced to death.",
-      };
-    } else if (dislikeCount < 30) {
-      return {
-        title: "Master Sociopath",
-        message: "Do you even care about their lives?",
-      };
-    } else {
-      return {
-        title: "Supreme Sociopath",
-        message: "Congratulations! You've made quite an impact!",
-      };
+  // Fetch grief leaderboards
+  // Possible values for sortby:
+  // kills
+  // dislikes
+  // firstname
+  // lastname
+  const getLeaderboard = async (sortBy, count) => {
+    const authToken = getAuthToken();
+
+    if (!authToken) {
+      console.error("No auth token found");
+      return null;
     }
+
+    const response = await fetch(`${apiUrl}/api/grief/leaderboard`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sortBy: sortBy,
+        count: count,
+      })
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch leaderboard");
+      return null;
+    }
+
+    return response.json();
   };
 
   return {
@@ -266,7 +276,7 @@ const guiltService = () => {
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
     // removeEuthanizedPetIds, -- we do not allow a pet to come back from the grave
-    getDislikeTitleAndMessage,
+    getLeaderboard,
   };
 };
 

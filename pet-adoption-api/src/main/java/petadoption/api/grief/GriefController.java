@@ -139,8 +139,6 @@ public class GriefController {
      * euthanized, in descending order.</li>
      * <li><b>dislikes</b>: Sorts the leaderboard by the number of dislikes, in
      * descending order.</li>
-     * <li><b>ownerid</b>: Sorts the leaderboard by the user ID (owner ID), in
-     * ascending order.</li>
      * <li><b>firstname</b>: Sorts the leaderboard alphabetically by the first name
      * of the user.</li>
      * <li><b>lastname</b>: Sorts the leaderboard alphabetically by the last name of
@@ -151,10 +149,11 @@ public class GriefController {
      * @return a {@link LeaderboardDTO} object containing the leaderboard entries
      *         and the sorting criteria.
      */
-    @GetMapping("/leaderboard")
+    @PostMapping("/leaderboard")
     public ResponseEntity<LeaderboardDTO> getLeaderboard(
-            @RequestParam(required = false, defaultValue = "kills") String sortBy) {
-        List<LeaderboardEntryDTO> leaderboardEntries = griefService.getLeaderboard(sortBy);
+            @RequestParam(required = false, defaultValue = "kills") String sortBy,
+            @RequestParam(required = false, defaultValue = "10") int count) {
+        List<LeaderboardEntryDTO> leaderboardEntries = griefService.getLeaderboard(sortBy, count);
         LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
         leaderboardDTO.setSortedBy(sortBy);
         leaderboardDTO.setEntries(leaderboardEntries);
