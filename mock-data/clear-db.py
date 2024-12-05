@@ -52,6 +52,10 @@ if not auth_token:
 
 API_BASE_URL = API_URLS.get(environment)
 
+if(API_BASE_URL == None):
+    print(f"Invalid url: {API_BASE_URL}");
+    sys.exit(1)
+
 print(f"You are about to CLEAR data from {environment.upper()} environment at {API_BASE_URL}")
 confirm = input("Do you want to continue? (y/n): ").strip().lower()
 if confirm != 'y':
@@ -69,16 +73,6 @@ for file in [f"{environment}_MOCK_CENTERS.json",
         os.remove(filepath)
         print(f"Deleted existing file: {filepath}")
 
-endpoints = {
-    "clear-table-users",
-    "clear-table-preferences",
-    "clear-table-pets",
-    "clear-table-events",
-    "clear-table-chats",
-    "clear-table-interactions",
-    "clear-table-messages"
-}
-
 def clear(url: str, endpoint: str):
     table = endpoint.split('-')[-1].capitalize()
     full_url = f"{url}/{endpoint}"
@@ -93,13 +87,7 @@ def clear(url: str, endpoint: str):
     print()
 
 # >>>> Clear Tables >>>>
-clear(API_BASE_URL, "clear-table-users")
-clear(API_BASE_URL, "clear-table-preferences")
-clear(API_BASE_URL, "clear-table-pets")
-clear(API_BASE_URL, "clear-table-events")
-clear(API_BASE_URL, "clear-table-chats")
-clear(API_BASE_URL, "clear-table-interactions")
-clear(API_BASE_URL, "clear-table-messages")
+clear(API_BASE_URL, "clear-all")
 # <<<< Clear Tables <<<<
 
 # <<<< Clear pet-adoption-api/uploads <<<<

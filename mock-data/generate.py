@@ -2,7 +2,7 @@
 
 import os
 import sys
-from modules.config import API_URLS, random, center_names_provider
+from modules.config import API_URLS, center_names_provider
 from modules.generators import (
     generate_adoption_center,
     generate_potential_owner,
@@ -10,6 +10,7 @@ from modules.generators import (
     generate_event,
     generate_preference
 )
+import random
 from modules.static import generate_static_accounts
 from modules.utils import api_post, api_post_update, api_post_img
 from modules.utils import save_pretty_json, append_pretty_json
@@ -17,18 +18,60 @@ from modules.utils import clean_uploads
 from modules.images import generate_image, ImageType, generate_animal_image
 from collections import Counter
 from modules.logger import logger
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 import argparse
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Function to register a new owner and get the auth token
+def register_new_owner():
+    url = "http://localhost:8080/api/auth/register/owner"
+    owner_data = {
+        "accountType": "Owner",
+        "emailAddress": "awef",
+        "password": "awef",
+        "nameFirst": "awef",
+        "nameLast": "awef"
+    }
+
+    try:
+        response = requests.post(url, json=owner_data)
+        response.raise_for_status()
+        data = response.json()
+        if 'token' in data:
+            auth_token = data['token']
+            logger.info("New owner registered successfully, token received.")
+            # Save the auth token in the .env file
+            set_key(".env", "auth_token", auth_token)
+            return auth_token
+        else:
+            logger.error("Error: Token not found in response.")
+            sys.exit(1)
+    except requests.RequestException as e:
+        logger.error(f"Error registering new owner: {e}")
+        sys.exit(1)
+
+# Grabs auth token by generating a user
+def get_auth_token():
+    if args.new:
+        logger.info("Registering a new account...")
+        auth_token = register_new_owner()
+    else:
+        auth_token = os.getenv("auth_token")
+        if not auth_token:
+            logger.error("Error: auth_token is required and was not provided.")
+            sys.exit(1)
+    return auth_token
 
 # Define valid environments and sizes
 valid_environments = ['local', 'dev', 'prod', 'backup']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l', 'grief-size', 'gf']
 
 def usage():
-    print("Usage: python3 generate.py <environment> <size> [<auth_token>]")
+    print("Usage: python3 generate.py [--new] <environment> <size> [<auth_token>]")
+    print("  --new        = Grabs a new auth token by registering a new account")
     print("  environments = [local, dev, prod, backup]")
     print("  size         = [small | s, medium | m, large | l]")
     print("  auth_token   = [authorization token like the one used in Postman]")
@@ -49,6 +92,7 @@ def validate_size(size):
 parser = argparse.ArgumentParser(description="Generate script with environment, size, and optional auth token.")
 parser.add_argument("environment", help="The environment to use", choices=valid_environments)
 parser.add_argument("size", help="The size to use", choices=valid_sizes)
+parser.add_argument("--new", help="Pass when generating new data to register a new account and grab auth token", action="store_true")
 parser.add_argument("auth_token", help="The authorization token", nargs="?", default=None)  # Optional argument
 
 # Parse arguments
@@ -61,18 +105,9 @@ except SystemExit:
 # Validate the environment and size (done with choices in argparse)
 validate_environment(args.environment)
 
-# Determine auth_token
-if args.auth_token:
-    auth_token = args.auth_token
-else:
-    auth_token = os.getenv("auth_token")  # Try to get from .env
-
-if not auth_token:
-    print("Error: auth_token is required and was not provided on the command line or in the .env file.")
-    sys.exit(1)
-
 size = args.size
 environment = args.environment
+auth_token = get_auth_token()
 
 # Use the values
 print(f"Environment: {environment}")
