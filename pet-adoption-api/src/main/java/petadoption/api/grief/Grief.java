@@ -1,4 +1,3 @@
-// GRIEF - Guilt-Ridden Interaction Engine for Fostering
 package petadoption.api.grief;
 
 import java.util.ArrayList;

@@ -134,7 +134,12 @@ export default function ChatLink(props) {
               variant="square"
               alt={linkedName}
               src={photoUrl}
-              sx={{ marginLeft: "10px", width: "60px", height: "60px" }}
+              sx={{
+                marginLeft: "10px",
+                width: "60px",
+                height: "60px",
+                borderRadius: "4px",
+              }}
             ></Avatar>
           )}
         </Box>

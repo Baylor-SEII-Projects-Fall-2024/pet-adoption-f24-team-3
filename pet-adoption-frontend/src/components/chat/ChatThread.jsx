@@ -285,15 +285,6 @@ export default function ChatThread(props) {
         >
           {messages.map((message, index) => (
             <Box key={index}>
-              <ChatMessage
-                message={message}
-                isSender={message.senderID == currentUserId}
-                senderName={
-                  message.senderID == currentUserId
-                    ? currentUserFullName
-                    : recipient.name
-                }
-              />
               {message.link != null && (
                 <ChatLink
                   link={message.link}
@@ -306,6 +297,15 @@ export default function ChatThread(props) {
                   }
                 />
               )}
+              <ChatMessage
+                message={message}
+                isSender={message.senderID == currentUserId}
+                senderName={
+                  message.senderID == currentUserId
+                    ? currentUserFullName
+                    : recipient.name
+                }
+              />
             </Box>
           ))}
         </InfiniteScroll>

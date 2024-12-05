@@ -26,6 +26,7 @@ export default function ProfilePage() {
   ); // get the current session user
   const { getUserInfo, getOwnerInfo } = userService();
   const { getUserGrief } = guiltService();
+
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -185,6 +186,7 @@ export default function ProfilePage() {
             minWidth: 275,
             mb: 3,
             mt: 3,
+            mr: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -325,7 +327,7 @@ export default function ProfilePage() {
                     padding: "12px 12px",
                     fontSize: "16px",
                     minWidth: "200px",
-                  }}
+                  }}z
                   onClick={handleEditPreferencesClick}
                 >
                   Adjust Preferences
