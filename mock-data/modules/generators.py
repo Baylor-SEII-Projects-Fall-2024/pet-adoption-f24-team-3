@@ -44,21 +44,37 @@ def generate_potential_owner():
     }
 
 def generate_animal_data(species: str):
-    age = random.uniform(0, species_classifications[species]["age"][-1][1])
-    weight = random.uniform(0, species_classifications[species]["size"][-1][1])
-    height = random.randint(10, 100) # Simplified height generation
-    
+    # Get the size classification ranges
+    size_ranges = species_classifications[species]["size"]
+
+    # Generate weight within size range
+    size_class = random.choice(size_ranges)
+    weight = random.uniform(size_class[0], size_class[1])
+
+    # Generate height based on size range
+    if size_class[2] == Size.EXTRA_SMALL:
+        height = random.randint(5, 12)
+    elif size_class[2] == Size.SMALL:
+        height = random.randint(12, 24)
+    elif size_class[2] == Size.MEDIUM:
+        height = random.randint(24, 36)
+    elif size_class[2] == Size.LARGE:
+        height = random.randint(36, 48)
+    elif size_class[2] == Size.EXTRA_LARGE:
+        height = random.randint(48, 60)
+
+    # Generate age and age class
+    age = random.uniform(1, species_classifications[species]["age"][-1][1])
     age_class = get_classification(age, species_classifications[species]["age"])
-    size = get_classification(weight, species_classifications[species]["size"])
-    
-    return age, age_class, weight, size, height
+
+    return age, age_class, weight, size_class[2], height
 
 def generate_preference(id: int):
     species = random.choice(list(species_classifications.keys()))
     age, age_class, weight, size, height = generate_animal_data(species)
     city, state = random.choice(list(city_state_map.items()))
     breed = random.choice(species_breeds.get(species, "Unknown"))
-    
+
     return {
         "userId": f"{id}",
         "species": species,
@@ -71,13 +87,16 @@ def generate_preference(id: int):
     }
 
 def generate_pet(center_id: int):
+    # Weighted species selection
     weighted_species = []
     for species, weight in species_weights.items():
         weighted_species.extend([species] * int(weight * 10))
     species = random.choice(weighted_species)
+
+    # Generate the pet data, ensuring consistent height/weight/size relationships
     age, age_class, weight, size, height = generate_animal_data(species)
     breed = random.choice(species_breeds.get(species, "Unknown"))
-    
+
     return {
         "datePosted": (datetime.now() - timedelta(days=random.randint(0, 365))).isoformat(),
         "name": faker.pet_first() + " " + faker.pet_last(),
