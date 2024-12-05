@@ -21,6 +21,35 @@ const guiltService = () => {
     return token;
   };
 
+  // Gets a users choice on whether to use the grief engine or not
+  /*
+  const useGriefState = () => {
+    const state = useSelector((state) => state);
+    const griefState = Cookies.get('griefState') || state.auth?.grief || null;
+    console.log(`Grief state: ${griefState ? 'Cookie' : 'Redux'}`);
+    return griefState;
+  };
+  */
+
+  // 我不知道这在做什么
+  const useGriefState = () => {
+    const griefState = Cookies.get('griefState');
+    const reduxGriefState = useSelector((state) => state.auth?.grief);
+
+    if (griefState) {
+      console.log(`Grief state from cookie: ${griefState}`);
+      return griefState;
+    }
+
+    console.log(`Grief state from Redux: ${reduxGriefState}`);
+    return reduxGriefState || null;
+  };
+
+  const setGriefState = (grief) => {
+    Cookies.set('griefState', grief, { expires: 7 });
+    dispatch({ type: 'SET_GRIEF_STATE', payload: grief });
+  };
+
   // Fetch user grief details (dislike count, kill count, rank title, etc.)
   const getUserGrief = async (userId) => {
     const authToken = getAuthToken();
@@ -69,7 +98,7 @@ const guiltService = () => {
       },
     });
 
-    if(!response.ok) {
+    if (!response.ok) {
       console.error("Failed to get dislike count");
       return null;
     }
@@ -227,6 +256,8 @@ const guiltService = () => {
   };
 
   return {
+    useGriefState,
+    setGriefState,
     getUserGrief,
     getDislikeCount,
     incrementDislikeCount,
