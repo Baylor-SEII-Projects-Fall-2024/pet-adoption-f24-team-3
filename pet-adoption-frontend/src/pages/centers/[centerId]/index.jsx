@@ -28,15 +28,44 @@ function PetsAndEventsTabs(props) {
   const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
   const {
+    getUserGrief,
     getDislikeCount,
     incrementDislikeCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
   } = guiltService();
 
+  // State for owner-specific data
   const [totalDislikes, setTotalDislikes] = React.useState(0);
   const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
   const [showEuthanization, setShowEuthanization] = React.useState(false);
+  const { getUserInfo, getOwnerInfo } = userService();
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    const fetchData = async () => {
+      try {
+        const userInfo = await getUserInfo(currentUserId);
+
+        if (userInfo.accountType === "Owner") {
+          // Fetch owner-specific grief data
+          try {
+            const dislikeCountResult = await getDislikeCount(currentUserId);
+            setTotalDislikes(dislikeCountResult);
+
+            const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+            setEuthanizedPetIds(euthanizedPetIdsResult);
+          } catch (error) {
+            console.error("Error fetching grief data:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [currentUserId]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -149,7 +178,11 @@ function PetsAndEventsTabs(props) {
                   onClick={() => handlePetClick(animal.id)}
                   sx={{ cursor: "pointer" }}
                 >
-                  <PetCard pet={animal} />
+                  <PetCard
+                    pet={animal}
+                    updateTotalDislikes={() => updateTotalDislikes(animal.id)}
+                    euthanizedPetIds={euthanizedPetIds}
+                  />
                 </Box>
               </Grid>
             ))}
