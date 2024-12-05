@@ -13,7 +13,7 @@ faker = Faker()
 
 API_URLS = {
     # 'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
-    'prod':   "http://woofadoption.homes",
+    'prod':   "http://woofadoption.homes:8080",
     'dev':    "http://35.224.27.57:8080",   # Remote Dev - ixiwoofrunner-001
     'backup': "http://34.57.220.165:8080",  # Backup - Icko's First Runner
     'local':  "http://localhost:8080"       # Local Development

@@ -26,8 +26,8 @@ import requests
 load_dotenv()
 
 # Function to register a new owner and get the auth token
-def register_new_owner():
-    url = "http://localhost:8080/api/auth/register/owner"
+def register_new_owner(baseurl):
+    url = f"{baseurl}/api/auth/register/owner"
     owner_data = {
         "accountType": "Owner",
         "emailAddress": "awef",
@@ -54,10 +54,10 @@ def register_new_owner():
         sys.exit(1)
 
 # Grabs auth token by generating a user
-def get_auth_token():
+def get_auth_token(url):
     if args.new:
         logger.info("Registering a new account...")
-        auth_token = register_new_owner()
+        auth_token = register_new_owner(url)
     else:
         auth_token = os.getenv("auth_token")
         if not auth_token:
@@ -107,14 +107,14 @@ validate_environment(args.environment)
 
 size = args.size
 environment = args.environment
-auth_token = get_auth_token()
+url = API_URLS.get(environment)
+
+auth_token = get_auth_token(url)
 
 # Use the values
 print(f"Environment: {environment}")
 print(f"Size: {size}")
 print(f"Auth Token: {auth_token}")
-
-url = API_URLS.get(environment)
 
 # Check if the URL is None and handle the case where it's not valid
 if url is None:
