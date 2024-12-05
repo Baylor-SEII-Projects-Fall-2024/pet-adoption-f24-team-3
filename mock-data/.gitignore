@@ -10,3 +10,4 @@ test.py
 *.bak*
 distributions.jpg
 logs/
+BUGS.md

@@ -34,6 +34,7 @@ public class User implements UserDetails {
 
     @Column(name = "PROFILE_PIC_PATH")
     protected String profilePicPath;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

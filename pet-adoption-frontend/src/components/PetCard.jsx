@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from 'react-redux';
 import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import CardActions from "@mui/material/CardActions";
 import formatter from "@/utils/formatter";
 import LikeButtons from "./LikeButtons";
@@ -8,11 +9,13 @@ import LikeButtons from "./LikeButtons";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PetCard(props) {
-  const { pet } = props;
+  const { pet, updateTotalDislikes, euthanizedPetIds } = props;
   const { formatSex } = formatter();
   const [hasInteracted, setHasInteracted] = React.useState(false);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
+
+  const isEuthanized = euthanizedPetIds.includes(pet.id);
 
   const onLikeInteraction = (buttonPressed) => {
     setHasInteracted(buttonPressed);
@@ -24,6 +27,25 @@ export default function PetCard(props) {
       overflow: "hidden",
       textOverflow: "ellipsis"
     },
+    imageNormal: {
+      width: "100%",
+      maxHeight: "auto",
+      borderRadius: "2%",
+      aspectRatio: 1,
+      objectFit: "cover",
+    },
+    imageCursed: {
+      width: "100%",
+      maxHeight: "auto",
+      borderRadius: "2%",
+      aspectRatio: 1,
+      objectFit: "cover",
+      filter: "contrast(400%) brightness(60%) saturate(700%) hue-rotate(-30deg)",
+      animation: "shake 0.5s infinite linear",
+      backfaceVisibility: "hidden",
+      transform: "scale(1.5) rotate(-15deg)",
+      border: "2px solid #a71111"
+    }
   };
 
   return (
@@ -53,28 +75,32 @@ export default function PetCard(props) {
             width: "100%",
             //height: "300px",
             overflow: "hidden",
+            position: "relative"
           }}
         >
           <img
-            style={{
-              width: "100%",
-              maxHeight: "auto",
-              borderRadius: "2%",
-              aspectRatio: 1,
-              objectFit: "cover",
-              filter: "contrast(200%) brightness(120%) saturate(700%) hue-rotate(-30deg)",
-              animation: "shake 0.8s infinite linear",
-              transform: "translate3d(0, 0, 0)",
-              backfaceVisibility: "hidden",
-              perspective: " 1000px",
-              transform: "scale(1.2) rotate(-15deg)",
-              border: "5px solid #ff0000"
-
-            }}
+            style={isEuthanized ? styles.imageCursed : styles.imageNormal}
             className='shake-animation'
             alt="Pet Photo"
             src={`${apiUrl}/api/images/animals/${pet.id}`}
           />
+          {isEuthanized && (
+            <Close sx={{
+              position: "absolute",
+              top: "0px",
+              left: "0px",
+              bottom: 0,
+              right: 0,
+              width: "100%",
+              height: "100%",
+              fontSize: "50px",
+              color: "#ff0000",
+              cursor: "pointer",
+              animation: "shake 0.5s infinite linear",
+
+            }}
+              className='shake-animation'
+            />)}
         </Box>
         <Box>
           <Typography variant="h5" sx={styles.noOverflow}>
@@ -90,14 +116,29 @@ export default function PetCard(props) {
       </CardContent>
       {currentUserType == "Owner" && (
         <CardActions sx={{ height: "60px" }}>
-          <div className={`${!hasInteracted ? "hidden-button" : ""}`}
-            style={{
-              width: "100%",
-              paddingLeft: "10%",
-              paddingRight: "10%",
-            }}>
-            <LikeButtons petId={pet.id} userId={currentUserId} onInteract={onLikeInteraction} initiallyLiked={pet.isLiked} initiallyDisliked={pet.isDisiked} />
-          </div>
+          {isEuthanized ? (
+            <div style={{ color: "red", fontFamily: "monospace", fontSize: "20px" }}>
+              PROCESSED FOR EUTHANIZATION
+            </div>
+          ) : (
+            <div className={`${!hasInteracted ? "hidden-button" : ""}`}
+              style={{
+                width: "100%",
+                paddingLeft: "10%",
+                paddingRight: "10%",
+              }}>
+
+              <LikeButtons
+                petId={pet.id}
+                userId={currentUserId}
+                onInteract={onLikeInteraction}
+                initiallyLiked={pet.isLiked}
+                initiallyDisliked={pet.isDisiked}
+                updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+              />
+
+            </div>
+          )}
         </CardActions>
       )}
 

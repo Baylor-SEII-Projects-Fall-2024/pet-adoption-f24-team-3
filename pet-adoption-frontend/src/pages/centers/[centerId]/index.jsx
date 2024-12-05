@@ -15,6 +15,7 @@ import {
 import userService from "@/utils/services/userService";
 import animalService from "@/utils/services/animalService";
 import eventService from "@/utils/services/eventService";
+import guiltService from "@/utils/services/guiltService";
 import CenterProfileCard from "@/components/CenterProfileCard";
 import EventCard from "@/components/EventCard";
 import PetCard from "@/components/PetCard";
@@ -25,6 +26,17 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 function PetsAndEventsTabs(props) {
   const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
+  const {
+    getDislikeCount,
+    incrementDislikeCount,
+    getEuthanizedPetIds,
+    updateEuthanizedPetIds,
+  } = guiltService();
+
+  const [totalDislikes, setTotalDislikes] = React.useState(0);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
+  const [showEuthanization, setShowEuthanization] = React.useState(false);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -36,6 +48,28 @@ function PetsAndEventsTabs(props) {
   const handlePetClick = (petId) => {
     router.push(`/pets/${petId}`);
   };
+
+  const updateTotalDislikes = async (petId) => {
+    try {
+      const incrementSuccess = await incrementDislikeCount();
+
+      if (incrementSuccess) {
+        // Fetch updated total dislikes
+        const updatedTotalDislikes = await getDislikeCount();
+        setTotalDislikes(updatedTotalDislikes);
+
+        if (updatedTotalDislikes % 5 === 0) {
+          await updateEuthanizedPetIds(petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds();
+          setEuthanizedPetIds(updatedEuthanizedIds);
+          setShowEuthanization(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating dislikes:", error);
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -71,7 +105,11 @@ function PetsAndEventsTabs(props) {
                 onClick={() => handlePetClick(pet.id)}
                 sx={{ cursor: "pointer" }}
               >
-                <PetCard pet={pet} />
+                <PetCard
+                  pet={pet}
+                  updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+                  euthanizedPetIds={euthanizedPetIds}
+                />
               </Box>
             </Grid>
           ))}

@@ -36,8 +36,11 @@ def api_get(url: str, endpoint: str,token:str):
 def pretty_print_json(data):
     print(json.dumps(data, indent=2, ensure_ascii=False))
 
-def save_pretty_json(data, filename, mode='w'):
-    with open(filename, mode, encoding='utf-8') as f:
+def save_pretty_json(data, filename, mode='a'):
+    """Save JSON data to a file in the `_json` directory."""
+    os.makedirs('_json', exist_ok=True)  # Ensure the `_json` directory exists
+    filepath = os.path.join('_json', filename)
+    with open(filepath, mode, encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def append_pretty_json(data, filename):
