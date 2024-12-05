@@ -53,6 +53,7 @@ export default function PetsPage() {
   const {
     getDislikeCount,
     incrementDislikeCount,
+    decrementDislikeCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
   } = guiltService();
@@ -256,11 +257,19 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
-  const updateTotalDislikes = async (petId) => {
+  const updateTotalDislikes = async (petId, decrement = false) => {
+    console.log(`decrement = ${decrement}`);
     try {
-      const incrementSuccess = await incrementDislikeCount(currentUserId);
+      let updateSuccess;
+      if (decrement) {
+        // Decrement dislike count if needed
+        updateSuccess = await decrementDislikeCount(currentUserId);
+      } else {
+        // Increment dislike count
+        updateSuccess = await incrementDislikeCount(currentUserId);
+      }
 
-      if (incrementSuccess) {
+      if (updateSuccess) {
         // Fetch updated total dislikes
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
@@ -275,7 +284,7 @@ export default function PetsPage() {
     } catch (error) {
       console.error("Error updating dislikes:", error);
     }
-  }
+  };
 
   return (
     <>
@@ -438,7 +447,7 @@ export default function PetsPage() {
                       >
                         <PetCard
                           pet={pet}
-                          updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+                          updateTotalDislikes={(petId, decrement) => updateTotalDislikes(pet.id, decrement)}
                           euthanizedPetIds={euthanizedPetIds}
                         />
                       </Box>

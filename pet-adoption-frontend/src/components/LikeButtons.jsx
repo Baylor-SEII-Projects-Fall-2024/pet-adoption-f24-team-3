@@ -11,7 +11,6 @@ export default function LikeButtons(props) {
   const { likePet, dislikePet, undoLikePet, undoDislikePet } = recommendationService();
   const { petId, userId, onInteract, initiallyLiked, initiallyDisliked, updateTotalDislikes } = props;
 
-
   React.useEffect(() => {
     function setInitialLikeStatus() {
       if (initiallyLiked && initiallyDisliked) {
@@ -30,11 +29,21 @@ export default function LikeButtons(props) {
 
   const onLikePet = async (event) => {
     event.stopPropagation();
+
     if (isLiked) {
       //if already liked, untoggle the like button and undo like
       setIsLiked(false);
       if (onInteract)
         onInteract(false);
+
+      // Decrement our dislike count
+      updateTotalDislikes(petId, true);
+
+      // If the pet was disliked, decrement dislike count
+      if(isDisliked) {
+        setIsDisliked(false);
+      }
+
       //save the undo
       await undoLikePet(userId, petId)
         .catch((error) => {
@@ -44,6 +53,9 @@ export default function LikeButtons(props) {
     else {
       //if not yet liked, like the pet
       setIsLiked(true);
+
+      // Decrement our dislike count
+      updateTotalDislikes(petId, true);
 
       //if the pet has been disliked, undo that
       if (isDisliked) {
@@ -67,9 +79,13 @@ export default function LikeButtons(props) {
 
   const onDislikePet = async (event) => {
     event.stopPropagation();
+
     if (isDisliked) {
       //if already disliked, untoggle the like button and undo dislike
       setIsDisliked(false);
+
+      // Decrement our dislike count
+      updateTotalDislikes(petId, true);
 
       if (onInteract)
         onInteract(false);
@@ -102,9 +118,8 @@ export default function LikeButtons(props) {
           console.error("Error disliking pet:", error);
         })
 
-      // Update dislike count
-      console.log("LikeButtons handling updating dislike count");
-      updateTotalDislikes();
+      // Increment dislike count
+      updateTotalDislikes(petId, false);
     }
   }
 

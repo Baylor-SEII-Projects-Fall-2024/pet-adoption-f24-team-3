@@ -133,7 +133,7 @@ export default function PetCard(props) {
                 onInteract={onLikeInteraction}
                 initiallyLiked={pet.isLiked}
                 initiallyDisliked={pet.isDisiked}
-                updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+                updateTotalDislikes={(petId, decrement) => updateTotalDislikes(petId, decrement)}
               />
             )}
           </div>

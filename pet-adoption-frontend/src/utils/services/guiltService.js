@@ -128,7 +128,7 @@ const guiltService = () => {
       return null;
     }
 
-    return true;
+    return response.ok;
   };
 
   // Decrement dislike count
@@ -153,7 +153,7 @@ const guiltService = () => {
       return null;
     }
 
-    return true;
+    return response.ok;
   };
 
   // Get a users kill count
@@ -228,7 +228,7 @@ const guiltService = () => {
       return null;
     }
 
-    return true;
+    return response.ok;
   };
 
   // Fetch grief leaderboards
