@@ -12,6 +12,11 @@ import lombok.Data;
 public class LeaderboardEntryDTO {
 
     /**
+     * Users ranking based on kills
+     */
+    private Integer rank;
+
+    /**
      * The unique identifier of the potential owner associated with the grief data.
      */
     private Long potentialOwnerId;
@@ -39,5 +44,5 @@ public class LeaderboardEntryDTO {
     /**
      * The user's rank based on the number of euthanized pets.
      */
-    private String userRank;
+    private String userTitle;
 }

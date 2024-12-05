@@ -11,13 +11,6 @@ import java.util.List;
  */
 @Data
 public class LeaderboardDTO {
-
-    /**
-     * The criterion by which the leaderboard is sorted. Possible values include:
-     * "kills", "dislikes", "ownerid", "firstname", "lastname".
-     */
-    private String sortedBy;
-
     /**
      * A list of leaderboard entries, each representing a user's grief data.
      */

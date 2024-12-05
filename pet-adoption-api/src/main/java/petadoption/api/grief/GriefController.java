@@ -139,24 +139,49 @@ public class GriefController {
      * euthanized, in descending order.</li>
      * <li><b>dislikes</b>: Sorts the leaderboard by the number of dislikes, in
      * descending order.</li>
-     * <li><b>firstname</b>: Sorts the leaderboard alphabetically by the first name
-     * of the user.</li>
-     * <li><b>lastname</b>: Sorts the leaderboard alphabetically by the last name of
-     * the user.</li>
      * </ul>
      *
      * @param sortBy the sorting criterion; defaults to "kills" if not provided.
      * @return a {@link LeaderboardDTO} object containing the leaderboard entries
      *         and the sorting criteria.
      */
-    @PostMapping("/leaderboard")
+    @GetMapping("/leaderboard")
     public ResponseEntity<LeaderboardDTO> getLeaderboard(
             @RequestParam(required = false, defaultValue = "kills") String sortBy,
             @RequestParam(required = false, defaultValue = "10") int count) {
         List<LeaderboardEntryDTO> leaderboardEntries = griefService.getLeaderboard(sortBy, count);
         LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
-        leaderboardDTO.setSortedBy(sortBy);
         leaderboardDTO.setEntries(leaderboardEntries);
         return ResponseEntity.ok(leaderboardDTO);
+    }
+
+    /**
+     * Sets the kill count for a specific user.
+     *
+     * This is just used for data generation purposes and should not be used in production.
+     *
+     * @param userId the ID of the user
+     * @param killCount the number of pets euthanized by the user
+     * @return ResponseEntity with HTTP status 200 OK
+     */
+    @PostMapping("/setKillCount/{userId}/{killCount}")
+    public ResponseEntity<Void> setKillCount(@PathVariable Long userId, @PathVariable Integer killCount) {
+        griefService.setKillCount(userId, killCount);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Sets the dislike count for a specific user.
+     *
+     * This is just used for data generation purposes and should not be used in production.
+     *
+     * @param userId the ID of the user
+     * @param dislikeCount the number of dislikes received by the user
+     * @return ResponseEntity with HTTP status 200 OK
+     */
+    @PostMapping("/setDislikeCount/{userId}/{dislikeCount}")
+    public ResponseEntity<Void> setDislikeCount(@PathVariable Long userId, @PathVariable Integer dislikeCount) {
+        griefService.setDislikeCount(userId, dislikeCount);
+        return ResponseEntity.ok().build();
     }
 }

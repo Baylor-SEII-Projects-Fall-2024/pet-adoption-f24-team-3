@@ -18,6 +18,7 @@ import {
   CardContent,
   Box
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import guiltService from "@/utils/services/guiltService";
 
 export default function LeaderboardPage() {
@@ -27,6 +28,7 @@ export default function LeaderboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const { getLeaderboard } = guiltService();
 
   const fetchLeaderboard = async () => {
@@ -59,20 +61,24 @@ export default function LeaderboardPage() {
     setCount(event.target.value);
   };
 
+  const getRowStyle = (entryId) => {
+    return entryId === currentUserId ? { backgroundColor: "#a3b18a", color: 'white' } : {};
+  };
+
   return (
     <>
       <Head>
         <title>Leaderboard</title>
         <meta name="description" content="View the leaderboard for grief stats." />
       </Head>
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         {/* Title and Filters Section */}
         <Card sx={{ mb: 4 }}>
           <CardContent>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom textAlign="center">
               Leaderboard
             </Typography>
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center", justifyContent: "center" }}>
               <FormControl variant="outlined" sx={{ minWidth: 200 }}>
                 <InputLabel id="sortBy-label">Sort By</InputLabel>
                 <Select
@@ -83,8 +89,6 @@ export default function LeaderboardPage() {
                 >
                   <MenuItem value="kills">Kills</MenuItem>
                   <MenuItem value="dislikes">Dislikes</MenuItem>
-                  <MenuItem value="firstname">First Name</MenuItem>
-                  <MenuItem value="lastname">Last Name</MenuItem>
                 </Select>
               </FormControl>
               <FormControl variant="outlined" sx={{ minWidth: 200 }}>
@@ -123,12 +127,15 @@ export default function LeaderboardPage() {
                 </TableHead>
                 <TableBody>
                   {leaderboard.map((entry, index) => (
-                    <TableRow key={entry.potentialOwnerId}>
+                    <TableRow
+                      key={entry.potentialOwnerId}
+                      sx={getRowStyle(entry.potentialOwnerId)} // Apply conditional styling based on user ID
+                    >
                       {/* Display the rank based on the index */}
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{entry.firstName || "N/A"}</TableCell>
                       <TableCell>{entry.lastName || "N/A"}</TableCell>
-                      <TableCell>{entry.userRank}</TableCell>
+                      <TableCell>{entry.userTitle}</TableCell>
                       <TableCell>{entry.killCount || 0}</TableCell>
                       <TableCell>{entry.numDislikes || 0}</TableCell>
                     </TableRow>

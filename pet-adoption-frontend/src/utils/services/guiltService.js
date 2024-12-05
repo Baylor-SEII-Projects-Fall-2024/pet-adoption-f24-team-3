@@ -235,8 +235,6 @@ const guiltService = () => {
   // Possible values for sortby:
   // kills
   // dislikes
-  // firstname
-  // lastname
   const getLeaderboard = async (sortBy, count) => {
     const authToken = getAuthToken();
 
@@ -245,16 +243,11 @@ const guiltService = () => {
       return null;
     }
 
-    const response = await fetch(`${apiUrl}/api/grief/leaderboard`, {
-      method: 'POST',
+    const response = await fetch(`${apiUrl}/api/grief/leaderboard?sortBy=${sortBy}&count=${count}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${authToken}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        sortBy: sortBy,
-        count: count,
-      })
     });
 
     if (!response.ok) {

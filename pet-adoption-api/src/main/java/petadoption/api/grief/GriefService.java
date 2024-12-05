@@ -169,8 +169,6 @@ public class GriefService {
      * <ul>
      *     <li><b>kills</b> (default): Sorts by the number of pets euthanized in descending order.</li>
      *     <li><b>dislikes</b>: Sorts by the number of dislikes in descending order.</li>
-     *     <li><b>firstname</b>: Sorts alphabetically by the user's first name.</li>
-     *     <li><b>lastname</b>: Sorts alphabetically by the user's last name.</li>
      * </ul>
      *
      * @param sortBy the sorting criterion; defaults to "kills" if not specified.
@@ -182,22 +180,12 @@ public class GriefService {
         // Sort based on the `sortBy` parameter
         switch (sortBy.toLowerCase()) {
             case "kills":
-                allGriefs.sort(Comparator.comparing(Grief::getKillCount).reversed());
+                allGriefs.sort(Comparator.comparing(Grief::getKillCount)
+                    .thenComparing(Grief::getNumDislikes).reversed());
                 break;
             case "dislikes":
-                allGriefs.sort(Comparator.comparing(Grief::getNumDislikes).reversed());
-                break;
-            case "firstname":
-                allGriefs.sort(
-                        Comparator.comparing(grief -> potentialOwnerRepository.findById(grief.getPotentialOwnerId())
-                                .map(PotentialOwner::getNameFirst)
-                                .orElse("")));
-                break;
-            case "lastname":
-                allGriefs.sort(
-                        Comparator.comparing(grief -> potentialOwnerRepository.findById(grief.getPotentialOwnerId())
-                                .map(PotentialOwner::getNameLast)
-                                .orElse("")));
+                allGriefs.sort(Comparator.comparing(Grief::getNumDislikes)
+                    .thenComparing(Grief::getKillCount).reversed());
                 break;
             default:
                 break; // Optionally handle invalid sort criteria
@@ -206,22 +194,85 @@ public class GriefService {
         // Limit entries returned to at most `count`
         List<Grief> limitedGriefs = allGriefs.stream().limit(count).collect(Collectors.toList());
 
-        // Convert Grief entities to GriefDTO
-        return limitedGriefs.stream()
-                .map(grief -> {
-                    LeaderboardEntryDTO dto = new LeaderboardEntryDTO();
-                    dto.setPotentialOwnerId(grief.getPotentialOwnerId());
-                    dto.setNumDislikes(grief.getNumDislikes());
-                    dto.setKillCount(grief.getKillCount());
-                    dto.setUserRank(grief.getUserRank().getTitle());
+        // Assign ranks and create DTOs for leaderboard entries
+        List<LeaderboardEntryDTO> leaderboard = new ArrayList<>();
+        int rank = 1;
 
-                    // Fetch owner details if available
-                    potentialOwnerRepository.findById(grief.getPotentialOwnerId()).ifPresent(owner -> {
-                        dto.setFirstName(owner.getNameFirst());
-                        dto.setLastName(owner.getNameLast());
-                    });
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        for (int i = 0; i < limitedGriefs.size(); i++) {
+            Grief grief = limitedGriefs.get(i);
+            LeaderboardEntryDTO dto = new LeaderboardEntryDTO();
+
+            if (i > 0 && isEqualForRanking(limitedGriefs.get(i), limitedGriefs.get(i - 1))) {
+                // If the current entry has the same sort values as the previous, it gets the same rank
+                dto.setRank(rank);
+            } else {
+                // Otherwise, assign a new rank
+                dto.setRank(rank);
+                rank++;
+            }
+
+            dto.setPotentialOwnerId(grief.getPotentialOwnerId());
+            dto.setNumDislikes(grief.getNumDislikes());
+            dto.setKillCount(grief.getKillCount());
+            dto.setUserTitle(grief.getUserRank().getTitle());
+
+            // Fetch owner details if available
+            potentialOwnerRepository.findById(grief.getPotentialOwnerId()).ifPresent(owner -> {
+                dto.setFirstName(owner.getNameFirst());
+                dto.setLastName(owner.getNameLast());
+            });
+
+            leaderboard.add(dto);
+        }
+
+        return leaderboard;
+    }
+
+    // Helper method to check if two Grief entries have the same sorting criteria
+    private boolean isEqualForRanking(Grief grief1, Grief grief2) {
+        return grief1.getKillCount().equals(grief2.getKillCount()) &&
+           grief1.getNumDislikes().equals(grief2.getNumDislikes());
+    }
+
+    /**
+     * Sets the kill count for a specific user.
+     *
+     * This method is used for data generation purposes and should not be used in production.
+     *
+     * @param userId the ID of the user
+     * @param killCount the number of pets euthanized by the user
+     */
+    public void setKillCount(Long userId, Integer killCount) {
+        Optional<Grief> grief = griefRepository.findByPotentialOwnerId(userId);
+        if (grief.isPresent()) {
+            grief.get().setKillCount(killCount);
+            griefRepository.save(grief.get());
+        } else {
+            Grief newGrief = new Grief();
+            newGrief.setPotentialOwnerId(userId);
+            newGrief.setKillCount(killCount);
+            griefRepository.save(newGrief);
+        }
+    }
+
+    /**
+     * Sets the dislike count for a specific user.
+     *
+     * This method is used for data generation purposes and should not be used in production.
+     *
+     * @param userId the ID of the user
+     * @param dislikeCount the number of dislikes received by the user
+     */
+    public void setDislikeCount(Long userId, Integer dislikeCount) {
+        Optional<Grief> grief = griefRepository.findByPotentialOwnerId(userId);
+        if (grief.isPresent()) {
+            grief.get().setNumDislikes(dislikeCount);
+            griefRepository.save(grief.get());
+        } else {
+            Grief newGrief = new Grief();
+            newGrief.setPotentialOwnerId(userId);
+            newGrief.setNumDislikes(dislikeCount);
+            griefRepository.save(newGrief);
+        }
     }
 }
