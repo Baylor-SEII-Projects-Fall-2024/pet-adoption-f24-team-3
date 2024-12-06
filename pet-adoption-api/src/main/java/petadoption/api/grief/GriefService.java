@@ -177,14 +177,19 @@ public class GriefService {
     public List<LeaderboardEntryDTO> getLeaderboard(String sortBy, Integer count) {
         List<Grief> allGriefs = griefRepository.findAll();
 
+        // Filter out entries with a kill count < 1
+        List<Grief> filteredGriefs = allGriefs.stream()
+                .filter(grief -> grief.getKillCount() > 0)
+                .collect(Collectors.toList());
+
         // Sort based on the `sortBy` parameter
         switch (sortBy.toLowerCase()) {
             case "kills":
-                allGriefs.sort(Comparator.comparing(Grief::getKillCount)
+                filteredGriefs.sort(Comparator.comparing(Grief::getKillCount)
                     .thenComparing(Grief::getNumDislikes).reversed());
                 break;
             case "dislikes":
-                allGriefs.sort(Comparator.comparing(Grief::getNumDislikes)
+                filteredGriefs.sort(Comparator.comparing(Grief::getNumDislikes)
                     .thenComparing(Grief::getKillCount).reversed());
                 break;
             default:
@@ -192,7 +197,7 @@ public class GriefService {
         }
 
         // Limit entries returned to at most `count`
-        List<Grief> limitedGriefs = allGriefs.stream().limit(count).collect(Collectors.toList());
+        List<Grief> limitedGriefs = filteredGriefs.stream().limit(count).collect(Collectors.toList());
 
         // Assign ranks and create DTOs for leaderboard entries
         List<LeaderboardEntryDTO> leaderboard = new ArrayList<>();
