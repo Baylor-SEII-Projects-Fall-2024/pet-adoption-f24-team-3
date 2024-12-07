@@ -116,17 +116,26 @@ export default function PetCard(props) {
       </CardContent>
       {currentUserType == "Owner" && (
         <CardActions sx={{ height: "60px", paddingTop: "5px" }}>
-          <div className={`${!hasInteracted ? "hidden-button" : ""}`}
-            style={{
-              width: "100%",
-              paddingLeft: "10%",
-              paddingRight: "10%",
-            }}>
-            {isEuthanized ? (
+
+          {isEuthanized ? (
+            <div
+              style={{
+                width: "100%",
+                paddingLeft: "10%",
+                paddingRight: "10%",
+              }}
+            >
               <div style={{ color: "red", fontFamily: "monospace", fontSize: "clamp(0.8rem, 1.5vw, 2rem)" }}>
                 PROCESSED FOR EUTHANIZATION
               </div>
-            ) : (
+            </div>
+          ) : (
+            <div className={`${!hasInteracted ? "hidden-button" : ""}`}
+              style={{
+                width: "100%",
+                paddingLeft: "10%",
+                paddingRight: "10%",
+              }}>
               <LikeButtons
                 petId={pet.id}
                 userId={currentUserId}
@@ -135,8 +144,9 @@ export default function PetCard(props) {
                 initiallyDisliked={pet.isDisiked}
                 updateTotalDislikes={(petId, decrement) => updateTotalDislikes(petId, decrement)}
               />
-            )}
-          </div>
+            </div>
+          )}
+
         </CardActions>
       )}
 
