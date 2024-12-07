@@ -88,7 +88,7 @@ function PetsAndEventsTabs(props) {
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
 
-        if (updatedTotalDislikes % 5 === 0) {
+        if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
           await updateEuthanizedPetIds(currentUserId, petId);
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);

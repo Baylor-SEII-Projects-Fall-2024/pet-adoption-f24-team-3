@@ -36,8 +36,8 @@ export default function LikeButtons(props) {
       if (onInteract)
         onInteract(false);
 
-      // Decrement our dislike count
-      updateTotalDislikes(petId, true);
+      // Do not decrement if we are untoggling the like button
+      // updateTotalDislikes(petId, true);
 
       // If the pet was disliked, decrement dislike count
       if(isDisliked) {
@@ -54,11 +54,10 @@ export default function LikeButtons(props) {
       //if not yet liked, like the pet
       setIsLiked(true);
 
-      // Decrement our dislike count
-      updateTotalDislikes(petId, true);
-
       //if the pet has been disliked, undo that
       if (isDisliked) {
+        // Decrement dislikes if we change from dislike to like
+        updateTotalDislikes(petId, true);
         setIsDisliked(false);
         await undoDislikePet(userId, petId)
           .catch((error) => {
@@ -84,7 +83,7 @@ export default function LikeButtons(props) {
       //if already disliked, untoggle the like button and undo dislike
       setIsDisliked(false);
 
-      // Decrement our dislike count
+      // Decrement dislikes if toggling the dislike button
       updateTotalDislikes(petId, true);
 
       if (onInteract)
