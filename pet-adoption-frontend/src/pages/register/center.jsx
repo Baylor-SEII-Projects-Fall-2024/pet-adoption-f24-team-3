@@ -172,6 +172,7 @@ export default function RegisterCenterPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleBannerImageUpload} />
+                    <br></br>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :

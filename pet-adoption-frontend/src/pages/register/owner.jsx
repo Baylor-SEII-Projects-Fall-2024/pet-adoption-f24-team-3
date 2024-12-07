@@ -114,6 +114,7 @@ export default function RegisterOwnerPage() {
                         InputLabelProps={{ shrink: true }}
                         inputProps={{ accept: "image/png, image/gif, image/jpeg" }}
                         onChange={handleProfileImageUpload} />
+                    <br></br>
                     {isUploading ?
                         <Typography> Creating Account...</Typography>
                         :
