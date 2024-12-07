@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { Grid, Paper, FormControl, InputLabel, MenuItem, Select, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
 import infoLists from "@/utils/lists";
+import PasswordChecker from "@/components/PasswordChecker";
 
 export default function RegisterCenterPage() {
     const router = useRouter();
@@ -54,12 +55,12 @@ export default function RegisterCenterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-        if(usernameRegex.test(formData.centerName)){
+        if (usernameRegex.test(formData.centerName)) {
             setFormError("Name contains special characters!");
             return;
         }
 
-        if(passwordRegex.test(formData.password)){
+        if (passwordRegex.test(formData.password)) {
             setFormError("Password has invalid characters!");
             return;
         }
@@ -82,6 +83,11 @@ export default function RegisterCenterPage() {
             return;
         }
 
+        if (!isPasswordOwaspCompliant(formData.password)) {
+            alert("Password does not meet the security requirements!");
+            return;
+        }
+
         if (formData.password != formData.confirmPassword) {
             alert("Passwords do not match!");
             return;
@@ -101,6 +107,18 @@ export default function RegisterCenterPage() {
             });
     };
 
+    const isPasswordOwaspCompliant = (password) => {
+        const checks = [
+            (pwd) => pwd.length >= 8, // At least 8 characters
+            (pwd) => /[A-Z]/.test(pwd), // At least one uppercase letter
+            (pwd) => /[a-z]/.test(pwd), // At least one lowercase letter
+            (pwd) => /\d/.test(pwd), // At least one number
+            (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd), // At least one special character
+            (pwd) => !/\s/.test(pwd), // No spaces
+        ];
+
+        return checks.every((check) => check(password));
+    };
 
     return (
         <Grid>
@@ -135,6 +153,7 @@ export default function RegisterCenterPage() {
                     </FormControl>
                     <TextField sx={{ mt: "10px" }} label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
                     <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
+                    <PasswordChecker password={formData.password} />
                     <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
                     <TextField
                         type="file"
@@ -162,11 +181,11 @@ export default function RegisterCenterPage() {
                     <Button variant='contained' onClick={() => router.push("/register")}>Back</Button>
                 </form>
                 {formError && (
-                  <Typography color="error">{formError}</Typography>
+                    <Typography color="error">{formError}</Typography>
                 )}
                 {formSuccess && (
-                  <Typography color="success">{formSuccess}</Typography>
-                )}         
+                    <Typography color="success">{formSuccess}</Typography>
+                )}
             </Paper>
         </Grid>
     )

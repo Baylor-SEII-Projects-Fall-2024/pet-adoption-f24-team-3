@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Paper, Typography, TextField, Button } from '@mui/material'
 import userService from "@/utils/services/userService";
+import PasswordChecker from "@/components/PasswordChecker";
 
 export default function RegisterOwnerPage() {
     const router = useRouter();
@@ -10,7 +11,7 @@ export default function RegisterOwnerPage() {
     const passwordRegex = RegExp('[^ -~]');
     const usernameRegex = RegExp('[^ a-zA-Z]');
 
-    const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
+    const paperStyle = { padding: '30px 20px', width: "50%", margin: "20px auto" }
     const headerStyle = { margin: 0 }
 
     const [profileImage, setProfileImage] = useState(null);
@@ -43,26 +44,17 @@ export default function RegisterOwnerPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const emptyFields = Object.keys(formData).filter(key => !formData[key]);
-        if(usernameRegex.test(formData.firstName) || usernameRegex.test(formData.lastName)){
+        if (usernameRegex.test(formData.firstName) || usernameRegex.test(formData.lastName)) {
             setFormError("Name contains special characters!");
             return;
         }
-        if(passwordRegex.test(formData.password)){
+        if (passwordRegex.test(formData.password)) {
             setFormError("Password has invalid characters!");
             return;
         }
-        if (emptyFields.length > 0) {
-            const emptyFieldNames = emptyFields.map(field => {
-                switch (field) {
-                    case 'firstName': return 'First Name';
-                    case 'lastName': return 'Last Name';
-                    case 'email': return 'Email';
-                    case 'password': return 'Password';
-                    case 'confirmPassword': return 'Confirm Password';
-                    default: return field;
-                }
-            });
-            alert(`Please fill in the following fields: ${emptyFieldNames.join(', ')}`);
+
+        if (!isPasswordOwaspCompliant(formData.password)) {
+            alert("Password does not meet the security requirements!");
             return;
         }
 
@@ -86,6 +78,18 @@ export default function RegisterOwnerPage() {
         }
     };
 
+    const isPasswordOwaspCompliant = (password) => {
+        const checks = [
+            (pwd) => pwd.length >= 8, // At least 8 characters
+            (pwd) => /[A-Z]/.test(pwd), // At least one uppercase letter
+            (pwd) => /[a-z]/.test(pwd), // At least one lowercase letter
+            (pwd) => /\d/.test(pwd), // At least one number
+            (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd), // At least one special character
+            (pwd) => !/\s/.test(pwd), // No spaces
+        ];
+
+        return checks.every((check) => check(password));
+    };
 
     return (
         <Grid>
@@ -96,11 +100,12 @@ export default function RegisterOwnerPage() {
                     <Typography variant="caption">Please fill this form to create an account!</Typography>
                 </Grid>
                 <form onSubmit={handleSubmit}>
-                    <TextField fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
-                    <TextField fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
-                    <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
-                    <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
-                    <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
+                    <TextField required fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
+                    <TextField required fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
+                    <TextField required fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
+                    <TextField required fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
+                    <PasswordChecker password={formData.password} />
+                    <TextField required fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
                     <TextField
                         type="file"
                         label='Profile Picture'
@@ -118,11 +123,11 @@ export default function RegisterOwnerPage() {
 
                 </form>
                 {formError && (
-                  <Typography color="error">{formError}</Typography>
+                    <Typography color="error">{formError}</Typography>
                 )}
                 {formSuccess && (
-                  <Typography color="success">{formSuccess}</Typography>
-                )}         
+                    <Typography color="success">{formSuccess}</Typography>
+                )}
             </Paper>
         </Grid>
     )
