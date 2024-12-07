@@ -123,9 +123,18 @@ export default function PetCard(props) {
                 width: "100%",
                 paddingLeft: "10%",
                 paddingRight: "10%",
+                marginBottom: "1rem",
               }}
             >
-              <div style={{ color: "red", fontFamily: "monospace", fontSize: "clamp(0.8rem, 1.5vw, 2rem)" }}>
+              <div
+                style={{
+                  color: "red",
+                  fontFamily: "monospace",
+                  fontSize: "clamp(0.8rem, 1.5vw, 2rem)",
+                  marginTop: "1rem",
+                  marginBottom: "1rem",
+                }}
+              >
                 PROCESSED FOR EUTHANIZATION
               </div>
             </div>
