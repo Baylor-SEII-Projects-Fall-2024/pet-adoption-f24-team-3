@@ -31,7 +31,7 @@ def register_new_owner(baseurl):
     owner_data = {
         "accountType": "Owner",
         "emailAddress": "awef",
-        "password": "awef",
+        "password": "Passw0rd!",
         "nameFirst": "awef",
         "nameLast": "awef"
     }

@@ -5,7 +5,7 @@ def generate_static_accounts():
         {
             "accountType": "Center",
             "emailAddress": "iben.ixi@gmail.com",
-            "password": "pass",
+            "password": "Passw0rd!",
             "name": "Woof Adoption Center",
             "address": "123 Dev Street",
             "city": "Waco",
@@ -16,7 +16,7 @@ def generate_static_accounts():
         {
             "accountType": "Center",
             "emailAddress": "testcenter@test.com",
-            "password": "pass",
+            "password": "Passw0rd!",
             "name": "Test Center",
             "address": "1234 Dev Street",
             "city": "Waco",
@@ -32,14 +32,14 @@ def generate_static_accounts():
             "emailAddress": "ickoxii@gmail.com",
             "nameFirst": "Icko",
             "nameLast": "Iben",
-            "password": "pass"
+            "password": "Passw0rd!"
         },
         {
             "accountType": "Owner",
             "emailAddress": "testowner@test.com",
             "nameFirst": "Bojack",
             "nameLast": "Horseface",
-            "password": "pass"
+            "password": "Passw0rd!"
         }
     ]
 

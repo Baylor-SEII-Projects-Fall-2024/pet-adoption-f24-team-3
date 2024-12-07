@@ -1,6 +1,7 @@
 # modules/generators.py
 
 import random
+import string
 from datetime import datetime, timedelta
 from .config import faker, city_state_map, species_weights, species_classifications, species_breeds
 from .models import Sex, AgeClass, Size
@@ -11,6 +12,29 @@ def get_classification(value, ranges):
             return classification
     return ranges[-1][2]  # Return the last classification if value exceeds all ranges
 
+def generate_owasp_password(length=12):
+    # Define password pools
+    lower = string.ascii_lowercase
+    upper = string.ascii_uppercase
+    digits = string.digits
+    special = string.punctuation
+
+    # Ensure at least one of each type
+    password = [
+        random.choice(lower),
+        random.choice(upper),
+        random.choice(digits),
+        random.choice(special),
+    ]
+
+    all_characters = lower + upper + digits + special
+    password += random.choices(all_characters, k=length - 4)
+
+    # Shuffle the password
+    random.shuffle(password)
+
+    return ''.join(password)
+
 def generate_adoption_center():
     city, state = random.choice(list(city_state_map.items()))
     center_name = faker.unique.center_names()
@@ -19,7 +43,7 @@ def generate_adoption_center():
     return {
         "accountType": "Center",
         "emailAddress": f"{email_name}@center.com",
-        "password": faker.password(),
+        "password": generate_owasp_password(),
         "name": center_name,
         "address": faker.unique.street_address(),
         "city": city,
@@ -40,7 +64,7 @@ def generate_potential_owner():
         "emailAddress": email,
         "nameFirst": nameFirst,
         "nameLast": nameLast,
-        "password": faker.password(),
+        "password": generate_owasp_password(),
     }
 
 def generate_animal_data(species: str):
