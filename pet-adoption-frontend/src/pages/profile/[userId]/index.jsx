@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Head from "next/head";
 import {
   Button,
   Card,
@@ -89,74 +90,37 @@ export default function ProfilePage() {
     router.push(`/profile/${userId}/change-password`);
   };
 
-  if (loading) {
+  if ((loading || !userInfo) && !error)
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Card sx={{ minWidth: 275, mb: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              Loading...
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-  }
+      <>
+        <Head>
+          <title>Profile</title>
+        </Head>
 
-  if (!userInfo) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Card sx={{ minWidth: 275, mb: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              Loading...
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
+        <main>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "100vh",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            {/* Create loading card */}
+            <Card sx={{ minWidth: 275, mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Loading...
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        </main>
+      </>
     );
-  }
 
-  if (error) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Card sx={{ minWidth: 275, mb: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div" color="error">
-              {error}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-  }
 
   return (
     <Box
@@ -327,7 +291,7 @@ export default function ProfilePage() {
                     padding: "12px 12px",
                     fontSize: "16px",
                     minWidth: "200px",
-                  }}z
+                  }} z
                   onClick={handleEditPreferencesClick}
                 >
                   Adjust Preferences

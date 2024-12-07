@@ -82,7 +82,7 @@ export default function CentersPage() {
   return (
     <>
       <Head>
-        <title>View Adoption Centers</title>
+        <title>Adoption Centers</title>
       </Head>
 
       <main>
