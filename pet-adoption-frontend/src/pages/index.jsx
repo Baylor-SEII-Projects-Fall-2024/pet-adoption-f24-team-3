@@ -16,55 +16,55 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Home Page</title>
+        <title>WOOF</title>
       </Head>
 
       <main>
         <Stack alignItems='center' gap={2}>
           <div>
-          <Box
-            sx={{
-              position: "relative",
-              width: "100%",
-              height: "50vh"
-            }}
-          >
-            <img className="fade-in"
-              style={{
-                width: "100vw",
-                height: "50vh",
-                objectFit: "cover",
-              }}
-              src={"homescreen_header.jpg"}
-            />
-            <div className="fade-in-faster">
-            <Typography variant='h1' color='text.white'
+            <Box
               sx={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                textAlign: "center",
-                textShadow: "#000 2px 1px 5px",
+                position: "relative",
+                width: "100%",
+                height: "50vh"
               }}
-            >Find Your New Best Friend!</Typography>
-            </div>
-          </Box>
+            >
+              <img className="fade-in"
+                style={{
+                  width: "100vw",
+                  height: "50vh",
+                  objectFit: "cover",
+                }}
+                src={"homescreen_header.jpg"}
+              />
+              <div className="fade-in-faster">
+                <Typography variant='h1' color='text.white'
+                  sx={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    textAlign: "center",
+                    textShadow: "#000 2px 1px 5px",
+                  }}
+                >Find Your New Best Friend!</Typography>
+              </div>
+            </Box>
           </div>
           <div className="fade-in-faster">
-          <Stack direction="column"
-            sx={{
-              mt: "30px",
-              mb: "30px",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-            }}>
-            <Typography variant='h2' align='center'>WOOF helps you find your ideal pet</Typography>
-            <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend.<br></br> <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
-            <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px", fontSize: "20px"}}>Find Your Friend!</Button>
-          </Stack>
+            <Stack direction="column"
+              sx={{
+                mt: "30px",
+                mb: "30px",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}>
+              <Typography variant='h2' align='center'>WOOF helps you find your ideal pet</Typography>
+              <Typography variant='body1' color='text.secondary'><strong>WOOF</strong> learns on the fly to quickly match you with your new best friend.<br></br> <strong>Sign up today</strong> to begin the search for the newest (<em>and cutest!</em>) member of your home!</Typography>
+              <Button variant='contained' color='secondary' onClick={() => router.push("/pets")} sx={{ width: 200, mt: "15px", fontSize: "20px" }}>Find Your Friend!</Button>
+            </Stack>
           </div>
 
           <Card sx={{
@@ -113,7 +113,7 @@ export default function HomePage() {
             />
             <Typography variant='h3' align='center'>Adoption Centers, Glad you're here!</Typography>
             <Typography variant='body1' color='text.secondary'>Join WOOF today and gain access to a platform for advertising your pets and upcoming events like no other!</Typography>
-            <Button variant='contained' color='secondary' onClick={ currentUserId == null?() => router.push("/register"):()=>router.push("/pets")} sx={{ width: 200 }}>Start Here!</Button>
+            <Button variant='contained' color='secondary' onClick={currentUserId == null ? () => router.push("/register") : () => router.push("/pets")} sx={{ width: 200 }}>Start Here!</Button>
           </Stack>
         </Stack>
       </main >

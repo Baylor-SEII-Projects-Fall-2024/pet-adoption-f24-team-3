@@ -67,11 +67,11 @@ export default function EditProfilePage() {
   //handle what happens on sumbmit. Does not reroute on success.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(usernameRegex.test(formData.name)){
-        setFormError("Name contains special characters!");
-        return;
+    if (usernameRegex.test(formData.name)) {
+      setFormError("Name contains special characters!");
+      return;
     }
-    
+
     try {
       await updateCenter(formData, profileImage, bannerImage, centerId).then(
         (centerId) => {
@@ -149,7 +149,7 @@ export default function EditProfilePage() {
     return (
       <>
         <Head>
-          <title>Edit Profile Page</title>
+          <title>Edit Profile</title>
         </Head>
 
         <main>
@@ -273,8 +273,8 @@ export default function EditProfilePage() {
                 )}
                 {formSuccess && (
                   <Typography color="success">{formSuccess}</Typography>
-                )}              
-                </Card>
+                )}
+              </Card>
             </Stack>
           </Stack>
         </main>

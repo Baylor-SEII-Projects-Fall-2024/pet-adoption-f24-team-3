@@ -45,63 +45,63 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function load() {
-      setPage(0); 
+      setPage(0);
       setHasMore(true);
 
       const result = await getEventsByPageSort(quantityPerPage, 0, stateFilter, cityFilter);
       if (result && result.length > 0) {
         setEventData(result);
       } else {
-        setEventData([]); 
+        setEventData([]);
         setHasMore(false);
       }
     }
     load();
-}, [filter]); 
+  }, [filter]);
 
 
   const fetchMoreData = async () => {
-    if (!hasMore) return; 
-  
+    if (!hasMore) return;
+
     const nextPage = page;
     setPage(nextPage + 1);
-  
+
     const result = await getEventsByPageSort(quantityPerPage, nextPage, stateFilter, cityFilter);
     if (result && result.length > 0) {
       setEventData((prevData) => [...prevData, ...result]);
     } else {
-      setHasMore(false); 
+      setHasMore(false);
     }
   };
-  
+
 
   const handleSortChangeState = (e) => {
     const value = e.target.value;
-    setStateFilter(value); 
+    setStateFilter(value);
     setPage(0);
   };
-  
+
   const handleSortChangeCity = (e) => {
     const value = e.target.value;
     setCityFilter(value);
     setPage(0);
   };
-  
+
   const handleFilterChange = (e) => {
     setEventData([]);
     fetchMoreData();
-    if(filter == false){
+    if (filter == false) {
       setFilter(true);
-    }else{
+    } else {
       setFilter(false);
     }
-    
+
   }
 
   return (
     <>
       <Head>
-        <title>View Events</title>
+        <title>Events</title>
       </Head>
 
       <main>
@@ -130,7 +130,7 @@ export default function EventsPage() {
                   Post New Event
                 </Button>
               )}
-              <Box 
+              <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -139,41 +139,42 @@ export default function EventsPage() {
                   flexWrap: "wrap",
                   marginTop: "20px"
                 }}
-                >
-              <FormControl sx={{ minWidth: "100px", height: "40px" }}>
-                        <InputLabel id="state-select-label">State</InputLabel>
-                        <Select
-                            labelId="state-select-label"
-                            id="state-select"
-                            value={stateFilter}
-                            size="small"
-                            onChange={handleSortChangeState}
-                            sx={{ width: "10em" }}
-                        >
-                            <MenuItem value={""}>Please Select</MenuItem>
-                            {stateNames.map((state, index) => (
-                                <MenuItem key={index} value={state}>{state}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-              <TextField
-                label="Filter by City"
-                variant="outlined"
-                value={cityFilter}
-                onChange={handleSortChangeCity}
-                sx={{ minWidth: "100px", 
-                  height: "40px", 
-                  "& .MuiInputBase-root": {
-                    height: "40px", // Control the input box height
-                  }, 
-                }}
-              />
-              <Button 
-                onClick={handleFilterChange}
-                variant="contained"
-                color="secondary">
+              >
+                <FormControl sx={{ minWidth: "100px", height: "40px" }}>
+                  <InputLabel id="state-select-label">State</InputLabel>
+                  <Select
+                    labelId="state-select-label"
+                    id="state-select"
+                    value={stateFilter}
+                    size="small"
+                    onChange={handleSortChangeState}
+                    sx={{ width: "10em" }}
+                  >
+                    <MenuItem value={""}>Please Select</MenuItem>
+                    {stateNames.map((state, index) => (
+                      <MenuItem key={index} value={state}>{state}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                  label="Filter by City"
+                  variant="outlined"
+                  value={cityFilter}
+                  onChange={handleSortChangeCity}
+                  sx={{
+                    minWidth: "100px",
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px", // Control the input box height
+                    },
+                  }}
+                />
+                <Button
+                  onClick={handleFilterChange}
+                  variant="contained"
+                  color="secondary">
                   Search
-              </Button>
+                </Button>
               </Box>
             </CardContent>
           </Card>
