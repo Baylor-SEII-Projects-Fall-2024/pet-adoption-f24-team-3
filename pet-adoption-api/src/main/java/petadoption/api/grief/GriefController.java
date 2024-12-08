@@ -1,5 +1,6 @@
 package petadoption.api.grief;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
  * REST Controller for managing grief-related operations such as dislikes, euthanized pets, 
  * and leaderboard for the Pet Adoption application.
  */
+@Log4j2
 @RestController
 @RequestMapping("/api/grief")
 @GlobalCrossOrigin
@@ -49,8 +51,14 @@ public class GriefController {
      */
     @GetMapping("/{userId}/details")
     public ResponseEntity<UserGriefDTO> getUserDetails(@PathVariable Long userId) {
-        UserGriefDTO griefDetails = griefService.getGriefDetails(userId);
-        return ResponseEntity.ok(griefDetails);
+        try {
+            log.info("Fetching grief details for userId: {}", userId);
+            UserGriefDTO griefDetails = griefService.getGriefDetails(userId);
+            return ResponseEntity.ok(griefDetails);
+        } catch (Exception e) {
+            log.error("Error fetching grief details for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -61,11 +69,18 @@ public class GriefController {
      */
     @GetMapping("/{userId}/dislikes")
     public ResponseEntity<Integer> getDislikeCount(@PathVariable Long userId) {
-        Integer dislikeCount = griefService.getDislikeCount(userId);
-        if (dislikeCount == null) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if dislike count is null
+        try {
+            log.info("Fetching dislike count for userId: {}", userId);
+            Integer dislikeCount = griefService.getDislikeCount(userId);
+            if (dislikeCount == null) {
+                log.warn("Dislike count not found for userId: {}", userId);
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(dislikeCount);
+        } catch (Exception e) {
+            log.error("Error fetching dislike count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(dislikeCount);
     }
 
     /**
@@ -76,8 +91,14 @@ public class GriefController {
      */
     @PostMapping("/{userId}/dislike")
     public ResponseEntity<Void> incrementDislikeCount(@PathVariable Long userId) {
-        griefService.incrementDislikeCount(userId);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Incrementing dislike count for userId: {}", userId);
+            griefService.incrementDislikeCount(userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error incrementing dislike count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -88,8 +109,14 @@ public class GriefController {
      */
     @PostMapping("/{userId}/undislike")
     public ResponseEntity<Void> decrementDislikeCount(@PathVariable Long userId) {
-        griefService.decrementDislikeCount(userId);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Decrementing dislike count for userId: {}", userId);
+            griefService.decrementDislikeCount(userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error decrementing dislike count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -99,8 +126,15 @@ public class GriefController {
      * @return the number of euthanized pets
      */
     @GetMapping("/{userId}/killcount")
-    public Integer getKillCount(@PathVariable Long userId) {
-        return griefService.getKillCount(userId);
+    public ResponseEntity<Integer> getKillCount(@PathVariable Long userId) {
+        try {
+            log.info("Fetching kill count for userId: {}", userId);
+            Integer killCount = griefService.getKillCount(userId);
+            return ResponseEntity.ok(killCount);
+        } catch (Exception e) {
+            log.error("Error fetching kill count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -111,8 +145,14 @@ public class GriefController {
      */
     @GetMapping("/{userId}/euthanizedPets")
     public ResponseEntity<List<Long>> getEuthanizedPetIds(@PathVariable Long userId) {
-        List<Long> euthanizedPets = griefService.getEuthanizedPetIds(userId);
-        return ResponseEntity.ok(euthanizedPets);
+        try {
+            log.info("Fetching euthanized pet IDs for userId: {}", userId);
+            List<Long> euthanizedPets = griefService.getEuthanizedPetIds(userId);
+            return ResponseEntity.ok(euthanizedPets);
+        } catch (Exception e) {
+            log.error("Error fetching euthanized pet IDs for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -125,8 +165,14 @@ public class GriefController {
      */
     @PostMapping("/{userId}/euthanizePet")
     public ResponseEntity<Void> updateEuthanizedPetIds(@PathVariable Long userId, @RequestParam Long petId) {
-        griefService.updateEuthanizedPetIds(userId, petId);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Euthanizing pet with ID {} for userId: {}", petId, userId);
+            griefService.updateEuthanizedPetIds(userId, petId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error euthanizing pet with ID {} for userId: {}", petId, userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -149,10 +195,16 @@ public class GriefController {
     public ResponseEntity<LeaderboardDTO> getLeaderboard(
             @RequestParam(required = false, defaultValue = "kills") String sortBy,
             @RequestParam(required = false, defaultValue = "10") int count) {
-        List<LeaderboardEntryDTO> leaderboardEntries = griefService.getLeaderboard(sortBy, count);
-        LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
-        leaderboardDTO.setEntries(leaderboardEntries);
-        return ResponseEntity.ok(leaderboardDTO);
+        try {
+            log.info("Fetching leaderboard sorted by: {}, count: {}", sortBy, count);
+            List<LeaderboardEntryDTO> leaderboardEntries = griefService.getLeaderboard(sortBy, count);
+            LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
+            leaderboardDTO.setEntries(leaderboardEntries);
+            return ResponseEntity.ok(leaderboardDTO);
+        } catch (Exception e) {
+            log.error("Error fetching leaderboard sorted by: {}", sortBy, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -166,8 +218,14 @@ public class GriefController {
      */
     @PostMapping("/setKillCount/{userId}/{killCount}")
     public ResponseEntity<Void> setKillCount(@PathVariable Long userId, @PathVariable Integer killCount) {
-        griefService.setKillCount(userId, killCount);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Setting kill count to {} for userId: {}", killCount, userId);
+            griefService.setKillCount(userId, killCount);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error setting kill count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -181,7 +239,13 @@ public class GriefController {
      */
     @PostMapping("/setDislikeCount/{userId}/{dislikeCount}")
     public ResponseEntity<Void> setDislikeCount(@PathVariable Long userId, @PathVariable Integer dislikeCount) {
-        griefService.setDislikeCount(userId, dislikeCount);
-        return ResponseEntity.ok().build();
+        try {
+            log.info("Setting dislike count to {} for userId: {}", dislikeCount, userId);
+            griefService.setDislikeCount(userId, dislikeCount);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error setting dislike count for userId: {}", userId, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
