@@ -132,6 +132,10 @@ export default function HeaderBar(props) {
         }
       }
       fetchAccountType();
+    } else {
+      // Usually when on loading page or after logging out
+      setGrief(false);
+      setIsOwner(false);
     }
   }, [currentUserId, dispatch, getUserInfo, saveGriefToCookie]);
 
