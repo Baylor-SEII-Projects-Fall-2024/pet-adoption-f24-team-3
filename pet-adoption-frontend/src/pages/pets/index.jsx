@@ -62,6 +62,16 @@ export default function PetsPage() {
   const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
   const [showEuthanization, setShowEuthanization] = React.useState(false);
   const [killCount, setKillCount] = React.useState(0);
+  const [audio, setAudio] = React.useState(null);
+
+  const playAudio = () => {
+    if(audio) {
+      console.log("Playing audio");
+      audio.play();
+    } else {
+      console.log("No audio");
+    }
+  };
 
   const ageSliderMarks = [
     {
@@ -109,6 +119,13 @@ export default function PetsPage() {
   //load when you scroll to the bottom. This is why `page` starts at 1, if it started
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
+    async function grabAudio() {
+      if(typeof window !== 'undefined') {
+        setAudio(new Audio('/sounds/angel.mp3'));
+      }
+    }
+    grabAudio();
+
     async function initializeGuiltData() {
       if (!currentUserId) return;
       try {
@@ -259,7 +276,6 @@ export default function PetsPage() {
   }
 
   const updateTotalDislikes = async (petId, decrement = false) => {
-    console.log(`decrement = ${decrement}`);
     try {
       let updateSuccess;
       if (decrement) {
@@ -280,6 +296,7 @@ export default function PetsPage() {
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
+          playAudio();
         }
       }
     } catch (error) {
@@ -294,48 +311,109 @@ export default function PetsPage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
-          <Card sx={{ width: "80%", position: "relative" }} elevation={4}>
+        {/* Overall page stack */}
+        <Stack
+          sx={{
+            paddingTop: 4
+          }}
+          alignItems="center"
+          gap={2}
+        >
+
+          {/* Title section */}
+          <Card
+            sx={{
+              width: "80%",
+              position: "relative"
+            }}
+            elevation={4}
+          >
             <CardContent>
-              <Typography variant="h3" align="center">
-                Find your pet
-              </Typography>
-              <Typography variant="body1" align="center" color="text.secondary">
-                Like or dislike a pet based on your preferences, WOOF will learn
-                as you go and show you more pets you may be interesed in!
-              </Typography>
-              {currentUserType == "Center" ? (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => router.push(`/pets/new`)}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  width: "100%"
+                }}
+              >
+
+                {/* Left Box for Typography, centered */}
+                <Box
                   sx={{
-                    width: 200,
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 1
                   }}
                 >
-                  Post New Pet
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => router.push(`/pets/liked`)}
+                  <Typography variant="h3" align="center">
+                    Find your pet
+                  </Typography>
+                  <Typography variant="body1" align="center" color="text.secondary">
+                    Like or dislike a pet based on your preferences, WOOF will learn
+                    as you go and show you more pets you may be interested in!
+                  </Typography>
+                </Box>
+
+                {/* Right Box for Buttons, aligned to the right */}
+                <Box
                   sx={{
-                    width: 200,
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    gap: 2,
+                    justifyContent: "flex-start"
                   }}
                 >
-                  Liked Pets
-                </Button>
-              )}
+                  {currentUserType === "Center" ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => router.push(`/pets/new`)}
+                      sx={{
+                        width: 200,
+                      }}
+                    >
+                      Post New Pet
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => router.push(`/pets/liked`)}
+                        sx={{
+                          width: 200,
+                        }}
+                      >
+                        Liked Pets
+                      </Button>
+                      {/* TBD
+                      {killCount > 0 && (
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => router.push(`/pets/euthanized`)}
+                          sx={{
+                            width: 200,
+                          }}
+                        >
+                          Euthanized Pets
+                        </Button>
+                      )}
+                      */}
+                    </>
+                  )}
+                </Box>
+              </Box>
             </CardContent>
           </Card>
+
+          {/* Stack for filters and pet listing */}
           <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            {/* Filter card */}
             <Card
               sx={{
                 width: "20%",
@@ -421,6 +499,8 @@ export default function PetsPage() {
                 <Button variant="containedPrimary" onClick={onFilterSearch}>Search Pets</Button>
               </Box>
             </Card>
+
+            {/* Pet Listings */}
             <Box
               sx={{
                 width: "70%",

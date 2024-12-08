@@ -30,9 +30,9 @@ function PetsAndEventsTabs(props) {
   const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
   const {
-    getUserGrief,
     getDislikeCount,
     incrementDislikeCount,
+    decrementDislikeCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
   } = guiltService();
@@ -42,9 +42,26 @@ function PetsAndEventsTabs(props) {
   const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
   const [showEuthanization, setShowEuthanization] = React.useState(false);
   const { getUserInfo, getOwnerInfo } = userService();
+  const [audio, setAudio] = React.useState(null);
+
+  const playAudio = () => {
+    if(audio) {
+      console.log("Playing audio");
+      audio.play();
+    } else {
+      console.log("No audio");
+    }
+  };
 
   useEffect(() => {
     if (!currentUserId) return;
+
+    async function grabAudio() {
+      if(typeof window !== 'undefined') {
+        setAudio(new Audio('/sounds/angel.mp3'));
+      }
+    }
+    grabAudio();
 
     const fetchData = async () => {
       try {
@@ -81,11 +98,18 @@ function PetsAndEventsTabs(props) {
     router.push(`/pets/${petId}`);
   };
 
-  const updateTotalDislikes = async (petId) => {
+  const updateTotalDislikes = async (petId, decrement = false) => {
     try {
-      const incrementSuccess = await incrementDislikeCount(currentUserId);
+      let updateSuccess;
+      if (decrement) {
+        // Decrement dislike count if needed
+        updateSuccess = await decrementDislikeCount(currentUserId);
+      } else {
+        // Increment dislike count
+        updateSuccess = await incrementDislikeCount(currentUserId);
+      }
 
-      if (incrementSuccess) {
+      if (updateSuccess) {
         // Fetch updated total dislikes
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
@@ -95,6 +119,7 @@ function PetsAndEventsTabs(props) {
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
+          playAudio();
         }
       }
     } catch (error) {
@@ -139,7 +164,7 @@ function PetsAndEventsTabs(props) {
               >
                 <PetCard
                   pet={pet}
-                  updateTotalDislikes={() => updateTotalDislikes(pet.id)}
+                  updateTotalDislikes={(petId, decrement) => updateTotalDislikes(pet.id, decrement)}
                   euthanizedPetIds={euthanizedPetIds}
                 />
               </Box>
