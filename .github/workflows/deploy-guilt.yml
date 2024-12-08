@@ -12,8 +12,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set IP Addresses
-        echo "NEXT_PUBLIC_API_URL=http://${{ secrets.GUILT_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
-        echo "cors.allowed-origin=http://${{ secrets.GUILT_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
+        run: |
+          echo "NEXT_PUBLIC_API_URL=http://${{ secrets.GUILT_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
+          echo "cors.allowed-origin=http://${{ secrets.GUILT_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
 
       - name: Pre-Clean
         run: |
