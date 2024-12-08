@@ -16,7 +16,7 @@ def usage():
     print("  bearer_token = [authorization token like the one used in postman]")
 
 # Define valid environments and sizes
-valid_environments = ['local', 'dev', 'prod', 'backup']
+valid_environments = ['local', 'dev', 'prod', 'backup', 'guilt']
 
 # Function to validate environment
 def validate_environment(env):

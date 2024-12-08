@@ -12,6 +12,7 @@ faker = Faker()
 # random.seed(69)
 
 API_URLS = {
+    'guilt': "http://34.136.198.50:8080",   # For Guilt Tripping
     # 'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
     'prod':   "http://woofadoption.homes:8080",
     'dev':    "http://35.224.27.57:8080",   # Remote Dev - ixiwoofrunner-001

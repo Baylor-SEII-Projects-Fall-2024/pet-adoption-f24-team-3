@@ -66,14 +66,14 @@ def get_auth_token(url):
     return auth_token
 
 # Define valid environments and sizes
-valid_environments = ['local', 'dev', 'prod', 'backup']
+valid_environments = ['local', 'dev', 'prod', 'backup', 'guilt']
 valid_sizes = ['small', 's', 'medium', 'm', 'large', 'l', 'grief-size', 'gf']
 
 def usage():
     print("Usage: python3 generate.py [--new] <environment> <size> [<auth_token>]")
     print("  --new        = Grabs a new auth token by registering a new account")
-    print("  environments = [local, dev, prod, backup]")
-    print("  size         = [small | s, medium | m, large | l]")
+    print("  environments = [local, dev, prod, backup, guilt]")
+    print("  size         = [small | s, medium | m, large | l, grief-size | gf]")
     print("  auth_token   = [authorization token like the one used in Postman]")
     
 # Function to validate environment
