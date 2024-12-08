@@ -5,6 +5,7 @@ import petadoption.api.user.PotentialOwnerRepository;
 import lombok.extern.log4j.Log4j2;
 import petadoption.api.grief.dtos.LeaderboardEntryDTO;
 import petadoption.api.grief.dtos.UserGriefDTO;
+import petadoption.api.misc.ClearDataController;
 import petadoption.api.user.PotentialOwner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,36 @@ public class GriefService {
 
     @Autowired
     private PotentialOwnerRepository potentialOwnerRepository;
+
+    /**
+     * Initializes the grief data for a newly registered user.
+     *
+     * <p>
+     * This method creates a new {@link Grief} record in the database for the
+     * specified user ID.
+     * The grief data is initialized with the following default values:
+     * <ul>
+     * <li><b>Dislike Count:</b> 0</li>
+     * <li><b>Kill Count:</b> 0</li>
+     * <li><b>User Rank:</b> Automatically determined based on the kill count
+     * (initially lowest rank).</li>
+     * <li><b>Euthanized Pets:</b> An empty list.</li>
+     * </ul>
+     * </p>
+     *
+     * @param userId the unique identifier of the user for whom grief data is being
+     *               initialized.
+     *               This ID must correspond to an existing user in the system.
+     */
+    public void initializeGriefData(Long userId) {
+        Grief grief = new Grief();
+        grief.setPotentialOwnerId(userId);
+        grief.setNumDislikes(0); // Explicitly setting for clarity, though default is 0
+        grief.setKillCount(0); // Explicitly setting for clarity, though default is 0
+        grief.setUserRank(UserRank.getRankByKillCount(0)); // Ensures rank is initialized explicitly
+        grief.setEuthanizedPets(new ArrayList<>()); // Explicitly setting empty list
+        griefRepository.save(grief);
+    }
 
     /**
      * Retrieves detailed grief statistics for a specific user.
