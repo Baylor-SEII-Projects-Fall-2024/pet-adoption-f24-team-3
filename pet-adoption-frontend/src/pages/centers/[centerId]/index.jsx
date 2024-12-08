@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import Head from "next/head";
-
 import {
   Box,
   Tabs,
@@ -14,14 +13,17 @@ import {
   Grid,
   Button,
 } from "@mui/material";
-import userService from "@/utils/services/userService";
-import animalService from "@/utils/services/animalService";
-import eventService from "@/utils/services/eventService";
-import guiltService from "@/utils/services/guiltService";
+
 import CenterProfileCard from "@/components/CenterProfileCard";
 import EventCard from "@/components/EventCard";
 import PetCard from "@/components/PetCard";
 import TabPanel from "@/components/TabPanel";
+
+import userService from "@/utils/services/userService";
+import animalService from "@/utils/services/animalService";
+import eventService from "@/utils/services/eventService";
+import guiltService from "@/utils/services/guiltService";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
@@ -44,8 +46,10 @@ function PetsAndEventsTabs(props) {
   const { getUserInfo, getOwnerInfo } = userService();
   const [audio, setAudio] = React.useState(null);
 
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
+
   const playAudio = () => {
-    if(audio) {
+    if (audio) {
       console.log("Playing audio");
       audio.play();
     } else {
@@ -56,35 +60,39 @@ function PetsAndEventsTabs(props) {
   useEffect(() => {
     if (!currentUserId) return;
 
-    async function grabAudio() {
-      if(typeof window !== 'undefined') {
-        setAudio(new Audio('/sounds/angel.mp3'));
-      }
-    }
-    grabAudio();
-
-    const fetchData = async () => {
-      try {
-        const userInfo = await getUserInfo(currentUserId);
-
-        if (userInfo.accountType === "Owner") {
-          // Fetch owner-specific grief data
-          try {
-            const dislikeCountResult = await getDislikeCount(currentUserId);
-            setTotalDislikes(dislikeCountResult);
-
-            const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-            setEuthanizedPetIds(euthanizedPetIdsResult);
-          } catch (error) {
-            console.error("Error fetching grief data:", error);
-          }
+    if (grief) {
+      async function grabAudio() {
+        if (typeof window !== 'undefined') {
+          setAudio(new Audio('/sounds/angel.mp3'));
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
       }
-    };
-    fetchData();
-  }, [currentUserId]);
+      grabAudio();
+
+      const fetchData = async () => {
+        try {
+          const userInfo = await getUserInfo(currentUserId);
+
+          if (userInfo.accountType === "Owner") {
+            // Fetch owner-specific grief data
+            try {
+              const dislikeCountResult = await getDislikeCount(currentUserId);
+              setTotalDislikes(dislikeCountResult);
+
+              const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+              setEuthanizedPetIds(euthanizedPetIdsResult);
+            } catch (error) {
+              console.error("Error fetching grief data:", error);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    } else {
+      setEuthanizedPetIds([]);
+    }
+  }, [currentUserId, grief]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -99,6 +107,7 @@ function PetsAndEventsTabs(props) {
   };
 
   const updateTotalDislikes = async (petId, decrement = false) => {
+    if (!grief) return;
     try {
       let updateSuccess;
       if (decrement) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import {
   Container,
   Typography,
@@ -22,12 +23,14 @@ import { useSelector } from "react-redux";
 import guiltService from "@/utils/services/guiltService";
 
 export default function LeaderboardPage() {
+  const router = useRouter();
   const [leaderboard, setLeaderboard] = useState([]);
   const [sortBy, setSortBy] = useState("kills"); // Default sorting criterion
   const [count, setCount] = useState(10); // Default count value
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const { getLeaderboard } = guiltService();
 
@@ -52,6 +55,12 @@ export default function LeaderboardPage() {
   useEffect(() => {
     fetchLeaderboard();
   }, [sortBy, count]); // Refetch leaderboard whenever `sortBy` or `count` changes
+
+  useEffect(() => {
+    if (!grief) {
+      router.push("/pets");
+    }
+  }, [grief]);
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);

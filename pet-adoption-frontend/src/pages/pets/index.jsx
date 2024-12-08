@@ -49,6 +49,8 @@ export default function PetsPage() {
   const [sexFilter, setSexFilter] = React.useState([]);
   const [currentFilter, setCurrentFilter] = React.useState({ "pageSize": quantityPerPage });
 
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
+
   const {
     getDislikeCount,
     incrementDislikeCount,
@@ -65,7 +67,7 @@ export default function PetsPage() {
   const [audio, setAudio] = React.useState(null);
 
   const playAudio = () => {
-    if(audio) {
+    if (audio) {
       console.log("Playing audio");
       audio.play();
     } else {
@@ -119,29 +121,35 @@ export default function PetsPage() {
   //load when you scroll to the bottom. This is why `page` starts at 1, if it started
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
-    async function grabAudio() {
-      if(typeof window !== 'undefined') {
-        setAudio(new Audio('/sounds/angel.mp3'));
+    if (grief) {
+      async function grabAudio() {
+        if (typeof window !== 'undefined') {
+          setAudio(new Audio('/sounds/angel.mp3'));
+        }
       }
-    }
-    grabAudio();
+      grabAudio();
 
-    async function initializeGuiltData() {
-      if (!currentUserId) return;
-      try {
-        const userGriefResult = await getUserGrief(currentUserId);
-        setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
+      async function initializeGuiltData() {
+        if (!currentUserId) return;
+        if (!grief) return;
+        try {
+          const userGriefResult = await getUserGrief(currentUserId);
+          setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
 
-        const dislikeCountResult = await getDislikeCount(currentUserId);
-        setTotalDislikes(dislikeCountResult);
+          const dislikeCountResult = await getDislikeCount(currentUserId);
+          setTotalDislikes(dislikeCountResult);
 
-        const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-        setEuthanizedPetIds(euthanizedPetIdsResult);
-      } catch (error) {
-        console.error("Error fetching guilt data:", error);
+          const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+          setEuthanizedPetIds(euthanizedPetIdsResult);
+        } catch (error) {
+          console.error("Error fetching guilt data:", error);
+        }
       }
+      initializeGuiltData();
+    } else {
+      setEuthanizedPetIds([]);
     }
-    initializeGuiltData();
+
     async function load() {
       if (!currentUserId) return;
       await fetchAnimalTypes();
@@ -149,7 +157,7 @@ export default function PetsPage() {
       await fetchFirstData();
     }
     load();
-  }, [currentUserId]);
+  }, [currentUserId, grief]);
 
   const fetchFirstData = async (filters = currentFilter) => {
     await getRecommendedAnimals(currentUserId, filters)
@@ -277,6 +285,7 @@ export default function PetsPage() {
 
   const updateTotalDislikes = async (petId, decrement = false) => {
     try {
+      if (!grief) return;
       let updateSuccess;
       if (decrement) {
         // Decrement dislike count if needed
@@ -390,7 +399,7 @@ export default function PetsPage() {
                       >
                         Liked Pets
                       </Button>
-                      {/* TBD
+                      {/* TODO: implement if time permits
                       {killCount > 0 && (
                         <Button
                           variant="contained"

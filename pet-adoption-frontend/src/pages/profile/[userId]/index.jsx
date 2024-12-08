@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import Head from "next/head";
+
 import {
   Button,
   Card,
@@ -12,9 +13,11 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+
 import userService from "@/utils/services/userService";
 import guiltService from "@/utils/services/guiltService";
 import formatter from "@/utils/formatter";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ProfilePage() {
@@ -38,6 +41,8 @@ export default function ProfilePage() {
   const [rankTitle, setRankTitle] = useState("");
   const [rankMessage, setRankMessage] = useState("");
 
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
+
   // Fetch user info and grief details when page renders
   useEffect(() => {
     if (userId) {
@@ -59,13 +64,15 @@ export default function ProfilePage() {
           }
 
           // Fetch user grief info
-          const griefDetails = await getUserGrief(userId);
+          if (grief) {
+            const griefDetails = await getUserGrief(userId);
 
-          if (griefDetails) {
-            setDislikeCount(griefDetails.numDislikes || 0);
-            setKillCount(griefDetails.killCount || 0);
-            setRankTitle(griefDetails.rankTitle || "");
-            setRankMessage(griefDetails.rankMessage || "");
+            if (griefDetails) {
+              setDislikeCount(griefDetails.numDislikes || 0);
+              setKillCount(griefDetails.killCount || 0);
+              setRankTitle(griefDetails.rankTitle || "");
+              setRankMessage(griefDetails.rankMessage || "");
+            }
           }
           // Don't set error if no grief details -- we won't be displaying the box anyways
         } catch (error) {
@@ -76,7 +83,7 @@ export default function ProfilePage() {
       };
       fetchData(); // Call the fetch function for user info
     }
-  }, [userId]); // Rerender if userId changes
+  }, [userId, grief]); // Rerender if userId changes
 
   const handleEditInfoClick = () => {
     router.push(`/profile/${userId}/edit`);
@@ -237,7 +244,7 @@ export default function ProfilePage() {
           gap: 2
         }}
       >
-        {killCount >= 1 && (
+        {grief && (killCount >= 1) && (
           <Card sx={{ width: '100%' }}>
             <CardContent sx={{ textAlign: "center", padding: 2 }}>
               {rankTitle && (

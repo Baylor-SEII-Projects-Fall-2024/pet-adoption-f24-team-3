@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import { setGriefEnginePreference } from '@/utils/redux';
+import { useDispatch } from 'react-redux';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const guiltService = () => {
-  // Sometimes slow
-  // const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+  const dispatch = useDispatch();
 
   // Helper function to get current auth token
   const getAuthToken = () => {
@@ -21,33 +22,40 @@ const guiltService = () => {
     return token;
   };
 
-  // Gets a users choice on whether to use the grief engine or not
-  /*
-  const useGriefState = () => {
-    const state = useSelector((state) => state);
-    const griefState = Cookies.get('griefState') || state.auth?.grief || null;
-    console.log(`Grief state: ${griefState ? 'Cookie' : 'Redux'}`);
-    return griefState;
-  };
-  */
-
   // 我不知道这在做什么
-  const useGriefState = () => {
-    const griefState = Cookies.get('griefState');
-    const reduxGriefState = useSelector((state) => state.auth?.grief);
-
-    if (griefState) {
-      console.log(`Grief state from cookie: ${griefState}`);
-      return griefState;
-    }
-
-    console.log(`Grief state from Redux: ${reduxGriefState}`);
-    return reduxGriefState || null;
+  
+  // Save grief engine preference to Redux
+  const saveGriefToRedux = async (preference) => {
+    setGriefEnginePreference(preference);
   };
 
-  const setGriefState = (grief) => {
-    Cookies.set('griefState', grief, { expires: 7 });
-    dispatch({ type: 'SET_GRIEF_STATE', payload: grief });
+  // Save grief preference to cookie
+  const saveGriefToCookie = async (preference) => {
+    Cookies.set('griefEnginePreference', preference, { expires: 7 });
+  };
+
+  // Get grief engine preference from Cookies and save to Redux
+  const setGriefPreference = () => {
+    const preference = Cookies.get('griefEnginePreference');
+    const prefbool = preference === 'true';
+
+    // Default to true if not found
+    if(preference !== undefined) {
+      dispatch(setGriefEnginePreference(prefbool));
+    } else {
+      const defaultPreference = true;
+      dispatch(setGriefEnginePreference(defaultPreference));
+      saveGriefToCookie(defaultPreference);
+    }
+  };
+
+  // Clear grief engine preference from Redux and Cookies
+  const clearGriefEnginePreference = () => {
+    // Remove from Redux
+    dispatch(setGriefEnginePreference(false));
+
+    // Remove from Cookies
+    Cookies.remove('griefEnginePreference');
   };
 
   // Fetch user grief details (dislike count, kill count, rank title, etc.)
@@ -259,8 +267,10 @@ const guiltService = () => {
   };
 
   return {
-    useGriefState,
-    setGriefState,
+    saveGriefToRedux,
+    saveGriefToCookie,
+    setGriefPreference,
+    clearGriefEnginePreference,
     getUserGrief,
     getDislikeCount,
     incrementDislikeCount,

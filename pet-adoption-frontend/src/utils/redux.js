@@ -8,10 +8,14 @@ function eventsReducer(state = [], action) {
     }
 }
 
-
 export const setCurrentUserId = (userId) => ({
     type: 'SET_CURRENT_USER_ID',
     payload: userId,
+});
+
+export const setGriefEnginePreference = (preference) => ({
+    type: 'SET_GRIEF_ENGINE_PREFERENCE',
+    payload: preference,
 });
 
 function currentUserReducer(state = { currentUserId: null }, action) {
@@ -27,10 +31,19 @@ function currentUserReducer(state = { currentUserId: null }, action) {
     }
 }
 
+function griefEngineReducer(state = { griefEngineEnabled: false }, action) {
+    switch (action.type) {
+        case 'SET_GRIEF_ENGINE_PREFERENCE':
+            return { ...state, griefEngineEnabled: action.payload };
+        default:
+            return state;
+    }
+}
 
 const reducers = combineReducers({
     events: eventsReducer,
     currentUser: currentUserReducer,
+    griefEngine: griefEngineReducer,
 });
 
 export const buildStore = (initialState) => {
@@ -43,3 +56,4 @@ export const buildStore = (initialState) => {
         devTools: process.env.NODE_ENV !== 'production'
     });
 };
+
