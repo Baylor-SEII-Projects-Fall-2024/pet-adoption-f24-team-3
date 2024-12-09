@@ -27,10 +27,11 @@ load_dotenv()
 
 # Function to register a new owner and get the auth token
 def register_new_owner(baseurl):
+    random_number = random.randint(1000,9999)
     url = f"{baseurl}/api/auth/register/owner"
     owner_data = {
         "accountType": "Owner",
-        "emailAddress": "awef",
+        "emailAddress": f"awef{random_number}@awef.com",
         "password": "Passw0rd!",
         "nameFirst": "awef",
         "nameLast": "awef"
@@ -44,7 +45,7 @@ def register_new_owner(baseurl):
             auth_token = data['token']
             logger.info("New owner registered successfully, token received.")
             # Save the auth token in the .env file
-            set_key(".env", "auth_token", auth_token)
+            set_key(".env", f"{environment}_auth_token", auth_token)
             return auth_token
         else:
             logger.error("Error: Token not found in response.")
@@ -54,12 +55,12 @@ def register_new_owner(baseurl):
         sys.exit(1)
 
 # Grabs auth token by generating a user
-def get_auth_token(url):
+def get_auth_token(url, environment):
     if args.new:
         logger.info("Registering a new account...")
         auth_token = register_new_owner(url)
     else:
-        auth_token = os.getenv("auth_token")
+        auth_token = os.getenv(f"{environment}_auth_token")
         if not auth_token:
             logger.error("Error: auth_token is required and was not provided.")
             sys.exit(1)
@@ -109,7 +110,7 @@ size = args.size
 environment = args.environment
 url = API_URLS.get(environment)
 
-auth_token = get_auth_token(url)
+auth_token = get_auth_token(url, environment)
 
 # Use the values
 print(f"Environment: {environment}")

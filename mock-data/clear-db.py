@@ -44,7 +44,7 @@ environment = args.environment
 if args.auth_token:
     auth_token = args.auth_token
 else:
-    auth_token = os.getenv("auth_token")  # Try to get from .env
+    auth_token = os.getenv(f"{environment}_auth_token")  # Try to get from .env
 
 if not auth_token:
     print("Error: auth_token is required and was not provided on the command line or in the .env file.")
