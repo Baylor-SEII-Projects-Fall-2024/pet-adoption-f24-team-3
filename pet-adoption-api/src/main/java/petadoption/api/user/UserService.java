@@ -142,7 +142,13 @@ public class UserService {
 
         // Save the user to the database
         AdoptionCenter savedUser = adoptionCenterRepository.save(adoptionCenter);
+
+        // Initialize grief data for the new user
+        griefService.initializeGriefData(savedUser.getId());
+ 
+        // Initialize recommendation history for centers
         recommendationsService.createHistory(savedUser.getId());
+
         // Return status of registration
         return savedUser;
     }
