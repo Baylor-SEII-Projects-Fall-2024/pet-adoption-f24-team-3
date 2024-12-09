@@ -399,20 +399,6 @@ export default function PetsPage() {
                       >
                         Liked Pets
                       </Button>
-                      {/* TODO: implement if time permits
-                      {killCount > 0 && (
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => router.push(`/pets/euthanized`)}
-                          sx={{
-                            width: 200,
-                          }}
-                        >
-                          Euthanized Pets
-                        </Button>
-                      )}
-                      */}
                     </>
                   )}
                 </Box>

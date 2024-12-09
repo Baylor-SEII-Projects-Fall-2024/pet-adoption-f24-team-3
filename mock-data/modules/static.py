@@ -9,7 +9,7 @@ def generate_static_accounts():
             "name": "Woof Adoption Center",
             "address": "123 Dev Street",
             "city": "Waco",
-            "state": "TX",
+            "state": "Texas",
             "zipCode": "76706",
             "description": "Woof Adoption Center wants you to come adopt some pets!"
         },
@@ -20,9 +20,20 @@ def generate_static_accounts():
             "name": "Test Center",
             "address": "1234 Dev Street",
             "city": "Waco",
-            "state": "TX",
+            "state": "Texas",
             "zipCode": "76706",
             "description": "Test Center wants you to come adopt some pets!"
+        },
+        {
+            "accountType": "Center",
+            "emailAddress": "ffr@fuzzyfriendsrescue.com",
+            "password": "Center@123",
+            "name": "Fuzzy Friends Rescue",
+            "address": "6321 Airport Road",
+            "city": "Waco",
+            "state": "Texas",
+            "zipCode": "76708",
+            "description": "Come adopt some pets at Fuzzy Friends Rescue!"
         }
     ]
 
