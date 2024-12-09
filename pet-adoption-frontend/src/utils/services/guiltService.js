@@ -23,7 +23,7 @@ const guiltService = () => {
   };
 
   // 我不知道这在做什么
-  
+
   // Save grief engine preference to Redux
   const saveGriefToRedux = async (preference) => {
     setGriefEnginePreference(preference);
@@ -40,7 +40,7 @@ const guiltService = () => {
     const prefbool = preference === 'true';
 
     // Default to true if not found
-    if(preference !== undefined) {
+    if (preference !== undefined) {
       dispatch(setGriefEnginePreference(prefbool));
     } else {
       const defaultPreference = true;
@@ -60,18 +60,11 @@ const guiltService = () => {
 
   // Fetch user grief details (dislike count, kill count, rank title, etc.)
   const getUserGrief = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     try {
       const response = await fetch(`${apiUrl}/api/grief/${userId}/details`, {
         method: 'GET',
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -91,18 +84,11 @@ const guiltService = () => {
 
   // Fetch dislike count
   const getDislikeCount = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/dislikes`, {
       method: 'GET',
+      credentials: "include",
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`
       },
     });
 
@@ -116,17 +102,10 @@ const guiltService = () => {
 
   // Increment dislike count
   const incrementDislikeCount = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/dislike`, {
       method: 'POST',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -141,17 +120,10 @@ const guiltService = () => {
 
   // Decrement dislike count
   const decrementDislikeCount = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/undislike`, {
       method: 'POST',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -166,17 +138,10 @@ const guiltService = () => {
 
   // Get a users kill count
   const getKillCount = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/killcount`, {
       method: 'GET',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -191,17 +156,10 @@ const guiltService = () => {
 
   // Fetch euthanized pet IDs
   const getEuthanizedPetIds = async (userId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizedPets`, {
       method: 'GET',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -216,17 +174,10 @@ const guiltService = () => {
 
   // Update euthanized pet IDs
   const updateEuthanizedPetIds = async (userId, petId) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizePet?petId=${petId}`, {
       method: 'POST',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -244,17 +195,11 @@ const guiltService = () => {
   // kills
   // dislikes
   const getLeaderboard = async (sortBy, count) => {
-    const authToken = getAuthToken();
-
-    if (!authToken) {
-      console.error("No auth token found");
-      return null;
-    }
-
     const response = await fetch(`${apiUrl}/api/grief/leaderboard?sortBy=${sortBy}&count=${count}`, {
       method: 'GET',
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
       },
     });
 
