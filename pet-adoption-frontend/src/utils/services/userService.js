@@ -12,7 +12,7 @@ const userService = () => {
     const dispatch = useDispatch();
     const { uploadProfilePic, uploadCenterBanner } = imageService();
     const { setCurrentChatId } = useChat();
-    const { saveGriefToRedux, saveGriefToCookie, clearGriefEnginePreference } = guiltService();
+    const { setGriefPreference } = guiltService();
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
@@ -100,8 +100,7 @@ const userService = () => {
         const result = await response.json();
         if (response.ok) {
             setAuthenticationCookie(result.token);
-            await saveGriefToRedux(true);
-            await saveGriefToCookie(true);
+            setGriefPreference();
             await saveCurrentUserToRedux(result.token);
             if (profilePic != null) {
                 const imageResult = await uploadProfilePic(profilePic, result.userId);
@@ -176,8 +175,6 @@ const userService = () => {
     }
 
     const logOut = () => {
-        // Clear grief cookies
-        clearGriefEnginePreference();
         //remove from redux
         dispatch(setCurrentUserId(null));
         dispatch({ type: 'SET_CURRENT_USER_FULL_NAME', payload: null });
