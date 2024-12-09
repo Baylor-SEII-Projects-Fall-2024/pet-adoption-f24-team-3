@@ -38,11 +38,12 @@ def generate_owasp_password(length=12):
 def generate_adoption_center():
     city, state = random.choice(list(city_state_map.items()))
     center_name = faker.unique.center_names()
+    id = faker.unique.random_number(digits=9)
     email_name = center_name.replace(" ","").lower()
 
     return {
         "accountType": "Center",
-        "emailAddress": f"{email_name}@center.com",
+        "emailAddress": f"{email_name}{id}@center.com",
         "password": generate_owasp_password(),
         "name": center_name,
         "address": faker.unique.street_address(),

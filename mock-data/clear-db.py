@@ -92,10 +92,7 @@ if(API_BASE_URL == None):
     sys.exit(1)
 
 # Determine auth_token
-if args.new:
-    auth_token = get_auth_token(API_BASE_URL, environment)
-else:
-    auth_token = args.auth_token
+auth_token = get_auth_token(API_BASE_URL, environment)
 
 if not auth_token:
     print("Error: auth_token is required and was not provided on the command line or in the .env file.")
