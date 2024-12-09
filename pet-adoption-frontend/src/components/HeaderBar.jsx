@@ -20,12 +20,13 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import {
   AccountBox,
-  Logout,
-  Pets,
   CalendarMonth,
   Cottage,
+  HeartBroken,
   Inbox,
   Leaderboard,
+  Logout,
+  Pets,
 } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
@@ -208,6 +209,29 @@ export default function HeaderBar(props) {
               <AccountBox></AccountBox>
               <Typography sx={{ textAlign: "center" }}>Profile</Typography>
             </MenuItem>
+            {isOwner && (
+              <MenuItem
+                key={"grief"}
+                onChange={handleGriefClick}
+              >
+                <HeartBroken
+                />
+                <Box>
+                  <Checkbox
+                    checked={grief}
+                    sx={{
+                      color: grief ? 'black' : 'default', // Black color when checked, default when unchecked
+                      '&.Mui-checked': {
+                        color: 'black', // Ensures the checkmark is black when checked
+                      },
+                      '& .MuiSvgIcon-root': {
+                        fontSize: "1em", // Adjust size if needed
+                      },
+                    }}
+                  />
+                </Box>
+              </MenuItem>
+            )}
             <MenuItem
               key={"inbox"}
               onClick={() => {
@@ -268,23 +292,6 @@ export default function HeaderBar(props) {
               </Typography>
             </Box>
 
-            {isOwner && (
-              <Box>
-                <Checkbox
-                  checked={grief}
-                  onChange={handleGriefClick}
-                  sx={{
-                    color: grief ? 'black' : 'default', // Black color when checked, default when unchecked
-                    '&.Mui-checked': {
-                      color: 'black', // Ensures the checkmark is black when checked
-                    },
-                    '& .MuiSvgIcon-root': {
-                      fontSize: 30, // Adjust size if needed
-                    },
-                  }}
-                />
-              </Box>
-            )}
 
             {pages.map((page) => {
               if (page.name === "Leaderboard" && !isOwner) {
