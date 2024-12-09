@@ -110,7 +110,10 @@ size = args.size
 environment = args.environment
 url = API_URLS.get(environment)
 
-auth_token = get_auth_token(url, environment)
+if args.new:
+    auth_token = get_auth_token(url, environment)
+else:
+    auth_token = args.auth_token
 
 # Use the values
 print(f"Environment: {environment}")
