@@ -1,19 +1,20 @@
 # modules/config.py
 
-import random
 from faker import Faker
 from faker.providers import DynamicProvider
-from .models import Sex, AgeClass, Size
+from .models import AgeClass, Size
 
 faker = Faker()
 
-# Comment for non-deterministic generation
-# Uncomment to have some fun!
+# Uncomment for non-deterministic generation
+# Leave commented to have some fun!
 # faker.seed_instance(420)
 # random.seed(69)
 
 API_URLS = {
-    'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
+    'guilt': "http://34.136.198.50:8080",   # For Guilt Tripping
+    # 'prod':   "http://35.208.60.16:8080",   # Production - Brendon's Runner
+    'prod':   "http://woofadoption.homes:8080",
     'dev':    "http://35.224.27.57:8080",   # Remote Dev - ixiwoofrunner-001
     'backup': "http://34.57.220.165:8080",  # Backup - Icko's First Runner
     'local':  "http://localhost:8080"       # Local Development

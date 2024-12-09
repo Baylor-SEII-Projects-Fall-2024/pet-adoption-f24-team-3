@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import petadoption.api.recommendations.RecommendationsService;
+import petadoption.api.grief.GriefService;
 import petadoption.api.security.requestObjects.CenterDto;
 import petadoption.api.security.requestObjects.LoginDto;
 import petadoption.api.security.requestObjects.OwnerDto;
@@ -37,6 +38,9 @@ public class UserService {
     @Autowired
     @Lazy
     private RecommendationsService recommendationsService;
+    @Autowired
+    @Lazy
+    private GriefService griefService;
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -73,6 +77,11 @@ public class UserService {
 
         // Save the user to the database
         PotentialOwner savedUser = potentialOwnerRepository.save(potentialOwner);
+
+        // Initialize grief data for the new user
+        griefService.initializeGriefData(savedUser.getId());
+        
+        // Initialize recommendations history for the new user
         recommendationsService.createHistory(savedUser.getId());
 
         // Return status of registration

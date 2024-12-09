@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { setAuthenticationToken, setCurrentUserId } from '@/utils/redux';
 import Cookies from 'js-cookie';
 import imageService from './imageService';
+import guiltService from './guiltService';
 import { useChat } from '../contexts/chatContext';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -11,7 +12,7 @@ const userService = () => {
     const dispatch = useDispatch();
     const { uploadProfilePic, uploadCenterBanner } = imageService();
     const { setCurrentChatId } = useChat();
-
+    const { setGriefPreference } = guiltService();
 
     //  validates the user login.Returns the user ID if successful, null otherwise
     const validateLogin = async (email, password) => {
@@ -99,6 +100,7 @@ const userService = () => {
         const result = await response.json();
         if (response.ok) {
             setAuthenticationCookie(result.token);
+            setGriefPreference();
             await saveCurrentUserToRedux(result.token);
             if (profilePic != null) {
                 const imageResult = await uploadProfilePic(profilePic, result.userId);

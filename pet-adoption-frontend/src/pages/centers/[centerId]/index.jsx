@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import Head from "next/head";
-
 import {
   Box,
   Tabs,
@@ -14,19 +13,87 @@ import {
   Grid,
   Button,
 } from "@mui/material";
-import userService from "@/utils/services/userService";
-import animalService from "@/utils/services/animalService";
-import eventService from "@/utils/services/eventService";
+
 import CenterProfileCard from "@/components/CenterProfileCard";
 import EventCard from "@/components/EventCard";
 import PetCard from "@/components/PetCard";
 import TabPanel from "@/components/TabPanel";
+
+import userService from "@/utils/services/userService";
+import animalService from "@/utils/services/animalService";
+import eventService from "@/utils/services/eventService";
+import guiltService from "@/utils/services/guiltService";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Renders the pets and events tabs
 function PetsAndEventsTabs(props) {
+  const currentUserId = useSelector((state) => state.currentUser.currentUserId);
   const { pets, adoptedAnimals, events, router, isLoggedInCenter } = props;
   const [value, setValue] = useState("one");
+  const {
+    getDislikeCount,
+    incrementDislikeCount,
+    decrementDislikeCount,
+    getEuthanizedPetIds,
+    updateEuthanizedPetIds,
+  } = guiltService();
+
+  // State for owner-specific data
+  const [totalDislikes, setTotalDislikes] = React.useState(0);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
+  const [showEuthanization, setShowEuthanization] = React.useState(false);
+  const { getUserInfo, getOwnerInfo } = userService();
+  const [audio, setAudio] = React.useState(null);
+
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
+
+  const playAudio = () => {
+    if (audio) {
+      console.log("Playing audio");
+      audio.play();
+    } else {
+      console.log("No audio");
+    }
+  };
+
+  useEffect(() => {
+    if (!currentUserId) return;
+
+    if (grief) {
+      async function grabAudio() {
+        if (typeof window !== 'undefined') {
+          setAudio(new Audio('/sounds/angel.mp3'));
+        }
+      }
+      grabAudio();
+
+      const fetchData = async () => {
+        try {
+          const userInfo = await getUserInfo(currentUserId);
+
+          if (userInfo.accountType === "Owner") {
+            // Fetch owner-specific grief data
+            try {
+              const dislikeCountResult = await getDislikeCount(currentUserId);
+              setTotalDislikes(dislikeCountResult);
+
+              const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+              setEuthanizedPetIds(euthanizedPetIdsResult);
+            } catch (error) {
+              console.error("Error fetching grief data:", error);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    } else {
+      setEuthanizedPetIds([]);
+    }
+  }, [currentUserId, grief]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -38,6 +105,37 @@ function PetsAndEventsTabs(props) {
   const handlePetClick = (petId) => {
     router.push(`/pets/${petId}`);
   };
+
+  const updateTotalDislikes = async (petId, decrement = false) => {
+    if (!grief) return;
+    try {
+      let updateSuccess;
+      if (decrement) {
+        // Decrement dislike count if needed
+        updateSuccess = await decrementDislikeCount(currentUserId);
+      } else {
+        // Increment dislike count
+        updateSuccess = await incrementDislikeCount(currentUserId);
+      }
+
+      if (updateSuccess) {
+        // Fetch updated total dislikes
+        const updatedTotalDislikes = await getDislikeCount(currentUserId);
+        setTotalDislikes(updatedTotalDislikes);
+
+        if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
+          await updateEuthanizedPetIds(currentUserId, petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
+          setEuthanizedPetIds(updatedEuthanizedIds);
+          setShowEuthanization(true);
+          playAudio();
+        }
+      }
+    } catch (error) {
+      console.error("Error updating dislikes:", error);
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -73,7 +171,11 @@ function PetsAndEventsTabs(props) {
                 onClick={() => handlePetClick(pet.id)}
                 sx={{ cursor: "pointer" }}
               >
-                <PetCard pet={pet} />
+                <PetCard
+                  pet={pet}
+                  updateTotalDislikes={(petId, decrement) => updateTotalDislikes(pet.id, decrement)}
+                  euthanizedPetIds={euthanizedPetIds}
+                />
               </Box>
             </Grid>
           ))}
@@ -112,7 +214,11 @@ function PetsAndEventsTabs(props) {
                   onClick={() => handlePetClick(animal.id)}
                   sx={{ cursor: "pointer" }}
                 >
-                  <PetCard pet={animal} />
+                  <PetCard
+                    pet={animal}
+                    updateTotalDislikes={() => updateTotalDislikes(animal.id)}
+                    euthanizedPetIds={euthanizedPetIds}
+                  />
                 </Box>
               </Grid>
             ))}

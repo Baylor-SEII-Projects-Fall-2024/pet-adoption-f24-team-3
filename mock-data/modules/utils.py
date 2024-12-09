@@ -6,7 +6,8 @@ import os
 import shutil
 from .logger import logger
 
-def api_post_img(url: str, endpoint: str, imageFile: str, indent: str,token:str):
+def api_post_img(url: str, endpoint: str, imageFile: str, indentSize: int, token:str):
+    indent = ' ' * indentSize
     logger.info(f"{indent}Sending request to {url}/{endpoint}")
 
     # Open file in binary mode to read and send
@@ -16,19 +17,26 @@ def api_post_img(url: str, endpoint: str, imageFile: str, indent: str,token:str)
     response.raise_for_status()
     return response.json()
 
-def api_post(url: str, endpoint: str, data: json, indent:str,token:str=None):
+def api_post(url: str, endpoint: str, data, indentSize:int, token:str):
+    indent = ' ' * indentSize
     logger.info(f"{indent}Sending request to {url}/{endpoint}")
-    logger.info(f"{url}/{endpoint}")
 
-    headers={}
-    if token:
-        headers={'Authorization': f'Bearer {token}'}
+    headers={'Authorization': f'Bearer {token}'}
 
     response = requests.post(f"{url}/{endpoint}", json=data, headers=headers)
     response.raise_for_status()
     return response.json()
 
-def api_get(url: str, endpoint: str,token:str):
+def api_post_update(url: str, endpoint: str, indentSize:int, token:str):
+    indent = ' ' * indentSize
+    logger.info(f"{indent}Sending request to {url}/{endpoint}")
+
+    headers={'Authorization': f'Bearer {token}'}
+
+    response = requests.post(f"{url}/{endpoint}", headers=headers)
+    response.raise_for_status()
+
+def api_get(url: str, endpoint: str, token:str):
     response = requests.get(f"{url}/{endpoint}",headers={'Authorization': f'Bearer {token}'})
     response.raise_for_status()
     return response.json()
@@ -36,8 +44,11 @@ def api_get(url: str, endpoint: str,token:str):
 def pretty_print_json(data):
     print(json.dumps(data, indent=2, ensure_ascii=False))
 
-def save_pretty_json(data, filename, mode='w'):
-    with open(filename, mode, encoding='utf-8') as f:
+def save_pretty_json(data, filename, mode='a'):
+    """Save JSON data to a file in the `_json` directory."""
+    os.makedirs('_json', exist_ok=True)  # Ensure the `_json` directory exists
+    filepath = os.path.join('_json', filename)
+    with open(filepath, mode, encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def append_pretty_json(data, filename):
@@ -54,9 +65,10 @@ def append_pretty_json(data, filename):
     else:
         save_pretty_json(data, filename)
 
-def clean_uploads(uploads_dir):
+def clean_uploads(uploads_dir, indentSize:int):
+    indent = ' ' * indentSize;
     if not os.path.exists(uploads_dir):
-        logger.warning(f"    {uploads_dir} does not exist")
+        logger.warning(f"{uploads_dir} does not exist")
     else:
         count = 0
         for filename in os.listdir(uploads_dir):
@@ -69,5 +81,5 @@ def clean_uploads(uploads_dir):
                     shutil.rmtree(file_path)
                     count += 1
             except Exception as e:
-                logger.error(f"      Failed to delete {file_path}. Reason: {e}")
-        logger.info(f"  Removed {count} files/directories from {uploads_dir}")
+                logger.error(f"{indent}  Failed to delete {file_path}. Reason: {e}")
+        logger.info(f"{indent}Removed {count} files/directories from {uploads_dir}")

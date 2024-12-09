@@ -6,7 +6,9 @@ __pycache__
 uploads/
 testuploads/
 .env
-test.py
+api-tests.py
 *.bak*
 distributions.jpg
 logs/
+BUGS.md
+_json/

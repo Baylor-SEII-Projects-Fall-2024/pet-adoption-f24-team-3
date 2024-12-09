@@ -1,7 +1,16 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { Button, AppBar, Container, Typography, Toolbar } from "@mui/material";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import {
+  AppBar,
+  Button,
+  Checkbox,
+  Container,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,26 +20,39 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import {
   AccountBox,
-  Logout,
-  Pets,
   CalendarMonth,
   Cottage,
+  HeartBroken,
   Inbox,
+  Leaderboard,
+  Logout,
+  Pets,
 } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
+import guiltService from "@/utils/services/guiltService";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function HeaderBar(props) {
   const router = useRouter();
-  const { logOut } = userService();
+  const { logOut, getUserInfo } = userService();
+  const { saveGriefToCookie } = guiltService();
+  const [isOwner, setIsOwner] = React.useState(false);
+
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
+
   const currentUserFullName = useSelector(
     (state) => state.currentUser.currentUserFullName
   );
+
   const currentUserType = useSelector(
     (state) => state.currentUser.currentUserType
   );
+
+  const dispatch = useDispatch();
+
+  const [grief, setGrief] = React.useState(null);
 
   const pages = [
     {
@@ -48,6 +70,11 @@ export default function HeaderBar(props) {
       route: "/centers",
       icon: <Cottage />,
     },
+    {
+      name: "Leaderboard",
+      route: "/leaderboard",
+      icon: <Leaderboard />,
+    },
   ];
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -60,6 +87,13 @@ export default function HeaderBar(props) {
     setAnchorElUser(null);
   };
 
+  const handleGriefClick = () => {
+    const newGriefSetting = !grief;
+    setGrief(newGriefSetting);
+    dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: newGriefSetting });
+    saveGriefToCookie(newGriefSetting); // Update cookies
+  };
+
   const logoutUser = () => {
     handleCloseUserMenu();
     if (window.confirm("Are you sure you want to log out?")) {
@@ -67,6 +101,44 @@ export default function HeaderBar(props) {
       router.push(`/`);
     }
   };
+
+  /**
+    * Check cookies and mount and set grief preference accordingly.
+    *
+    * I wanted to use my setGriefPreferences function but some funky
+    * stuff was happening when I load from cookies and dispatch to
+    * redux directly. Namely, the checkbox and actual grief engine
+    * functionality was out of sync if the page was reloaded.
+    * */
+  React.useEffect(() => {
+    const savedGrief = Cookies.get('griefEnginePreference');
+    const griefPreference = savedGrief === 'true';
+    setGrief(griefPreference);
+    dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: griefPreference });
+
+    // If the grief preference is undefined, set default and save to cookie
+    if (savedGrief === undefined) {
+      saveGriefToCookie(true); // Default to true
+      dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: true });
+    }
+
+    // Fetch user info for owner status
+    if (currentUserId) {
+      const fetchAccountType = async () => {
+        try {
+          const userTypeResult = await getUserInfo(currentUserId);
+          setIsOwner(userTypeResult.accountType !== "Center");
+        } catch (error) {
+          console.error("User information could not be found for user", currentUserId);
+        }
+      }
+      fetchAccountType();
+    } else {
+      // Usually when on loading page or after logging out
+      setGrief(false);
+      setIsOwner(false);
+    }
+  }, [currentUserId, dispatch, getUserInfo, saveGriefToCookie]);
 
   let styles = {
     headerBox: {
@@ -137,6 +209,29 @@ export default function HeaderBar(props) {
               <AccountBox></AccountBox>
               <Typography sx={{ textAlign: "center" }}>Profile</Typography>
             </MenuItem>
+            {isOwner && (
+              <MenuItem
+                key={"grief"}
+                onChange={handleGriefClick}
+              >
+                <HeartBroken
+                />
+                <Box>
+                  <Checkbox
+                    checked={grief}
+                    sx={{
+                      color: grief ? 'black' : 'default', // Black color when checked, default when unchecked
+                      '&.Mui-checked': {
+                        color: 'black', // Ensures the checkmark is black when checked
+                      },
+                      '& .MuiSvgIcon-root': {
+                        fontSize: "1em", // Adjust size if needed
+                      },
+                    }}
+                  />
+                </Box>
+              </MenuItem>
+            )}
             <MenuItem
               key={"inbox"}
               onClick={() => {
@@ -197,16 +292,24 @@ export default function HeaderBar(props) {
               </Typography>
             </Box>
 
-            {pages.map((page) => (
-              <Button
-                key={page.name}
-                onClick={() => router.push(page.route)}
-                sx={styles.headerText}
-                startIcon={page.icon}
-              >
-                {page.name}
-              </Button>
-            ))}
+
+            {pages.map((page) => {
+              if (page.name === "Leaderboard" && !isOwner) {
+                return null;
+              } else if (page.name === "Leaderboard" && !grief && isOwner) {
+                return null;
+              }
+              return (
+                <Button
+                  key={page.name}
+                  onClick={() => router.push(page.route)}
+                  sx={styles.headerText}
+                  startIcon={page.icon}
+                >
+                  {page.name}
+                </Button>
+              )
+            })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>{displayCurrentUser()}</Box>
         </Toolbar>

@@ -1,0 +1,34 @@
+name: Guilt Build & Deploy
+
+on:
+  push:
+    branches:
+      - ickoxii/guilt-trippin
+ 
+jobs:
+  build-and-deploy:
+    runs-on: guilt
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set IP Addresses
+        run: |
+          echo "NEXT_PUBLIC_API_URL=http://${{ secrets.GUILT_IP_ADDRESS }}:8080" > pet-adoption-frontend/.env.production
+          echo "cors.allowed-origin=http://${{ secrets.GUILT_IP_ADDRESS }}:3000" > pet-adoption-api/src/main/resources/application.properties
+
+      - name: Pre-Clean
+        run: |
+          docker image prune -af
+
+      - name: Build
+        run: |
+          docker compose -f docker/ci.docker-compose.yml build
+
+      - name: Deploy
+        run: |
+          docker compose -f docker/ci.docker-compose.yml down
+          docker compose -f docker/ci.docker-compose.yml up -d --build
+
+      - name: Post-Clean
+        run: |
+          docker image prune -af

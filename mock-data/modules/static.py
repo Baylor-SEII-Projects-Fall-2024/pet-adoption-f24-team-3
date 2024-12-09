@@ -5,24 +5,35 @@ def generate_static_accounts():
         {
             "accountType": "Center",
             "emailAddress": "iben.ixi@gmail.com",
-            "password": "pass",
+            "password": "Passw0rd!",
             "name": "Woof Adoption Center",
             "address": "123 Dev Street",
             "city": "Waco",
-            "state": "TX",
+            "state": "Texas",
             "zipCode": "76706",
             "description": "Woof Adoption Center wants you to come adopt some pets!"
         },
         {
             "accountType": "Center",
             "emailAddress": "testcenter@test.com",
-            "password": "pass",
+            "password": "Passw0rd!",
             "name": "Test Center",
             "address": "1234 Dev Street",
             "city": "Waco",
-            "state": "TX",
+            "state": "Texas",
             "zipCode": "76706",
             "description": "Test Center wants you to come adopt some pets!"
+        },
+        {
+            "accountType": "Center",
+            "emailAddress": "ffr@fuzzyfriendsrescue.com",
+            "password": "Center@123",
+            "name": "Fuzzy Friends Rescue",
+            "address": "6321 Airport Road",
+            "city": "Waco",
+            "state": "Texas",
+            "zipCode": "76708",
+            "description": "Come adopt some pets at Fuzzy Friends Rescue!"
         }
     ]
 
@@ -32,14 +43,14 @@ def generate_static_accounts():
             "emailAddress": "ickoxii@gmail.com",
             "nameFirst": "Icko",
             "nameLast": "Iben",
-            "password": "pass"
+            "password": "Passw0rd!"
         },
         {
             "accountType": "Owner",
             "emailAddress": "testowner@test.com",
             "nameFirst": "Bojack",
             "nameLast": "Horseface",
-            "password": "pass"
+            "password": "Passw0rd!"
         }
     ]
 

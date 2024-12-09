@@ -3,19 +3,18 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import {
+  Box,
   Button,
   Card,
   CardContent,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Slider,
   Stack,
   Typography,
-  Grid,
-  Box,
-  Slider,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -24,6 +23,7 @@ import animalService from "@/utils/services/animalService";
 import PetCard from "@/components/PetCard";
 import MultipleSelect from "@/components/input/MultipleSelect";
 import infoLists from "@/utils/lists";
+import guiltService from "@/utils/services/guiltService";
 const quantityPerPage = 12;
 
 export default function PetsPage() {
@@ -49,6 +49,31 @@ export default function PetsPage() {
   const [sexFilter, setSexFilter] = React.useState([]);
   const [currentFilter, setCurrentFilter] = React.useState({ "pageSize": quantityPerPage });
 
+  const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
+
+  const {
+    getDislikeCount,
+    incrementDislikeCount,
+    decrementDislikeCount,
+    getEuthanizedPetIds,
+    updateEuthanizedPetIds,
+    getUserGrief,
+  } = guiltService();
+
+  const [totalDislikes, setTotalDislikes] = React.useState(0);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
+  const [showEuthanization, setShowEuthanization] = React.useState(false);
+  const [killCount, setKillCount] = React.useState(0);
+  const [audio, setAudio] = React.useState(null);
+
+  const playAudio = () => {
+    if (audio) {
+      console.log("Playing audio");
+      audio.play();
+    } else {
+      console.log("No audio");
+    }
+  };
 
   const ageSliderMarks = [
     {
@@ -68,6 +93,7 @@ export default function PetsPage() {
       label: 'Elderly',
     },
   ];
+
   const sizeSliderMarks = [
     {
       value: 0,
@@ -95,6 +121,35 @@ export default function PetsPage() {
   //load when you scroll to the bottom. This is why `page` starts at 1, if it started
   //at 0, there would be a chance that the first round of data would be fetched 2x
   React.useEffect(() => {
+    if (grief) {
+      async function grabAudio() {
+        if (typeof window !== 'undefined') {
+          setAudio(new Audio('/sounds/angel.mp3'));
+        }
+      }
+      grabAudio();
+
+      async function initializeGuiltData() {
+        if (!currentUserId) return;
+        if (!grief) return;
+        try {
+          const userGriefResult = await getUserGrief(currentUserId);
+          setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
+
+          const dislikeCountResult = await getDislikeCount(currentUserId);
+          setTotalDislikes(dislikeCountResult);
+
+          const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+          setEuthanizedPetIds(euthanizedPetIdsResult);
+        } catch (error) {
+          console.error("Error fetching guilt data:", error);
+        }
+      }
+      initializeGuiltData();
+    } else {
+      setEuthanizedPetIds([]);
+    }
+
     async function load() {
       if (!currentUserId) return;
       await fetchAnimalTypes();
@@ -102,7 +157,7 @@ export default function PetsPage() {
       await fetchFirstData();
     }
     load();
-  }, [currentUserId]);
+  }, [currentUserId, grief]);
 
   const fetchFirstData = async (filters = currentFilter) => {
     await getRecommendedAnimals(currentUserId, filters)
@@ -221,11 +276,42 @@ export default function PetsPage() {
     const filter = await updateRequestFilter();
     await fetchFirstData(filter);
   }
+
   const onResetFilters = async () => {
     await resetAnimalData();
     const filter = await resetRequestFilter();
     await fetchFirstData(filter);
   }
+
+  const updateTotalDislikes = async (petId, decrement = false) => {
+    try {
+      if (!grief) return;
+      let updateSuccess;
+      if (decrement) {
+        // Decrement dislike count if needed
+        updateSuccess = await decrementDislikeCount(currentUserId);
+      } else {
+        // Increment dislike count
+        updateSuccess = await incrementDislikeCount(currentUserId);
+      }
+
+      if (updateSuccess) {
+        // Fetch updated total dislikes
+        const updatedTotalDislikes = await getDislikeCount(currentUserId);
+        setTotalDislikes(updatedTotalDislikes);
+
+        if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
+          await updateEuthanizedPetIds(currentUserId, petId);
+          const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
+          setEuthanizedPetIds(updatedEuthanizedIds);
+          setShowEuthanization(true);
+          playAudio();
+        }
+      }
+    } catch (error) {
+      console.error("Error updating dislikes:", error);
+    }
+  };
 
   return (
     <>
@@ -234,48 +320,95 @@ export default function PetsPage() {
       </Head>
 
       <main>
-        <Stack sx={{ paddingTop: 4 }} alignItems="center" gap={2}>
-          <Card sx={{ width: "80%", position: "relative" }} elevation={4}>
+        {/* Overall page stack */}
+        <Stack
+          sx={{
+            paddingTop: 4
+          }}
+          alignItems="center"
+          gap={2}
+        >
+
+          {/* Title section */}
+          <Card
+            sx={{
+              width: "80%",
+              position: "relative"
+            }}
+            elevation={4}
+          >
             <CardContent>
-              <Typography variant="h3" align="center">
-                Find your pet
-              </Typography>
-              <Typography variant="body1" align="center" color="text.secondary">
-                Like or dislike a pet based on your preferences, WOOF will learn
-                as you go and show you more pets you may be interesed in!
-              </Typography>
-              {currentUserType == "Center" ? (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => router.push(`/pets/new`)}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  width: "100%"
+                }}
+              >
+
+                {/* Left Box for Typography, centered */}
+                <Box
                   sx={{
-                    width: 200,
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 1
                   }}
                 >
-                  Post New Pet
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => router.push(`/pets/liked`)}
+                  <Typography variant="h3" align="center">
+                    Find your pet
+                  </Typography>
+                  <Typography variant="body1" align="center" color="text.secondary">
+                    Like or dislike a pet based on your preferences, WOOF will learn
+                    as you go and show you more pets you may be interested in!
+                  </Typography>
+                </Box>
+
+                {/* Right Box for Buttons, aligned to the right */}
+                <Box
                   sx={{
-                    width: 200,
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                    gap: 2,
+                    justifyContent: "flex-start"
                   }}
                 >
-                  Liked Pets
-                </Button>
-              )}
+                  {currentUserType === "Center" ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => router.push(`/pets/new`)}
+                      sx={{
+                        width: 200,
+                      }}
+                    >
+                      Post New Pet
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => router.push(`/pets/liked`)}
+                        sx={{
+                          width: 200,
+                        }}
+                      >
+                        Liked Pets
+                      </Button>
+                    </>
+                  )}
+                </Box>
+              </Box>
             </CardContent>
           </Card>
+
+          {/* Stack for filters and pet listing */}
           <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
+            {/* Filter card */}
             <Card
               sx={{
                 width: "20%",
@@ -361,6 +494,8 @@ export default function PetsPage() {
                 <Button variant="containedPrimary" onClick={onFilterSearch}>Search Pets</Button>
               </Box>
             </Card>
+
+            {/* Pet Listings */}
             <Box
               sx={{
                 width: "70%",
@@ -379,14 +514,18 @@ export default function PetsPage() {
                 hasMore={hasMore}
                 loader={<Loading doneLoading={!hasMore} page={page} />}
               >
-                <Grid container spacing={4} sx={{ minHeight: "50px" }}>
+                <Grid container spacing={4} sx={{ minHeight: "50px", padding: "10px" }}>
                   {animalData.map((pet) => (
                     <Grid item xs={11} sm={5} md={4} lg={4} key={pet.id}>
                       <Box
                         onClick={() => router.push(`/pets/${pet.id}`)}
                         sx={{ cursor: "pointer" }}
                       >
-                        <PetCard pet={pet} />
+                        <PetCard
+                          pet={pet}
+                          updateTotalDislikes={(petId, decrement) => updateTotalDislikes(pet.id, decrement)}
+                          euthanizedPetIds={euthanizedPetIds}
+                        />
                       </Box>
                     </Grid>
                   ))}
