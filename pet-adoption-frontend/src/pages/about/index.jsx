@@ -20,7 +20,8 @@ const teamMembers = [
     imgLink: "team/logan.JPG",
     githubLink: "https://github.com/Renzenar",
     linkedin: "https://www.linkedin.com/in/logan-rigdon/",
-    description: "Leads our mission to connect pets with loving homes",
+    description:
+      "Logan is the Project Manager at WOOF. He is responsible for establishing the overall vision and strategy for the pet adoption agency. Logan works to host meetings, track requirements, and make sure the rest of the team is primed for success. Logan notably brings his experience as the Project Manager of Prime Time Hotels Shop and Stay service.",
   },
   {
     member: "John (August) Rothpletz",
@@ -42,6 +43,8 @@ const teamMembers = [
     imgLink: "team/brendon.jpeg",
     githubLink: "https://github.com/brendonnewt",
     linkedin: "https://www.linkedin.com/in/brendonnewton/",
+    description:
+      "Brendon is the Requirements Engineer at WOOF. He's responsible for overseeing requirements documentation and testing to ensure the team meets and exceeds their goals. Brendon drafts diagrams and models to discover and outline the necessary requirements for the team to ensure their goals are clear and concise. Brendon brings past experience from G.R.O.U.P. F.I.V.E. as well as present experience from Sea Quail.",
   },
   {
     member: "Icko Iben",
