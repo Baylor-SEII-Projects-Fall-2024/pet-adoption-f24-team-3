@@ -115,3 +115,10 @@ td {
     transform: scale(1.02);
   }
 }
+
+@font-face {
+  font-family: 'YouMurderer';
+  src: url('/fonts/youmurdererbb_reg.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
