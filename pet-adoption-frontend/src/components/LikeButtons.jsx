@@ -40,7 +40,7 @@ export default function LikeButtons(props) {
       // updateTotalDislikes(petId, true);
 
       // If the pet was disliked, decrement dislike count
-      if(isDisliked) {
+      if (isDisliked) {
         setIsDisliked(false);
       }
 

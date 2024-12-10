@@ -13,6 +13,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "@/components/Loading";
 import userService from "@/utils/services/userService";
 import CenterCard from "@/components/CenterCard";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 const quantityPerPage = 8;
 
@@ -134,6 +135,7 @@ export default function CentersPage() {
               </Grid>
             </InfiniteScroll>
           </Box>
+          <ScrollToTopButton />
         </Stack>
       </main>
     </>
