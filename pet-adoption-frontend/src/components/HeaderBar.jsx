@@ -27,6 +27,7 @@ import {
   Leaderboard,
   Logout,
   Pets,
+  Info,
 } from "@mui/icons-material";
 
 import userService from "@/utils/services/userService";
@@ -58,7 +59,7 @@ export default function HeaderBar(props) {
     {
       name: "About Us",
       route: "/about",
-      icon: <Cottage />,
+      icon: <Info />,
     },
     {
       name: "Pets",
