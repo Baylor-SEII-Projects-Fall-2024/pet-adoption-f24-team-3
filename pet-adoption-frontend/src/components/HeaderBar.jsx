@@ -56,7 +56,7 @@ export default function HeaderBar(props) {
 
   const pages = [
     {
-      name: "About",
+      name: "About Us",
       route: "/about",
       icon: <Cottage />,
     },

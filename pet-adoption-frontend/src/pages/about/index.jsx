@@ -57,102 +57,114 @@ const features = [
 
 export default function AboutPage() {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <>
       <Head>
         <title>About</title>
       </Head>
 
-      <main>
-        {/* Logo Slide */}
-        <Stack alignItems="center" gap={2}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <main>
+          {/* Logo Slide */}
+          <Stack alignItems="center" gap={2}>
+            <Box
+              sx={{
+                marginTop: "2%",
+                width: "100%",
+                height: "80vh",
+              }}
+            >
+              <img
+                style={{
+                  width: "auto",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+                src={"/slides/slide1.jpg"}
+              />
+            </Box>
+          </Stack>
+
+          {/* Team Section */}
           <Box
             sx={{
-              marginTop: "2%",
+              marginTop: "5%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
               width: "100%",
-              height: "80vh",
             }}
           >
-            <img
-              style={{
-                width: "auto",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: "8px",
+            <Typography
+              variant="h3"
+              align="center"
+              gutterBottom
+              sx={{
+                marginBottom: "40px",
               }}
-              src={"/slides/slide1.jpg"}
-            />
+            >
+              Meet Our Team
+            </Typography>
+
+            {/* Grid Container for Team Cards */}
+            <Box>
+              <Grid
+                container
+                spacing={4}
+                alignItems="center"
+                justifyContent="center"
+                sx={{ width: "100%", margin: "auto" }}
+              >
+                {people.map((person, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <a
+                      href={person.githubLink}
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                      }}
+                    >
+                      <TeamMemberCard
+                        member={person.member}
+                        role={person.role}
+                        imgLink={person.imgLink}
+                      />
+                    </a>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
           </Box>
-        </Stack>
 
-        {/* Team Section */}
-        <Box
-          sx={{
-            marginTop: "5%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Typography
-            variant="h3"
-            align="center"
-            gutterBottom
-            sx={{
-              marginBottom: "40px",
-            }}
-          >
-            Meet Our Team
-          </Typography>
-
-          {/* Grid Container for Team Cards */}
-          <Grid
-            container
-            spacing={4}
-            alignItems="center"
-            justifyContent="center"
-            sx={{ width: "100%", margin: "auto" }}
-          >
-            {people.map((person, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <a
-                  href={person.githubLink}
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                  }}
-                >
-                  <TeamMemberCard
-                    member={person.member}
-                    role={person.role}
-                    imgLink={person.imgLink}
-                  />
-                </a>
+          {/* What We Offer Section */}
+          <Box>
+            <Typography variant="h3" align="center" gutterBottom>
+              What We Offer
+            </Typography>
+            <Box>
+              <Grid
+                container
+                spacing={4}
+                alignItems="center"
+                justifyContent="center"
+                sx={{ width: "100%" }}
+              >
+                {features.map((feature, index) => (
+                  <Grid item xs={12} sm={6} md={3} key={index}>
+                    <FeatureCard feature={feature}></FeatureCard>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
-
-        {/* What We Offer Section */}
-        <Box>
-          <Typography variant="h3" align="center" gutterBottom>
-            What We Offer
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            {features.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                <FeatureCard feature={feature}></FeatureCard>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </main>
-    </Box>
+            </Box>
+          </Box>
+        </main>
+      </Box>
+    </>
   );
 }
