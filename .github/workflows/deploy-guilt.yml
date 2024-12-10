@@ -3,7 +3,7 @@ name: Guilt Build & Deploy
 on:
   push:
     branches:
-      - ickoxii/guilt-trippin
+      - ickoxii/fix-multikill
  
 jobs:
   build-and-deploy:
