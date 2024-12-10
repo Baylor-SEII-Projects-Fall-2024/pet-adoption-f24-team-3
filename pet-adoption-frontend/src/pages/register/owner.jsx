@@ -23,6 +23,8 @@ export default function RegisterOwnerPage() {
   const passwordRegex = RegExp('[^ -~]');
   const usernameRegex = RegExp('[^ a-zA-Z]');
 
+  const emailRegex = new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
+
   const paperStyle = { padding: '30px 20px', width: "50%", margin: "20px auto" }
   const headerStyle = { margin: 0 }
 
@@ -77,8 +79,14 @@ export default function RegisterOwnerPage() {
       setFormError("Name contains special characters!");
       return;
     }
+
     if (passwordRegex.test(formData.password)) {
       setFormError("Password has invalid characters!");
+      return;
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      setFormError("Please submit a valid email!");
       return;
     }
 
@@ -124,14 +132,15 @@ export default function RegisterOwnerPage() {
     <Grid>
       <Paper elevation={20} style={paperStyle}>
         <Grid align='center'>
-
           <h2 style={headerStyle}>Register</h2>
           <Typography variant="caption">Please fill this form to create an account!</Typography>
         </Grid>
+
         <form onSubmit={handleSubmit}>
           <TextField required fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
           <TextField required fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
           <TextField required fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
+
           <TextField
             required
             fullWidth
@@ -152,7 +161,9 @@ export default function RegisterOwnerPage() {
               )
             }}
           />
+
           <PasswordChecker password={formData.password} />
+
           <TextField
             required
             fullWidth
@@ -174,6 +185,7 @@ export default function RegisterOwnerPage() {
               )
             }}
           />
+
           <TextField
             type="file"
             label='Profile Picture'

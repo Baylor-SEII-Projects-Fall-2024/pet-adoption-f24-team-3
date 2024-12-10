@@ -31,6 +31,8 @@ export default function RegisterCenterPage() {
   const passwordRegex = RegExp('[^ -~]');
   const usernameRegex = RegExp('[^ a-zA-Z]');
 
+  const emailRegex = new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
+
   const [profileImage, setProfileImage] = useState(null);
   const [bannerImage, setBannerImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -94,6 +96,11 @@ export default function RegisterCenterPage() {
 
     if (passwordRegex.test(formData.password)) {
       setFormError("Password has invalid characters!");
+      return;
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      setFormError("Please submit a valid email!");
       return;
     }
 
@@ -161,10 +168,12 @@ export default function RegisterCenterPage() {
           <Typography variant="caption">Please fill this form to create an account!</Typography>
         </Grid>
         <form onSubmit={handleSubmit}>
+
           <TextField fullWidth label='Center Name' name="centerName" size="small" margin="dense" value={formData.centerName} onChange={handleChange} />
           <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
           <TextField fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
           <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
+
           <FormControl sx={{ m: "10px" }}>
             <InputLabel id="state-select-label">State</InputLabel>
             <Select
@@ -183,7 +192,9 @@ export default function RegisterCenterPage() {
               ))}
             </Select>
           </FormControl>
+
           <TextField sx={{ mt: "10px" }} label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
+
           <TextField
             required
             fullWidth
@@ -204,7 +215,9 @@ export default function RegisterCenterPage() {
               )
             }}
           />
+
           <PasswordChecker password={formData.password} />
+
           <TextField
             required
             fullWidth
@@ -226,6 +239,7 @@ export default function RegisterCenterPage() {
               )
             }}
           />
+
           <TextField
             type="file"
             label='Profile Picture'
