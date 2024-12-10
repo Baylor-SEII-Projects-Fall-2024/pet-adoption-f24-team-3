@@ -67,34 +67,32 @@ export default function AboutPage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          width: "100%",
         }}
       >
         <main>
           {/* Logo Slide */}
-          <Stack alignItems="center" gap={2}>
-            <Box
-              sx={{
-                marginTop: "2%",
+          <Box
+            sx={{
+              width: "100%",
+              height: "80vh",
+            }}
+          >
+            <img
+              style={{
                 width: "100%",
-                height: "80vh",
+                height: "auto",
+                objectFit: "cover",
+                borderRadius: "8px",
               }}
-            >
-              <img
-                style={{
-                  width: "auto",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-                src={"/slides/slide1.jpg"}
-              />
-            </Box>
-          </Stack>
+              src={"/slides/slide1.jpg"}
+            />
+          </Box>
 
           {/* Team Section */}
           <Box
             sx={{
-              marginTop: "5%",
+              marginTop: "15%",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -143,25 +141,35 @@ export default function AboutPage() {
           </Box>
 
           {/* What We Offer Section */}
-          <Box>
-            <Typography variant="h3" align="center" gutterBottom>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "5%",
+            }}
+          >
+            <Typography
+              variant="h3"
+              align="center"
+              sx={{
+                marginBottom: "3%",
+              }}
+            >
               What We Offer
             </Typography>
-            <Box>
-              <Grid
-                container
-                spacing={4}
-                alignItems="center"
-                justifyContent="center"
-                sx={{ width: "100%" }}
-              >
-                {features.map((feature, index) => (
-                  <Grid item xs={12} sm={6} md={3} key={index}>
-                    <FeatureCard feature={feature}></FeatureCard>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
+            <Grid
+              container
+              spacing={4}
+              alignItems="center"
+              justifyContent="center"
+            >
+              {features.map((feature, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <FeatureCard feature={feature}></FeatureCard>
+                </Grid>
+              ))}
+            </Grid>
           </Box>
         </main>
       </Box>
