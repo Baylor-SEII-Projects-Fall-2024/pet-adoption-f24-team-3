@@ -44,7 +44,7 @@ const teamMembers = [
   {
     member: "Brendon Newton",
     role: "Requirements Engineer",
-    imgLink: "team/brendon.jpeg",
+    imgLink: "team/brendon.png",
     githubLink: "https://github.com/brendonnewt",
     linkedin: "https://www.linkedin.com/in/brendonnewton/",
     description:
