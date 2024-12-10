@@ -3,7 +3,8 @@ name: Guilt Build & Deploy
 on:
   push:
     branches:
-      - ickoxii/fix-multikill
+      # - ickoxii/fix-multikill
+      - jarpletz/improvedLEaderboardStyling
  
 jobs:
   build-and-deploy:

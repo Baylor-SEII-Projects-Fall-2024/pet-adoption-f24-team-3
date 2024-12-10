@@ -22,7 +22,7 @@ import {
 import { useSelector } from "react-redux";
 import guiltService from "@/utils/services/guiltService";
 import { set } from "date-fns";
-import zIndex from "@mui/material/styles/zIndex";
+import { zIndex } from "@mui/material/styles";
 
 export default function LeaderboardPage() {
   const router = useRouter();
