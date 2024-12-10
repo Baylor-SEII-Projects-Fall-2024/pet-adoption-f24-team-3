@@ -1,6 +1,22 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Grid, Paper, FormControl, InputLabel, MenuItem, Select, Typography, TextField, Button } from '@mui/material'
+import {
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material'
+import {
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import userService from "@/utils/services/userService";
 import infoLists from "@/utils/lists";
 import PasswordChecker from "@/components/PasswordChecker";
@@ -23,6 +39,9 @@ export default function RegisterCenterPage() {
   const [formError, setFormError] = useState(null);
   const [formSuccess, setFormSuccess] = useState();
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const [formData, setFormData] = useState({
     centerName: "",
     email: "",
@@ -44,15 +63,28 @@ export default function RegisterCenterPage() {
     setFormError(null);
     setFormSuccess(null);
     setFormData(prevState => ({ ...prevState, [name]: value }));
+
+    // Check if passwords match
+    if (name === "password" || name === "confirmPassword") {
+      setPasswordError(
+        name === "password"
+          ? value !== formData.confirmPassword
+          : formData.password !== value
+      );
+    }
   };
 
   const handleProfileImageUpload = (e) => {
     setProfileImage(e.target.files[0]);
   }
+
   const handleBannerImageUpload = (e) => {
     setBannerImage(e.target.files[0]);
   }
 
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,10 +168,12 @@ export default function RegisterCenterPage() {
           <Typography variant="caption">Please fill this form to create an account!</Typography>
         </Grid>
         <form onSubmit={handleSubmit}>
-          <TextField fullWidth label='Center Name' name="centerName" size="small" margin="dense" value={formData.centerName} onChange={handleChange} />
-          <TextField fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
+
+          <TextField required fullWidth label='Center Name' name="centerName" size="small" margin="dense" value={formData.centerName} onChange={handleChange} />
+          <TextField required fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
           <TextField fullWidth label='Address' name="address" size="small" margin="dense" value={formData.address} onChange={handleChange} />
           <TextField sx={{ mt: "10px" }} label='City' name="city" size="small" margin="dense" value={formData.city} onChange={handleChange} />
+
           <FormControl sx={{ m: "10px" }}>
             <InputLabel id="state-select-label">State</InputLabel>
             <Select
@@ -158,10 +192,54 @@ export default function RegisterCenterPage() {
               ))}
             </Select>
           </FormControl>
+
           <TextField sx={{ mt: "10px" }} label='Zip Code' name="zip" size="small" margin="dense" value={formData.zip} onChange={handleChange} />
-          <TextField fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
+
+          <TextField
+            required
+            fullWidth
+            label='Password'
+            name="password"
+            type={showPassword ? "text" : "password"}
+            size="small"
+            margin="dense"
+            value={formData.password}
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+
           <PasswordChecker password={formData.password} />
-          <TextField fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
+
+          <TextField
+            required
+            fullWidth
+            label='Confirm Password'
+            name="confirmPassword"
+            type={showPassword ? "text" : "password"}
+            size="small"
+            margin="dense"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={passwordError}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+
           <TextField
             type="file"
             label='Profile Picture'
