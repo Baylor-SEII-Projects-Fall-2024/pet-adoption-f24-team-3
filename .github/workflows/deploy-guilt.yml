@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - ickoxii/fix-multikill
- 
+      - brendonnewt/aboutpage
+
 jobs:
   build-and-deploy:
     runs-on: guilt
