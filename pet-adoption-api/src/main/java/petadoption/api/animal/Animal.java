@@ -72,4 +72,7 @@ public class Animal {
     public  boolean isLiked = false;
     @Transient
     public boolean isDisliked = false;
+
+    @Transient
+    public Double score  = 0.0;
 }

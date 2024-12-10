@@ -17,6 +17,8 @@ public class AnimalCardResponse {
     public AnimalSex sex;
     public boolean isLiked = false;
     public boolean isDisliked = false;
+
+    public double score;
     public Boolean adopted;
 
     public AnimalCardResponse(Animal sourceAnimal){
@@ -30,6 +32,7 @@ public class AnimalCardResponse {
         this.isLiked = sourceAnimal.isLiked;
         this.isDisliked = sourceAnimal.isDisliked;
         this.adopted=sourceAnimal.getAdopted();
+        this.score=sourceAnimal.getScore();
     }
 
 }

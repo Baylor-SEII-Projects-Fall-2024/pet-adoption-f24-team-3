@@ -24,6 +24,7 @@ import PetCard from "@/components/PetCard";
 import MultipleSelect from "@/components/input/MultipleSelect";
 import infoLists from "@/utils/lists";
 import guiltService from "@/utils/services/guiltService";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 const quantityPerPage = 12;
 
 export default function PetsPage() {
@@ -57,13 +58,9 @@ export default function PetsPage() {
     decrementDislikeCount,
     getEuthanizedPetIds,
     updateEuthanizedPetIds,
-    getUserGrief,
   } = guiltService();
 
-  const [totalDislikes, setTotalDislikes] = React.useState(0);
-  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
-  const [showEuthanization, setShowEuthanization] = React.useState(false);
-  const [killCount, setKillCount] = React.useState(0);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState(new Set());
   const [audio, setAudio] = React.useState(null);
 
   const playAudio = () => {
@@ -133,21 +130,22 @@ export default function PetsPage() {
         if (!currentUserId) return;
         if (!grief) return;
         try {
-          const userGriefResult = await getUserGrief(currentUserId);
-          setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
-
-          const dislikeCountResult = await getDislikeCount(currentUserId);
-          setTotalDislikes(dislikeCountResult);
-
           const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(euthanizedPetIdsResult);
+          /**
+           * We have to do this because otherwise the set will contain
+           * a single element for each character. i.e.
+           * Set: [ '[', '1', '2', '3', ',', '4', 5', '6', ']' ]
+           * Instead of actually storing a set of pet ids
+           * */
+          const parsedEuthanizedIds = JSON.parse(euthanizedPetIdsResult);
+          setEuthanizedPetIds(new Set(parsedEuthanizedIds));
         } catch (error) {
           console.error("Error fetching guilt data:", error);
         }
       }
       initializeGuiltData();
     } else {
-      setEuthanizedPetIds([]);
+      setEuthanizedPetIds(new Set());
     }
 
     async function load() {
@@ -283,6 +281,14 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
+  const checkIfEuthanized = (value) => (euthanizedPetIds.has(value));
+
+  const handlePetClick = (petId) => {
+    if (!checkIfEuthanized(petId)) {
+      router.push(`/pets/${petId}`);
+    }
+  };
+
   const updateTotalDislikes = async (petId, decrement = false) => {
     try {
       if (!grief) return;
@@ -298,13 +304,14 @@ export default function PetsPage() {
       if (updateSuccess) {
         // Fetch updated total dislikes
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
-        setTotalDislikes(updatedTotalDislikes);
 
         if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
           await updateEuthanizedPetIds(currentUserId, petId);
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(updatedEuthanizedIds);
-          setShowEuthanization(true);
+
+          const parsedEuthanizedIds = JSON.parse(updatedEuthanizedIds);
+
+          setEuthanizedPetIds(new Set(parsedEuthanizedIds));
           playAudio();
         }
       }
@@ -518,7 +525,7 @@ export default function PetsPage() {
                   {animalData.map((pet) => (
                     <Grid item xs={11} sm={5} md={4} lg={4} key={pet.id}>
                       <Box
-                        onClick={() => router.push(`/pets/${pet.id}`)}
+                        onClick={handlePetClick.bind(null, pet.id)}
                         sx={{ cursor: "pointer" }}
                       >
                         <PetCard
@@ -533,6 +540,8 @@ export default function PetsPage() {
               </InfiniteScroll>
             </Box>
           </Stack>
+
+          <ScrollToTopButton />
         </Stack>
       </main>
     </>

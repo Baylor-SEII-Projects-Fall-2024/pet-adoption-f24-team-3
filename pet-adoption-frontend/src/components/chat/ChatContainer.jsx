@@ -48,7 +48,6 @@ export default function ChatContainer(props) {
     return (
       <Box
         sx={{
-          position: "absolute",
           right: "3%",
           bottom: "5%",
           position: "fixed",
