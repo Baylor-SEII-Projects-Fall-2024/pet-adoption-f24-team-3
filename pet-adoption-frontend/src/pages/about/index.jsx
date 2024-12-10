@@ -53,7 +53,7 @@ const teamMembers = [
   {
     member: "Icko Iben",
     role: "Assurance Engineer",
-    imgLink: "team/icko.jpeg",
+    imgLink: "team/icko.png",
     githubLink: "https://github.com/ickoxii",
     linkedin: "https://www.linkedin.com/in/icko-iben/",
     description:
