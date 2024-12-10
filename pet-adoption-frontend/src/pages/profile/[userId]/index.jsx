@@ -249,10 +249,14 @@ export default function ProfilePage() {
             <CardContent sx={{ textAlign: "center", padding: 2 }}>
               {rankTitle && (
                 <>
-                  <Typography variant="h5">You have achieved the rank of: {rankTitle}</Typography>
+                  <Typography variant="h5">You have achieved the rank of:
+                    <span style={{ fontFamily: "YouMurderer", fontSize: "2em", color: "#510000" }}> {rankTitle}</span>
+                  </Typography>
                   <Typography variant="h6">{rankMessage}</Typography>
-                  <Typography variant="body1">{`You have disliked ${dislikeCount} pets.`}</Typography>
-                  <Typography variant="body1">{`This has resulted in ${killCount} deaths.`}</Typography>
+                  <Typography variant="body1">You have disliked <strong>{dislikeCount}</strong> pets.</Typography>
+                  <Typography variant="body1">This has resulted in
+                    <span style={{ fontFamily: "YouMurderer", fontSize: "2em", fontWeight: "bold", color: "#510000" }}> {killCount} </span>
+                    deaths.</Typography>
                 </>
               )}
             </CardContent>
@@ -308,7 +312,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </Box>
-    </Box>
+    </Box >
   );
 }
 
