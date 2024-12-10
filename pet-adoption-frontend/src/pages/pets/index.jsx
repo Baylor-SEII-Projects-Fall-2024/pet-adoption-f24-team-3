@@ -281,6 +281,14 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
+  const checkIfEuthanized = (value) => (euthanizedPetIds.has(value));
+
+  const handlePetClick = (petId) => {
+    if (!checkIfEuthanized(petId)) {
+      router.push(`/pets/${petId}`);
+    }
+  };
+
   const updateTotalDislikes = async (petId, decrement = false) => {
     try {
       if (!grief) return;
@@ -517,7 +525,7 @@ export default function PetsPage() {
                   {animalData.map((pet) => (
                     <Grid item xs={11} sm={5} md={4} lg={4} key={pet.id}>
                       <Box
-                        onClick={() => router.push(`/pets/${pet.id}`)}
+                        onClick={handlePetClick.bind(null, pet.id)}
                         sx={{ cursor: "pointer" }}
                       >
                         <PetCard
