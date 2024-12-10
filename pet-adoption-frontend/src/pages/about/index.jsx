@@ -108,23 +108,16 @@ export default function AboutPage() {
           spacing={4}
           alignItems="center"
           justifyContent="center"
-          sx={{ width: "100%", margin: "auto" }}
+          sx={{ margin: "auto" }}
         >
           {people.map((person, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <a
-                href={person.githubLink}
-                style={{
-                  padding: 0,
-                  margin: 0,
-                }}
-              >
-                <TeamMemberCard
-                  member={person.member}
-                  role={person.role}
-                  imgLink={person.imgLink}
-                />
-              </a>
+              <TeamMemberCard
+                member={person.member}
+                role={person.role}
+                imgLink={person.imgLink}
+                github={person.githubLink}
+              />
             </Grid>
           ))}
         </Grid>

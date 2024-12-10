@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@mui/material";
 
-const TeamMemberCard = ({ member, role, imgLink }) => {
+const TeamMemberCard = ({ member, role, imgLink, github }) => {
   return (
     <Card
       sx={{
@@ -12,25 +12,27 @@ const TeamMemberCard = ({ member, role, imgLink }) => {
         },
       }}
     >
-      <img
-        src={imgLink}
-        alt={member}
-        style={{
-          width: "100%",
-          height: "auto",
-          objectFit: "cover",
-          borderTopLeftRadius: "8px",
-          borderTopRightRadius: "8px",
-        }}
-      />
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {member}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {role}
-        </Typography>
-      </CardContent>
+      <a href={github}>
+        <img
+          src={imgLink}
+          alt={member}
+          style={{
+            width: "100%",
+            height: "auto",
+            objectFit: "cover",
+            borderTopLeftRadius: "8px",
+            borderTopRightRadius: "8px",
+          }}
+        />
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            {member}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            {role}
+          </Typography>
+        </CardContent>
+      </a>
     </Card>
   );
 };
