@@ -62,9 +62,8 @@ export default function PetsPage() {
   } = guiltService();
 
   const [totalDislikes, setTotalDislikes] = React.useState(0);
-  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState(new Set());
   const [showEuthanization, setShowEuthanization] = React.useState(false);
-  const [killCount, setKillCount] = React.useState(0);
   const [audio, setAudio] = React.useState(null);
 
   const playAudio = () => {
@@ -135,15 +134,13 @@ export default function PetsPage() {
         if (!grief) return;
         try {
           const userGriefResult = await getUserGrief(currentUserId);
-          setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
-          setTotalDislikes((userGriefResult) ? userGriefResult.dislikeCount : 0);
+          const dislikeCount = userGriefResult?.dislikeCount || 0;
+          const killCount = userGriefResult?.killCount || 0;
+          const euthanizedIds =
+            killCount > 0 ? await getEuthanizedPetIds(currentUserId) : [];
 
-          if (userGriefResult && userGriefResult.killCount > 0) {
-            const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-            setEuthanizedPetIds(euthanizedPetIdsResult);
-          } else {
-            setEuthanizedPetIds([]);
-          }
+          setTotalDislikes(dislikeCount);
+          setEuthanizedPetIds(new Set(euthanizedIds));
         } catch (error) {
           console.error("Error fetching guilt data:", error);
         }
@@ -151,7 +148,7 @@ export default function PetsPage() {
       initializeGuiltData();
       console.log("euthanized pet ids: ", euthanizedPetIds);
     } else {
-      setEuthanizedPetIds([]);
+      setEuthanizedPetIds(new Set());
     }
 
     async function load() {
@@ -287,41 +284,45 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
+  /**
+   * Changed to use local variables after page is loaded and only
+   * communicate with the backend for updating values there
+   * */
   const updateTotalDislikes = async (petId, decrement = false) => {
+    if (!grief || !currentUserId) return;
+
     try {
-      if (!grief) return;
-      let updateSuccess;
-      console.log("Numdislikes before inc/dec call: ", totalDislikes);
+      // Update local vars
+      const newTotalDislikes = decrement
+        ? totalDislikes - 1
+        : totalDislikes + 1;
+      setTotalDislikes(newTotalDislikes);
+
+      // Update the backend
       if (decrement) {
-        // Decrement dislike count if needed
-        updateSuccess = await decrementDislikeCount(currentUserId);
+        await decrementDislikeCount(currentUserId);
       } else {
-        // Increment dislike count
-        updateSuccess = await incrementDislikeCount(currentUserId);
+        await incrementDislikeCount(currentUserId);
       }
 
-      if (updateSuccess) {
-        // Fetch updated total dislikes
-        console.log("update success");
-        const updatedTotalDislikes = await getDislikeCount(currentUserId);
-        setTotalDislikes(updatedTotalDislikes);
-        console.log("updated total dislikes (fetched): ", updatedTotalDislikes);
-        console.log("total dislikes: ", totalDislikes);
+      if (!decrement) {
+        const needsEuthanization = newTotalDislikes > 0 && newTotalDislikes % 5 === 0
 
-        if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
-          console.log("updating euthanizedPetIds from");
-          console.log("prev: ", euthanizedPetIds);
-          await updateEuthanizedPetIds(currentUserId, petId);
-          const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(updatedEuthanizedIds);
+        if (needsEuthanization) {
+          setEuthanizedPetIds((prev) => new Set(prev).add(petId));
           setShowEuthanization(true);
-          console.log("result (fetched): ", updatedEuthanizedIds);
-          console.log("result (local): ", euthanizedPetIds);
           playAudio();
+
+          // Update the backend
+          const success = await updateEuthanizedPetIds(currentUserId, petId);
+
+          if (!success) {
+            console.error("Update euthanize pet ids failed");
+          }
         }
       }
     } catch (error) {
-      console.error("Error updating dislikes:", error);
+      console.error("Error updating total dislikes");
     }
   };
 
