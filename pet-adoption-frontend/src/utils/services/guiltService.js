@@ -44,6 +44,37 @@ const guiltService = () => {
     Cookies.remove('griefEnginePreference');
   };
 
+  const logErrorResponse = async (response) => {
+    try {
+      const errorMessage = await response.text();
+      switch (response.status) {
+        case 400:
+          console.error(`Bad Request: ${errorMessage}`);
+          break;
+        case 401:
+          console.error(`Unauthorized: ${errorMessage}. Please log in.`);
+          break;
+        case 403:
+          console.error(`Forbidden: ${errorMessage}. Access is denied.`);
+          break;
+        case 404:
+          console.error(`Not Found: ${errorMessage}. The resource might not exist.`);
+          break;
+        case 500:
+          console.error(`Internal Server Error: ${errorMessage}. Something went wrong on the server.`);
+          break;
+        case 503:
+          console.error(`Service Unavailable: ${errorMessage}. Try again later.`);
+          break;
+        default:
+          console.error(`Unexpected Error (${response.status}): ${errorMessage}`);
+          break;
+      }
+    } catch (error) {
+      console.error("Error while parsing the response:", error);
+    }
+  };
+
   // Fetch user grief details (dislike count, kill count, rank title, etc.)
   const getUserGrief = async (userId) => {
     try {
@@ -57,6 +88,7 @@ const guiltService = () => {
 
       if (!response.ok) {
         console.error("Failed to fetch grief details");
+        logErrorResponse(response);
         return null;
       }
 
@@ -70,110 +102,146 @@ const guiltService = () => {
 
   // Fetch dislike count
   const getDislikeCount = async (userId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/dislikes`, {
-      method: 'GET',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/dislikes`, {
+        method: 'GET',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to get dislike count");
+      if (!response.ok) {
+        console.error("Failed to fetch dislike count");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return await response.text();
+    } catch (error) {
+      console.error("Error fetching dislike count");
       return null;
     }
-
-    return await response.text();
   };
 
   // Increment dislike count
   const incrementDislikeCount = async (userId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/dislike`, {
-      method: 'POST',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/dislike`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to increment dislike count");
+      if (!response.ok) {
+        console.error("Failed to increment dislike count");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return response.ok;
+    } catch (error) {
+      console.error("Error incrementing dislike count");
       return null;
     }
-
-    return response.ok;
   };
 
   // Decrement dislike count
   const decrementDislikeCount = async (userId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/undislike`, {
-      method: 'POST',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/undislike`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to decrement dislike count");
+      if (!response.ok) {
+        console.error("Failed to decrement dislike count");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return response.ok;
+    } catch (error) {
+      console.error("Error decrementing dislike count");
       return null;
     }
-
-    return response.ok;
   };
 
   // Get a users kill count
   const getKillCount = async (userId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/killcount`, {
-      method: 'GET',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/killcount`, {
+        method: 'GET',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to increment kill count");
+      if (!response.ok) {
+        console.error("Failed to get kill count");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return await response.text();
+    } catch (error) {
+      console.error("Error when fetching kill count");
       return null;
     }
-
-    return response.text();
   };
 
   // Fetch euthanized pet IDs
   const getEuthanizedPetIds = async (userId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizedPets`, {
-      method: 'GET',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizedPets`, {
+        method: 'GET',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to fetch euthanized pet IDs");
+      if (!response.ok) {
+        console.error("Failed to fetch euthanized pet IDs");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return await response.text();
+    } catch (error) {
+      console.error("Error when getting euthanized pet ids");
       return null;
     }
-
-    return await response.text();
   };
 
   // Update euthanized pet IDs
   const updateEuthanizedPetIds = async (userId, petId) => {
-    const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizePet?petId=${petId}`, {
-      method: 'POST',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/${userId}/euthanizePet?petId=${petId}`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to update euthanized pet IDs");
+      if (!response.ok) {
+        console.error("Failed to update euthanized pet IDs");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return response.ok;
+    } catch (error) {
+      console.error("Error when updating euthanized pet ids");
       return null;
     }
-
-    return response.ok;
   };
 
   // Fetch grief leaderboards
@@ -181,20 +249,26 @@ const guiltService = () => {
   // kills
   // dislikes
   const getLeaderboard = async (sortBy, count) => {
-    const response = await fetch(`${apiUrl}/api/grief/leaderboard?sortBy=${sortBy}&count=${count}`, {
-      method: 'GET',
-      credentials: "include",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await fetch(`${apiUrl}/api/grief/leaderboard?sortBy=${sortBy}&count=${count}`, {
+        method: 'GET',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error("Failed to fetch leaderboard");
+      if (!response.ok) {
+        console.error("Failed to fetch leaderboard");
+        logErrorResponse(response);
+        return null;
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching leaderboard");
       return null;
     }
-
-    return response.json();
   };
 
   return {

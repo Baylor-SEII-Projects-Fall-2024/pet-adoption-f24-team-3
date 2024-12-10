@@ -136,17 +136,20 @@ export default function PetsPage() {
         try {
           const userGriefResult = await getUserGrief(currentUserId);
           setKillCount((userGriefResult) ? userGriefResult.killCount : 0);
+          setTotalDislikes((userGriefResult) ? userGriefResult.dislikeCount : 0);
 
-          const dislikeCountResult = await getDislikeCount(currentUserId);
-          setTotalDislikes(dislikeCountResult);
-
-          const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(euthanizedPetIdsResult);
+          if (userGriefResult && userGriefResult.killCount > 0) {
+            const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
+            setEuthanizedPetIds(euthanizedPetIdsResult);
+          } else {
+            setEuthanizedPetIds([]);
+          }
         } catch (error) {
           console.error("Error fetching guilt data:", error);
         }
       }
       initializeGuiltData();
+      console.log("euthanized pet ids: ", euthanizedPetIds);
     } else {
       setEuthanizedPetIds([]);
     }
@@ -288,6 +291,7 @@ export default function PetsPage() {
     try {
       if (!grief) return;
       let updateSuccess;
+      console.log("Numdislikes before inc/dec call: ", totalDislikes);
       if (decrement) {
         // Decrement dislike count if needed
         updateSuccess = await decrementDislikeCount(currentUserId);
@@ -298,14 +302,19 @@ export default function PetsPage() {
 
       if (updateSuccess) {
         // Fetch updated total dislikes
+        console.log("update success");
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
+        console.log("Numdislikes after fetching updated count: ", updatedTotalDislikes);
 
         if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
+          console.log("updating euthanizedPetIds from");
+          console.log("prev: ", euthanizedPetIds);
           await updateEuthanizedPetIds(currentUserId, petId);
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
+          console.log("result: ", euthanizedPetIds);
           playAudio();
         }
       }
