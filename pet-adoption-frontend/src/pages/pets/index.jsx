@@ -305,7 +305,8 @@ export default function PetsPage() {
         console.log("update success");
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
         setTotalDislikes(updatedTotalDislikes);
-        console.log("Numdislikes after fetching updated count: ", updatedTotalDislikes);
+        console.log("updated total dislikes (fetched): ", updatedTotalDislikes);
+        console.log("total dislikes: ", totalDislikes);
 
         if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
           console.log("updating euthanizedPetIds from");
@@ -314,7 +315,8 @@ export default function PetsPage() {
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
           setEuthanizedPetIds(updatedEuthanizedIds);
           setShowEuthanization(true);
-          console.log("result: ", euthanizedPetIds);
+          console.log("result (fetched): ", updatedEuthanizedIds);
+          console.log("result (local): ", euthanizedPetIds);
           playAudio();
         }
       }
