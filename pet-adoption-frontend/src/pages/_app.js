@@ -26,7 +26,8 @@ const safePaths = [
   '/login',
   '/register',
   '/register/owner',
-  '/register/center'
+  '/register/center',
+  '/about',
 ];
 
 
