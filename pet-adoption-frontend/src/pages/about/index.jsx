@@ -19,6 +19,7 @@ const teamMembers = [
     role: "Project Manager",
     imgLink: "team/logan.JPG",
     githubLink: "https://github.com/Renzenar",
+    linkedin: "https://www.linkedin.com/in/logan-rigdon/",
     description: "Leads our mission to connect pets with loving homes",
   },
   {
@@ -26,26 +27,29 @@ const teamMembers = [
     role: "Design Engineer",
     imgLink: "team/august.jpg",
     githubLink: "https://github.com/Jarpletz",
+    linkedin: "https://www.linkedin.com/in/august-rothpletz/",
   },
   {
     member: "Samuel Fries",
     role: "Project Librarian",
     imgLink: "team/sam.jpeg",
     githubLink: "https://github.com/SamuelF2",
+    linkedin: "https://www.linkedin.com/in/samuel-fries/",
   },
   {
     member: "Brendon Newton",
     role: "Requirements Engineer",
     imgLink: "team/brendon.jpeg",
     githubLink: "https://github.com/brendonnewt",
+    linkedin: "https://www.linkedin.com/in/brendonnewton/",
   },
   {
     member: "Icko Iben",
     role: "Assurance Engineer",
     imgLink: "team/icko.jpeg",
     githubLink: "https://github.com/ickoxii",
+    linkedin: "https://www.linkedin.com/in/icko-iben/",
   },
-  // ... other team members with descriptions
 ];
 
 const features = [
@@ -87,7 +91,6 @@ const missionStatement = {
 
 export default function AboutPage() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <>
@@ -111,7 +114,7 @@ export default function AboutPage() {
         >
           <Box
             component="img"
-            src="/slides/slide1.jpg"
+            src="banner.jpeg"
             alt="WOOF banner with logo"
             sx={{
               width: "100%",
@@ -120,31 +123,6 @@ export default function AboutPage() {
               filter: "brightness(0.8)",
             }}
           />
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              color: "white",
-              zIndex: 1,
-            }}
-          >
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: isMobile ? "2.5rem" : "4rem",
-                fontWeight: "bold",
-                marginBottom: 2,
-              }}
-            >
-              Making Tails Wag
-            </Typography>
-            <Typography variant="h5" sx={{ maxWidth: "800px" }}>
-              {missionStatement.content}
-            </Typography>
-          </Box>
         </Box>
 
         <Container maxWidth="lg" sx={{ py: 8 }}>
@@ -204,6 +182,7 @@ export default function AboutPage() {
                     description={person.description}
                     imgLink={person.imgLink}
                     github={person.githubLink}
+                    linkedin={person.linkedin}
                   />
                 </Grid>
               ))}
