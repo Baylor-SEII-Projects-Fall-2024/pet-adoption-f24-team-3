@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import guiltService from "@/utils/services/guiltService";
+import { useAudioManager } from "@/utils/services/audioService";
 import { set } from "date-fns";
 import { zIndex } from "@mui/material/styles";
 
@@ -191,37 +192,27 @@ export default function LeaderboardPage() {
   */
 
   // >>>> Icko changes
-  const [audio, setAudio] = React.useState(null);
+  const { loadAudio, playAudio, stopAudio } = useAudioManager();
   const [isAudioLoaded, setIsAudioLoaded] = React.useState(false);
 
   useEffect(() => {
     if (grief) {
-      const audioElement = new Audio('/sounds/its-just-a-burning-memory.mp3');
-
+      const audioElement = loadAudio('/sounds/its-just-a-burning-memory.mp3');
+      
+      // Optional: Add event listener to confirm loading
       audioElement.addEventListener('canplaythrough', () => {
-        setAudio(audioElement);
         setIsAudioLoaded(true);
       });
 
       audioElement.addEventListener('error', (e) => {
         console.error("Error loading audio:", e);
       });
-
-      // Optional: Preload the audio
-      audioElement.load();
-
-      return () => {
-        audioElement.removeEventListener('canplaythrough', () => { });
-        audioElement.removeEventListener('error', () => { });
-      };
     }
-  }, [grief]); // Add dependency to only run when grief changes
+  }, [grief]); // Keep the dependency on grief
 
-  const playAudio = () => {
-    if (isAudioLoaded && audio) {
-      audio.play().catch(error => {
-        console.error("Error playing audio:", error);
-      });
+  const handleAudioPlay = () => {
+    if (isAudioLoaded) {
+      playAudio();
     }
   };
   // <<<< Icko changes
@@ -261,7 +252,7 @@ export default function LeaderboardPage() {
       </Head>
       <Box
         // onClick={handleUnmute}
-        onClick={playAudio}
+        onClick={handleAudioPlay}
         sx={{
           backgroundImage: "url('/hallway.jpg')",
           backgroundSize: 'cover',
