@@ -15,6 +15,8 @@ export default function RegisterCenterPage() {
   const passwordRegex = RegExp('[^ -~]');
   const usernameRegex = RegExp('[^ a-zA-Z]');
 
+  const emailRegex = new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
+
   const [profileImage, setProfileImage] = useState(null);
   const [bannerImage, setBannerImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -62,6 +64,11 @@ export default function RegisterCenterPage() {
 
     if (passwordRegex.test(formData.password)) {
       setFormError("Password has invalid characters!");
+      return;
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      setFormError("Please submit a valid email!");
       return;
     }
 

@@ -11,6 +11,8 @@ export default function RegisterOwnerPage() {
   const passwordRegex = RegExp('[^ -~]');
   const usernameRegex = RegExp('[^ a-zA-Z]');
 
+  const emailRegex = new RegExp('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$');
+
   const paperStyle = { padding: '30px 20px', width: "50%", margin: "20px auto" }
   const headerStyle = { margin: 0 }
 
@@ -48,8 +50,14 @@ export default function RegisterOwnerPage() {
       setFormError("Name contains special characters!");
       return;
     }
+
     if (passwordRegex.test(formData.password)) {
       setFormError("Password has invalid characters!");
+      return;
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      setFormError("Please submit a valid email!");
       return;
     }
 
