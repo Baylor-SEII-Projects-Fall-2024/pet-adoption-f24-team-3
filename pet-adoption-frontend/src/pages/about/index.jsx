@@ -23,7 +23,7 @@ const people = [
   {
     member: "John (August) Rothpletz",
     role: "Design Engineer",
-    imgLink: "",
+    imgLink: "team/august.jpg",
     githubLink: "https://github.com/Jarpletz",
   },
   {
@@ -41,7 +41,7 @@ const people = [
   {
     member: "Icko Iben",
     role: "Assurance Engineer",
-    imgLink: "",
+    imgLink: "team/icko.jpeg",
     githubLink: "https://github.com/ickoxii",
   },
 ];
