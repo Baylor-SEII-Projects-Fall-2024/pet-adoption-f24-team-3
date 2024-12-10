@@ -22,6 +22,7 @@ import Loading from "@/components/Loading";
 import eventService from "@/utils/services/eventService";
 import userService from "@/utils/services/userService";
 import EventCard from "@/components/EventCard";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import infoLists from "@/utils/lists";
 
 const quantityPerPage = 12;
@@ -182,6 +183,7 @@ export default function EventsPage() {
             sx={{
               width: "90%",
               minHeight: "300px",
+              margin: "auto",
               marginTop: "30px",
             }}
           >
@@ -190,6 +192,7 @@ export default function EventsPage() {
               next={fetchMoreData}
               hasMore={hasMore}
               loader={<Loading doneLoading={!hasMore} page={page} />}
+              sx={{ alignItems: "center", marginLeft: 100 }}
             >
               <Grid container spacing={4} sx={{ minHeight: "50px" }}>
                 {eventData.map((event) => (
@@ -205,6 +208,7 @@ export default function EventsPage() {
               </Grid>
             </InfiniteScroll>
           </Box>
+          <ScrollToTopButton />
         </Stack>
       </main>
     </>

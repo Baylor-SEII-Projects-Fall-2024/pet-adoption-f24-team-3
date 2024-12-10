@@ -70,7 +70,6 @@ public class AnimalRepoCustomImpl implements AnimalRepoCustom {
         query.select(animal).where(predicates.toArray(new Predicate[0]));
 
         return entityManager.createQuery(query)
-                .setMaxResults(filter.getPageSize())
                 .getResultList();
     }
 }
