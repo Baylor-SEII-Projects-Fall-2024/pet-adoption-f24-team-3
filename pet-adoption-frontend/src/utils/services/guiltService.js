@@ -8,20 +8,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const guiltService = () => {
   const dispatch = useDispatch();
 
-  // Helper function to get current auth token
-  const getAuthToken = () => {
-    // Retrieve token from cookies
-    let token = Cookies.get('authenticationToken');
-
-    // Fallback to Redux if token not found in cookies
-    if (!token) {
-      const state = useSelector((state) => state);
-      return state.auth?.token || null;
-    }
-
-    return token;
-  };
-
   // 我不知道这在做什么
 
   // Save grief engine preference to Redux
