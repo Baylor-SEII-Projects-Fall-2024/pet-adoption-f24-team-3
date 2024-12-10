@@ -281,7 +281,7 @@ export default function PetsPage() {
     await fetchFirstData(filter);
   }
 
-  const checkIfEuthanized = (value) => (euthanizedPetIds.includes(value));
+  const checkIfEuthanized = (value) => (euthanizedPetIds.has(value));
 
   const handlePetClick = (petId) => {
     if (!checkIfEuthanized(petId)) {

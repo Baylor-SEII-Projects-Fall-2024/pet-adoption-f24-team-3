@@ -104,8 +104,12 @@ function PetsAndEventsTabs(props) {
     router.push(`/events/${eventId}`);
   };
 
+  const checkIfEuthanized = (value) => (euthanizedPetIds.has(value));
+
   const handlePetClick = (petId) => {
-    router.push(`/pets/${petId}`);
+    if (!checkIfEuthanized(petId)) {
+      router.push(`/pets/${petId}`);
+    }
   };
 
   const updateTotalDislikes = async (petId, decrement = false) => {
