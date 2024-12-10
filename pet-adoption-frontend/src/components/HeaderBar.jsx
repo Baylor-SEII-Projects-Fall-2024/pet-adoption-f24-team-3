@@ -32,6 +32,7 @@ import {
 
 import userService from "@/utils/services/userService";
 import guiltService from "@/utils/services/guiltService";
+import { useAudioManager } from "@/utils/services/audioService";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -40,6 +41,8 @@ export default function HeaderBar(props) {
   const { logOut, getUserInfo } = userService();
   const { saveGriefToCookie } = guiltService();
   const [isOwner, setIsOwner] = React.useState(false);
+
+  const { stopAudio } = useAudioManager();
 
   const currentUserId = useSelector((state) => state.currentUser.currentUserId);
 
@@ -84,6 +87,11 @@ export default function HeaderBar(props) {
   ];
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handlePageNavigation = (route) => {
+    stopAudio();
+    router.push(route);
+  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -208,9 +216,9 @@ export default function HeaderBar(props) {
               key={"profile"}
               onClick={() => {
                 if (currentUserType == "Center") {
-                  router.push(`/centers/${currentUserId}`);
+                  handlePageNavigation(`/centers/${currentUserId}`);
                 } else {
-                  router.push(`/profile/${currentUserId}`);
+                  handlePageNavigation(`/profile/${currentUserId}`);
                 }
                 handleCloseUserMenu();
               }}
@@ -240,7 +248,7 @@ export default function HeaderBar(props) {
             <MenuItem
               key={"inbox"}
               onClick={() => {
-                router.push("/messaging");
+                handlePageNavigation("/messaging");
               }}
             >
               <Inbox></Inbox>
@@ -261,13 +269,15 @@ export default function HeaderBar(props) {
     } else {
       return (
         <div>
-          <Button variant="contained" onClick={() => router.push(`/login`)}>
+          <Button
+            variant="contained"
+            onClick={() => handlePageNavigation(`/login`)}>
             Log In
           </Button>
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => router.push(`/register`)}
+            onClick={() => handlePageNavigation(`/register`)}
           >
             Sign Up
           </Button>
@@ -276,6 +286,7 @@ export default function HeaderBar(props) {
     }
   };
 
+  /*
   return (
     <AppBar position="static">
       <Container maxWidth="x1">
@@ -307,6 +318,53 @@ export default function HeaderBar(props) {
                 <Button
                   key={page.name}
                   onClick={() => router.push(page.route)}
+                  sx={styles.headerText}
+                  startIcon={page.icon}
+                >
+                  {page.name}
+                </Button>
+              );
+            })}
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>{displayCurrentUser()}</Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
+  );
+}
+*/
+
+  return (
+    <AppBar position="static">
+      <Container maxWidth="x1">
+        <Toolbar disableGutters>
+          <Box sx={styles.leftBox}>
+            <Box sx={styles.clickBox} onClick={() => handlePageNavigation("/")}>
+              <Image
+                src="/WOOF_Logo.png"
+                alt="WOOF Logo"
+                width={100}
+                height={60}
+              />
+              <Typography
+                variant="h3"
+                color="text.darkColor"
+                sx={{ marginLeft: "10px" }}
+              >
+                WOOF
+              </Typography>
+            </Box>
+
+            {pages.map((page) => {
+              if (page.name === "Leaderboard" && !isOwner) {
+                return null;
+              } else if (page.name === "Leaderboard" && !grief && isOwner) {
+                return null;
+              }
+              return (
+                <Button
+                  key={page.name}
+                  onClick={() => handlePageNavigation(page.route)}
                   sx={styles.headerText}
                   startIcon={page.icon}
                 >
