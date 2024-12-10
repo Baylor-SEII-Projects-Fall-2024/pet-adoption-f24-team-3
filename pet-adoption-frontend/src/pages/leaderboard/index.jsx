@@ -22,6 +22,7 @@ import {
 import { useSelector } from "react-redux";
 import guiltService from "@/utils/services/guiltService";
 import { set } from "date-fns";
+import zIndex from "@mui/material/styles/zIndex";
 
 export default function LeaderboardPage() {
   const router = useRouter();
@@ -66,6 +67,10 @@ export default function LeaderboardPage() {
       "& .MuiTableCell-root": {
         color: "#7a0d0d", // Applies to all cells in the row
         borderBottom: "1px solid #3d3131",
+        fontFamily: "monospace",
+      },
+      "&:hover": {
+        animation: " scaleUp 0.1s ease-in-out forwards"
       },
     },
     tableRowSpecial: {
@@ -76,7 +81,10 @@ export default function LeaderboardPage() {
         animation: "shake 1s infinite linear",
         color: "#000",
         borderBottom: "1px solid #3d3131",
-
+        fontFamily: "monospace",
+      },
+      "&:hover": {
+        animation: " scaleUp 0.2s ease-in-out forwards"
       },
     },
     tableHeader: {
@@ -108,6 +116,7 @@ export default function LeaderboardPage() {
     },
     selectLabel: {
       color: "#969696",
+      fontFamily: "monospace",
       "&.Mui-focused": {
         color: "#ababab",
       },
@@ -216,10 +225,18 @@ export default function LeaderboardPage() {
       </Head>
       <Box
         onClick={handleUnmute}
-        sx={{ backgroundColor: "#0b0b0b", m: 0, pt: 4, pb: 4, minHeight: "100vh" }}>
+        sx={{
+          backgroundImage: "url('/hallway.jpg')",
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          margin: 0,
+          m: 0, pt: 4, pb: 4, minHeight: "100vh"
+        }}>
         <Container maxWidth="lg" >
           {/* Title and Filters Section */}
-          <Card sx={[styles.primary, { mb: 4 }]}>
+          <Card sx={[styles.primary, { mb: 4, zIndex: "5" }]}>
             <CardContent>
               <Typography
                 variant="h4"
@@ -267,15 +284,14 @@ export default function LeaderboardPage() {
           {/* Leaderboard Section */}
           <Card sx={styles.primary}>
             <CardContent>
-              {loading && <CircularProgress sx={{ color: "a50c0c" }} />}
+              {loading && <CircularProgress sx={{ color: "#a50c0c" }} />}
               {error && <Alert severity="error">{error}</Alert>}
               {!loading && !error && (
                 <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell sx={[styles.primary, styles.tableHeader]}>Rank</TableCell>
-                      <TableCell sx={[styles.primary, styles.tableHeader]}>First Name</TableCell>
-                      <TableCell sx={[styles.primary, styles.tableHeader]}>Last Name</TableCell>
+                      <TableCell sx={[styles.primary, styles.tableHeader]}>Name</TableCell>
                       <TableCell sx={[styles.primary, styles.tableHeader]}>Title</TableCell>
                       <TableCell sx={[styles.primary, styles.tableHeader]}>Kills</TableCell>
                       <TableCell sx={[styles.primary, styles.tableHeader]}>Dislikes</TableCell>
@@ -289,8 +305,7 @@ export default function LeaderboardPage() {
                       >
                         {/* Display the rank based on the index */}
                         <TableCell >{index + 1}</TableCell>
-                        <TableCell >{entry.firstName || "N/A"}</TableCell>
-                        <TableCell >{entry.lastName || "N/A"}</TableCell>
+                        <TableCell >{entry.firstName || "N/A"} {entry.lastName}</TableCell>
                         <TableCell >{entry.userTitle}</TableCell>
                         <TableCell ><strong>{entry.killCount || 0}</strong></TableCell>
                         <TableCell ><strong>{entry.numDislikes || 0}</strong></TableCell>
@@ -306,8 +321,9 @@ export default function LeaderboardPage() {
             textAlign="center"
             sx={{
               fontFamily: "YouMurderer",
-              color: "#470e04",
+              color: "#c30a0a",
               fontSize: "5em",
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)',
             }}>
             &#123; Their Blood is on your hands.
             <br />
@@ -315,9 +331,10 @@ export default function LeaderboardPage() {
             <br />
             <Typography sx={{
               fontFamily: "YouMurderer",
-              color: "#470e04",
+              color: "#c30a0a",
               fontSize: "1.4em",
-              position: "relative", animation: "shake 0.5s infinite linear"
+              position: "relative",
+              animation: "shake 0.5s infinite linear"
             }}>WHAT HAVE YOU DONE?!</Typography>
           </Box>
         </Container>
