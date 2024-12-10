@@ -56,11 +56,6 @@ export default function HeaderBar(props) {
 
   const pages = [
     {
-      name: "About",
-      route: "/about",
-      icon: <Cottage />,
-    },
-    {
       name: "Pets",
       route: "/pets",
       icon: <Pets />,
@@ -95,7 +90,7 @@ export default function HeaderBar(props) {
   const handleGriefClick = () => {
     const newGriefSetting = !grief;
     setGrief(newGriefSetting);
-    dispatch({ type: "SET_GRIEF_ENGINE_PREFERENCE", payload: newGriefSetting });
+    dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: newGriefSetting });
     saveGriefToCookie(newGriefSetting); // Update cookies
   };
 
@@ -108,23 +103,23 @@ export default function HeaderBar(props) {
   };
 
   /**
-   * Check cookies and mount and set grief preference accordingly.
-   *
-   * I wanted to use my setGriefPreferences function but some funky
-   * stuff was happening when I load from cookies and dispatch to
-   * redux directly. Namely, the checkbox and actual grief engine
-   * functionality was out of sync if the page was reloaded.
-   * */
+    * Check cookies and mount and set grief preference accordingly.
+    *
+    * I wanted to use my setGriefPreferences function but some funky
+    * stuff was happening when I load from cookies and dispatch to
+    * redux directly. Namely, the checkbox and actual grief engine
+    * functionality was out of sync if the page was reloaded.
+    * */
   React.useEffect(() => {
-    const savedGrief = Cookies.get("griefEnginePreference");
-    const griefPreference = savedGrief === "true";
+    const savedGrief = Cookies.get('griefEnginePreference');
+    const griefPreference = savedGrief === 'true';
     setGrief(griefPreference);
-    dispatch({ type: "SET_GRIEF_ENGINE_PREFERENCE", payload: griefPreference });
+    dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: griefPreference });
 
     // If the grief preference is undefined, set default and save to cookie
     if (savedGrief === undefined) {
       saveGriefToCookie(true); // Default to true
-      dispatch({ type: "SET_GRIEF_ENGINE_PREFERENCE", payload: true });
+      dispatch({ type: 'SET_GRIEF_ENGINE_PREFERENCE', payload: true });
     }
 
     // Fetch user info for owner status
@@ -134,12 +129,9 @@ export default function HeaderBar(props) {
           const userTypeResult = await getUserInfo(currentUserId);
           setIsOwner(userTypeResult.accountType !== "Center");
         } catch (error) {
-          console.error(
-            "User information could not be found for user",
-            currentUserId
-          );
+          console.error("User information could not be found for user", currentUserId);
         }
-      };
+      }
       fetchAccountType();
     } else {
       // Usually when on loading page or after logging out
@@ -218,17 +210,21 @@ export default function HeaderBar(props) {
               <Typography sx={{ textAlign: "center" }}>Profile</Typography>
             </MenuItem>
             {isOwner && (
-              <MenuItem key={"grief"} onChange={handleGriefClick}>
-                <HeartBroken />
+              <MenuItem
+                key={"grief"}
+                onChange={handleGriefClick}
+              >
+                <HeartBroken
+                />
                 <Box>
                   <Checkbox
                     checked={grief}
                     sx={{
-                      color: grief ? "black" : "default", // Black color when checked, default when unchecked
-                      "&.Mui-checked": {
-                        color: "black", // Ensures the checkmark is black when checked
+                      color: grief ? 'black' : 'default', // Black color when checked, default when unchecked
+                      '&.Mui-checked': {
+                        color: 'black', // Ensures the checkmark is black when checked
                       },
-                      "& .MuiSvgIcon-root": {
+                      '& .MuiSvgIcon-root': {
                         fontSize: "1em", // Adjust size if needed
                       },
                     }}
@@ -296,6 +292,7 @@ export default function HeaderBar(props) {
               </Typography>
             </Box>
 
+
             {pages.map((page) => {
               if (page.name === "Leaderboard" && !isOwner) {
                 return null;
@@ -311,7 +308,7 @@ export default function HeaderBar(props) {
                 >
                   {page.name}
                 </Button>
-              );
+              )
             })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>{displayCurrentUser()}</Box>
