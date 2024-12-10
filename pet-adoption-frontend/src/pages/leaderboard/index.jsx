@@ -152,6 +152,7 @@ export default function LeaderboardPage() {
     }
   }, [grief, loading]);
 
+  /*
   useEffect(() => {
     // Dynamically load the YouTube iframe API script
     const tag = document.createElement("script");
@@ -187,6 +188,43 @@ export default function LeaderboardPage() {
       }
     };
   }, []);
+  */
+
+  // >>>> Icko changes
+  const [audio, setAudio] = React.useState(null);
+  const [isAudioLoaded, setIsAudioLoaded] = React.useState(false);
+
+  useEffect(() => {
+    if (grief) {
+      const audioElement = new Audio('/sounds/its-just-a-burning-memory.mp3');
+
+      audioElement.addEventListener('canplaythrough', () => {
+        setAudio(audioElement);
+        setIsAudioLoaded(true);
+      });
+
+      audioElement.addEventListener('error', (e) => {
+        console.error("Error loading audio:", e);
+      });
+
+      // Optional: Preload the audio
+      audioElement.load();
+
+      return () => {
+        audioElement.removeEventListener('canplaythrough', () => { });
+        audioElement.removeEventListener('error', () => { });
+      };
+    }
+  }, [grief]); // Add dependency to only run when grief changes
+
+  const playAudio = () => {
+    if (isAudioLoaded && audio) {
+      audio.play().catch(error => {
+        console.error("Error playing audio:", error);
+      });
+    }
+  };
+  // <<<< Icko changes
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
@@ -200,8 +238,7 @@ export default function LeaderboardPage() {
     return entryId === currentUserId ? styles.tableRowSpecial : styles.tableRow;
   };
 
-
-
+  /*
   const handleUnmute = () => {
     if (
       playerRef.current &&
@@ -214,6 +251,7 @@ export default function LeaderboardPage() {
       console.error("Player is not ready or methods not available.");
     }
   };
+  */
 
   return (
     <>
@@ -222,7 +260,8 @@ export default function LeaderboardPage() {
         <meta name="description" content="View the leaderboard for grief stats." />
       </Head>
       <Box
-        onClick={handleUnmute}
+        // onClick={handleUnmute}
+        onClick={playAudio}
         sx={{
           backgroundImage: "url('/hallway.jpg')",
           backgroundSize: 'cover',
