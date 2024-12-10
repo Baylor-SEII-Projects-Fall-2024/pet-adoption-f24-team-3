@@ -29,6 +29,8 @@ const teamMembers = [
     imgLink: "team/august.jpg",
     githubLink: "https://github.com/Jarpletz",
     linkedin: "https://www.linkedin.com/in/august-rothpletz/",
+    description:
+      "August Rothpletz is the Lead Design Engineer for WOOF. He establishes many of the patterns and workflows within the app to ensure a clean, efficient code base, and makes sure these patterns are followed by all developers. August also brings expertise and advice to WOOF regarding all things frontend, gained through a multitude of projects including Prime Time Hotels and a mobile streaming app.",
   },
   {
     member: "Samuel Fries",
@@ -36,6 +38,8 @@ const teamMembers = [
     imgLink: "team/sam.jpeg",
     githubLink: "https://github.com/SamuelF2",
     linkedin: "https://www.linkedin.com/in/samuel-fries/",
+    description:
+      "Sam is the Project Librarian at WOOF. He is responsible for compiling documentation and meeting logs for easy access, ensuring information never gets lost. Sam works dilligently to construct concise deliverables and documentation that allow the team to track progress on testing and requirements. Sam also brings in notable experience from the Prime Time Hotels Shop and Stay service.",
   },
   {
     member: "Brendon Newton",
@@ -44,7 +48,7 @@ const teamMembers = [
     githubLink: "https://github.com/brendonnewt",
     linkedin: "https://www.linkedin.com/in/brendonnewton/",
     description:
-      "Brendon is the Requirements Engineer at WOOF. He's responsible for overseeing requirements documentation and testing to ensure the team meets and exceeds their goals. Brendon drafts diagrams and models to discover and outline the necessary requirements for the team to ensure their goals are clear and concise. Brendon brings past experience from G.R.O.U.P. F.I.V.E. as well as present experience from Sea Quail.",
+      "Brendon is the Requirements Engineer at WOOF. He is responsible for overseeing requirements documentation and testing to ensure the team meets and exceeds their goals. Brendon drafts diagrams and models to discover and outline the necessary requirements to ensure the teams goals are clear and concise. Brendon brings past experience from G.R.O.U.P. F.I.V.E. as well as present experience from Sea Quail.",
   },
   {
     member: "Icko Iben",
@@ -52,6 +56,8 @@ const teamMembers = [
     imgLink: "team/icko.jpeg",
     githubLink: "https://github.com/ickoxii",
     linkedin: "https://www.linkedin.com/in/icko-iben/",
+    description:
+      "Icko is the Assurance Engineer at WOOF. He conducts thorough tests and code reviews to ensure extensions and features integrate effectively with the ever-expanding codebase. Icko ensures quality in all aspects of the project by conducting load tests via a sophistacated update script as well as deployment testing through multiple runners. Icko also brings experience from G.R.O.U.P. F.I.V.E. and Sea Quail.",
   },
 ];
 
@@ -174,7 +180,7 @@ export default function AboutPage() {
             <Grid
               container
               spacing={4}
-              alignItems="center"
+              alignItems="stretch"
               justifyContent="center"
             >
               {teamMembers.map((person, index) => (
