@@ -152,41 +152,27 @@ export default function LeaderboardPage() {
     }
   }, [grief, loading]);
 
-  useEffect(() => {
-    // Dynamically load the YouTube iframe API script
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  const [audio, setAudio] = React.useState(null);
 
-    // Set this function once the YouTube iframe script is ready
-    window.onYouTubeIframeAPIReady = () => {
-      playerRef.current = new window.YT.Player("player", {
-        height: "0", // Hidden visually
-        width: "0",
-        videoId: "wJWksPWDKOc", // Replace with your YouTube video ID
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          loop: 1,
-        },
-        events: {
-          onReady: onPlayerReady,
-        },
-      });
-    };
-
-    function onPlayerReady(event) {
-      event.target.playVideo(); // Start video muted
+  const playAudio = () => {
+    if (audio) {
+      console.log("Playing audio");
+      audio.play();
+    } else {
+      console.log("No audio");
     }
+  };
 
-    return () => {
-      // Cleanup the player properly when the component unmounts
-      if (playerRef.current && playerRef.current.destroy) {
-        playerRef.current.destroy();
+  useEffect(() => {
+    if (grief) {
+      async function fetchAudio() {
+        if (typeof window !== 'undefined') {
+          setAudio(new Audio('/sounds/its-just-a-burning-memory.mp3'));
+        }
       }
-    };
-  }, []);
+      fetchAudio();
+    }
+  });
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
@@ -200,21 +186,6 @@ export default function LeaderboardPage() {
     return entryId === currentUserId ? styles.tableRowSpecial : styles.tableRow;
   };
 
-
-
-  const handleUnmute = () => {
-    if (
-      playerRef.current &&
-      typeof playerRef.current.unMute === "function" &&
-      typeof playerRef.current.playVideo === "function"
-    ) {
-      playerRef.current.unMute();
-      playerRef.current.playVideo();
-    } else {
-      console.error("Player is not ready or methods not available.");
-    }
-  };
-
   return (
     <>
       <Head>
@@ -222,7 +193,7 @@ export default function LeaderboardPage() {
         <meta name="description" content="View the leaderboard for grief stats." />
       </Head>
       <Box
-        onClick={handleUnmute}
+        onClick={playAudio}
         sx={{
           backgroundImage: "url('/hallway.jpg')",
           backgroundSize: 'cover',

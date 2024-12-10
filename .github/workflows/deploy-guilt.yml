@@ -3,7 +3,7 @@ name: Guilt Build & Deploy
 on:
   push:
     branches:
-      - ickoxii/guilt-trippin
+      - ickoxii/fix-ewateot
  
 jobs:
   build-and-deploy:
