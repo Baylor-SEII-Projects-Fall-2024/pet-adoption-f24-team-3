@@ -1,40 +1,68 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  IconButton,
+  Box,
+  styled,
+} from "@mui/material";
+import { GitHub, LinkedIn } from "@mui/icons-material";
 
-const TeamMemberCard = ({ member, role, imgLink, github }) => {
+const StyledCard = styled(Card)(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  transition: "transform 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-8px)",
+    boxShadow: theme.shadows[8],
+  },
+}));
+
+export default function TeamMemberCard({
+  member,
+  role,
+  description,
+  imgLink,
+  github,
+  linkedin,
+}) {
   return (
-    <Card
-      sx={{
-        maxWidth: 300,
-        transition: "all 0.3s ease",
-        "&:hover": {
-          transform: "translateY(-5px)",
-          boxShadow: "0 6px 10px rgba(0, 0, 0, 0.2)",
-        },
-      }}
-    >
-      <a href={github}>
-        <img
-          src={imgLink}
-          alt={member}
-          style={{
-            width: "100%",
-            height: "auto",
-            objectFit: "cover",
-            borderTopLeftRadius: "8px",
-            borderTopRightRadius: "8px",
-          }}
-        />
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            {member}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            {role}
-          </Typography>
-        </CardContent>
-      </a>
-    </Card>
+    <StyledCard>
+      <CardMedia
+        component="img"
+        height="300"
+        image={imgLink}
+        alt={member}
+        sx={{
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
+      />
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" gutterBottom>
+          {member}
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+          {role}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {description}
+        </Typography>
+      </CardContent>
+      <Box sx={{ p: 2, display: "flex", justifyContent: "center", gap: 2 }}>
+        {github && (
+          <IconButton href={github} target="_blank" aria-label="GitHub">
+            <GitHub />
+          </IconButton>
+        )}
+        {linkedin && (
+          <IconButton href={linkedin} target="_blank" aria-label="LinkedIn">
+            <LinkedIn />
+          </IconButton>
+        )}
+      </Box>
+    </StyledCard>
   );
-};
-
-export default TeamMemberCard;
+}

@@ -1,25 +1,33 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 
-export default function FeatureCard(props) {
-  const { feature } = props;
-
+export default function FeatureCard({ icon, title, description }) {
   return (
     <Card
       sx={{
-        maxWidth: 250,
-        boxShadow: 3,
-        borderRadius: 2,
-        padding: 2,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
         transition: "transform 0.3s ease-in-out",
         "&:hover": {
-          transform: "scale(1.05)",
-          boxShadow: 6,
+          transform: "translateY(-8px)",
         },
       }}
     >
       <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-          {feature}
+        <Box
+          sx={{
+            fontSize: "2.5rem",
+            textAlign: "center",
+            mb: 2,
+          }}
+        >
+          {icon}
+        </Box>
+        <Typography variant="h6" component="h3" gutterBottom align="center">
+          {title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" align="center">
+          {description}
         </Typography>
       </CardContent>
     </Card>
