@@ -246,15 +246,6 @@ export default function HeaderBar(props) {
               </MenuItem>
             )}
             <MenuItem
-              key={"inbox"}
-              onClick={() => {
-                handlePageNavigation("/messaging");
-              }}
-            >
-              <Inbox></Inbox>
-              <Typography sx={{ textAlign: "center" }}>Inbox</Typography>
-            </MenuItem>
-            <MenuItem
               key={"logout"}
               onClick={() => {
                 logoutUser();
