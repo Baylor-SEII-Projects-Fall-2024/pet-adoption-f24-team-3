@@ -24,6 +24,7 @@ import PetCard from "@/components/PetCard";
 import MultipleSelect from "@/components/input/MultipleSelect";
 import infoLists from "@/utils/lists";
 import guiltService from "@/utils/services/guiltService";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 const quantityPerPage = 12;
 
 export default function PetsPage() {
@@ -533,6 +534,8 @@ export default function PetsPage() {
               </InfiniteScroll>
             </Box>
           </Stack>
+
+          <ScrollToTopButton />
         </Stack>
       </main>
     </>
