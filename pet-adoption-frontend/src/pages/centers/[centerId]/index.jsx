@@ -42,7 +42,6 @@ function PetsAndEventsTabs(props) {
   // State for owner-specific data
   const { getUserInfo, getOwnerInfo } = userService();
 
-  // Grief shi
   const [euthanizedPetIds, setEuthanizedPetIds] = React.useState(new Set());
   const [audio, setAudio] = React.useState(null);
   const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
