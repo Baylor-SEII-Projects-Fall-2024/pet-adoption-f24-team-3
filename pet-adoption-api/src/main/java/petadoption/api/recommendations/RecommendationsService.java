@@ -83,7 +83,7 @@ public class RecommendationsService {
         Map<Long,Double> animalRatings = new HashMap<>();
         for(Animal a : animals){
             double score = calculateCompatibilityScore(a,mappedHistory);
-
+            a.setScore(score);
             //set if the animal is liked or disliked, or neither
             double likedStatus = getAnimalInteractionStatus(history,a.getId());
             if(likedStatus > 0) a.isLiked = true;
