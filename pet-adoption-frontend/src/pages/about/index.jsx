@@ -35,7 +35,7 @@ const teamMembers = [
   {
     member: "Samuel Fries",
     role: "Project Librarian",
-    imgLink: "team/sam.jpeg",
+    imgLink: "team/sam.png",
     githubLink: "https://github.com/SamuelF2",
     linkedin: "https://www.linkedin.com/in/samuel-fries/",
     description:
