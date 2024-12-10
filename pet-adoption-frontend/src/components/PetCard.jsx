@@ -15,7 +15,20 @@ export default function PetCard(props) {
   const currentUserId = useSelector((state) => state.currentUser.currentUserId); // get the current session user
   const currentUserType = useSelector((state) => state.currentUser.currentUserType);
 
-  const isEuthanized = (euthanizedPetIds && euthanizedPetIds.includes(pet.id)) || false;
+  // Note to future developers: includes method checks for the presence of
+  // a value based on a substring when dealing with strings
+  // const isEuthanized = euthanizedPetIds.includes(pet.id);
+
+  // If using arrays, check for the id like so:
+  // const isEuthanized = euthanizedPetIds.some(id => id === pet.id.toString());
+
+  // But I refactored to using a set to store id's, so we do this
+  const isEuthanized = euthanizedPetIds.has(pet.id);
+
+  React.useEffect(() => {
+    console.log("euthanizedPetIds", euthanizedPetIds);
+    console.log("[", pet.id.toString(), "] isEuthanized: ", isEuthanized);
+  });
 
   const onLikeInteraction = (buttonPressed) => {
     setHasInteracted(buttonPressed);

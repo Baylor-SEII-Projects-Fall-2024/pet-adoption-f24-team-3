@@ -40,12 +40,11 @@ function PetsAndEventsTabs(props) {
   } = guiltService();
 
   // State for owner-specific data
-  const [totalDislikes, setTotalDislikes] = React.useState(0);
-  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState([]);
-  const [showEuthanization, setShowEuthanization] = React.useState(false);
   const { getUserInfo, getOwnerInfo } = userService();
-  const [audio, setAudio] = React.useState(null);
 
+  // Grief shi
+  const [euthanizedPetIds, setEuthanizedPetIds] = React.useState(new Set());
+  const [audio, setAudio] = React.useState(null);
   const grief = useSelector((state) => state.griefEngine.griefEngineEnabled);
 
   const playAudio = () => {
@@ -75,11 +74,15 @@ function PetsAndEventsTabs(props) {
           if (userInfo.accountType === "Owner") {
             // Fetch owner-specific grief data
             try {
-              const dislikeCountResult = await getDislikeCount(currentUserId);
-              setTotalDislikes(dislikeCountResult);
-
               const euthanizedPetIdsResult = await getEuthanizedPetIds(currentUserId);
-              setEuthanizedPetIds(euthanizedPetIdsResult);
+              /**
+               * We have to do this because otherwise the set will contain
+               * a single element for each character. i.e.
+               * Set: [ '[', '1', '2', '3', ',', '4', 5', '6', ']' ]
+               * Instead of actually storing a set of pet ids
+               * */
+              const parsedEuthanizedIds = JSON.parse(euthanizedPetIdsResult);
+              setEuthanizedPetIds(new Set(parsedEuthanizedIds));
             } catch (error) {
               console.error("Error fetching grief data:", error);
             }
@@ -90,7 +93,7 @@ function PetsAndEventsTabs(props) {
       };
       fetchData();
     } else {
-      setEuthanizedPetIds([]);
+      setEuthanizedPetIds(new Set());
     }
   }, [currentUserId, grief]);
 
@@ -107,8 +110,8 @@ function PetsAndEventsTabs(props) {
   };
 
   const updateTotalDislikes = async (petId, decrement = false) => {
-    if (!grief) return;
     try {
+      if (!grief) return;
       let updateSuccess;
       if (decrement) {
         // Decrement dislike count if needed
@@ -121,20 +124,18 @@ function PetsAndEventsTabs(props) {
       if (updateSuccess) {
         // Fetch updated total dislikes
         const updatedTotalDislikes = await getDislikeCount(currentUserId);
-        setTotalDislikes(updatedTotalDislikes);
 
         if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
           await updateEuthanizedPetIds(currentUserId, petId);
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(updatedEuthanizedIds);
-          setShowEuthanization(true);
+          setEuthanizedPetIds(new Set(updatedEuthanizedIds));
           playAudio();
         }
       }
     } catch (error) {
       console.error("Error updating dislikes:", error);
     }
-  }
+  };
 
   return (
     <Box
