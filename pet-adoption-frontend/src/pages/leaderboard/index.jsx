@@ -177,7 +177,6 @@ export default function LeaderboardPage() {
     };
 
     function onPlayerReady(event) {
-      console.log("YouTube player ready!");
       event.target.playVideo(); // Start video muted
     }
 
@@ -204,7 +203,6 @@ export default function LeaderboardPage() {
 
 
   const handleUnmute = () => {
-    console.log("Handle unmute clicked");
     if (
       playerRef.current &&
       typeof playerRef.current.unMute === "function" &&
