@@ -25,11 +25,6 @@ export default function PetCard(props) {
   // But I refactored to using a set to store id's, so we do this
   const isEuthanized = euthanizedPetIds.has(pet.id);
 
-  React.useEffect(() => {
-    console.log("euthanizedPetIds", euthanizedPetIds);
-    console.log("[", pet.id.toString(), "] isEuthanized: ", isEuthanized);
-  });
-
   const onLikeInteraction = (buttonPressed) => {
     setHasInteracted(buttonPressed);
   }
