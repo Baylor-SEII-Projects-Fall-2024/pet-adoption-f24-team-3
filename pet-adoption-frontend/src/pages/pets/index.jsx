@@ -300,7 +300,10 @@ export default function PetsPage() {
         if (updatedTotalDislikes > 0 && updatedTotalDislikes % 5 === 0 && !decrement) {
           await updateEuthanizedPetIds(currentUserId, petId);
           const updatedEuthanizedIds = await getEuthanizedPetIds(currentUserId);
-          setEuthanizedPetIds(new Set(updatedEuthanizedIds));
+
+          const parsedEuthanizedIds = JSON.parse(updatedEuthanizedIds);
+
+          setEuthanizedPetIds(new Set(parsedEuthanizedIds));
           playAudio();
         }
       }
