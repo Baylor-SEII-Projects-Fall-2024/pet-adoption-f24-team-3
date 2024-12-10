@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Grid, Paper, Typography, TextField, Button } from '@mui/material'
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material'
+import {
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import userService from "@/utils/services/userService";
 import PasswordChecker from "@/components/PasswordChecker";
 
@@ -28,6 +40,9 @@ export default function RegisterOwnerPage() {
     confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const handleSelectChange = (event, fieldName) => {
     const { value } = event.target;
     setFormData((prevState) => ({ ...prevState, [fieldName]: value }));
@@ -38,7 +53,21 @@ export default function RegisterOwnerPage() {
     setFormError(null);
     setFormSuccess(null);
     setFormData(prevState => ({ ...prevState, [name]: value }));
+
+    // Check if passwords match
+    if (name === "password" || name === "confirmPassword") {
+      setPasswordError(
+        name === "password"
+          ? value !== formData.confirmPassword
+          : formData.password !== value
+      );
+    }
   };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  }
+
   const handleProfileImageUpload = (e) => {
     setProfileImage(e.target.files[0]);
   }
@@ -103,17 +132,60 @@ export default function RegisterOwnerPage() {
     <Grid>
       <Paper elevation={20} style={paperStyle}>
         <Grid align='center'>
-
           <h2 style={headerStyle}>Register</h2>
           <Typography variant="caption">Please fill this form to create an account!</Typography>
         </Grid>
+
         <form onSubmit={handleSubmit}>
           <TextField required fullWidth label='First Name' name="firstName" size="small" margin="dense" value={formData.firstName} onChange={handleChange} />
           <TextField required fullWidth label='Last Name' name="lastName" size="small" margin="dense" value={formData.lastName} onChange={handleChange} />
           <TextField required fullWidth label='Email' name="email" size="small" margin="dense" value={formData.email} onChange={handleChange} />
-          <TextField required fullWidth label='Password' name="password" type="password" size="small" margin="dense" value={formData.password} onChange={handleChange} />
+
+          <TextField
+            required
+            fullWidth
+            label='Password'
+            name="password"
+            type={showPassword ? "text" : "password"}
+            size="small"
+            margin="dense"
+            value={formData.password}
+            onChange={handleChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+
           <PasswordChecker password={formData.password} />
-          <TextField required fullWidth label='Confirm Password' name="confirmPassword" type="password" size="small" margin="dense" value={formData.confirmPassword} onChange={handleChange} />
+
+          <TextField
+            required
+            fullWidth
+            label='Confirm Password'
+            name="confirmPassword"
+            type={showPassword ? "text" : "password"}
+            size="small"
+            margin="dense"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={passwordError}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+
           <TextField
             type="file"
             label='Profile Picture'
